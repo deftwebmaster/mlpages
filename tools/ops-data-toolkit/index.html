@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ops Data Toolkit</title>
+    <meta name="description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/grid.css">
+    <link rel="stylesheet" href="css/modules.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-left">
+            <h1>Ops Data Toolkit</h1>
+            <span class="privacy-badge" title="All processing happens locally in your browser">🔒 Nothing leaves your browser</span>
+        </div>
+        <div class="header-actions">
+            <button id="loadSample" class="btn-secondary">Load Sample</button>
+            <button id="importCSV" class="btn-primary">Import CSV</button>
+            <button id="pasteTable" class="btn-secondary">Paste Table</button>
+            <button id="exportCSV" class="btn-secondary" disabled>Export CSV</button>
+            <button id="reset" class="btn-danger" title="Clear all data">Reset</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <aside class="module-rail">
+            <h2>Modules</h2>
+            <nav id="moduleNav" class="module-nav">
+                <!-- Populated by app.js -->
+            </nav>
+            <div class="module-info">
+                <small>Select a module to analyze data</small>
+            </div>
+        </aside>
+
+        <main class="content-area">
+            <section class="data-panel">
+                <div class="panel-header">
+                    <div class="sheet-tabs">
+                        <button class="tab active" data-sheet="A" id="tabA">
+                            <span class="tab-label">Sheet A</span>
+                            <span class="tab-badge" id="badgeA">0 rows</span>
+                        </button>
+                        <button class="tab" data-sheet="B" id="tabB">
+                            <span class="tab-label">Sheet B</span>
+                            <span class="tab-badge" id="badgeB">0 rows</span>
+                        </button>
+                    </div>
+                    <div class="sheet-controls">
+                        <label class="control-label">
+                            Key Column:
+                            <select id="keyColumnSelect" class="select-input">
+                                <option value="">- None -</option>
+                            </select>
+                        </label>
+                        <input type="search" id="dataSearch" class="search-input" placeholder="Search data...">
+                    </div>
+                </div>
+                <div id="dataGrid" class="data-grid">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3>No Data Loaded</h3>
+                        <p>Import a CSV file or paste data to get started</p>
+                        <button id="importPrompt" class="btn-primary">Import CSV</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-panel">
+                <div class="panel-header">
+                    <h2>Results</h2>
+                    <div class="results-actions">
+                        <button id="copyTSV" class="btn-secondary" disabled>Copy as TSV</button>
+                        <button id="showLogic" class="btn-secondary" disabled>Show Logic</button>
+                    </div>
+                </div>
+                <div class="metrics-strip" id="metricsStrip">
+                    <!-- Populated by active module -->
+                </div>
+                <div id="resultsGrid" class="results-grid">
+                    <div class="empty-state">
+                        <div class="empty-icon">⚙️</div>
+                        <h3>No Analysis Run</h3>
+                        <p>Select a module and run analysis to see results</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Logic Explanation Modal -->
+    <div id="logicModal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>How This Works</h3>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body" id="logicExplanation">
+                <!-- Populated by modules -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input -->
+    <input type="file" id="fileInput" accept=".csv,.tsv,.txt" style="display: none;">
+
+    <!-- External dependency -->
+    <script src="lib/papaparse.min.js"></script>
+    
+    <!-- App modules -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

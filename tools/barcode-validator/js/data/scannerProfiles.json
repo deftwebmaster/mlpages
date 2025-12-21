@@ -1,0 +1,101 @@
+{
+  "zebra-tc52": {
+    "name": "Zebra TC52 - Standard Config",
+    "manufacturer": "Zebra Technologies",
+    "commonIssues": [
+      "Struggles with damaged Code 128 barcodes",
+      "May misread low-contrast labels",
+      "Aggressive mode can double-scan rapidly"
+    ],
+    "recommendations": [
+      "Increase quiet zone to 10X for Code 128",
+      "Use high-contrast labels (black on white)",
+      "Disable aggressive scan mode for dense environments"
+    ],
+    "supportedSymbologies": ["UPC-A", "UPC-E", "EAN-13", "EAN-8", "CODE128"],
+    "notes": "Most common warehouse scanner. Generally reliable but sensitive to quiet zone violations."
+  },
+  
+  "zebra-tc21": {
+    "name": "Zebra TC21 - Entry Level",
+    "manufacturer": "Zebra Technologies",
+    "commonIssues": [
+      "Lower scan range than TC52",
+      "Slower performance with damaged labels",
+      "Can struggle with UPC-E in poor lighting"
+    ],
+    "recommendations": [
+      "Ensure labels are well-lit",
+      "Use larger barcode sizes when possible",
+      "Train users on optimal scan distance (4-8 inches)"
+    ],
+    "supportedSymbologies": ["UPC-A", "EAN-13", "CODE128"],
+    "notes": "Budget-friendly option. Good for basic scanning tasks."
+  },
+
+  "honeywell-ct40": {
+    "name": "Honeywell CT40 - Aggressive Mode",
+    "manufacturer": "Honeywell",
+    "commonIssues": [
+      "Overly aggressive on partial scans",
+      "May read through packaging to inner labels",
+      "Quiet zone violations common"
+    ],
+    "recommendations": [
+      "Configure scan timeout to avoid partial reads",
+      "Enforce strict quiet zone requirements (11X minimum)",
+      "Use 'aim and shoot' mode instead of continuous scan"
+    ],
+    "supportedSymbologies": ["UPC-A", "UPC-E", "EAN-13", "EAN-8", "CODE128"],
+    "notes": "Very sensitive scanner. Great for damaged labels but may over-read."
+  },
+
+  "honeywell-ck65": {
+    "name": "Honeywell CK65 - Rugged",
+    "manufacturer": "Honeywell",
+    "commonIssues": [
+      "Heavier device, user fatigue in long shifts",
+      "Can be too sensitive in high-density storage"
+    ],
+    "recommendations": [
+      "Excellent for cold storage and outdoor use",
+      "Reliable for damaged or poorly printed labels",
+      "Consider wrist straps for extended use"
+    ],
+    "supportedSymbologies": ["UPC-A", "UPC-E", "EAN-13", "EAN-8", "CODE128"],
+    "notes": "Industrial-grade scanner. Highly reliable in harsh environments."
+  },
+
+  "datalogic-memor": {
+    "name": "Datalogic Memor 10",
+    "manufacturer": "Datalogic",
+    "commonIssues": [
+      "Less common, verify WMS driver compatibility",
+      "Some firmware versions struggle with EAN-8"
+    ],
+    "recommendations": [
+      "Update firmware before deployment",
+      "Test thoroughly with EAN-8 if used",
+      "Good for retail-focused operations"
+    ],
+    "supportedSymbologies": ["UPC-A", "EAN-13", "CODE128"],
+    "notes": "Android-based scanner. Growing market share in retail/light warehouse."
+  },
+
+  "generic-usb": {
+    "name": "Generic USB Scanner",
+    "manufacturer": "Various",
+    "commonIssues": [
+      "Highly variable quality",
+      "May not support all symbologies",
+      "Inconsistent read rates"
+    ],
+    "recommendations": [
+      "Test with actual barcode samples before purchase",
+      "Verify symbology support explicitly",
+      "Consider name-brand for mission-critical operations"
+    ],
+    "supportedSymbologies": ["UPC-A", "EAN-13", "CODE128"],
+    "notes": "Budget scanners. Quality varies widely. Acceptable for low-volume operations."
+  }
+}

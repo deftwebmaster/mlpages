@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Professional barcode validation tool for warehouse operations. Validate UPC, EAN, and Code 128 barcodes with WMS integration readiness scoring.">
+  <meta name="keywords" content="barcode validator, UPC validator, EAN validator, Code 128, warehouse, WMS, operations">
+  <title>Barcode Validator - Professional WMS Integration Tool</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/mobile.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/favicon.svg">
+</head>
+<body>
+  <!-- Header -->
+  <header class="app-header">
+    <div class="container">
+      <h1>🔍 Barcode Validator</h1>
+      <p class="tagline">Professional validation for warehouse operations</p>
+      <button id="help-btn" class="btn btn-secondary btn-small" aria-label="Help">
+        ❓ Help
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Welcome Message -->
+    <section id="welcome-section">
+      <div id="welcome-message"></div>
+    </section>
+
+    <!-- Input Section -->
+    <section id="input-section" class="section">
+      <h2>Input Barcodes</h2>
+      
+      <!-- Scenario Templates -->
+      <div class="subsection">
+        <h3>Quick Start Scenarios</h3>
+        <div id="scenario-buttons" class="scenario-buttons"></div>
+      </div>
+
+      <!-- Scanner Profile -->
+      <div class="subsection">
+        <label for="scanner-profile-select">
+          <strong>Scanner Profile (Optional):</strong>
+        </label>
+        <select id="scanner-profile-select" class="scanner-profile-select">
+          <!-- Populated dynamically -->
+        </select>
+        <div id="scanner-info" class="scanner-info" style="display: none;"></div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="subsection">
+        <label for="barcode-input">
+          <strong>Paste Barcodes:</strong>
+          <small>(One per line, or comma/tab separated)</small>
+        </label>
+        <textarea 
+          id="barcode-input" 
+          class="barcode-input" 
+          rows="10" 
+          placeholder="036000291452&#10;5901234123457&#10;LOC-A01-001&#10;&#10;Or upload a CSV file below..."
+          aria-label="Barcode input area"
+        ></textarea>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <button id="validate-btn" class="btn btn-primary btn-large">
+          ✓ Validate Barcodes
+        </button>
+        <button id="upload-csv-btn" class="btn btn-secondary">
+          📄 Upload CSV
+        </button>
+        <button id="clear-btn" class="btn btn-outline">
+          Clear
+        </button>
+        <input 
+          type="file" 
+          id="csv-file-input" 
+          accept=".csv" 
+          style="display: none;"
+          aria-label="CSV file upload"
+        >
+      </div>
+
+      <!-- Learning Mode Toggle -->
+      <div class="learning-mode-container">
+        <label class="toggle-label">
+          <input type="checkbox" id="learning-mode-toggle">
+          <span>🎓 Learning Mode (show detailed calculations)</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Progress Bar -->
+    <div id="progress-container" class="progress-section" style="display: none;"></div>
+
+    <!-- Results Section -->
+    <section id="results-section" class="section" style="display: none;">
+      <h2>Validation Results</h2>
+
+      <!-- Batch Summary -->
+      <div class="results-grid">
+        <!-- Health Score Card -->
+        <div class="results-card">
+          <h3>WMS Integration Readiness</h3>
+          <div id="health-score-card"></div>
+        </div>
+
+        <!-- Symbology Distribution -->
+        <div class="results-card">
+          <h3>Barcode Types</h3>
+          <div id="symbology-distribution"></div>
+        </div>
+      </div>
+
+      <!-- Issues & Warnings -->
+      <div class="results-card">
+        <div id="issues-warnings"></div>
+      </div>
+
+      <!-- Batch Metadata -->
+      <div class="results-card metadata-card">
+        <h3>Batch Information</h3>
+        <div id="batch-metadata"></div>
+      </div>
+
+      <!-- Results Table -->
+      <div class="results-card">
+        <div class="table-header">
+          <h3>Detailed Results</h3>
+          <button id="export-btn" class="btn btn-secondary">
+            💾 Export Results
+          </button>
+        </div>
+        
+        <!-- Table Filters -->
+        <div id="table-filters" class="table-filters"></div>
+        
+        <!-- Table Container -->
+        <div id="results-table-container" class="table-container"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="container">
+      <p class="privacy-note">
+        🔒 <strong>Privacy:</strong> All processing happens in your browser. No data is uploaded to any server.
+      </p>
+      <p class="credit">
+        Built with vanilla JavaScript • 
+        <a href="https://github.com/yourusername/barcode-validator" target="_blank" rel="noopener">
+          View on GitHub
+        </a>
+      </p>
+    </div>
+  </footer>
+
+  <!-- Toast Container (for notifications) -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modals Container -->
+  <div id="modals-container"></div>
+
+  <!-- JavaScript (type="module" for ES6 imports) -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+  "receiving-po": {
+    "name": "📦 Receiving PO Audit",
+    "description": "Mixed retail products (UPC/EAN) from purchase order",
+    "sampleData": "036000291452\n5901234123457\n012345678905\n4006381333634\n012000009907",
+    "expectedSymbologies": ["UPC-A", "EAN-13"],
+    "useCase": "receiving-po",
+    "validationRules": {
+      "allowDuplicates": false,
+      "requireCheckDigit": true,
+      "minLength": 8,
+      "maxLength": 13
+    },
+    "notes": "Typical receiving scenario. Expect mix of domestic (UPC-A) and international (EAN-13) barcodes."
+  },
+
+  "location-labels": {
+    "name": "📍 Location Label Batch",
+    "description": "Warehouse location barcodes (Code 128)",
+    "sampleData": "LOC-A01-001\nLOC-A01-002\nLOC-A02-001\nLOC-B01-001\nLOC-B01-002",
+    "expectedSymbologies": ["CODE128"],
+    "useCase": "warehouse-location",
+    "validationRules": {
+      "allowDuplicates": false,
+      "requireCheckDigit": false,
+      "enforcePattern": "^LOC-[A-Z]\\d{2}-\\d{3}$"
+    },
+    "notes": "Location labels MUST be unique. Duplicates will break putaway/picking. Use consistent naming convention."
+  },
+
+  "label-print-qa": {
+    "name": "🏷️ Label Print QA",
+    "description": "Quality check freshly printed labels",
+    "sampleData": "012345678905\n012345678905\n012345678905\n012345678905\n012345678905",
+    "expectedSymbologies": ["UPC-A"],
+    "useCase": "label-print-qa",
+    "validationRules": {
+      "allowDuplicates": true,
+      "requireCheckDigit": true,
+      "expectSingleSymbology": true
+    },
+    "notes": "Same barcode printed multiple times is normal. Focus on checksum validation and print quality."
+  },
+
+  "internal-sku": {
+    "name": "🔧 Internal SKU Labels",
+    "description": "Company-specific SKU barcodes",
+    "sampleData": "SKU-12345-A\nSKU-12346-A\nSKU-12347-B\nSKU-12348-A\nSKU-12349-C",
+    "expectedSymbologies": ["CODE128"],
+    "useCase": "internal-sku",
+    "validationRules": {
+      "allowDuplicates": false,
+      "requireCheckDigit": false,
+      "enforcePattern": "^SKU-\\d{5}-[A-Z]$"
+    },
+    "notes": "Internal SKUs typically use Code 128 for alphanumeric flexibility. Ensure consistent format."
+  },
+
+  "mixed-operations": {
+    "name": "🔀 Mixed Operations",
+    "description": "Combination of product UPCs and location codes",
+    "sampleData": "036000291452\nLOC-A01-001\n5901234123457\nLOC-A01-002\n012345678905",
+    "expectedSymbologies": ["UPC-A", "EAN-13", "CODE128"],
+    "useCase": "mixed",
+    "validationRules": {
+      "allowDuplicates": false,
+      "requireCheckDigit": true
+    },
+    "notes": "Common in cycle count or inventory audit scenarios. Validate both product and location codes."
+  },
+
+  "small-product": {
+    "name": "📏 Small Product Labels",
+    "description": "Compact barcodes for space-constrained packaging",
+    "sampleData": "01234565\n12345670\n23456784\n34567891\n45678906",
+    "expectedSymbologies": ["EAN-8", "UPC-E"],
+    "useCase": "small-product",
+    "validationRules": {
+      "allowDuplicates": false,
+      "requireCheckDigit": true,
+      "maxLength": 8
+    },
+    "notes": "UPC-E and EAN-8 for small items. Verify scanner support before deployment."
+  }
+}

@@ -1,0 +1,471 @@
+/**
+ * Mobile Responsive Styles
+ * Mobile-first responsive overrides and optimizations
+ */
+
+/* ============================================
+   Mobile Breakpoints
+   ============================================ */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (max-width: 576px) {
+  /* Typography */
+  :root {
+    --font-size-3xl: 1.75rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-xl: 1.125rem;
+  }
+
+  /* Container */
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  /* Header */
+  .app-header h1 {
+    font-size: var(--font-size-2xl);
+  }
+
+  .app-header .tagline {
+    font-size: var(--font-size-base);
+  }
+
+  .app-header #help-btn {
+    position: static;
+    margin-top: var(--spacing-md);
+    width: 100%;
+  }
+
+  /* Sections */
+  .section {
+    padding: var(--spacing-lg);
+  }
+
+  /* Welcome Message */
+  .welcome-content {
+    padding: var(--spacing-lg);
+  }
+
+  .welcome-content ul {
+    font-size: var(--font-size-base);
+  }
+
+  /* Buttons */
+  .button-group {
+    flex-direction: column;
+  }
+
+  .button-group .btn {
+    width: 100%;
+  }
+
+  /* Scenario Buttons */
+  .scenario-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  /* Scanner Profile */
+  .scanner-profile-select {
+    max-width: 100%;
+  }
+
+  /* Input Area */
+  textarea.barcode-input {
+    min-height: 150px;
+    font-size: var(--font-size-sm);
+  }
+
+  /* Results Grid */
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Health Score Card */
+  .grade-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .grade-letter {
+    font-size: 2.5rem;
+  }
+
+  .health-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  /* Distribution Chart */
+  .distribution-item {
+    grid-template-columns: 100px 1fr 70px;
+    gap: var(--spacing-sm);
+  }
+
+  .distribution-label {
+    font-size: 0.7rem;
+  }
+
+  .distribution-value {
+    font-size: 0.7rem;
+  }
+
+  /* Batch Metadata */
+  .batch-metadata {
+    flex-direction: column;
+  }
+
+  .metadata-item {
+    min-width: 100%;
+  }
+
+  /* Table */
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+  }
+
+  .table-header #export-btn {
+    width: 100%;
+  }
+
+  .table-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .visible-count {
+    margin-left: 0;
+    text-align: center;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Results Table - Scroll horizontally on mobile */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .results-table {
+    min-width: 800px;
+    font-size: 0.75rem;
+  }
+
+  .results-table th,
+  .results-table td {
+    padding: var(--spacing-sm);
+  }
+
+  /* Detail Content */
+  .detail-content {
+    grid-template-columns: 1fr;
+    padding: var(--spacing-lg);
+  }
+
+  /* Issues & Warnings */
+  .issue-item,
+  .warning-item {
+    padding: var(--spacing-md);
+  }
+
+  /* Modals */
+  .modal {
+    max-height: 95vh;
+    margin: var(--spacing-sm);
+  }
+
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: var(--spacing-lg);
+  }
+
+  .modal-footer {
+    flex-direction: column;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+  }
+
+  /* Export Options */
+  .radio-option {
+    padding: var(--spacing-md);
+  }
+
+  /* Help Tabs */
+  .help-tabs {
+    flex-wrap: wrap;
+  }
+
+  .help-tab {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+
+  /* Toast Notifications */
+  .toast-container {
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    left: var(--spacing-md);
+  }
+
+  .toast {
+    min-width: auto;
+    max-width: 100%;
+  }
+
+  /* Top Errors Chart */
+  .error-item {
+    grid-template-columns: 25px 120px 1fr 70px;
+    gap: var(--spacing-sm);
+  }
+
+  .error-label {
+    font-size: 0.7rem;
+  }
+
+  .error-value {
+    font-size: 0.7rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 577px) and (max-width: 768px) {
+  /* Scenario Buttons */
+  .scenario-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Results Grid */
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Health Metrics */
+  .health-metrics {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Distribution Chart */
+  .distribution-item {
+    grid-template-columns: 110px 1fr 75px;
+  }
+
+  /* Detail Content */
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
+
+  /* Table - Allow horizontal scroll */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .results-table {
+    min-width: 700px;
+  }
+
+  /* Modal */
+  .modal {
+    max-width: 90%;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 769px) and (max-width: 992px) {
+  /* Scenario Buttons */
+  .scenario-buttons {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Results Grid */
+  .results-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================
+   Touch Optimizations
+   ============================================ */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch target sizes */
+  .btn {
+    min-height: 44px;
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+
+  .scenario-button {
+    min-height: 60px;
+  }
+
+  .filter-button {
+    min-height: 44px;
+  }
+
+  .results-table tbody tr.expandable {
+    cursor: default;
+  }
+
+  /* Make checkboxes and radio buttons easier to tap */
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  /* Remove hover effects on touch devices */
+  .btn:hover,
+  .scenario-button:hover,
+  .filter-button:hover,
+  .results-table tbody tr:hover {
+    transform: none;
+  }
+
+  /* Increase modal close button size */
+  .modal-close {
+    width: 44px;
+    height: 44px;
+    font-size: 2.5rem;
+  }
+}
+
+/* ============================================
+   Landscape Orientation (Mobile)
+   ============================================ */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  .section {
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .app-header {
+    padding: var(--spacing-md) 0;
+  }
+
+  .welcome-content {
+    padding: var(--spacing-md);
+  }
+
+  /* Modals take more vertical space */
+  .modal {
+    max-height: 85vh;
+  }
+
+  /* Reduce grade circle size */
+  .grade-circle {
+    width: 80px;
+    height: 80px;
+  }
+
+  .grade-letter {
+    font-size: 2rem;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  /* Hide interactive elements */
+  .app-header,
+  .app-footer,
+  .button-group,
+  .scenario-buttons,
+  .scanner-info,
+  .learning-mode-container,
+  .table-filters,
+  .modal-backdrop,
+  .toast-container,
+  #export-btn,
+  #help-btn,
+  #clear-btn,
+  #validate-btn,
+  #upload-csv-btn {
+    display: none !important;
+  }
+
+  /* Optimize for print */
+  body {
+    background: white;
+  }
+
+  .section,
+  .results-card {
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+
+  .results-table {
+    font-size: 10pt;
+  }
+
+  .results-table th {
+    background: #f0f0f0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Preserve colors for badges */
+  .badge,
+  .status-badge,
+  .symbology-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Page breaks */
+  h2, h3 {
+    page-break-after: avoid;
+  }
+
+  .results-table tbody tr {
+    page-break-inside: avoid;
+  }
+}
+
+/* ============================================
+   Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .toast {
+    transition: opacity 0.01ms;
+  }
+
+  .modal {
+    animation: none;
+  }
+}
+
+/* ============================================
+   High Contrast Mode
+   ============================================ */
+@media (prefers-contrast: high) {
+  .btn {
+    border: 2px solid currentColor;
+  }
+
+  .results-table th,
+  .results-table td {
+    border: 1px solid currentColor;
+  }
+
+  .badge {
+    border: 2px solid currentColor;
+  }
+}

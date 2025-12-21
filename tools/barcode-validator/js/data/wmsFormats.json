@@ -1,0 +1,208 @@
+{
+  "oracle-fusion": {
+    "name": "Oracle Fusion Cloud WMS",
+    "vendor": "Oracle",
+    "description": "Oracle Fusion Cloud Supply Chain Management - Item Barcode Import",
+    "fileFormat": "csv",
+    "columns": [
+      {
+        "name": "Item_Number",
+        "type": "string",
+        "required": true,
+        "description": "Unique item identifier",
+        "example": "ITEM000001"
+      },
+      {
+        "name": "Item_Barcode",
+        "type": "string",
+        "required": true,
+        "description": "Barcode value",
+        "example": "036000291452"
+      },
+      {
+        "name": "Barcode_Type",
+        "type": "string",
+        "required": true,
+        "description": "UPC_A, UPC_E, EAN_13, EAN_8, CODE_128",
+        "example": "UPC_A"
+      },
+      {
+        "name": "Primary_Flag",
+        "type": "string",
+        "required": false,
+        "description": "Y or N - marks primary barcode",
+        "example": "Y"
+      },
+      {
+        "name": "Status",
+        "type": "string",
+        "required": true,
+        "description": "ACTIVE or INACTIVE",
+        "example": "ACTIVE"
+      }
+    ],
+    "delimiter": ",",
+    "includeHeader": true,
+    "notes": "Upload via Item Import template. One item can have multiple barcodes. First barcode should be primary."
+  },
+
+  "manhattan-scale": {
+    "name": "Manhattan WMS (SCALE/Active)",
+    "vendor": "Manhattan Associates",
+    "description": "Manhattan SCALE or Active WMS - Item Master UPC Upload",
+    "fileFormat": "pipe",
+    "columns": [
+      {
+        "name": "SKU",
+        "type": "string",
+        "required": true,
+        "description": "Stock Keeping Unit",
+        "example": "SKU00001234"
+      },
+      {
+        "name": "UPC",
+        "type": "string",
+        "required": true,
+        "description": "Universal Product Code",
+        "example": "036000291452"
+      },
+      {
+        "name": "Location",
+        "type": "string",
+        "required": false,
+        "description": "Storage location (empty for item master)",
+        "example": ""
+      },
+      {
+        "name": "Status",
+        "type": "string",
+        "required": true,
+        "description": "VALID, INVALID, or HOLD",
+        "example": "VALID"
+      },
+      {
+        "name": "Qty_On_Hand",
+        "type": "number",
+        "required": false,
+        "description": "Current inventory quantity",
+        "example": "0"
+      }
+    ],
+    "delimiter": "|",
+    "includeHeader": true,
+    "notes": "Manhattan often uses pipe-delimited files. Verify with your implementation team."
+  },
+
+  "sap-ewm": {
+    "name": "SAP Extended Warehouse Management",
+    "vendor": "SAP",
+    "description": "SAP EWM - Barcode Master Data Upload",
+    "fileFormat": "csv",
+    "columns": [
+      {
+        "name": "Material",
+        "type": "string",
+        "required": true,
+        "description": "Material number",
+        "example": "MAT0000000001"
+      },
+      {
+        "name": "EAN",
+        "type": "string",
+        "required": true,
+        "description": "European Article Number (or UPC)",
+        "example": "5901234123457"
+      },
+      {
+        "name": "Barcode_Type",
+        "type": "string",
+        "required": true,
+        "description": "UC (UPC), E3 (EAN-13), C1 (Code 128)",
+        "example": "E3"
+      },
+      {
+        "name": "Valid_From",
+        "type": "date",
+        "required": true,
+        "description": "Effective date (YYYYMMDD)",
+        "example": "20240101"
+      },
+      {
+        "name": "Valid_To",
+        "type": "date",
+        "required": true,
+        "description": "Expiration date (YYYYMMDD)",
+        "example": "99991231"
+      }
+    ],
+    "delimiter": ",",
+    "includeHeader": true,
+    "notes": "SAP uses specific date format (YYYYMMDD). Use far future date (99991231) for permanent barcodes."
+  },
+
+  "highjump-wms": {
+    "name": "HighJump (Blue Yonder) WMS",
+    "vendor": "Blue Yonder",
+    "description": "HighJump WMS - Item Barcode Import",
+    "fileFormat": "csv",
+    "columns": [
+      {
+        "name": "Item_Code",
+        "type": "string",
+        "required": true,
+        "description": "Item identifier",
+        "example": "ITEM001"
+      },
+      {
+        "name": "Barcode",
+        "type": "string",
+        "required": true,
+        "description": "Barcode value",
+        "example": "036000291452"
+      },
+      {
+        "name": "Barcode_Qualifier",
+        "type": "string",
+        "required": false,
+        "description": "PRIMARY, ALTERNATE, CASE, PALLET",
+        "example": "PRIMARY"
+      }
+    ],
+    "delimiter": ",",
+    "includeHeader": true,
+    "notes": "HighJump allows multiple barcode qualifiers per item. Consult implementation guide for custom fields."
+  },
+
+  "generic": {
+    "name": "Generic WMS Format",
+    "vendor": "Generic",
+    "description": "Simple barcode list for manual import or custom WMS",
+    "fileFormat": "csv",
+    "columns": [
+      {
+        "name": "Barcode",
+        "type": "string",
+        "required": true,
+        "description": "Barcode value",
+        "example": "036000291452"
+      },
+      {
+        "name": "Type",
+        "type": "string",
+        "required": false,
+        "description": "Barcode symbology",
+        "example": "UPC-A"
+      },
+      {
+        "name": "Valid",
+        "type": "boolean",
+        "required": false,
+        "description": "Validation status",
+        "example": "TRUE"
+      }
+    ],
+    "delimiter": ",",
+    "includeHeader": true,
+    "notes": "Basic format for systems without specific import requirements. Customize as needed."
+  }
+}

@@ -1,0 +1,323 @@
+/* ============================================
+   Data Grid
+   ============================================ */
+.data-grid,
+.results-grid {
+    flex: 1;
+    overflow: auto;
+    position: relative;
+    background-color: var(--color-bg);
+}
+
+.grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: var(--font-mono);
+}
+
+/* ============================================
+   Grid Header
+   ============================================ */
+.grid-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-bg-alt);
+    border-bottom: 2px solid var(--color-border);
+}
+
+.grid-header th {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--color-text);
+    background-color: var(--color-bg-alt);
+    border-right: 1px solid var(--color-border);
+    white-space: nowrap;
+    user-select: none;
+    cursor: pointer;
+}
+
+.grid-header th:last-child {
+    border-right: none;
+}
+
+.grid-header th:hover {
+    background-color: #e2e8f0;
+}
+
+.grid-header th.sortable:after {
+    content: ' ↕';
+    color: var(--color-text-muted);
+    font-size: 10px;
+    margin-left: var(--space-xs);
+}
+
+.grid-header th.sorted-asc:after {
+    content: ' ↑';
+    color: var(--color-primary);
+}
+
+.grid-header th.sorted-desc:after {
+    content: ' ↓';
+    color: var(--color-primary);
+}
+
+/* ============================================
+   Grid Body
+   ============================================ */
+.grid-body {
+    position: relative;
+}
+
+.grid-body tr {
+    border-bottom: 1px solid var(--color-border);
+}
+
+.grid-body tr:nth-child(even) {
+    background-color: var(--color-bg-alt);
+}
+
+.grid-body tr:hover {
+    background-color: #f1f5f9;
+}
+
+.grid-body td {
+    padding: var(--space-sm) var(--space-md);
+    border-right: 1px solid var(--color-border);
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.grid-body td:last-child {
+    border-right: none;
+}
+
+/* ============================================
+   Cell Types
+   ============================================ */
+.cell-number {
+    text-align: right;
+    font-family: var(--font-mono);
+}
+
+.cell-null {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.cell-error {
+    color: var(--color-danger);
+    font-weight: 500;
+}
+
+.cell-warning {
+    background-color: #fef3c7;
+    color: var(--color-warning);
+}
+
+.cell-highlight {
+    background-color: #dbeafe;
+    font-weight: 500;
+}
+
+.cell-changed {
+    background-color: #dcfce7;
+    position: relative;
+}
+
+.cell-changed:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background-color: var(--color-success);
+}
+
+/* ============================================
+   Row States
+   ============================================ */
+.row-duplicate {
+    background-color: #fef3c7 !important;
+}
+
+.row-error {
+    background-color: #fee2e2 !important;
+}
+
+.row-selected {
+    background-color: #dbeafe !important;
+}
+
+.row-index {
+    color: var(--color-text-muted);
+    font-size: 11px;
+    width: 50px;
+    text-align: right;
+    font-weight: 400;
+    background-color: var(--color-bg-alt);
+    border-right: 2px solid var(--color-border);
+    user-select: none;
+}
+
+/* ============================================
+   Virtual Scroll Container
+   ============================================ */
+.grid-viewport {
+    position: relative;
+    overflow-y: auto;
+    overflow-x: auto;
+    height: 100%;
+}
+
+.grid-spacer {
+    /* Used for virtual scrolling - creates space for non-rendered rows */
+    height: 0;
+}
+
+/* ============================================
+   Grid Actions
+   ============================================ */
+.grid-actions {
+    display: flex;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-bg-alt);
+    border-bottom: 1px solid var(--color-border);
+    align-items: center;
+}
+
+.grid-info {
+    flex: 1;
+    font-size: 12px;
+    color: var(--color-text-muted);
+}
+
+.grid-info strong {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+/* ============================================
+   Column Resizing (future enhancement)
+   ============================================ */
+.column-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    user-select: none;
+}
+
+.column-resizer:hover {
+    background-color: var(--color-primary);
+}
+
+/* ============================================
+   Loading State
+   ============================================ */
+.grid-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-xl);
+    color: var(--color-text-muted);
+}
+
+.grid-loading:before {
+    content: '⏳';
+    font-size: 24px;
+    margin-right: var(--space-sm);
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ============================================
+   Error State
+   ============================================ */
+.grid-error {
+    padding: var(--space-xl);
+    text-align: center;
+    color: var(--color-danger);
+}
+
+.grid-error:before {
+    content: '⚠️';
+    font-size: 32px;
+    display: block;
+    margin-bottom: var(--space-md);
+}
+
+/* ============================================
+   Compact Mode (for results)
+   ============================================ */
+.grid-compact .grid-table {
+    font-size: 12px;
+}
+
+.grid-compact td,
+.grid-compact th {
+    padding: 4px var(--space-sm);
+}
+
+/* ============================================
+   Zebra Striping Toggle
+   ============================================ */
+.grid-no-stripe .grid-body tr:nth-child(even) {
+    background-color: var(--color-bg);
+}
+
+/* ============================================
+   Scrollbar Styling (Webkit)
+   ============================================ */
+.data-grid::-webkit-scrollbar,
+.results-grid::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.data-grid::-webkit-scrollbar-track,
+.results-grid::-webkit-scrollbar-track {
+    background-color: var(--color-bg-alt);
+}
+
+.data-grid::-webkit-scrollbar-thumb,
+.results-grid::-webkit-scrollbar-thumb {
+    background-color: var(--color-border);
+    border-radius: 6px;
+}
+
+.data-grid::-webkit-scrollbar-thumb:hover,
+.results-grid::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-secondary);
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+    .grid-header {
+        position: static;
+    }
+    
+    .grid-body tr {
+        page-break-inside: avoid;
+    }
+    
+    .grid-actions,
+    .empty-state {
+        display: none;
+    }
+}

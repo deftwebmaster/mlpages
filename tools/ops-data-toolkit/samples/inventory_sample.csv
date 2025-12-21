@@ -1,0 +1,11 @@
+SKU,Description,QtyOnHand,UOM,UnitCost,Location
+ABC-123,Widget Assembly,144,CS,45.00,A-01-01
+DEF-456,Bracket Set,  12,EA,3.50,A-01-02
+GHI-789,Fastener Pack,288,CS,12.00,A-02-01
+ABC-123,Widget Assembly,144,CS,45.00,A-03-01
+JKL-012,Cable Bundle,,EA,8.25,B-01-01
+MNO-345,Housing Unit,48,PLT,125.00,B-02-01
+PQR-678,Connector Kit,240,CS,18.50,B-03-01
+STU-901,Label Roll,72,EA,2.25,C-01-01
+VWX-234,Mounting Plate,96,CS,34.75,C-02-01
+YZA-567,Terminal Block,168,EA,6.80,C-03-01
