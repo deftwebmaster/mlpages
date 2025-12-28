@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pseudonym Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --background: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --success: #10b981;
+      --danger: #ef4444;
+      --border: #334155;
+      
+      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+      --gradient-surface: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      background: var(--surface);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+      min-width: 150px;
+    }
+
+    .control-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    select {
+      padding: 0.75rem 1rem;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      color: var(--text);
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    select:hover {
+      border-color: var(--primary);
+    }
+
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Buttons */
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--surface-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface);
+      border-color: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.9;
+    }
+
+    .btn-close {
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 2rem;
+      padding: 0;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .btn-close:hover {
+      color: var(--text);
+      background: var(--surface-light);
+    }
+
+    /* Results */
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.3s;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-xl);
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .icon-btn {
+      background: var(--surface-light);
+      color: var(--text-muted);
+      padding: 0.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .icon-btn.favorited {
+      color: var(--secondary);
+      background: rgba(236, 72, 153, 0.1);
+    }
+
+    .name-section {
+      margin-bottom: 1rem;
+    }
+
+    .name-display {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      word-break: break-word;
+    }
+
+    .name-parts {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .name-part-btn {
+      background: var(--surface-light);
+      color: var(--text-muted);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      border-radius: 0.25rem;
+      transition: all 0.2s;
+    }
+
+    .name-part-btn:hover {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.1);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .info-value {
+      font-size: 1rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .copy-btn {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      color: var(--primary);
+    }
+
+    .copy-btn.copied {
+      color: var(--success);
+    }
+
+    /* Favorites Panel */
+    .favorites-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 500px;
+      height: 100vh;
+      background: var(--surface);
+      box-shadow: var(--shadow-xl);
+      padding: 2rem;
+      overflow-y: auto;
+      transition: transform 0.3s;
+      z-index: 1000;
+    }
+
+    .favorites-panel.hidden {
+      transform: translateX(100%);
+    }
+
+    .favorites-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .favorites-header h2 {
+      font-size: 1.5rem;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .favorites-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .favorite-item {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .favorite-item .name-display {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .favorite-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+      }
+      
+      .control-group {
+        width: 100%;
+      }
+      
+      .results {
+        grid-template-columns: 1fr;
+      }
+      
+      .favorites-panel {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Pseudonym Generator</h1>
+      <p class="tagline">Create believable identities for any purpose</p>
+    </header>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="control-group">
+        <label for="mode">Mode</label>
+        <select id="mode">
+          <option value="pen">Pen Name</option>
+          <option value="alias">Online Alias</option>
+          <option value="spam">Privacy/Spam</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="culture">Culture</label>
+        <select id="culture">
+          <option value="western">Western</option>
+          <option value="mexican">Mexican</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="gender">Gender</label>
+        <select id="gender">
+          <option value="random">Random</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+
+      <button id="generate-btn" class="btn-primary">Generate Names</button>
+      <button id="toggle-favorites" class="btn-secondary">View Favorites (<span id="favorites-count">0</span>)</button>
+    </div>
+
+    <!-- Results Container -->
+    <div id="results" class="results"></div>
+
+    <!-- Favorites Panel (Hidden by default) -->
+    <div id="favorites-panel" class="favorites-panel hidden">
+      <div class="favorites-header">
+        <h2>Saved Favorites</h2>
+        <button id="close-favorites" class="btn-close">×</button>
+      </div>
+      <div id="favorites-list" class="favorites-list"></div>
+      <button id="clear-favorites" class="btn-danger">Clear All Favorites</button>
+    </div>
+  </div>
+
+  <script>
+    // Data: Western Names
+    const WESTERN_NAMES = {
+      male: [
+        'James', 'Michael', 'Robert', 'John', 'David',
+        'William', 'Richard', 'Joseph', 'Thomas', 'Christopher',
+        'Charles', 'Daniel', 'Matthew', 'Anthony', 'Mark',
+        'Donald', 'Steven', 'Andrew', 'Paul', 'Joshua',
+        'Kenneth', 'Kevin', 'Brian', 'George', 'Timothy',
+        'Ronald', 'Edward', 'Jason', 'Jeffrey', 'Ryan',
+        'Jacob', 'Gary', 'Nicholas', 'Eric', 'Jonathan',
+        'Stephen', 'Larry', 'Justin', 'Scott', 'Brandon',
+        'Benjamin', 'Samuel', 'Raymond', 'Gregory', 'Frank',
+        'Alexander', 'Patrick', 'Jack', 'Dennis', 'Jerry',
+        'Tyler', 'Aaron', 'Henry', 'Douglas', 'Peter',
+        'Adam', 'Nathan', 'Zachary', 'Walter', 'Kyle'
+      ],
+      
+      female: [
+        'Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara',
+        'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen',
+        'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra',
+        'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle',
+        'Carol', 'Amanda', 'Dorothy', 'Melissa', 'Deborah',
+        'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia',
+        'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna',
+        'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen',
+        'Samantha', 'Katherine', 'Christine', 'Debra', 'Rachel',
+        'Carolyn', 'Janet', 'Catherine', 'Maria', 'Heather',
+        'Diane', 'Ruth', 'Julie', 'Olivia', 'Joyce',
+        'Virginia', 'Victoria', 'Kelly', 'Lauren', 'Christina'
+      ],
+      
+      last: [
+        'Smith', 'Johnson', 'Williams', 'Brown', 'Jones',
+        'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
+        'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson',
+        'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
+        'Lee', 'Perez', 'Thompson', 'White', 'Harris',
+        'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
+        'Walker', 'Young', 'Allen', 'King', 'Wright',
+        'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
+        'Green', 'Adams', 'Nelson', 'Baker', 'Hall',
+        'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
+        'Phillips', 'Evans', 'Turner', 'Parker', 'Collins',
+        'Edwards', 'Stewart', 'Morris', 'Murphy', 'Cook'
+      ]
+    };
+
+    // Data: Mexican Names
+    const MEXICAN_NAMES = {
+      male: [
+        'Miguel', 'José', 'Carlos', 'Luis', 'Francisco',
+        'Juan', 'Antonio', 'Alejandro', 'Diego', 'Rafael',
+        'Manuel', 'Pedro', 'Javier', 'Fernando', 'Jorge',
+        'Roberto', 'Ricardo', 'Sergio', 'Alberto', 'Andrés',
+        'Enrique', 'Raúl', 'Jesús', 'Daniel', 'Eduardo',
+        'Óscar', 'Armando', 'Arturo', 'Ramón', 'Gerardo',
+        'Héctor', 'Víctor', 'Rodrigo', 'Mauricio', 'Jaime',
+        'Rubén', 'Pablo', 'Gustavo', 'Julio', 'César',
+        'Gabriel', 'Marco', 'Martín', 'Alfredo', 'Hugo',
+        'Ignacio', 'Salvador', 'Felipe', 'Ernesto', 'Guillermo',
+        'José Luis', 'Juan Carlos', 'Miguel Ángel', 'José Antonio',
+        'Luis Alberto', 'Carlos Alberto', 'José Manuel', 'Juan José',
+        'José María', 'Francisco Javier'
+      ],
+      
+      female: [
+        'María', 'Guadalupe', 'Juana', 'Rosa', 'Carmen',
+        'Ana', 'Elena', 'Isabel', 'Sofía', 'Gabriela',
+        'Patricia', 'Margarita', 'Daniela', 'Beatriz', 'Claudia',
+        'Alejandra', 'Mónica', 'Teresa', 'Laura', 'Silvia',
+        'Verónica', 'Adriana', 'Leticia', 'Carolina', 'Sandra',
+        'Diana', 'Martha', 'Francisca', 'Rocío', 'Andrea',
+        'Cristina', 'Lucía', 'Paola', 'Fernanda', 'Valeria',
+        'Victoria', 'Cecilia', 'Natalia', 'Susana', 'Gloria',
+        'Angélica', 'Norma', 'Alicia', 'Esther', 'Irma',
+        'Eva', 'Catalina', 'Josefina', 'Dolores', 'Raquel',
+        'María Elena', 'María José', 'Ana María', 'Rosa María',
+        'María Guadalupe', 'María Isabel', 'Ana Luisa', 'María Carmen',
+        'María Teresa', 'María Fernanda'
+      ],
+      
+      last: [
+        'García', 'Rodríguez', 'Martínez', 'López', 'González',
+        'Hernández', 'Pérez', 'Sánchez', 'Ramírez', 'Torres',
+        'Flores', 'Rivera', 'Morales', 'Reyes', 'Jiménez',
+        'Cruz', 'Díaz', 'Gómez', 'Mendoza', 'Vargas',
+        'Castillo', 'Guzmán', 'Vázquez', 'Ruiz', 'Romero',
+        'Álvarez', 'Medina', 'Ortiz', 'Herrera', 'Aguilar',
+        'Ramos', 'Silva', 'Castro', 'Rojas', 'Delgado',
+        'Guerrero', 'Núñez', 'Estrada', 'Méndez', 'Salazar',
+        'Campos', 'Contreras', 'Navarro', 'Fernández', 'Valdez',
+        'Cortés', 'Maldonado', 'Ríos', 'Mejía', 'Domínguez',
+        'Cabrera', 'León', 'Carrillo', 'Chávez', 'Sandoval',
+        'Espinoza', 'Ibarra', 'Pacheco', 'Figueroa', 'Acosta'
+      ]
+    };
+
+    // Data: US Addresses
+    const US_ADDRESS_DATA = {
+      streetNames: [
+        'Main Street', 'Oak Avenue', 'Maple Drive', 'Park Place', 'Washington Street',
+        'Cedar Lane', 'Elm Street', 'Pine Road', 'Sunset Boulevard', 'Lake View Drive',
+        'Forest Avenue', 'Hill Street', 'River Road', 'Spring Street', 'Church Street',
+        'Center Street', 'Mill Road', 'Grove Avenue', 'Ridge Road', 'Valley Drive',
+        'Birch Lane', 'Willow Way', 'Cherry Street', 'Meadow Lane', 'Summit Avenue',
+        'Franklin Street', 'Lincoln Avenue', 'Jefferson Drive', 'Madison Street', 'Monroe Road',
+        'Chestnut Street', 'Walnut Avenue', 'Sycamore Drive', 'Hickory Lane', 'Poplar Street'
+      ],
+      
+      cities: [
+        { city: 'Austin', state: 'TX', zip: '78701' },
+        { city: 'Portland', state: 'OR', zip: '97201' },
+        { city: 'Seattle', state: 'WA', zip: '98101' },
+        { city: 'Denver', state: 'CO', zip: '80202' },
+        { city: 'Phoenix', state: 'AZ', zip: '85001' },
+        { city: 'San Diego', state: 'CA', zip: '92101' },
+        { city: 'Charlotte', state: 'NC', zip: '28201' },
+        { city: 'Nashville', state: 'TN', zip: '37201' },
+        { city: 'Atlanta', state: 'GA', zip: '30301' },
+        { city: 'Boston', state: 'MA', zip: '02101' },
+        { city: 'Chicago', state: 'IL', zip: '60601' },
+        { city: 'Dallas', state: 'TX', zip: '75201' },
+        { city: 'Houston', state: 'TX', zip: '77001' },
+        { city: 'Miami', state: 'FL', zip: '33101' },
+        { city: 'Philadelphia', state: 'PA', zip: '19101' },
+        { city: 'Minneapolis', state: 'MN', zip: '55401' },
+        { city: 'Detroit', state: 'MI', zip: '48201' },
+        { city: 'Tampa', state: 'FL', zip: '33601' },
+        { city: 'Sacramento', state: 'CA', zip: '94203' },
+        { city: 'Las Vegas', state: 'NV', zip: '89101' },
+        { city: 'Cleveland', state: 'OH', zip: '44101' },
+        { city: 'Kansas City', state: 'MO', zip: '64101' },
+        { city: 'Columbus', state: 'OH', zip: '43201' },
+        { city: 'Indianapolis', state: 'IN', zip: '46201' },
+        { city: 'San Antonio', state: 'TX', zip: '78201' },
+        { city: 'Raleigh', state: 'NC', zip: '27601' },
+        { city: 'Milwaukee', state: 'WI', zip: '53201' },
+        { city: 'Baltimore', state: 'MD', zip: '21201' },
+        { city: 'Albuquerque', state: 'NM', zip: '87101' },
+        { city: 'Tucson', state: 'AZ', zip: '85701' }
+      ]
+    };
+
+    // Generator: Names
+    const NameGenerator = {
+      _random(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      },
+      
+      generate(culture = 'western', gender = 'random') {
+        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
+        const actualGender = gender === 'random' 
+          ? (Math.random() < 0.5 ? 'male' : 'female')
+          : gender;
+        
+        const firstName = this._random(namePool[actualGender]);
+        const lastName = this._random(namePool.last);
+        
+        return {
+          firstName,
+          lastName,
+          fullName: `${firstName} ${lastName}`
+        };
+      },
+      
+      regenerateFirstName(lastName, culture = 'western', gender = 'random') {
+        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
+        const actualGender = gender === 'random' 
+          ? (Math.random() < 0.5 ? 'male' : 'female')
+          : gender;
+        
+        const firstName = this._random(namePool[actualGender]);
+        
+        return {
+          firstName,
+          lastName,
+          fullName: `${firstName} ${lastName}`
+        };
+      },
+      
+      regenerateLastName(firstName, culture = 'western') {
+        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
+        const lastName = this._random(namePool.last);
+        
+        return {
+          firstName,
+          lastName,
+          fullName: `${firstName} ${lastName}`
+        };
+      }
+    };
+
+    // Generator: Address
+    const AddressGenerator = {
+      _random(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      },
+      
+      _generateHouseNumber() {
+        return Math.floor(Math.random() * 9900) + 100;
+      },
+      
+      generate() {
+        const houseNumber = this._generateHouseNumber();
+        const streetName = this._random(US_ADDRESS_DATA.streetNames);
+        const location = this._random(US_ADDRESS_DATA.cities);
+        
+        const street = `${houseNumber} ${streetName}`;
+        const fullAddress = `${street}, ${location.city}, ${location.state} ${location.zip}`;
+        
+        return {
+          street,
+          city: location.city,
+          state: location.state,
+          zip: location.zip,
+          fullAddress
+        };
+      }
+    };
+
+    // Generator: Date
+    const DateGenerator = {
+      generate() {
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        const currentDay = today.getDate();
+        
+        const age = Math.floor(Math.random() * (65 - 18 + 1)) + 18;
+        const birthYear = currentYear - age;
+        const birthMonth = Math.floor(Math.random() * 12);
+        const daysInMonth = new Date(birthYear, birthMonth + 1, 0).getDate();
+        const birthDay = Math.floor(Math.random() * daysInMonth) + 1;
+        
+        const dateObj = new Date(birthYear, birthMonth, birthDay);
+        const month = String(birthMonth + 1).padStart(2, '0');
+        const day = String(birthDay).padStart(2, '0');
+        const date = `${month}/${day}/${birthYear}`;
+        
+        return {
+          date,
+          age,
+          dateObj
+        };
+      }
+    };
+
+    // UI Module
+    const UI = {
+      renderResults(identities, mode) {
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = '';
+        
+        identities.forEach((identity, index) => {
+          const card = this.createResultCard(identity, mode, index);
+          resultsContainer.appendChild(card);
+        });
+      },
+      
+      createResultCard(identity, mode, index) {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.dataset.index = index;
+        
+        const isFavorited = App.isFavorited(identity);
+        
+        let cardHTML = `
+          <div class="card-header">
+            <div class="card-actions">
+              <button class="icon-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-index="${index}">
+                ${isFavorited ? '★' : '☆'}
+              </button>
+            </div>
+          </div>
+          
+          <div class="name-section">
+            <div class="name-display">${identity.name.fullName}</div>
+            <div class="name-parts">
+              <button class="name-part-btn regen-first" data-index="${index}">↻ First</button>
+              <button class="name-part-btn regen-last" data-index="${index}">↻ Last</button>
+              <button class="name-part-btn regen-full" data-index="${index}">↻ Full</button>
+            </div>
+          </div>
+          
+          <div class="info-section">
+            <div class="info-row">
+              <span class="info-label">Name</span>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span class="info-value">${identity.name.fullName}</span>
+                <button class="copy-btn" data-copy="${identity.name.fullName}">Copy</button>
+              </div>
+            </div>
+        `;
+        
+        if (mode === 'spam' && identity.birthdate && identity.address) {
+          cardHTML += `
+            <div class="info-row">
+              <span class="info-label">DOB (Age)</span>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <span class="info-value">${identity.birthdate.date} (${identity.birthdate.age})</span>
+                <button class="copy-btn" data-copy="${identity.birthdate.date}">Copy</button>
+              </div>
+            </div>
+            <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+              <span class="info-label">Address</span>
+              <div style="display: flex; gap: 0.5rem; align-items: flex-start; width: 100%;">
+                <span class="info-value" style="font-size: 0.875rem; flex: 1;">${identity.address.fullAddress}</span>
+                <button class="copy-btn" data-copy="${identity.address.fullAddress}" style="flex-shrink: 0;">Copy</button>
+              </div>
+            </div>
+          `;
+        }
+        
+        cardHTML += `</div>`;
+        card.innerHTML = cardHTML;
+        
+        this.attachCardListeners(card, identity, index);
+        return card;
+      },
+      
+      attachCardListeners(card, identity, index) {
+        card.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const text = e.target.dataset.copy;
+            this.copyToClipboard(text, e.target);
+          });
+        });
+        
+        const favBtn = card.querySelector('.favorite-btn');
+        favBtn.addEventListener('click', () => {
+          App.toggleFavorite(identity);
+          favBtn.classList.toggle('favorited');
+          favBtn.textContent = favBtn.classList.contains('favorited') ? '★' : '☆';
+          this.updateFavoritesCount();
+        });
+        
+        card.querySelector('.regen-first').addEventListener('click', () => {
+          App.regenerateFirstName(index);
+        });
+        
+        card.querySelector('.regen-last').addEventListener('click', () => {
+          App.regenerateLastName(index);
+        });
+        
+        card.querySelector('.regen-full').addEventListener('click', () => {
+          App.regenerateFull(index);
+        });
+      },
+      
+      async copyToClipboard(text, button) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const originalText = button.textContent;
+          button.textContent = 'Copied!';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+          button.textContent = 'Failed';
+          setTimeout(() => {
+            button.textContent = 'Copy';
+          }, 2000);
+        }
+      },
+      
+      updateFavoritesCount() {
+        const count = App.getFavoritesCount();
+        document.getElementById('favorites-count').textContent = count;
+      },
+      
+      renderFavorites() {
+        const favorites = App.getFavorites();
+        const favoritesListContainer = document.getElementById('favorites-list');
+        
+        if (favorites.length === 0) {
+          favoritesListContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">★</div>
+              <p>No favorites yet</p>
+              <p style="font-size: 0.875rem; margin-top: 0.5rem;">Click the star on any generated name to save it</p>
+            </div>
+          `;
+          return;
+        }
+        
+        favoritesListContainer.innerHTML = '';
+        
+        favorites.forEach((identity, index) => {
+          const item = document.createElement('div');
+          item.className = 'favorite-item';
+          
+          let itemHTML = `<div class="name-display">${identity.name.fullName}</div>`;
+          
+          if (identity.birthdate) {
+            itemHTML += `<div style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.25rem;">DOB: ${identity.birthdate.date} (${identity.birthdate.age})</div>`;
+          }
+          
+          if (identity.address) {
+            itemHTML += `<div style="color: var(--text-muted); font-size: 0.875rem;">${identity.address.fullAddress}</div>`;
+          }
+          
+          itemHTML += `
+            <div class="favorite-actions">
+              <button class="copy-btn" data-copy="${identity.name.fullName}">Copy Name</button>
+              ${identity.birthdate ? `<button class="copy-btn" data-copy="${identity.birthdate.date}">Copy DOB</button>` : ''}
+              ${identity.address ? `<button class="copy-btn" data-copy="${identity.address.fullAddress}">Copy Address</button>` : ''}
+              <button class="icon-btn" data-remove="${index}">🗑️</button>
+            </div>
+          `;
+          
+          item.innerHTML = itemHTML;
+          
+          item.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              const text = e.target.dataset.copy;
+              this.copyToClipboard(text, e.target);
+            });
+          });
+          
+          item.querySelector('[data-remove]').addEventListener('click', (e) => {
+            const idx = parseInt(e.target.dataset.remove);
+            App.removeFavorite(idx);
+            this.renderFavorites();
+            this.updateFavoritesCount();
+          });
+          
+          favoritesListContainer.appendChild(item);
+        });
+      },
+      
+      toggleFavoritesPanel() {
+        const panel = document.getElementById('favorites-panel');
+        panel.classList.toggle('hidden');
+        
+        if (!panel.classList.contains('hidden')) {
+          this.renderFavorites();
+        }
+      }
+    };
+
+    // App Module
+    const App = {
+      state: {
+        mode: 'pen',
+        culture: 'western',
+        gender: 'random',
+        currentResults: [],
+        favorites: []
+      },
+      
+      init() {
+        this.loadFavorites();
+        this.attachEventListeners();
+        this.generate();
+        UI.updateFavoritesCount();
+      },
+      
+      attachEventListeners() {
+        document.getElementById('mode').addEventListener('change', (e) => {
+          this.state.mode = e.target.value;
+        });
+        
+        document.getElementById('culture').addEventListener('change', (e) => {
+          this.state.culture = e.target.value;
+        });
+        
+        document.getElementById('gender').addEventListener('change', (e) => {
+          this.state.gender = e.target.value;
+        });
+        
+        document.getElementById('generate-btn').addEventListener('click', () => {
+          this.generate();
+        });
+        
+        document.getElementById('toggle-favorites').addEventListener('click', () => {
+          UI.toggleFavoritesPanel();
+        });
+        
+        document.getElementById('close-favorites').addEventListener('click', () => {
+          UI.toggleFavoritesPanel();
+        });
+        
+        document.getElementById('clear-favorites').addEventListener('click', () => {
+          if (confirm('Are you sure you want to clear all favorites?')) {
+            this.clearFavorites();
+            UI.renderFavorites();
+            UI.updateFavoritesCount();
+          }
+        });
+      },
+      
+      generate() {
+        const { mode, culture, gender } = this.state;
+        const batchSize = 6;
+        const identities = [];
+        
+        for (let i = 0; i < batchSize; i++) {
+          const identity = {
+            name: NameGenerator.generate(culture, gender),
+            mode,
+            culture,
+            gender
+          };
+          
+          if (mode === 'spam') {
+            identity.birthdate = DateGenerator.generate();
+            identity.address = AddressGenerator.generate();
+          }
+          
+          identities.push(identity);
+        }
+        
+        this.state.currentResults = identities;
+        UI.renderResults(identities, mode);
+      },
+      
+      regenerateFirstName(index) {
+        const identity = this.state.currentResults[index];
+        const newName = NameGenerator.regenerateFirstName(
+          identity.name.lastName,
+          identity.culture,
+          identity.gender
+        );
+        
+        identity.name = newName;
+        UI.renderResults(this.state.currentResults, this.state.mode);
+      },
+      
+      regenerateLastName(index) {
+        const identity = this.state.currentResults[index];
+        const newName = NameGenerator.regenerateLastName(
+          identity.name.firstName,
+          identity.culture
+        );
+        
+        identity.name = newName;
+        UI.renderResults(this.state.currentResults, this.state.mode);
+      },
+      
+      regenerateFull(index) {
+        const { mode, culture, gender } = this.state;
+        
+        const identity = {
+          name: NameGenerator.generate(culture, gender),
+          mode,
+          culture,
+          gender
+        };
+        
+        if (mode === 'spam') {
+          identity.birthdate = DateGenerator.generate();
+          identity.address = AddressGenerator.generate();
+        }
+        
+        this.state.currentResults[index] = identity;
+        UI.renderResults(this.state.currentResults, this.state.mode);
+      },
+      
+      isFavorited(identity) {
+        return this.state.favorites.some(fav => 
+          fav.name.fullName === identity.name.fullName &&
+          fav.birthdate?.date === identity.birthdate?.date &&
+          fav.address?.fullAddress === identity.address?.fullAddress
+        );
+      },
+      
+      toggleFavorite(identity) {
+        const index = this.state.favorites.findIndex(fav => 
+          fav.name.fullName === identity.name.fullName &&
+          fav.birthdate?.date === identity.birthdate?.date &&
+          fav.address?.fullAddress === identity.address?.fullAddress
+        );
+        
+        if (index >= 0) {
+          this.state.favorites.splice(index, 1);
+        } else {
+          this.state.favorites.push(identity);
+        }
+        
+        this.saveFavorites();
+      },
+      
+      removeFavorite(index) {
+        this.state.favorites.splice(index, 1);
+        this.saveFavorites();
+      },
+      
+      clearFavorites() {
+        this.state.favorites = [];
+        this.saveFavorites();
+      },
+      
+      getFavorites() {
+        return this.state.favorites;
+      },
+      
+      getFavoritesCount() {
+        return this.state.favorites.length;
+      },
+      
+      saveFavorites() {
+        try {
+          localStorage.setItem('pseudonym_favorites', JSON.stringify(this.state.favorites));
+        } catch (err) {
+          console.error('Failed to save favorites:', err);
+        }
+      },
+      
+      loadFavorites() {
+        try {
+          const stored = localStorage.getItem('pseudonym_favorites');
+          if (stored) {
+            this.state.favorites = JSON.parse(stored);
+          }
+        } catch (err) {
+          console.error('Failed to load favorites:', err);
+          this.state.favorites = [];
+        }
+      }
+    };
+
+    // Initialize
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => App.init());
+    } else {
+      App.init();
+    }
+  </script>
+</body>
+</html>

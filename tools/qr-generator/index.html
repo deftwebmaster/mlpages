@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Privacy First</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>QR Code Generator</h1>
+            <p class="subtitle">Privacy-first • Client-side only • No data leaves your device</p>
+        </header>
+
+        <main class="generator">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="qr-text">Content</label>
+                    <textarea 
+                        id="qr-text" 
+                        placeholder="Enter URL, text, or anything you want to encode..."
+                        rows="3"
+                    ></textarea>
+                </div>
+
+                <div class="options-grid">
+                    <div class="input-group">
+                        <label for="error-level">Error Correction</label>
+                        <select id="error-level">
+                            <option value="L">Low (7%)</option>
+                            <option value="M">Medium (15%)</option>
+                            <option value="Q">Quartile (25%)</option>
+                            <option value="H" selected>High (30% - best for logos)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="qr-size">Size (px)</label>
+                        <input type="number" id="qr-size" value="400" min="200" max="1000" step="50">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="qr-color">QR Code Color</label>
+                    <input type="color" id="qr-color" value="#000000">
+                </div>
+
+                <div class="input-group">
+                    <label for="bg-color">Background Color</label>
+                    <input type="color" id="bg-color" value="#ffffff">
+                </div>
+
+                <div class="input-group">
+                    <label>Theme</label>
+                    <select id="theme-select">
+                        <option value="custom">Custom</option>
+                        <option value="christmas">🎄 Christmas</option>
+                        <option value="winter">❄️ Winter</option>
+                        <option value="newyear">🎉 New Year</option>
+                        <option value="valentine">💝 Valentine's Day</option>
+                        <option value="halloween">🎃 Halloween</option>
+                        <option value="minimal">⚫ Minimal Black</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Center Icon</label>
+                    <div class="icon-type-toggle">
+                        <button type="button" id="emoji-tab" class="icon-tab active">Emoji</button>
+                        <button type="button" id="upload-tab" class="icon-tab">Upload</button>
+                    </div>
+                    
+                    <div id="emoji-picker-section" class="icon-section">
+                        <div class="emoji-grid" id="emoji-grid"></div>
+                    </div>
+                    
+                    <div id="upload-section" class="icon-section" style="display: none;">
+                        <div class="center-image-controls">
+                            <input type="file" id="center-image" accept="image/*" class="file-input">
+                            <label for="center-image" class="file-label">Upload Image</label>
+                            <button id="clear-image" class="btn-secondary" style="display: none;">Clear</button>
+                        </div>
+                    </div>
+
+                    <div class="input-group" style="margin-top: 0.5rem;">
+                        <label for="image-size">Icon Size (%)</label>
+                        <input type="range" id="image-size" min="10" max="35" value="30" step="1">
+                        <span id="image-size-value">30%</span>
+                    </div>
+                </div>
+
+                <button id="generate-btn" class="btn-primary">Generate QR Code</button>
+            </div>
+
+            <div class="preview-section">
+                <div class="canvas-container">
+                    <canvas id="qr-canvas"></canvas>
+                    <div id="placeholder" class="placeholder">
+                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                        </svg>
+                        <p>Your QR code will appear here</p>
+                    </div>
+                </div>
+                <button id="download-btn" class="btn-primary" style="display: none;">Download PNG</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>
+                <strong>Privacy Notice:</strong> All processing happens in your browser. 
+                No data is sent to any server. No analytics. No tracking.
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
