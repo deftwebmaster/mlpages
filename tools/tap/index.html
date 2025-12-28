@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Tap Royale</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow: hidden;
+            touch-action: none;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mode-toggle {
+            display: flex;
+            gap: 8px;
+            padding: 16px;
+            justify-content: center;
+            z-index: 100;
+        }
+
+        .mode-btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            min-width: 110px;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .canvas {
+            flex: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .prompt {
+            font-size: 28px;
+            font-weight: 300;
+            opacity: 0.9;
+            text-align: center;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .prompt.hidden {
+            opacity: 0;
+        }
+
+        .touch-point {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: touchAppear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes touchAppear {
+            from {
+                transform: translate(-50%, -50%) scale(0);
+            }
+            to {
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .result-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 50;
+        }
+
+        .result-screen.visible {
+            opacity: 1;
+        }
+
+        .winner-container {
+            text-align: center;
+        }
+
+        .winner-label {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .winner-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 72px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+            animation: winnerReveal 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes winnerReveal {
+            from {
+                transform: scale(0) rotate(-180deg);
+            }
+            to {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .teams-container {
+            display: flex;
+            gap: 32px;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 24px;
+        }
+
+        .team {
+            flex: 1;
+            text-align: center;
+        }
+
+        .team-label {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            opacity: 0.9;
+        }
+
+        .team-members {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .team-member {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: teamMemberSlide 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation-fill-mode: both;
+        }
+
+        .team-member:nth-child(1) { animation-delay: 0.1s; }
+        .team-member:nth-child(2) { animation-delay: 0.2s; }
+        .team-member:nth-child(3) { animation-delay: 0.3s; }
+        .team-member:nth-child(4) { animation-delay: 0.4s; }
+        .team-member:nth-child(5) { animation-delay: 0.5s; }
+
+        .team.left .team-member {
+            animation-name: teamMemberSlideLeft;
+        }
+
+        .team.right .team-member {
+            animation-name: teamMemberSlideRight;
+        }
+
+        @keyframes teamMemberSlideLeft {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes teamMemberSlideRight {
+            from {
+                transform: translateX(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            opacity: 0.6;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            opacity: 0.4;
+            text-align: center;
+            pointer-events: none;
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="mode-toggle">
+            <button class="mode-btn active" data-mode="pickOne">Pick One</button>
+            <button class="mode-btn" data-mode="makeTeams">Make Teams</button>
+        </div>
+
+        <div class="canvas" id="canvas">
+            <div class="prompt" id="prompt">Touch to join</div>
+            <div class="result-screen" id="resultScreen"></div>
+        </div>
+
+        <div class="hint" id="hint">Everyone touch the screen, then lift to pick one</div>
+        <div class="footer">Keeping family game night fair • Matt Livingston</div>
+    </div>
+
+    <script>
+        const COLORS = [
+            '#FF6B6B', '#4ECDC4', '#FFE66D', '#A8E6CF',
+            '#FF8B94', '#C7CEEA', '#FFDAC1', '#B4A7D6',
+            '#95E1D3', '#F38181'
+        ];
+
+        let mode = 'pickOne';
+        let activeTouches = [];
+        let isAnimating = false;
+        let sessionHistory = [];
+        let selectionTimer = null;
+
+        const canvas = document.getElementById('canvas');
+        const prompt = document.getElementById('prompt');
+        const resultScreen = document.getElementById('resultScreen');
+        const hint = document.getElementById('hint');
+
+        // Mode toggle
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (isAnimating) return;
+                
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                mode = btn.dataset.mode;
+                updateHint();
+            });
+        });
+
+        // Touch handling
+        let touchElements = new Map();
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (isAnimating) return;
+
+            // Clear any existing timer
+            if (selectionTimer) {
+                clearTimeout(selectionTimer);
+                selectionTimer = null;
+            }
+
+            for (let touch of e.touches) {
+                if (!touchElements.has(touch.identifier)) {
+                    const index = touchElements.size;
+                    const color = COLORS[index % COLORS.length];
+                    const el = createTouchElement(touch.clientX, touch.clientY, color, index + 1);
+                    canvas.appendChild(el);
+                    touchElements.set(touch.identifier, {
+                        element: el,
+                        color: color,
+                        number: index + 1
+                    });
+                }
+            }
+            updateUI();
+            
+            // Start auto-selection timer if we have enough players
+            if (touchElements.size >= 2) {
+                selectionTimer = setTimeout(() => {
+                    triggerAutoSelection();
+                }, 1000); // 1 second of holding
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isAnimating) return;
+
+            // Reset timer on movement
+            if (selectionTimer) {
+                clearTimeout(selectionTimer);
+                if (touchElements.size >= 2) {
+                    selectionTimer = setTimeout(() => {
+                        triggerAutoSelection();
+                    }, 1000);
+                }
+            }
+
+            for (let touch of e.touches) {
+                const data = touchElements.get(touch.identifier);
+                if (data) {
+                    data.element.style.left = touch.clientX + 'px';
+                    data.element.style.top = touch.clientY + 'px';
+                }
+            }
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            if (isAnimating) return;
+
+            // Clear timer
+            if (selectionTimer) {
+                clearTimeout(selectionTimer);
+                selectionTimer = null;
+            }
+
+            for (let touch of e.changedTouches) {
+                touchElements.delete(touch.identifier);
+            }
+
+            // If all fingers lifted and we had enough players, trigger immediately
+            if (e.touches.length === 0 && touchElements.size === 0) {
+                const allElements = Array.from(document.querySelectorAll('.touch-point'));
+                if (allElements.length >= 2) {
+                    activeTouches = allElements.map(el => ({
+                        element: el,
+                        color: el.style.background,
+                        number: parseInt(el.textContent)
+                    }));
+                    
+                    setTimeout(() => startSelection(), 200);
+                } else {
+                    allElements.forEach(el => el.remove());
+                    updateUI();
+                }
+            } else if (touchElements.size >= 2) {
+                // Restart timer if we still have enough players
+                selectionTimer = setTimeout(() => {
+                    triggerAutoSelection();
+                }, 1000);
+            }
+        });
+
+        canvas.addEventListener('touchcancel', (e) => {
+            e.preventDefault();
+            canvas.dispatchEvent(new TouchEvent('touchend', e));
+        });
+
+        function createTouchElement(x, y, color, number) {
+            const el = document.createElement('div');
+            el.className = 'touch-point';
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            el.style.background = color;
+            el.textContent = number;
+            return el;
+        }
+
+        function updateUI() {
+            const count = touchElements.size;
+            
+            if (count === 0) {
+                prompt.textContent = 'Touch to join';
+                prompt.classList.remove('hidden');
+            } else if (count === 1) {
+                prompt.textContent = 'Need at least 2 players';
+                prompt.classList.remove('hidden');
+            } else {
+                prompt.classList.add('hidden');
+            }
+            updateHint();
+        }
+
+        function updateHint() {
+            const count = touchElements.size;
+            if (count === 0) {
+                hint.textContent = mode === 'pickOne' 
+                    ? 'Everyone touch the screen, then lift to pick one'
+                    : 'Everyone touch the screen, then lift to make teams';
+            } else if (count === 1) {
+                hint.textContent = 'Waiting for more players...';
+            } else {
+                hint.textContent = 'Hold still or lift to select';
+            }
+        }
+
+        function triggerAutoSelection() {
+            if (isAnimating) return;
+            
+            // Capture current touches
+            const allElements = Array.from(document.querySelectorAll('.touch-point'));
+            if (allElements.length >= 2) {
+                activeTouches = allElements.map(el => ({
+                    element: el,
+                    color: el.style.background,
+                    number: parseInt(el.textContent)
+                }));
+                
+                startSelection();
+            }
+        }
+
+        function startSelection() {
+            if (activeTouches.length < 2 || isAnimating) return;
+            
+            isAnimating = true;
+            prompt.classList.add('hidden');
+            hint.textContent = '';
+
+            if (mode === 'pickOne') {
+                pickWinner();
+            } else {
+                makeTeams();
+            }
+        }
+
+        function pickWinner() {
+            const winner = activeTouches[Math.floor(Math.random() * activeTouches.length)];
+            
+            sessionHistory.push({
+                mode: 'pickOne',
+                winner: winner.number,
+                playerCount: activeTouches.length,
+                timestamp: Date.now()
+            });
+
+            const winnerEl = winner.element;
+            const scale = Math.max(window.innerWidth, window.innerHeight) / 80 * 1.5;
+            
+            // Fade out losers
+            activeTouches.forEach(touch => {
+                if (touch !== winner) {
+                    touch.element.style.transition = 'opacity 0.4s ease';
+                    touch.element.style.opacity = '0';
+                }
+            });
+
+            // Zoom winner
+            setTimeout(() => {
+                winnerEl.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+                winnerEl.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                winnerEl.style.zIndex = '1000';
+            }, 300);
+
+            // Show result
+            setTimeout(() => {
+                activeTouches.forEach(t => t.element.remove());
+                
+                resultScreen.innerHTML = `
+                    <div class="winner-container">
+                        <div class="winner-label">Winner!</div>
+                        <div class="winner-circle" style="background: ${winner.color}">
+                            ${winner.number}
+                        </div>
+                    </div>
+                `;
+                resultScreen.classList.add('visible');
+                createConfetti(winner.color);
+
+                setTimeout(() => reset(), 3000);
+            }, 1100);
+        }
+
+        function makeTeams() {
+            const shuffled = shuffle([...activeTouches]);
+            const mid = Math.floor(shuffled.length / 2);
+            const team1 = shuffled.slice(0, mid);
+            const team2 = shuffled.slice(mid);
+
+            sessionHistory.push({
+                mode: 'makeTeams',
+                team1: team1.map(p => p.number),
+                team2: team2.map(p => p.number),
+                timestamp: Date.now()
+            });
+
+            activeTouches.forEach(touch => {
+                touch.element.style.transition = 'opacity 0.4s ease';
+                touch.element.style.opacity = '0';
+            });
+
+            setTimeout(() => {
+                activeTouches.forEach(t => t.element.remove());
+                
+                resultScreen.innerHTML = `
+                    <div class="teams-container">
+                        <div class="team left">
+                            <div class="team-label">Team 1</div>
+                            <div class="team-members">
+                                ${team1.map(p => `
+                                    <div class="team-member" style="background: ${p.color}">
+                                        ${p.number}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <div class="team right">
+                            <div class="team-label">Team 2</div>
+                            <div class="team-members">
+                                ${team2.map(p => `
+                                    <div class="team-member" style="background: ${p.color}">
+                                        ${p.number}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                resultScreen.classList.add('visible');
+                createConfetti();
+
+                setTimeout(() => reset(), 4000);
+            }, 400);
+        }
+
+        function createConfetti(baseColor = null) {
+            const colors = baseColor ? [baseColor] : COLORS;
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = '-10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animation = `confettiFall ${2 + Math.random() * 2}s linear`;
+                    confetti.style.opacity = '1';
+                    
+                    canvas.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        function reset() {
+            if (selectionTimer) {
+                clearTimeout(selectionTimer);
+                selectionTimer = null;
+            }
+            
+            resultScreen.classList.remove('visible');
+            setTimeout(() => {
+                resultScreen.innerHTML = '';
+                isAnimating = false;
+                activeTouches = [];
+                touchElements.clear();
+                updateUI();
+            }, 400);
+        }
+
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
