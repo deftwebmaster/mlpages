@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Favicon Generator | Free Online Tool</title>
+  <meta name="description" content="Generate all favicon sizes from one image. Creates ICO, PNG, Apple Touch Icon, and PWA icons. Free, private, no upload required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .trust-badge span {
+      color: var(--accent);
+    }
+
+    /* Upload Area */
+    .upload-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .drop-zone.has-image {
+      padding: 1.5rem;
+    }
+
+    .drop-zone-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.7;
+    }
+
+    .drop-zone h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-zone p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .drop-zone input {
+      display: none;
+    }
+
+    .source-preview {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: left;
+    }
+
+    .source-image-wrapper {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: repeating-conic-gradient(#333 0% 25%, #444 0% 50%) 50% / 16px 16px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .source-image-wrapper img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .source-info {
+      flex: 1;
+    }
+
+    .source-info h4 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+      word-break: break-all;
+    }
+
+    .source-info p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .source-actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    /* Options */
+    .options-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .option-group label {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .option-group input[type="color"] {
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .option-group input[type="text"] {
+      padding: 0.6rem 0.875rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .option-group input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Preview Section */
+    .preview-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .preview-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .preview-item-image {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: repeating-conic-gradient(#333 0% 25%, #444 0% 50%) 50% / 8px 8px;
+      border-radius: 4px;
+    }
+
+    .preview-item-image img {
+      max-width: 100%;
+      max-height: 100%;
+      image-rendering: pixelated;
+    }
+
+    .preview-item-image.large {
+      width: 80px;
+      height: 80px;
+    }
+
+    .preview-item h4 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .preview-item p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Browser Tab Preview */
+    .browser-preview {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .browser-tab-bar {
+      display: flex;
+      align-items: center;
+      background: #1a1a2e;
+      padding: 0.5rem 0.75rem;
+      gap: 0.5rem;
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .browser-dot.red { background: #ff5f56; }
+    .browser-dot.yellow { background: #ffbd2e; }
+    .browser-dot.green { background: #27ca40; }
+
+    .browser-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg-secondary);
+      padding: 0.5rem 1rem;
+      border-radius: 6px 6px 0 0;
+      margin-left: 0.5rem;
+    }
+
+    .browser-tab img {
+      width: 16px;
+      height: 16px;
+    }
+
+    .browser-tab span {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .browser-content {
+      height: 60px;
+      background: #f5f5f5;
+    }
+
+    /* Generate Button */
+    .generate-section {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--accent-glow);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      color: white;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--success-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-input);
+      border-color: var(--accent);
+    }
+
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+    }
+
+    /* Output Section */
+    .output-section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .files-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .file-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-info h5 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-info p {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Code Block */
+    .code-block {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-top: 1rem;
+      position: relative;
+    }
+
+    .code-block pre {
+      font-family: 'JetBrains Mono', 'SF Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .code-block .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+    }
+
+    /* Progress */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--bg-card);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Utilities */
+    .hidden { display: none !important; }
+
+    .mt-1 { margin-top: 1rem; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .source-preview {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🎨</div>
+        <h1>Favicon Generator</h1>
+      </div>
+      <p class="tagline">Generate all favicon sizes from one image</p>
+      <div class="trust-badges">
+        <div class="trust-badge"><span>🔒</span> 100% Private</div>
+        <div class="trust-badge"><span>💻</span> Runs Locally</div>
+        <div class="trust-badge"><span>📦</span> Download as ZIP</div>
+      </div>
+    </header>
+
+    <!-- Upload Section -->
+    <section class="upload-section">
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-zone-content" id="dropZoneContent">
+          <div class="drop-zone-icon">📁</div>
+          <h3>Drop your image here</h3>
+          <p>or click to browse • PNG, JPG, SVG, or WebP • Square recommended</p>
+        </div>
+        <div class="source-preview hidden" id="sourcePreview">
+          <div class="source-image-wrapper">
+            <img id="sourceImage" src="" alt="Source image">
+          </div>
+          <div class="source-info">
+            <h4 id="sourceFileName">image.png</h4>
+            <p id="sourceFileInfo">512 × 512 • PNG • 24 KB</p>
+            <div class="source-actions">
+              <button class="btn btn-secondary btn-sm" onclick="clearImage()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+      </div>
+    </section>
+
+    <!-- Options Section -->
+    <section class="options-section" id="optionsSection">
+      <div class="section-title">⚙️ Options</div>
+      <div class="options-grid">
+        <div class="option-group">
+          <label for="bgColor">Background Color (for transparent PNGs)</label>
+          <input type="color" id="bgColor" value="#ffffff">
+        </div>
+        <div class="option-group">
+          <label for="siteName">Site Name (for manifest)</label>
+          <input type="text" id="siteName" placeholder="My Website" value="">
+        </div>
+        <div class="option-group" style="justify-content: flex-end;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="includeIco" checked>
+            Include favicon.ico (legacy)
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="includeMsTile" checked>
+            Include Windows tile
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preview Section -->
+    <section class="preview-section hidden" id="previewSection">
+      <div class="section-title">👁️ Preview</div>
+      
+      <!-- Browser Tab Preview -->
+      <div class="browser-preview">
+        <div class="browser-tab-bar">
+          <div class="browser-dots">
+            <div class="browser-dot red"></div>
+            <div class="browser-dot yellow"></div>
+            <div class="browser-dot green"></div>
+          </div>
+          <div class="browser-tab">
+            <img id="tabPreviewIcon" src="" alt="">
+            <span id="tabPreviewTitle">Your Website</span>
+          </div>
+        </div>
+        <div class="browser-content"></div>
+      </div>
+
+      <!-- Size Previews -->
+      <div class="preview-grid" id="previewGrid">
+        <!-- Generated dynamically -->
+      </div>
+    </section>
+
+    <!-- Generate Button -->
+    <section class="generate-section">
+      <button class="btn btn-success" id="generateBtn" disabled onclick="generateFavicons()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Generate & Download ZIP
+      </button>
+    </section>
+
+    <!-- Output Section -->
+    <section class="output-section hidden" id="outputSection">
+      <div class="section-title">📦 Generated Files</div>
+      
+      <div class="files-list" id="filesList">
+        <!-- Generated dynamically -->
+      </div>
+
+      <div class="section-title mt-1">📋 HTML Code</div>
+      <div class="code-block">
+        <button class="btn btn-secondary btn-sm copy-btn" onclick="copyCode()">Copy</button>
+        <pre id="htmlCode"></pre>
+      </div>
+    </section>
+
+    <footer>
+      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // Configuration
+    // ============================================
+    const FAVICON_SIZES = [
+      { name: 'favicon-16x16.png', size: 16, type: 'png' },
+      { name: 'favicon-32x32.png', size: 32, type: 'png' },
+      { name: 'apple-touch-icon.png', size: 180, type: 'png', useBackground: true },
+      { name: 'android-chrome-192x192.png', size: 192, type: 'png' },
+      { name: 'android-chrome-512x512.png', size: 512, type: 'png' },
+      { name: 'mstile-150x150.png', size: 150, type: 'png', useBackground: true },
+    ];
+
+    const ICO_SIZES = [16, 32, 48];
+
+    let sourceImage = null;
+    let sourceFileName = '';
+
+    // ============================================
+    // File Upload & Drop Zone
+    // ============================================
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const dropZoneContent = document.getElementById('dropZoneContent');
+    const sourcePreview = document.getElementById('sourcePreview');
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        handleFile(file);
+      }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        handleFile(file);
+      }
+    });
+
+    function handleFile(file) {
+      sourceFileName = file.name;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          showSourcePreview(file, img);
+          generatePreviews();
+          document.getElementById('generateBtn').disabled = false;
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showSourcePreview(file, img) {
+      document.getElementById('sourceImage').src = img.src;
+      document.getElementById('sourceFileName').textContent = file.name;
+      
+      const sizeKB = (file.size / 1024).toFixed(1);
+      const format = file.type.split('/')[1].toUpperCase();
+      document.getElementById('sourceFileInfo').textContent = 
+        `${img.width} × ${img.height} • ${format} • ${sizeKB} KB`;
+
+      dropZoneContent.classList.add('hidden');
+      sourcePreview.classList.remove('hidden');
+      dropZone.classList.add('has-image');
+    }
+
+    function clearImage() {
+      sourceImage = null;
+      sourceFileName = '';
+      fileInput.value = '';
+      
+      dropZoneContent.classList.remove('hidden');
+      sourcePreview.classList.add('hidden');
+      dropZone.classList.remove('has-image');
+      
+      document.getElementById('previewSection').classList.add('hidden');
+      document.getElementById('outputSection').classList.add('hidden');
+      document.getElementById('generateBtn').disabled = true;
+    }
+
+    // ============================================
+    // Preview Generation
+    // ============================================
+    function generatePreviews() {
+      const previewSection = document.getElementById('previewSection');
+      const previewGrid = document.getElementById('previewGrid');
+      
+      // Update browser tab preview
+      const tabIcon = document.getElementById('tabPreviewIcon');
+      tabIcon.src = resizeImage(sourceImage, 16);
+      
+      const siteName = document.getElementById('siteName').value || 'Your Website';
+      document.getElementById('tabPreviewTitle').textContent = siteName;
+
+      // Generate size previews
+      previewGrid.innerHTML = '';
+      
+      const previewSizes = [
+        { name: 'favicon.ico', size: 32, label: 'ICO' },
+        { name: '16×16', size: 16, label: 'Browser' },
+        { name: '32×32', size: 32, label: 'Browser' },
+        { name: '180×180', size: 180, label: 'Apple' },
+        { name: '192×192', size: 192, label: 'Android' },
+        { name: '512×512', size: 512, label: 'PWA' },
+      ];
+
+      previewSizes.forEach(preview => {
+        const div = document.createElement('div');
+        div.className = 'preview-item';
+        div.innerHTML = `
+          <div class="preview-item-image ${preview.size > 64 ? 'large' : ''}">
+            <img src="${resizeImage(sourceImage, Math.min(preview.size, 64))}" alt="${preview.name}">
+          </div>
+          <h4>${preview.name}</h4>
+          <p>${preview.label}</p>
+        `;
+        previewGrid.appendChild(div);
+      });
+
+      previewSection.classList.remove('hidden');
+    }
+
+    function resizeImage(img, size, useBackground = false) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Fill background if needed
+      if (useBackground) {
+        ctx.fillStyle = document.getElementById('bgColor').value;
+        ctx.fillRect(0, 0, size, size);
+      }
+
+      // Calculate scaling to fit and center
+      const scale = Math.min(size / img.width, size / img.height);
+      const x = (size - img.width * scale) / 2;
+      const y = (size - img.height * scale) / 2;
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+
+      return canvas.toDataURL('image/png');
+    }
+
+    // ============================================
+    // Favicon Generation
+    // ============================================
+    async function generateFavicons() {
+      if (!sourceImage) return;
+
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      btn.innerHTML = `
+        <svg class="spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Generating...
+      `;
+
+      // Add spin animation
+      const style = document.createElement('style');
+      style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
+      document.head.appendChild(style);
+
+      try {
+        const zip = new JSZip();
+        const files = [];
+        const bgColor = document.getElementById('bgColor').value;
+        const includeIco = document.getElementById('includeIco').checked;
+        const includeMsTile = document.getElementById('includeMsTile').checked;
+
+        // Generate PNGs
+        for (const config of FAVICON_SIZES) {
+          if (config.name.includes('mstile') && !includeMsTile) continue;
+          
+          const dataUrl = resizeImage(sourceImage, config.size, config.useBackground);
+          const blob = dataURLtoBlob(dataUrl);
+          zip.file(config.name, blob);
+          files.push({ name: config.name, size: blob.size });
+        }
+
+        // Generate ICO
+        if (includeIco) {
+          const icoBlob = await generateICO(sourceImage, ICO_SIZES);
+          zip.file('favicon.ico', icoBlob);
+          files.push({ name: 'favicon.ico', size: icoBlob.size });
+        }
+
+        // Generate site.webmanifest
+        const siteName = document.getElementById('siteName').value || 'My Website';
+        const manifest = {
+          name: siteName,
+          short_name: siteName,
+          icons: [
+            { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+            { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+          ],
+          theme_color: bgColor,
+          background_color: bgColor,
+          display: 'standalone'
+        };
+        const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
+        zip.file('site.webmanifest', manifestBlob);
+        files.push({ name: 'site.webmanifest', size: manifestBlob.size });
+
+        // Generate browserconfig.xml if MS tile is included
+        if (includeMsTile) {
+          const browserconfig = `<?xml version="1.0" encoding="utf-8"?>
+<browserconfig>
+  <msapplication>
+    <tile>
+      <square150x150logo src="/mstile-150x150.png"/>
+      <TileColor>${bgColor}</TileColor>
+    </tile>
+  </msapplication>
+</browserconfig>`;
+          const bcBlob = new Blob([browserconfig], { type: 'application/xml' });
+          zip.file('browserconfig.xml', bcBlob);
+          files.push({ name: 'browserconfig.xml', size: bcBlob.size });
+        }
+
+        // Generate HTML code
+        const htmlCode = generateHTMLCode(includeIco, includeMsTile);
+        document.getElementById('htmlCode').textContent = htmlCode;
+
+        // Generate ZIP and download
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(zipBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'favicons.zip';
+        a.click();
+        URL.revokeObjectURL(url);
+
+        // Show output section
+        showOutput(files);
+        showToast('Favicons generated and downloaded!');
+
+      } catch (error) {
+        console.error('Error generating favicons:', error);
+        showToast('Error generating favicons. Please try again.');
+      }
+
+      btn.disabled = false;
+      btn.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        Generate & Download ZIP
+      `;
+    }
+
+    function generateHTMLCode(includeIco, includeMsTile) {
+      let code = '';
+      
+      if (includeIco) {
+        code += '<link rel="icon" type="image/x-icon" href="/favicon.ico">\n';
+      }
+      code += '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">\n';
+      code += '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">\n';
+      code += '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n';
+      code += '<link rel="manifest" href="/site.webmanifest">\n';
+      
+      if (includeMsTile) {
+        code += '<meta name="msapplication-TileColor" content="' + document.getElementById('bgColor').value + '">\n';
+        code += '<meta name="msapplication-config" content="/browserconfig.xml">\n';
+      }
+      
+      code += '<meta name="theme-color" content="' + document.getElementById('bgColor').value + '">';
+      
+      return code;
+    }
+
+    function showOutput(files) {
+      const filesList = document.getElementById('filesList');
+      filesList.innerHTML = '';
+
+      files.forEach(file => {
+        const ext = file.name.split('.').pop().toUpperCase();
+        const sizeStr = file.size > 1024 
+          ? (file.size / 1024).toFixed(1) + ' KB'
+          : file.size + ' B';
+
+        const div = document.createElement('div');
+        div.className = 'file-item';
+        div.innerHTML = `
+          <div class="file-icon">${getFileEmoji(ext)}</div>
+          <div class="file-info">
+            <h5>${file.name}</h5>
+            <p>${sizeStr}</p>
+          </div>
+        `;
+        filesList.appendChild(div);
+      });
+
+      document.getElementById('outputSection').classList.remove('hidden');
+    }
+
+    function getFileEmoji(ext) {
+      const map = {
+        'PNG': '🖼️',
+        'ICO': '⭐',
+        'WEBMANIFEST': '📄',
+        'XML': '📋'
+      };
+      return map[ext] || '📁';
+    }
+
+    // ============================================
+    // ICO Generation
+    // ============================================
+    async function generateICO(img, sizes) {
+      const images = sizes.map(size => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
+        const scale = Math.min(size / img.width, size / img.height);
+        const x = (size - img.width * scale) / 2;
+        const y = (size - img.height * scale) / 2;
+        
+        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
+        
+        return ctx.getImageData(0, 0, size, size);
+      });
+
+      return createICO(images);
+    }
+
+    function createICO(images) {
+      // ICO file format:
+      // - ICONDIR (6 bytes)
+      // - ICONDIRENTRY for each image (16 bytes each)
+      // - Image data (PNG or BMP)
+
+      const pngBlobs = images.map(imgData => {
+        const canvas = document.createElement('canvas');
+        canvas.width = imgData.width;
+        canvas.height = imgData.height;
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imgData, 0, 0);
+        
+        const dataUrl = canvas.toDataURL('image/png');
+        const binary = atob(dataUrl.split(',')[1]);
+        const array = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          array[i] = binary.charCodeAt(i);
+        }
+        return array;
+      });
+
+      // Calculate total size
+      const headerSize = 6;
+      const dirEntrySize = 16 * images.length;
+      let dataOffset = headerSize + dirEntrySize;
+      
+      const totalSize = dataOffset + pngBlobs.reduce((sum, blob) => sum + blob.length, 0);
+      const buffer = new ArrayBuffer(totalSize);
+      const view = new DataView(buffer);
+
+      // ICONDIR header
+      view.setUint16(0, 0, true);      // Reserved
+      view.setUint16(2, 1, true);      // Type: 1 = ICO
+      view.setUint16(4, images.length, true); // Number of images
+
+      // ICONDIRENTRY for each image
+      let offset = headerSize;
+      let imageDataOffset = dataOffset;
+
+      for (let i = 0; i < images.length; i++) {
+        const imgData = images[i];
+        const pngData = pngBlobs[i];
+
+        view.setUint8(offset, imgData.width === 256 ? 0 : imgData.width);  // Width
+        view.setUint8(offset + 1, imgData.height === 256 ? 0 : imgData.height); // Height
+        view.setUint8(offset + 2, 0);     // Color palette
+        view.setUint8(offset + 3, 0);     // Reserved
+        view.setUint16(offset + 4, 1, true);  // Color planes
+        view.setUint16(offset + 6, 32, true); // Bits per pixel
+        view.setUint32(offset + 8, pngData.length, true);  // Image size
+        view.setUint32(offset + 12, imageDataOffset, true); // Image offset
+
+        offset += 16;
+        imageDataOffset += pngData.length;
+      }
+
+      // Write image data
+      let dataPos = dataOffset;
+      for (const pngData of pngBlobs) {
+        const uint8View = new Uint8Array(buffer, dataPos, pngData.length);
+        uint8View.set(pngData);
+        dataPos += pngData.length;
+      }
+
+      return new Blob([buffer], { type: 'image/x-icon' });
+    }
+
+    // ============================================
+    // Utilities
+    // ============================================
+    function dataURLtoBlob(dataURL) {
+      const binary = atob(dataURL.split(',')[1]);
+      const array = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        array[i] = binary.charCodeAt(i);
+      }
+      return new Blob([array], { type: 'image/png' });
+    }
+
+    function copyCode() {
+      const code = document.getElementById('htmlCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('HTML code copied to clipboard!');
+      });
+    }
+
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Update previews when options change
+    document.getElementById('bgColor').addEventListener('change', () => {
+      if (sourceImage) generatePreviews();
+    });
+
+    document.getElementById('siteName').addEventListener('input', () => {
+      const siteName = document.getElementById('siteName').value || 'Your Website';
+      document.getElementById('tabPreviewTitle').textContent = siteName;
+    });
+  </script>
+</body>
+</html>
