@@ -98,18 +98,6 @@
         <a href="/tools/qr-generator/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card featured" data-category="utility" data-title="JSON CSV Converter" data-tags="json,csv,convert,data,export,import,flatten,nested">
-        <div class="featured-badge">Featured</div>
-        <h3>JSON ↔ CSV Converter</h3>
-        <span class="tag tag-utility">Utility</span>
-        <p>Convert between JSON and CSV instantly. Handles nested objects with dot notation flattening, arrays, type inference, and large files. Drag & drop or paste.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Zero Dependencies</span>
-        </div>
-        <a href="/tools/json-csv/" class="button button-small">Open tool →</a>
-      </article>
-
       <article class="tool-card" data-category="utility" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
         <h3>Browser Fingerprint Viewer</h3>
         <span class="tag tag-utility">Utility</span>
@@ -161,7 +149,7 @@
         <span>&copy; 2025 Matt Livingston</span>
         <span class="footer-tagline">&nbsp;</span>
         <div class="footer-links">
-          <a href="/cdn-cgi/l/email-protection#365b5742425a5f405f58514542595876505745425b575f5a1855595b">Contact</a>
+          <a href="mailto:mattlivingston@fastmail.com">Contact</a>
           <!-- <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
           <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> -->
         </div>
@@ -169,7 +157,7 @@
     </footer>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Filter functionality
     (function() {
       const filterBtns = document.querySelectorAll('.filter-btn');
@@ -186,4 +174,14 @@
           // Filter cards
           cards.forEach(card => {
             if (filter === 'all' || card.dataset.category === filter) {
-              card.style.display 
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
