@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labor Cost per Unit Calculator | Warehouse Operations Tool</title>
+  <meta name="description" content="Calculate labor cost per unit by operation. Break down costs across receiving, picking, packing, and shipping. Compare periods and export reports.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .trust-badge span {
+      color: var(--accent);
+    }
+
+    /* Sections */
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Global Settings */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .input-group label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="number"],
+    input[type="text"],
+    select {
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .input-prefix,
+    .input-suffix {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      cursor: pointer;
+    }
+
+    .checkbox-label input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Comparison Toggle */
+    .mode-toggle {
+      display: flex;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 0.25rem;
+    }
+
+    .mode-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .mode-btn:hover {
+      color: var(--text-primary);
+    }
+
+    .mode-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Operations */
+    .operations-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Comparison Layout */
+    .comparison-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .comparison-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .column-header input {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .column-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .column-indicator.period-a {
+      background: var(--accent);
+    }
+
+    .column-indicator.period-b {
+      background: var(--success);
+    }
+
+    @media (max-width: 800px) {
+      .comparison-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Operation Card */
+    .operation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+
+    .operation-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .operation-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .operation-name input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0;
+      width: 150px;
+    }
+
+    .operation-name input:focus {
+      outline: none;
+      box-shadow: none;
+      border-bottom: 1px solid var(--accent);
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      font-size: 1.1rem;
+      line-height: 1;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .delete-btn:hover {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .operation-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .operation-results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .result-item {
+      text-align: center;
+    }
+
+    .result-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    .result-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .result-value.highlight {
+      color: var(--accent);
+    }
+
+    /* Add Operation Button */
+    .add-operation-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem;
+      background: transparent;
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .add-operation-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    /* Summary Section */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 700px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-numbers {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+    }
+
+    .summary-row.total {
+      border-top: 2px solid var(--border);
+      padding-top: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .summary-label {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    .summary-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .summary-value.large {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    /* Chart */
+    .chart-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .chart-bar-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .chart-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .chart-bar-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      width: 80px;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chart-bar-track {
+      flex: 1;
+      height: 24px;
+      background: var(--bg-input);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .chart-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 0.5rem;
+      min-width: fit-content;
+    }
+
+    .chart-bar-value {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+
+    .bar-color-0 { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+    .bar-color-1 { background: linear-gradient(90deg, #10b981, #059669); }
+    .bar-color-2 { background: linear-gradient(90deg, #8b5cf6, #7c3aed); }
+    .bar-color-3 { background: linear-gradient(90deg, #f59e0b, #d97706); }
+    .bar-color-4 { background: linear-gradient(90deg, #ef4444, #dc2626); }
+    .bar-color-5 { background: linear-gradient(90deg, #ec4899, #db2777); }
+
+    /* Comparison Summary */
+    .comparison-summary {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .comparison-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+    }
+
+    .comparison-card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .comparison-card .cpu-large {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .comparison-card.period-a .cpu-large { color: var(--accent); }
+    .comparison-card.period-b .cpu-large { color: var(--success); }
+
+    .vs-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 2rem;
+    }
+
+    .vs-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .delta-badge {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .delta-badge.positive {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--danger);
+    }
+
+    .delta-badge.negative {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .delta-badge.neutral {
+      background: var(--bg-card);
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 700px) {
+      .comparison-summary {
+        grid-template-columns: 1fr;
+      }
+
+      .vs-divider {
+        flex-direction: row;
+        padding: 0.5rem 0;
+      }
+
+      .vs-text {
+        margin-bottom: 0;
+        margin-right: 0.75rem;
+      }
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--accent);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* Export Section */
+    .export-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    /* Presets */
+    .presets {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .preset-btn {
+      padding: 0.4rem 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .preset-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+    .hidden { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container { padding: 1rem; }
+      header h1 { font-size: 1.4rem; }
+      .operation-inputs { grid-template-columns: 1fr; }
+      .operation-results { grid-template-columns: 1fr; }
+      .settings-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">📊</div>
+        <h1>Labor Cost per Unit Calculator</h1>
+      </div>
+      <p class="tagline">Break down labor costs by operation. Compare periods. Find inefficiencies.</p>
+      <div class="trust-badges">
+        <div class="trust-badge"><span>🔒</span> 100% Private</div>
+        <div class="trust-badge"><span>💻</span> Runs Locally</div>
+        <div class="trust-badge"><span>📈</span> Export Reports</div>
+      </div>
+    </header>
+
+    <!-- Mode & Presets -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-title">⚙️ Configuration</div>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-mode="single" onclick="setMode('single')">Single Period</button>
+          <button class="mode-btn" data-mode="compare" onclick="setMode('compare')">Compare Periods</button>
+        </div>
+      </div>
+
+      <div class="settings-grid">
+        <div class="input-group">
+          <label>Default Hourly Rate</label>
+          <div class="input-row">
+            <span class="input-prefix">$</span>
+            <input type="number" id="defaultRate" value="18" min="0" step="0.5" onchange="recalculateAll()">
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Burden / Overhead %</label>
+          <div class="input-row">
+            <input type="number" id="burdenPercent" value="30" min="0" max="100" step="1" onchange="recalculateAll()">
+            <span class="input-suffix">%</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Unit Type</label>
+          <select id="unitType" onchange="recalculateAll()">
+            <option value="units">Units</option>
+            <option value="cases">Cases</option>
+            <option value="pallets">Pallets</option>
+            <option value="orders">Orders</option>
+            <option value="lines">Lines</option>
+          </select>
+        </div>
+        <div class="input-group" style="justify-content: flex-end;">
+          <label class="checkbox-label">
+            <input type="checkbox" id="includeBurden" checked onchange="recalculateAll()">
+            Include burden in totals
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem;">
+        <label style="font-size: 0.8rem; color: var(--text-secondary); display: block; margin-bottom: 0.5rem;">Quick Presets</label>
+        <div class="presets">
+          <button class="preset-btn" onclick="loadPreset('ecommerce')">E-commerce</button>
+          <button class="preset-btn" onclick="loadPreset('distribution')">Distribution</button>
+          <button class="preset-btn" onclick="loadPreset('3pl')">3PL</button>
+          <button class="preset-btn" onclick="loadPreset('clear')">Clear All</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Single Mode Operations -->
+    <section class="section" id="singleModeSection">
+      <div class="section-header">
+        <div class="section-title">📦 Operations</div>
+        <button class="btn btn-secondary" onclick="addOperation('single')">+ Add Operation</button>
+      </div>
+      <div class="operations-container" id="singleOperations">
+        <!-- Operations added dynamically -->
+      </div>
+    </section>
+
+    <!-- Compare Mode Operations -->
+    <section class="section hidden" id="compareModeSection">
+      <div class="section-header">
+        <div class="section-title">📦 Operations</div>
+      </div>
+      <div class="comparison-layout">
+        <div class="comparison-column">
+          <div class="column-header">
+            <div class="column-indicator period-a"></div>
+            <input type="text" id="periodAName" value="Period A" onchange="recalculateAll()">
+          </div>
+          <div class="operations-container" id="periodAOperations">
+            <!-- Operations added dynamically -->
+          </div>
+          <button class="add-operation-btn" onclick="addOperation('periodA')">+ Add Operation</button>
+        </div>
+        <div class="comparison-column">
+          <div class="column-header">
+            <div class="column-indicator period-b"></div>
+            <input type="text" id="periodBName" value="Period B" onchange="recalculateAll()">
+          </div>
+          <div class="operations-container" id="periodBOperations">
+            <!-- Operations added dynamically -->
+          </div>
+          <button class="add-operation-btn" onclick="addOperation('periodB')">+ Add Operation</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Single Mode Summary -->
+    <section class="section" id="singleSummary">
+      <div class="section-header">
+        <div class="section-title">📈 Summary</div>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-numbers">
+          <div class="summary-row">
+            <span class="summary-label">Total Labor Hours</span>
+            <span class="summary-value" id="totalHours">0</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Base Labor Cost</span>
+            <span class="summary-value" id="baseLaborCost">$0.00</span>
+          </div>
+          <div class="summary-row" id="burdenRow">
+            <span class="summary-label">+ Burden (<span id="burdenPercentDisplay">30</span>%)</span>
+            <span class="summary-value" id="burdenCost">$0.00</span>
+          </div>
+          <div class="summary-row total">
+            <span class="summary-label">Total Labor Cost</span>
+            <span class="summary-value" id="totalLaborCost">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Total <span class="unit-label">Units</span></span>
+            <span class="summary-value" id="totalUnits">0</span>
+          </div>
+          <div class="summary-row total">
+            <span class="summary-label">Cost per <span class="unit-label-singular">Unit</span></span>
+            <span class="summary-value large" id="costPerUnit">$0.00</span>
+          </div>
+        </div>
+        <div class="chart-container">
+          <div class="result-label" style="text-align: center;">Cost Breakdown by Operation</div>
+          <div class="chart-bar-container" id="costChart">
+            <!-- Chart bars added dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compare Mode Summary -->
+    <section class="section hidden" id="compareSummary">
+      <div class="section-header">
+        <div class="section-title">📈 Comparison Summary</div>
+      </div>
+      <div class="comparison-summary">
+        <div class="comparison-card period-a">
+          <div class="comparison-card-header">
+            <div class="column-indicator period-a"></div>
+            <span id="periodALabel">Period A</span>
+          </div>
+          <div class="cpu-large" id="periodACPU">$0.00</div>
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+            <div>Total Cost: <span id="periodATotalCost">$0</span></div>
+            <div>Total <span class="unit-label">Units</span>: <span id="periodATotalUnits">0</span></div>
+          </div>
+        </div>
+        <div class="vs-divider">
+          <span class="vs-text">Difference</span>
+          <div class="delta-badge neutral" id="deltaBadge">$0.00 (0%)</div>
+        </div>
+        <div class="comparison-card period-b">
+          <div class="comparison-card-header">
+            <div class="column-indicator period-b"></div>
+            <span id="periodBLabel">Period B</span>
+          </div>
+          <div class="cpu-large" id="periodBCPU">$0.00</div>
+          <div style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+            <div>Total Cost: <span id="periodBTotalCost">$0</span></div>
+            <div>Total <span class="unit-label">Units</span>: <span id="periodBTotalUnits">0</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Export -->
+    <section class="section">
+      <div class="export-section">
+        <div class="section-title">💾 Export</div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="copyAsTable()">📋 Copy as Table</button>
+          <button class="btn btn-secondary" onclick="exportCSV()">📄 Export CSV</button>
+          <button class="btn btn-secondary" onclick="saveConfig()">💾 Save Config</button>
+          <button class="btn btn-secondary" onclick="loadConfig()">📂 Load Config</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // State
+    // ============================================
+    let currentMode = 'single';
+    let operations = {
+      single: [],
+      periodA: [],
+      periodB: []
+    };
+
+    const defaultOperations = [
+      { name: 'Receiving', hours: 0, rate: null, units: 0 },
+      { name: 'Put-away', hours: 0, rate: null, units: 0 },
+      { name: 'Picking', hours: 0, rate: null, units: 0 },
+      { name: 'Packing', hours: 0, rate: null, units: 0 },
+      { name: 'Shipping', hours: 0, rate: null, units: 0 }
+    ];
+
+    // ============================================
+    // Initialization
+    // ============================================
+    function init() {
+      // Load saved config if exists
+      const saved = localStorage.getItem('laborCalcConfig');
+      if (saved) {
+        try {
+          const config = JSON.parse(saved);
+          if (config.operations) operations = config.operations;
+          if (config.settings) {
+            document.getElementById('defaultRate').value = config.settings.defaultRate || 18;
+            document.getElementById('burdenPercent').value = config.settings.burdenPercent || 30;
+            document.getElementById('unitType').value = config.settings.unitType || 'units';
+            document.getElementById('includeBurden').checked = config.settings.includeBurden !== false;
+          }
+        } catch (e) {
+          console.error('Failed to load config:', e);
+        }
+      }
+
+      // If no operations, load defaults
+      if (operations.single.length === 0) {
+        operations.single = JSON.parse(JSON.stringify(defaultOperations));
+      }
+      if (operations.periodA.length === 0) {
+        operations.periodA = JSON.parse(JSON.stringify(defaultOperations));
+      }
+      if (operations.periodB.length === 0) {
+        operations.periodB = JSON.parse(JSON.stringify(defaultOperations));
+      }
+
+      renderOperations('single');
+      renderOperations('periodA');
+      renderOperations('periodB');
+      recalculateAll();
+    }
+
+    // ============================================
+    // Mode Switching
+    // ============================================
+    function setMode(mode) {
+      currentMode = mode;
+      
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      document.getElementById('singleModeSection').classList.toggle('hidden', mode !== 'single');
+      document.getElementById('compareModeSection').classList.toggle('hidden', mode !== 'compare');
+      document.getElementById('singleSummary').classList.toggle('hidden', mode !== 'single');
+      document.getElementById('compareSummary').classList.toggle('hidden', mode !== 'compare');
+
+      recalculateAll();
+    }
+
+    // ============================================
+    // Operations Management
+    // ============================================
+    function addOperation(target) {
+      const op = { name: 'New Operation', hours: 0, rate: null, units: 0 };
+      operations[target].push(op);
+      renderOperations(target);
+      recalculateAll();
+    }
+
+    function removeOperation(target, index) {
+      operations[target].splice(index, 1);
+      renderOperations(target);
+      recalculateAll();
+    }
+
+    function updateOperation(target, index, field, value) {
+      if (field === 'hours' || field === 'units') {
+        operations[target][index][field] = parseFloat(value) || 0;
+      } else if (field === 'rate') {
+        operations[target][index][field] = value === '' ? null : parseFloat(value);
+      } else {
+        operations[target][index][field] = value;
+      }
+      recalculateAll();
+    }
+
+    function renderOperations(target) {
+      const container = document.getElementById(
+        target === 'single' ? 'singleOperations' : 
+        target === 'periodA' ? 'periodAOperations' : 'periodBOperations'
+      );
+
+      const defaultRate = parseFloat(document.getElementById('defaultRate').value) || 0;
+      const unitType = document.getElementById('unitType').value;
+      const unitLabel = unitType.charAt(0).toUpperCase() + unitType.slice(1);
+
+      container.innerHTML = operations[target].map((op, index) => {
+        const rate = op.rate !== null ? op.rate : defaultRate;
+        const cost = op.hours * rate;
+        const cpu = op.units > 0 ? cost / op.units : 0;
+        const uph = op.hours > 0 ? op.units / op.hours : 0;
+
+        return `
+          <div class="operation-card">
+            <div class="operation-header">
+              <div class="operation-name">
+                <input type="text" value="${op.name}" 
+                  onchange="updateOperation('${target}', ${index}, 'name', this.value)">
+              </div>
+              <button class="delete-btn" onclick="removeOperation('${target}', ${index})" title="Remove">×</button>
+            </div>
+            <div class="operation-inputs">
+              <div class="input-group">
+                <label>Hours</label>
+                <input type="number" value="${op.hours || ''}" min="0" step="0.5"
+                  placeholder="0"
+                  onchange="updateOperation('${target}', ${index}, 'hours', this.value)">
+              </div>
+              <div class="input-group">
+                <label>Rate ($/hr)</label>
+                <input type="number" value="${op.rate !== null ? op.rate : ''}" min="0" step="0.5"
+                  placeholder="${defaultRate} (default)"
+                  onchange="updateOperation('${target}', ${index}, 'rate', this.value)">
+              </div>
+              <div class="input-group">
+                <label>${unitLabel}</label>
+                <input type="number" value="${op.units || ''}" min="0" step="1"
+                  placeholder="0"
+                  onchange="updateOperation('${target}', ${index}, 'units', this.value)">
+              </div>
+            </div>
+            <div class="operation-results">
+              <div class="result-item">
+                <div class="result-label">Labor Cost</div>
+                <div class="result-value">$${cost.toFixed(2)}</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">Cost/${unitType.slice(0, -1)}</div>
+                <div class="result-value highlight">$${cpu.toFixed(3)}</div>
+              </div>
+              <div class="result-item">
+                <div class="result-label">${unitLabel}/Hour</div>
+                <div class="result-value">${uph.toFixed(1)}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Add the add button for single mode
+      if (target === 'single') {
+        container.innerHTML += `
+          <button class="add-operation-btn" onclick="addOperation('single')">+ Add Operation</button>
+        `;
+      }
+    }
+
+    // ============================================
+    // Calculations
+    // ============================================
+    function calculateTotals(target) {
+      const defaultRate = parseFloat(document.getElementById('defaultRate').value) || 0;
+      const burdenPercent = parseFloat(document.getElementById('burdenPercent').value) || 0;
+      const includeBurden = document.getElementById('includeBurden').checked;
+
+      let totalHours = 0;
+      let baseCost = 0;
+      let maxUnits = 0;
+      const opCosts = [];
+
+      operations[target].forEach(op => {
+        const rate = op.rate !== null ? op.rate : defaultRate;
+        const cost = op.hours * rate;
+        totalHours += op.hours;
+        baseCost += cost;
+        maxUnits = Math.max(maxUnits, op.units);
+        opCosts.push({ name: op.name, cost, units: op.units });
+      });
+
+      const burden = includeBurden ? baseCost * (burdenPercent / 100) : 0;
+      const totalCost = baseCost + burden;
+      const cpu = maxUnits > 0 ? totalCost / maxUnits : 0;
+
+      return {
+        totalHours,
+        baseCost,
+        burden,
+        totalCost,
+        totalUnits: maxUnits,
+        cpu,
+        opCosts
+      };
+    }
+
+    function recalculateAll() {
+      const unitType = document.getElementById('unitType').value;
+      const unitLabel = unitType.charAt(0).toUpperCase() + unitType.slice(1);
+      const unitSingular = unitType.slice(0, -1);
+
+      // Update all unit labels
+      document.querySelectorAll('.unit-label').forEach(el => el.textContent = unitLabel);
+      document.querySelectorAll('.unit-label-singular').forEach(el => el.textContent = unitSingular.charAt(0).toUpperCase() + unitSingular.slice(1));
+
+      // Update burden display
+      const burdenPercent = document.getElementById('burdenPercent').value;
+      document.getElementById('burdenPercentDisplay').textContent = burdenPercent;
+
+      // Re-render operations to update labels
+      renderOperations('single');
+      renderOperations('periodA');
+      renderOperations('periodB');
+
+      if (currentMode === 'single') {
+        updateSingleSummary();
+      } else {
+        updateCompareSummary();
+      }
+    }
+
+    function updateSingleSummary() {
+      const totals = calculateTotals('single');
+      const includeBurden = document.getElementById('includeBurden').checked;
+
+      document.getElementById('totalHours').textContent = totals.totalHours.toFixed(1);
+      document.getElementById('baseLaborCost').textContent = '$' + totals.baseCost.toFixed(2);
+      document.getElementById('burdenCost').textContent = '$' + totals.burden.toFixed(2);
+      document.getElementById('totalLaborCost').textContent = '$' + totals.totalCost.toFixed(2);
+      document.getElementById('totalUnits').textContent = totals.totalUnits.toLocaleString();
+      document.getElementById('costPerUnit').textContent = '$' + totals.cpu.toFixed(3);
+
+      document.getElementById('burdenRow').classList.toggle('hidden', !includeBurden);
+
+      // Update chart
+      updateChart(totals.opCosts);
+    }
+
+    function updateChart(opCosts) {
+      const container = document.getElementById('costChart');
+      const maxCost = Math.max(...opCosts.map(o => o.cost), 1);
+
+      container.innerHTML = opCosts
+        .filter(o => o.cost > 0)
+        .map((op, i) => {
+          const pct = (op.cost / maxCost) * 100;
+          return `
+            <div class="chart-bar-row">
+              <span class="chart-bar-label">${op.name}</span>
+              <div class="chart-bar-track">
+                <div class="chart-bar-fill bar-color-${i % 6}" style="width: ${Math.max(pct, 15)}%">
+                  <span class="chart-bar-value">$${op.cost.toFixed(0)}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+    }
+
+    function updateCompareSummary() {
+      const totalsA = calculateTotals('periodA');
+      const totalsB = calculateTotals('periodB');
+
+      document.getElementById('periodALabel').textContent = document.getElementById('periodAName').value;
+      document.getElementById('periodBLabel').textContent = document.getElementById('periodBName').value;
+
+      document.getElementById('periodACPU').textContent = '$' + totalsA.cpu.toFixed(3);
+      document.getElementById('periodATotalCost').textContent = '$' + totalsA.totalCost.toFixed(2);
+      document.getElementById('periodATotalUnits').textContent = totalsA.totalUnits.toLocaleString();
+
+      document.getElementById('periodBCPU').textContent = '$' + totalsB.cpu.toFixed(3);
+      document.getElementById('periodBTotalCost').textContent = '$' + totalsB.totalCost.toFixed(2);
+      document.getElementById('periodBTotalUnits').textContent = totalsB.totalUnits.toLocaleString();
+
+      // Calculate delta
+      const deltaCPU = totalsB.cpu - totalsA.cpu;
+      const deltaPct = totalsA.cpu > 0 ? (deltaCPU / totalsA.cpu) * 100 : 0;
+
+      const deltaBadge = document.getElementById('deltaBadge');
+      const sign = deltaCPU > 0 ? '+' : '';
+      deltaBadge.textContent = `${sign}$${deltaCPU.toFixed(3)} (${sign}${deltaPct.toFixed(1)}%)`;
+
+      deltaBadge.classList.remove('positive', 'negative', 'neutral');
+      if (deltaCPU > 0.001) {
+        deltaBadge.classList.add('positive'); // Cost went up = bad
+      } else if (deltaCPU < -0.001) {
+        deltaBadge.classList.add('negative'); // Cost went down = good
+      } else {
+        deltaBadge.classList.add('neutral');
+      }
+    }
+
+    // ============================================
+    // Presets
+    // ============================================
+    function loadPreset(preset) {
+      if (preset === 'clear') {
+        operations.single = [{ name: 'Operation 1', hours: 0, rate: null, units: 0 }];
+        operations.periodA = [{ name: 'Operation 1', hours: 0, rate: null, units: 0 }];
+        operations.periodB = [{ name: 'Operation 1', hours: 0, rate: null, units: 0 }];
+      } else if (preset === 'ecommerce') {
+        const ops = [
+          { name: 'Receiving', hours: 0, rate: null, units: 0 },
+          { name: 'Put-away', hours: 0, rate: null, units: 0 },
+          { name: 'Picking', hours: 0, rate: null, units: 0 },
+          { name: 'Packing', hours: 0, rate: null, units: 0 },
+          { name: 'Shipping', hours: 0, rate: null, units: 0 }
+        ];
+        operations.single = JSON.parse(JSON.stringify(ops));
+        operations.periodA = JSON.parse(JSON.stringify(ops));
+        operations.periodB = JSON.parse(JSON.stringify(ops));
+        document.getElementById('unitType').value = 'orders';
+      } else if (preset === 'distribution') {
+        const ops = [
+          { name: 'Receiving', hours: 0, rate: null, units: 0 },
+          { name: 'Put-away', hours: 0, rate: null, units: 0 },
+          { name: 'Replenishment', hours: 0, rate: null, units: 0 },
+          { name: 'Case Picking', hours: 0, rate: null, units: 0 },
+          { name: 'Loading', hours: 0, rate: null, units: 0 }
+        ];
+        operations.single = JSON.parse(JSON.stringify(ops));
+        operations.periodA = JSON.parse(JSON.stringify(ops));
+        operations.periodB = JSON.parse(JSON.stringify(ops));
+        document.getElementById('unitType').value = 'cases';
+      } else if (preset === '3pl') {
+        const ops = [
+          { name: 'Inbound', hours: 0, rate: null, units: 0 },
+          { name: 'Storage', hours: 0, rate: null, units: 0 },
+          { name: 'Pick & Pack', hours: 0, rate: null, units: 0 },
+          { name: 'Value-Add', hours: 0, rate: null, units: 0 },
+          { name: 'Outbound', hours: 0, rate: null, units: 0 }
+        ];
+        operations.single = JSON.parse(JSON.stringify(ops));
+        operations.periodA = JSON.parse(JSON.stringify(ops));
+        operations.periodB = JSON.parse(JSON.stringify(ops));
+        document.getElementById('unitType').value = 'units';
+      }
+
+      renderOperations('single');
+      renderOperations('periodA');
+      renderOperations('periodB');
+      recalculateAll();
+      showToast(`Loaded ${preset === 'clear' ? 'blank template' : preset + ' preset'}`);
+    }
+
+    // ============================================
+    // Export Functions
+    // ============================================
+    function copyAsTable() {
+      const unitType = document.getElementById('unitType').value;
+      const unitLabel = unitType.charAt(0).toUpperCase() + unitType.slice(1);
+      
+      let text = '';
+      
+      if (currentMode === 'single') {
+        const totals = calculateTotals('single');
+        const defaultRate = parseFloat(document.getElementById('defaultRate').value) || 0;
+        
+        text = `Operation\tHours\tRate\t${unitLabel}\tLabor Cost\tCost/${unitType.slice(0,-1)}\t${unitLabel}/Hr\n`;
+        operations.single.forEach(op => {
+          const rate = op.rate !== null ? op.rate : defaultRate;
+          const cost = op.hours * rate;
+          const cpu = op.units > 0 ? cost / op.units : 0;
+          const uph = op.hours > 0 ? op.units / op.hours : 0;
+          text += `${op.name}\t${op.hours}\t$${rate.toFixed(2)}\t${op.units}\t$${cost.toFixed(2)}\t$${cpu.toFixed(3)}\t${uph.toFixed(1)}\n`;
+        });
+        text += `\nTOTAL\t${totals.totalHours}\t\t${totals.totalUnits}\t$${totals.totalCost.toFixed(2)}\t$${totals.cpu.toFixed(3)}\t`;
+      } else {
+        const totalsA = calculateTotals('periodA');
+        const totalsB = calculateTotals('periodB');
+        const periodAName = document.getElementById('periodAName').value;
+        const periodBName = document.getElementById('periodBName').value;
+        
+        text = `Metric\t${periodAName}\t${periodBName}\tDelta\n`;
+        text += `Total Cost\t$${totalsA.totalCost.toFixed(2)}\t$${totalsB.totalCost.toFixed(2)}\t$${(totalsB.totalCost - totalsA.totalCost).toFixed(2)}\n`;
+        text += `Total ${unitLabel}\t${totalsA.totalUnits}\t${totalsB.totalUnits}\t${totalsB.totalUnits - totalsA.totalUnits}\n`;
+        text += `Cost per ${unitType.slice(0,-1)}\t$${totalsA.cpu.toFixed(3)}\t$${totalsB.cpu.toFixed(3)}\t$${(totalsB.cpu - totalsA.cpu).toFixed(3)}\n`;
+      }
+
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+    }
+
+    function exportCSV() {
+      const unitType = document.getElementById('unitType').value;
+      const unitLabel = unitType.charAt(0).toUpperCase() + unitType.slice(1);
+      
+      let csv = '';
+      
+      if (currentMode === 'single') {
+        const totals = calculateTotals('single');
+        const defaultRate = parseFloat(document.getElementById('defaultRate').value) || 0;
+        
+        csv = `Operation,Hours,Rate,${unitLabel},Labor Cost,Cost per ${unitType.slice(0,-1)},${unitLabel} per Hour\n`;
+        operations.single.forEach(op => {
+          const rate = op.rate !== null ? op.rate : defaultRate;
+          const cost = op.hours * rate;
+          const cpu = op.units > 0 ? cost / op.units : 0;
+          const uph = op.hours > 0 ? op.units / op.hours : 0;
+          csv += `"${op.name}",${op.hours},${rate.toFixed(2)},${op.units},${cost.toFixed(2)},${cpu.toFixed(3)},${uph.toFixed(1)}\n`;
+        });
+        csv += `\nTOTAL,${totals.totalHours},,${totals.totalUnits},${totals.totalCost.toFixed(2)},${totals.cpu.toFixed(3)},\n`;
+      } else {
+        const totalsA = calculateTotals('periodA');
+        const totalsB = calculateTotals('periodB');
+        const periodAName = document.getElementById('periodAName').value;
+        const periodBName = document.getElementById('periodBName').value;
+        
+        csv = `Metric,"${periodAName}","${periodBName}",Delta\n`;
+        csv += `Total Cost,${totalsA.totalCost.toFixed(2)},${totalsB.totalCost.toFixed(2)},${(totalsB.totalCost - totalsA.totalCost).toFixed(2)}\n`;
+        csv += `Total ${unitLabel},${totalsA.totalUnits},${totalsB.totalUnits},${totalsB.totalUnits - totalsA.totalUnits}\n`;
+        csv += `Cost per ${unitType.slice(0,-1)},${totalsA.cpu.toFixed(3)},${totalsB.cpu.toFixed(3)},${(totalsB.cpu - totalsA.cpu).toFixed(3)}\n`;
+      }
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `labor-cost-${currentMode === 'single' ? 'report' : 'comparison'}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('CSV exported!');
+    }
+
+    function saveConfig() {
+      const config = {
+        operations,
+        settings: {
+          defaultRate: document.getElementById('defaultRate').value,
+          burdenPercent: document.getElementById('burdenPercent').value,
+          unitType: document.getElementById('unitType').value,
+          includeBurden: document.getElementById('includeBurden').checked
+        }
+      };
+      localStorage.setItem('laborCalcConfig', JSON.stringify(config));
+      showToast('Configuration saved!');
+    }
+
+    function loadConfig() {
+      const saved = localStorage.getItem('laborCalcConfig');
+      if (saved) {
+        try {
+          const config = JSON.parse(saved);
+          if (config.operations) operations = config.operations;
+          if (config.settings) {
+            document.getElementById('defaultRate').value = config.settings.defaultRate || 18;
+            document.getElementById('burdenPercent').value = config.settings.burdenPercent || 30;
+            document.getElementById('unitType').value = config.settings.unitType || 'units';
+            document.getElementById('includeBurden').checked = config.settings.includeBurden !== false;
+          }
+          renderOperations('single');
+          renderOperations('periodA');
+          renderOperations('periodB');
+          recalculateAll();
+          showToast('Configuration loaded!');
+        } catch (e) {
+          showToast('Failed to load configuration');
+        }
+      } else {
+        showToast('No saved configuration found');
+      }
+    }
+
+    // ============================================
+    // Utility
+    // ============================================
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>
