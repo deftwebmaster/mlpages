@@ -267,8 +267,6 @@ a:hover {
   border-radius: 10px;
   padding: var(--space-md);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-  display: flex;
-  flex-direction: column;
 }
 
 .tool-card:hover {
@@ -282,18 +280,6 @@ a:hover {
   margin-bottom: var(--space-xs);
   color: var(--text);
   padding-right: 5rem;
-}
-
-.tool-card p {
-  color: var(--text-light);
-  font-size: 0.9375rem;
-  margin-bottom: var(--space-md);
-  flex-grow: 1;
-}
-
-.tool-card .button {
-  width: 100%;
-  margin-top: auto;
 }
 
 .tag {
@@ -323,6 +309,16 @@ a:hover {
   background: var(--tag-utility-bg);
   color: var(--tag-utility);
   border: 1px solid var(--tag-utility-border);
+}
+
+.tool-card p {
+  color: var(--text-light);
+  font-size: 0.9375rem;
+  margin-bottom: var(--space-md);
+}
+
+.tool-card .button {
+  width: 100%;
 }
 
 /* Featured Cards */
@@ -463,6 +459,10 @@ a:hover {
 
   .tools-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tool-card .button {
+    width: auto;
   }
 }
 
