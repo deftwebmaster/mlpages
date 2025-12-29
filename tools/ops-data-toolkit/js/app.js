@@ -101,7 +101,12 @@ function setupEventListeners() {
     });
     
     document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
-        document.getElementById('sampleMenu')?.classList.add('show');
+        // Trigger the header dropdown
+        const sampleBtn = document.getElementById('loadSample');
+        if (sampleBtn) {
+            sampleBtn.click();
+            sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
     });
     
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);

@@ -69,7 +69,11 @@ export class DataGrid {
         });
         
         document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
-            document.getElementById('sampleMenu')?.classList.add('show');
+            const sampleBtn = document.getElementById('loadSample');
+            if (sampleBtn) {
+                sampleBtn.click();
+                sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
         });
     }
     
