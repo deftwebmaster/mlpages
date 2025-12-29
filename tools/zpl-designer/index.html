@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZPL Label Designer | Visual Zebra Label Builder</title>
+  <meta name="description" content="Free visual ZPL label designer. Drag-and-drop elements, generate Zebra printer code instantly. Build shipping labels, product labels, location labels and more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --border-light: #334155;
+      --radius: 8px;
+      --radius-sm: 4px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .logo h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .logo span {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      background: var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Select / Input */
+    select, input[type="text"], input[type="number"] {
+      padding: 0.5rem 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    select:focus, input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    input[type="number"] {
+      width: 70px;
+    }
+
+    label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Main Layout */
+    .main-container {
+      display: grid;
+      grid-template-columns: 200px 1fr 280px;
+      height: calc(100vh - 65px);
+    }
+
+    @media (max-width: 1100px) {
+      .main-container {
+        grid-template-columns: 180px 1fr 260px;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+    }
+
+    /* Left Panel - Elements */
+    .panel {
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .panel-title {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .element-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .element-btn {
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .element-btn:hover {
+      border-color: var(--accent);
+      background: var(--bg-input);
+    }
+
+    .element-btn .icon {
+      font-size: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    /* Templates */
+    .template-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .template-btn {
+      padding: 0.5rem 0.75rem;
+      background: transparent;
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .template-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      border-style: solid;
+    }
+
+    /* Properties Panel */
+    .properties-section {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .property-group {
+      margin-bottom: 0.75rem;
+    }
+
+    .property-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .property-full {
+      grid-column: span 2;
+    }
+
+    /* Element List */
+    .element-list {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .element-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      border: 2px solid transparent;
+      font-size: 0.8rem;
+    }
+
+    .element-item:hover {
+      background: var(--bg-input);
+    }
+
+    .element-item.selected {
+      border-color: var(--accent);
+    }
+
+    .element-item-name {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .element-item-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.2rem;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .element-item-delete:hover {
+      color: var(--danger);
+    }
+
+    /* Center - Canvas Area */
+    .canvas-area {
+      background: var(--bg-primary);
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow: auto;
+      min-width: 0; /* Allow shrinking in grid */
+    }
+
+    .canvas-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .canvas-container {
+      background: white;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .canvas-grid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      opacity: 0.3;
+    }
+
+    #labelCanvas {
+      display: block;
+    }
+
+    /* Draggable Elements on Canvas */
+    .canvas-element {
+      position: absolute;
+      cursor: move;
+      border: 1px dashed transparent;
+      padding: 2px;
+    }
+
+    .canvas-element:hover {
+      border-color: var(--accent);
+    }
+
+    .canvas-element.selected {
+      border-color: var(--accent);
+      outline: 2px solid var(--accent);
+    }
+
+    .canvas-element.dragging {
+      opacity: 0.7;
+    }
+
+    /* Right Panel - Code */
+    .code-panel {
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .code-header {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .code-tabs {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .code-tab {
+      padding: 0.35rem 0.5rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+
+    .code-tab.active {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .code-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .code-content {
+      flex: 1;
+      overflow: auto;
+      padding: 0.75rem;
+    }
+
+    .code-block {
+      background: var(--bg-input);
+      border-radius: var(--radius);
+      padding: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--text-primary);
+      min-height: 150px;
+    }
+
+    .code-block .command {
+      color: var(--accent);
+    }
+
+    .code-block .param {
+      color: var(--warning);
+    }
+
+    .code-block .text {
+      color: var(--success);
+    }
+
+    /* Import ZPL */
+    .import-section {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .import-textarea {
+      width: 100%;
+      min-height: 100px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      padding: 0.75rem;
+      resize: vertical;
+      margin-bottom: 0.5rem;
+    }
+
+    .import-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .panel {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .code-panel {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+    }
+
+    .hidden { display: none !important; }
+
+    /* Sample Data Section */
+    .sample-data-section {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .sample-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .sample-btn {
+      padding: 0.5rem 0.75rem;
+      background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-input) 100%);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+    }
+
+    .sample-btn:hover {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Cheat Sheet */
+    .cheatsheet {
+      font-size: 0.8rem;
+    }
+
+    .cheatsheet h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    .cheat-section {
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cheat-section:last-child {
+      border-bottom: none;
+    }
+
+    .cheat-section h4 {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .cheat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .cheat-item code {
+      background: var(--bg-input);
+      padding: 0.15rem 0.4rem;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--warning);
+      white-space: nowrap;
+    }
+
+    .cheat-item span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    .cheat-example {
+      background: var(--bg-input);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      margin-top: 0.5rem;
+      border-left: 3px solid var(--accent);
+    }
+
+    .cheat-example strong {
+      color: var(--text-secondary);
+      font-size: 0.7rem;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .cheat-example code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--success);
+      word-break: break-all;
+    }
+
+    .cheat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.25rem 1rem;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    .cheat-grid code {
+      background: var(--bg-input);
+      padding: 0.1rem 0.3rem;
+      border-radius: 2px;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--warning);
+    }
+
+    .cheat-note {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon">🏷️</div>
+      <div>
+        <h1>ZPL Label Designer</h1>
+        <span>Visual Zebra Label Builder</span>
+      </div>
+    </div>
+    <div class="header-controls">
+      <div>
+        <label>Label Size</label>
+        <select id="labelSize" onchange="updateLabelSize()">
+          <option value="4x6">4" × 6" (Shipping)</option>
+          <option value="4x4">4" × 4"</option>
+          <option value="4x2">4" × 2"</option>
+          <option value="2x1">2" × 1"</option>
+          <option value="3x2">3" × 2"</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div>
+        <label>DPI</label>
+        <select id="labelDpi" onchange="updateCanvas()">
+          <option value="203">203 DPI</option>
+          <option value="300">300 DPI</option>
+          <option value="600">600 DPI</option>
+        </select>
+      </div>
+      <div class="hidden" id="customSizeInputs">
+        <label>W × H (inches)</label>
+        <input type="number" id="customWidth" value="4" min="0.5" max="10" step="0.25" style="width:50px" onchange="updateLabelSize()">
+        ×
+        <input type="number" id="customHeight" value="6" min="0.5" max="12" step="0.25" style="width:50px" onchange="updateLabelSize()">
+      </div>
+      <button class="btn" onclick="clearCanvas()">🗑️ Clear</button>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Left Panel - Elements & Properties -->
+    <div class="panel">
+      <div class="panel-title">Add Elements</div>
+      <div class="element-buttons">
+        <button class="element-btn" onclick="addElement('text')">
+          <span class="icon">T</span> Text
+        </button>
+        <button class="element-btn" onclick="addElement('barcode128')">
+          <span class="icon">║</span> Barcode (Code128)
+        </button>
+        <button class="element-btn" onclick="addElement('qrcode')">
+          <span class="icon">▣</span> QR Code
+        </button>
+        <button class="element-btn" onclick="addElement('line')">
+          <span class="icon">─</span> Line
+        </button>
+        <button class="element-btn" onclick="addElement('box')">
+          <span class="icon">□</span> Rectangle
+        </button>
+      </div>
+
+      <div class="panel-title">Templates</div>
+      <div class="template-buttons">
+        <button class="template-btn" onclick="loadTemplate('shipping')">📦 Shipping Label</button>
+        <button class="template-btn" onclick="loadTemplate('product')">🏷️ Product Label</button>
+        <button class="template-btn" onclick="loadTemplate('location')">📍 Location Label</button>
+      </div>
+
+      <!-- Sample Data -->
+      <div class="sample-data-section">
+        <div class="panel-title">Try It Out</div>
+        <p style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+          Load sample data to test the tool:
+        </p>
+        <div class="sample-buttons">
+          <button class="sample-btn" onclick="loadSampleData('ecommerce')">🛒 E-commerce Order</button>
+          <button class="sample-btn" onclick="loadSampleData('warehouse')">🏭 Warehouse Receiving</button>
+          <button class="sample-btn" onclick="loadSampleData('retail')">🏪 Retail Price Tag</button>
+          <button class="sample-btn" onclick="loadSampleData('inventory')">📋 Inventory Count</button>
+        </div>
+      </div>
+
+      <!-- Properties -->
+      <div class="properties-section" id="propertiesPanel">
+        <div class="panel-title">Properties</div>
+        <div id="propertiesContent">
+          <p style="color: var(--text-muted); font-size: 0.8rem;">Select an element to edit its properties</p>
+        </div>
+      </div>
+
+      <!-- Element List -->
+      <div class="element-list">
+        <div class="panel-title">Layers</div>
+        <div id="elementList">
+          <p style="color: var(--text-muted); font-size: 0.8rem;">No elements yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center - Canvas -->
+    <div class="canvas-area">
+      <div class="canvas-toolbar">
+        <label>
+          <input type="checkbox" id="showGrid" checked onchange="updateCanvas()"> Show Grid
+        </label>
+        <span style="color: var(--text-muted); font-size: 0.8rem;">
+          Tip: Drag elements to position. Click to select and edit.
+        </span>
+      </div>
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="labelCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Right Panel - Code -->
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="code-tabs">
+          <button class="code-tab active" onclick="switchCodeTab('zpl')">ZPL Code</button>
+          <button class="code-tab" onclick="switchCodeTab('cheatsheet')">Cheat Sheet</button>
+          <button class="code-tab" onclick="switchCodeTab('import')">Import</button>
+        </div>
+        <div class="code-actions">
+          <button class="btn btn-sm" onclick="copyCode()">📋 Copy</button>
+          <button class="btn btn-sm" onclick="downloadCode()">💾 .zpl</button>
+        </div>
+      </div>
+      
+      <div class="code-content" id="codeTab">
+        <div class="code-block" id="zplCode">^XA
+
+^XZ</div>
+      </div>
+
+      <div class="code-content hidden" id="cheatsheetTab">
+        <div class="cheatsheet">
+          <h3>ZPL Quick Reference</h3>
+          
+          <div class="cheat-section">
+            <h4>Document Structure</h4>
+            <div class="cheat-item">
+              <code>^XA</code>
+              <span>Start label format</span>
+            </div>
+            <div class="cheat-item">
+              <code>^XZ</code>
+              <span>End label format</span>
+            </div>
+            <div class="cheat-item">
+              <code>^PW{width}</code>
+              <span>Print width in dots</span>
+            </div>
+            <div class="cheat-item">
+              <code>^LL{length}</code>
+              <span>Label length in dots</span>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>Positioning</h4>
+            <div class="cheat-item">
+              <code>^FO{x},{y}</code>
+              <span>Field origin (position)</span>
+            </div>
+            <div class="cheat-item">
+              <code>^FS</code>
+              <span>Field separator (end field)</span>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>Text</h4>
+            <div class="cheat-item">
+              <code>^A0{rotation},{h},{w}</code>
+              <span>Scalable font (A0)</span>
+            </div>
+            <div class="cheat-item">
+              <code>^FD{data}</code>
+              <span>Field data (text content)</span>
+            </div>
+            <div class="cheat-example">
+              <strong>Example:</strong>
+              <code>^FO50,50^A0N,30,30^FDHello^FS</code>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>Barcodes</h4>
+            <div class="cheat-item">
+              <code>^BC{rot},{h},{text},{above},{chk}</code>
+              <span>Code 128 barcode</span>
+            </div>
+            <div class="cheat-item">
+              <code>^BQ{rot},{model},{mag}</code>
+              <span>QR Code</span>
+            </div>
+            <div class="cheat-example">
+              <strong>Example:</strong>
+              <code>^FO50,100^BCN,80,Y,N,N^FD12345^FS</code>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>Graphics</h4>
+            <div class="cheat-item">
+              <code>^GB{w},{h},{thickness}</code>
+              <span>Graphic box (lines, rectangles)</span>
+            </div>
+            <div class="cheat-example">
+              <strong>Line:</strong>
+              <code>^FO50,200^GB300,3,3^FS</code>
+            </div>
+            <div class="cheat-example">
+              <strong>Box:</strong>
+              <code>^FO50,50^GB200,100,2^FS</code>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>Rotation Values</h4>
+            <div class="cheat-grid">
+              <div><code>N</code> = 0° (Normal)</div>
+              <div><code>R</code> = 90° (Rotated)</div>
+              <div><code>I</code> = 180° (Inverted)</div>
+              <div><code>B</code> = 270° (Bottom-up)</div>
+            </div>
+          </div>
+
+          <div class="cheat-section">
+            <h4>DPI Conversion</h4>
+            <p class="cheat-note">Dots = Inches × DPI</p>
+            <div class="cheat-grid">
+              <div><strong>203 DPI:</strong> 1" = 203 dots</div>
+              <div><strong>300 DPI:</strong> 1" = 300 dots</div>
+              <div><strong>600 DPI:</strong> 1" = 600 dots</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-content hidden" id="importTab">
+        <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.75rem;">
+          Paste existing ZPL code to import and edit visually:
+        </p>
+        <textarea class="import-textarea" id="importZpl" placeholder="^XA
+^FO50,50^A0N,30,30^FDHello World^FS
+^XZ"></textarea>
+        <button class="btn btn-primary" onclick="importZpl()">Import ZPL</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============================================
+    // State
+    // ============================================
+    let elements = [];
+    let selectedId = null;
+    let nextId = 1;
+    let labelWidth = 4; // inches
+    let labelHeight = 6; // inches
+    let dpi = 203;
+    let scale = 1; // display scale
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    // ============================================
+    // Initialization
+    // ============================================
+    function init() {
+      updateLabelSize();
+      setupCanvasEvents();
+      
+      // Recalculate on resize
+      window.addEventListener('resize', () => {
+        clearTimeout(window.resizeTimer);
+        window.resizeTimer = setTimeout(updateCanvas, 150);
+      });
+    }
+
+    // ============================================
+    // Label Size
+    // ============================================
+    function updateLabelSize() {
+      const sizeSelect = document.getElementById('labelSize');
+      const customInputs = document.getElementById('customSizeInputs');
+      
+      if (sizeSelect.value === 'custom') {
+        customInputs.classList.remove('hidden');
+        labelWidth = parseFloat(document.getElementById('customWidth').value) || 4;
+        labelHeight = parseFloat(document.getElementById('customHeight').value) || 6;
+      } else {
+        customInputs.classList.add('hidden');
+        const [w, h] = sizeSelect.value.split('x').map(Number);
+        labelWidth = w;
+        labelHeight = h;
+      }
+      
+      updateCanvas();
+    }
+
+    // ============================================
+    // Canvas Setup & Rendering
+    // ============================================
+    function updateCanvas() {
+      dpi = parseInt(document.getElementById('labelDpi').value);
+      
+      const canvas = document.getElementById('labelCanvas');
+      const container = document.getElementById('canvasContainer');
+      const ctx = canvas.getContext('2d');
+      
+      // Calculate pixel dimensions
+      const labelWidthPx = labelWidth * dpi;
+      const labelHeightPx = labelHeight * dpi;
+      
+      // Scale to fit in viewport (responsive)
+      const canvasArea = document.querySelector('.canvas-area');
+      const availableWidth = canvasArea ? canvasArea.clientWidth - 60 : 600;
+      const maxDisplayWidth = Math.min(600, availableWidth);
+      scale = Math.min(maxDisplayWidth / labelWidthPx, 1);
+      
+      const displayWidth = labelWidthPx * scale;
+      const displayHeight = labelHeightPx * scale;
+      
+      canvas.width = displayWidth;
+      canvas.height = displayHeight;
+      container.style.width = displayWidth + 'px';
+      container.style.height = displayHeight + 'px';
+      
+      // Clear and fill white
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, displayWidth, displayHeight);
+      
+      // Draw grid
+      if (document.getElementById('showGrid').checked) {
+        drawGrid(ctx, displayWidth, displayHeight);
+      }
+      
+      // Draw elements
+      elements.forEach(el => drawElement(ctx, el));
+      
+      // Update ZPL
+      generateZpl();
+      updateElementList();
+    }
+
+    function drawGrid(ctx, width, height) {
+      const gridSize = 0.25 * dpi * scale; // 0.25 inch grid
+      
+      ctx.strokeStyle = '#e0e0e0';
+      ctx.lineWidth = 0.5;
+      
+      // Vertical lines
+      for (let x = gridSize; x < width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      
+      // Horizontal lines
+      for (let y = gridSize; y < height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+    }
+
+    function drawElement(ctx, el) {
+      const x = el.x * scale;
+      const y = el.y * scale;
+      
+      ctx.save();
+      
+      // Handle rotation
+      if (el.rotation && el.rotation !== 0) {
+        ctx.translate(x, y);
+        ctx.rotate((el.rotation * Math.PI) / 180);
+        ctx.translate(-x, -y);
+      }
+      
+      switch (el.type) {
+        case 'text':
+          drawText(ctx, el, x, y);
+          break;
+        case 'barcode128':
+          drawBarcode(ctx, el, x, y);
+          break;
+        case 'qrcode':
+          drawQrCode(ctx, el, x, y);
+          break;
+        case 'line':
+          drawLine(ctx, el, x, y);
+          break;
+        case 'box':
+          drawBox(ctx, el, x, y);
+          break;
+      }
+      
+      // Selection indicator
+      if (el.id === selectedId) {
+        const bounds = getElementBounds(el);
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 3]);
+        ctx.strokeRect(
+          bounds.x * scale - 3,
+          bounds.y * scale - 3,
+          bounds.width * scale + 6,
+          bounds.height * scale + 6
+        );
+        ctx.setLineDash([]);
+      }
+      
+      ctx.restore();
+    }
+
+    function drawText(ctx, el, x, y) {
+      const fontSize = (el.fontSize || 30) * scale;
+      ctx.fillStyle = 'black';
+      ctx.font = `${fontSize}px Arial, sans-serif`;
+      ctx.textBaseline = 'top';
+      ctx.fillText(el.text || 'Text', x, y);
+    }
+
+    function drawBarcode(ctx, el, x, y) {
+      const text = el.data || '12345';
+      const height = (el.height || 80) * scale;
+      const barWidth = 2 * scale;
+      
+      // Simple Code128-like visualization
+      ctx.fillStyle = 'black';
+      let currentX = x;
+      
+      // Start pattern
+      for (let i = 0; i < text.length * 11; i++) {
+        if (Math.random() > 0.4) {
+          const w = barWidth * (Math.random() > 0.7 ? 2 : 1);
+          ctx.fillRect(currentX, y, w, height);
+        }
+        currentX += barWidth * 1.5;
+      }
+      
+      // Human readable
+      if (el.showText !== false) {
+        const fontSize = 14 * scale;
+        ctx.font = `${fontSize}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.fillText(text, x + (currentX - x) / 2, y + height + 5 * scale);
+        ctx.textAlign = 'left';
+      }
+    }
+
+    function drawQrCode(ctx, el, x, y) {
+      const size = (el.size || 100) * scale;
+      const cellSize = size / 21; // QR version 1 is 21x21
+      
+      ctx.fillStyle = 'black';
+      
+      // Draw finder patterns (corners)
+      drawFinderPattern(ctx, x, y, cellSize);
+      drawFinderPattern(ctx, x + size - 7 * cellSize, y, cellSize);
+      drawFinderPattern(ctx, x, y + size - 7 * cellSize, cellSize);
+      
+      // Draw random data pattern
+      for (let row = 0; row < 21; row++) {
+        for (let col = 0; col < 21; col++) {
+          // Skip finder pattern areas
+          if ((row < 8 && col < 8) || (row < 8 && col > 12) || (row > 12 && col < 8)) continue;
+          
+          if (Math.random() > 0.5) {
+            ctx.fillRect(x + col * cellSize, y + row * cellSize, cellSize, cellSize);
+          }
+        }
+      }
+    }
+
+    function drawFinderPattern(ctx, x, y, cellSize) {
+      // Outer black
+      ctx.fillStyle = 'black';
+      ctx.fillRect(x, y, 7 * cellSize, 7 * cellSize);
+      // Inner white
+      ctx.fillStyle = 'white';
+      ctx.fillRect(x + cellSize, y + cellSize, 5 * cellSize, 5 * cellSize);
+      // Center black
+      ctx.fillStyle = 'black';
+      ctx.fillRect(x + 2 * cellSize, y + 2 * cellSize, 3 * cellSize, 3 * cellSize);
+    }
+
+    function drawLine(ctx, el, x, y) {
+      const length = (el.length || 200) * scale;
+      const thickness = (el.thickness || 2) * scale;
+      
+      ctx.fillStyle = 'black';
+      
+      if (el.orientation === 'vertical') {
+        ctx.fillRect(x, y, thickness, length);
+      } else {
+        ctx.fillRect(x, y, length, thickness);
+      }
+    }
+
+    function drawBox(ctx, el, x, y) {
+      const width = (el.width || 200) * scale;
+      const height = (el.height || 100) * scale;
+      const thickness = (el.thickness || 2) * scale;
+      
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = thickness;
+      ctx.strokeRect(x + thickness/2, y + thickness/2, width - thickness, height - thickness);
+    }
+
+    function getElementBounds(el) {
+      switch (el.type) {
+        case 'text':
+          const fontSize = el.fontSize || 30;
+          const textWidth = (el.text || 'Text').length * fontSize * 0.6;
+          return { x: el.x, y: el.y, width: textWidth, height: fontSize };
+        case 'barcode128':
+          const barcodeWidth = (el.data || '12345').length * 11 * 3;
+          return { x: el.x, y: el.y, width: barcodeWidth, height: (el.height || 80) + 20 };
+        case 'qrcode':
+          const size = el.size || 100;
+          return { x: el.x, y: el.y, width: size, height: size };
+        case 'line':
+          const length = el.length || 200;
+          const thickness = el.thickness || 2;
+          if (el.orientation === 'vertical') {
+            return { x: el.x, y: el.y, width: thickness, height: length };
+          }
+          return { x: el.x, y: el.y, width: length, height: thickness };
+        case 'box':
+          return { x: el.x, y: el.y, width: el.width || 200, height: el.height || 100 };
+        default:
+          return { x: el.x, y: el.y, width: 50, height: 50 };
+      }
+    }
+
+    // ============================================
+    // Canvas Events (Drag & Drop)
+    // ============================================
+    function setupCanvasEvents() {
+      const canvas = document.getElementById('labelCanvas');
+      
+      canvas.addEventListener('mousedown', onCanvasMouseDown);
+      canvas.addEventListener('mousemove', onCanvasMouseMove);
+      canvas.addEventListener('mouseup', onCanvasMouseUp);
+      canvas.addEventListener('mouseleave', onCanvasMouseUp);
+      
+      // Touch support
+      canvas.addEventListener('touchstart', onCanvasTouchStart);
+      canvas.addEventListener('touchmove', onCanvasTouchMove);
+      canvas.addEventListener('touchend', onCanvasMouseUp);
+    }
+
+    function getCanvasCoords(e) {
+      const canvas = document.getElementById('labelCanvas');
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) / scale,
+        y: (e.clientY - rect.top) / scale
+      };
+    }
+
+    function onCanvasMouseDown(e) {
+      const coords = getCanvasCoords(e);
+      const clickedEl = findElementAt(coords.x, coords.y);
+      
+      if (clickedEl) {
+        selectElement(clickedEl.id);
+        isDragging = true;
+        dragOffset = {
+          x: coords.x - clickedEl.x,
+          y: coords.y - clickedEl.y
+        };
+      } else {
+        selectElement(null);
+      }
+    }
+
+    function onCanvasMouseMove(e) {
+      if (!isDragging || !selectedId) return;
+      
+      const coords = getCanvasCoords(e);
+      const el = elements.find(e => e.id === selectedId);
+      
+      if (el) {
+        el.x = Math.max(0, Math.round(coords.x - dragOffset.x));
+        el.y = Math.max(0, Math.round(coords.y - dragOffset.y));
+        updateCanvas();
+        updateProperties();
+      }
+    }
+
+    function onCanvasMouseUp() {
+      isDragging = false;
+    }
+
+    function onCanvasTouchStart(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      onCanvasMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+
+    function onCanvasTouchMove(e) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      onCanvasMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+
+    function findElementAt(x, y) {
+      // Check in reverse order (top elements first)
+      for (let i = elements.length - 1; i >= 0; i--) {
+        const el = elements[i];
+        const bounds = getElementBounds(el);
+        
+        if (x >= bounds.x && x <= bounds.x + bounds.width &&
+            y >= bounds.y && y <= bounds.y + bounds.height) {
+          return el;
+        }
+      }
+      return null;
+    }
+
+    // ============================================
+    // Element Management
+    // ============================================
+    function addElement(type) {
+      const el = {
+        id: nextId++,
+        type: type,
+        x: 50,
+        y: 50 + elements.length * 30,
+        rotation: 0
+      };
+      
+      switch (type) {
+        case 'text':
+          el.text = 'Text';
+          el.fontSize = 30;
+          break;
+        case 'barcode128':
+          el.data = '12345678';
+          el.height = 80;
+          el.showText = true;
+          break;
+        case 'qrcode':
+          el.data = 'https://example.com';
+          el.size = 100;
+          break;
+        case 'line':
+          el.length = 200;
+          el.thickness = 2;
+          el.orientation = 'horizontal';
+          break;
+        case 'box':
+          el.width = 200;
+          el.height = 100;
+          el.thickness = 2;
+          break;
+      }
+      
+      elements.push(el);
+      selectElement(el.id);
+      updateCanvas();
+    }
+
+    function selectElement(id) {
+      selectedId = id;
+      updateCanvas();
+      updateProperties();
+      updateElementList();
+    }
+
+    function deleteElement(id) {
+      elements = elements.filter(e => e.id !== id);
+      if (selectedId === id) selectedId = null;
+      updateCanvas();
+      updateProperties();
+    }
+
+    function clearCanvas() {
+      if (elements.length > 0 && !confirm('Clear all elements?')) return;
+      elements = [];
+      selectedId = null;
+      updateCanvas();
+      updateProperties();
+    }
+
+    // ============================================
+    // Properties Panel
+    // ============================================
+    function updateProperties() {
+      const container = document.getElementById('propertiesContent');
+      const el = elements.find(e => e.id === selectedId);
+      
+      if (!el) {
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.8rem;">Select an element to edit its properties</p>';
+        return;
+      }
+      
+      let html = `
+        <div class="property-row">
+          <div class="property-group">
+            <label>X Position</label>
+            <input type="number" value="${el.x}" onchange="updateElementProp(${el.id}, 'x', this.value)">
+          </div>
+          <div class="property-group">
+            <label>Y Position</label>
+            <input type="number" value="${el.y}" onchange="updateElementProp(${el.id}, 'y', this.value)">
+          </div>
+        </div>
+        <div class="property-group">
+          <label>Rotation</label>
+          <select onchange="updateElementProp(${el.id}, 'rotation', this.value)">
+            <option value="0" ${el.rotation === 0 ? 'selected' : ''}>0°</option>
+            <option value="90" ${el.rotation === 90 ? 'selected' : ''}>90°</option>
+            <option value="180" ${el.rotation === 180 ? 'selected' : ''}>180°</option>
+            <option value="270" ${el.rotation === 270 ? 'selected' : ''}>270°</option>
+          </select>
+        </div>
+      `;
+      
+      switch (el.type) {
+        case 'text':
+          html += `
+            <div class="property-group">
+              <label>Text</label>
+              <input type="text" value="${el.text}" style="width: 100%;" onchange="updateElementProp(${el.id}, 'text', this.value)">
+            </div>
+            <div class="property-group">
+              <label>Font Size (dots)</label>
+              <input type="number" value="${el.fontSize}" min="10" max="200" onchange="updateElementProp(${el.id}, 'fontSize', this.value)">
+            </div>
+          `;
+          break;
+        case 'barcode128':
+          html += `
+            <div class="property-group">
+              <label>Barcode Data</label>
+              <input type="text" value="${el.data}" style="width: 100%;" onchange="updateElementProp(${el.id}, 'data', this.value)">
+            </div>
+            <div class="property-group">
+              <label>Height (dots)</label>
+              <input type="number" value="${el.height}" min="20" max="300" onchange="updateElementProp(${el.id}, 'height', this.value)">
+            </div>
+            <div class="property-group">
+              <label>
+                <input type="checkbox" ${el.showText ? 'checked' : ''} onchange="updateElementProp(${el.id}, 'showText', this.checked)">
+                Show Text Below
+              </label>
+            </div>
+          `;
+          break;
+        case 'qrcode':
+          html += `
+            <div class="property-group">
+              <label>QR Data</label>
+              <input type="text" value="${el.data}" style="width: 100%;" onchange="updateElementProp(${el.id}, 'data', this.value)">
+            </div>
+            <div class="property-group">
+              <label>Size (dots)</label>
+              <input type="number" value="${el.size}" min="50" max="400" onchange="updateElementProp(${el.id}, 'size', this.value)">
+            </div>
+          `;
+          break;
+        case 'line':
+          html += `
+            <div class="property-group">
+              <label>Orientation</label>
+              <select onchange="updateElementProp(${el.id}, 'orientation', this.value)">
+                <option value="horizontal" ${el.orientation === 'horizontal' ? 'selected' : ''}>Horizontal</option>
+                <option value="vertical" ${el.orientation === 'vertical' ? 'selected' : ''}>Vertical</option>
+              </select>
+            </div>
+            <div class="property-row">
+              <div class="property-group">
+                <label>Length</label>
+                <input type="number" value="${el.length}" min="10" onchange="updateElementProp(${el.id}, 'length', this.value)">
+              </div>
+              <div class="property-group">
+                <label>Thickness</label>
+                <input type="number" value="${el.thickness}" min="1" max="20" onchange="updateElementProp(${el.id}, 'thickness', this.value)">
+              </div>
+            </div>
+          `;
+          break;
+        case 'box':
+          html += `
+            <div class="property-row">
+              <div class="property-group">
+                <label>Width</label>
+                <input type="number" value="${el.width}" min="10" onchange="updateElementProp(${el.id}, 'width', this.value)">
+              </div>
+              <div class="property-group">
+                <label>Height</label>
+                <input type="number" value="${el.height}" min="10" onchange="updateElementProp(${el.id}, 'height', this.value)">
+              </div>
+            </div>
+            <div class="property-group">
+              <label>Border Thickness</label>
+              <input type="number" value="${el.thickness}" min="1" max="20" onchange="updateElementProp(${el.id}, 'thickness', this.value)">
+            </div>
+          `;
+          break;
+      }
+      
+      container.innerHTML = html;
+    }
+
+    function updateElementProp(id, prop, value) {
+      const el = elements.find(e => e.id === id);
+      if (!el) return;
+      
+      // Type conversion
+      if (['x', 'y', 'fontSize', 'height', 'width', 'length', 'thickness', 'size', 'rotation'].includes(prop)) {
+        value = parseInt(value) || 0;
+      } else if (prop === 'showText') {
+        value = !!value;
+      }
+      
+      el[prop] = value;
+      updateCanvas();
+    }
+
+    // ============================================
+    // Element List
+    // ============================================
+    function updateElementList() {
+      const container = document.getElementById('elementList');
+      
+      if (elements.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.8rem;">No elements yet</p>';
+        return;
+      }
+      
+      const typeIcons = {
+        text: 'T',
+        barcode128: '║',
+        qrcode: '▣',
+        line: '─',
+        box: '□'
+      };
+      
+      const typeNames = {
+        text: 'Text',
+        barcode128: 'Barcode',
+        qrcode: 'QR Code',
+        line: 'Line',
+        box: 'Box'
+      };
+      
+      container.innerHTML = elements.map(el => `
+        <div class="element-item ${el.id === selectedId ? 'selected' : ''}" onclick="selectElement(${el.id})">
+          <span class="element-item-name">
+            <span>${typeIcons[el.type]}</span>
+            ${typeNames[el.type]}: ${el.text || el.data || ''}
+          </span>
+          <button class="element-item-delete" onclick="event.stopPropagation(); deleteElement(${el.id})">×</button>
+        </div>
+      `).join('');
+    }
+
+    // ============================================
+    // ZPL Generation
+    // ============================================
+    function generateZpl() {
+      let zpl = '^XA\n';
+      
+      // Label settings
+      zpl += `^PW${Math.round(labelWidth * dpi)}\n`; // Print width
+      zpl += `^LL${Math.round(labelHeight * dpi)}\n`; // Label length
+      
+      elements.forEach(el => {
+        zpl += elementToZpl(el);
+      });
+      
+      zpl += '^XZ';
+      
+      document.getElementById('zplCode').textContent = zpl;
+    }
+
+    function elementToZpl(el) {
+      let zpl = '';
+      const rotation = getZplRotation(el.rotation);
+      
+      switch (el.type) {
+        case 'text':
+          zpl += `^FO${el.x},${el.y}\n`;
+          zpl += `^A0${rotation},${el.fontSize},${el.fontSize}\n`;
+          zpl += `^FD${el.text}^FS\n`;
+          break;
+          
+        case 'barcode128':
+          zpl += `^FO${el.x},${el.y}\n`;
+          zpl += `^BC${rotation},${el.height},${el.showText ? 'Y' : 'N'},N,N\n`;
+          zpl += `^FD${el.data}^FS\n`;
+          break;
+          
+        case 'qrcode':
+          zpl += `^FO${el.x},${el.y}\n`;
+          const magnification = Math.round(el.size / 21);
+          zpl += `^BQN,2,${magnification}\n`;
+          zpl += `^FDQA,${el.data}^FS\n`;
+          break;
+          
+        case 'line':
+          zpl += `^FO${el.x},${el.y}\n`;
+          if (el.orientation === 'vertical') {
+            zpl += `^GB${el.thickness},${el.length},${el.thickness}^FS\n`;
+          } else {
+            zpl += `^GB${el.length},${el.thickness},${el.thickness}^FS\n`;
+          }
+          break;
+          
+        case 'box':
+          zpl += `^FO${el.x},${el.y}\n`;
+          zpl += `^GB${el.width},${el.height},${el.thickness}^FS\n`;
+          break;
+      }
+      
+      return zpl;
+    }
+
+    function getZplRotation(degrees) {
+      switch (degrees) {
+        case 90: return 'R';
+        case 180: return 'I';
+        case 270: return 'B';
+        default: return 'N';
+      }
+    }
+
+    // ============================================
+    // ZPL Import (Reverse Parsing)
+    // ============================================
+    function importZpl() {
+      const zplCode = document.getElementById('importZpl').value.trim();
+      
+      if (!zplCode) {
+        showToast('Please paste ZPL code to import', true);
+        return;
+      }
+      
+      try {
+        const parsedElements = parseZpl(zplCode);
+        
+        if (parsedElements.length === 0) {
+          showToast('No elements found in ZPL code', true);
+          return;
+        }
+        
+        // Add parsed elements
+        elements = parsedElements;
+        selectedId = null;
+        updateCanvas();
+        switchCodeTab('zpl');
+        showToast(`Imported ${parsedElements.length} element(s)`);
+        
+      } catch (error) {
+        console.error('ZPL Parse Error:', error);
+        showToast('Error parsing ZPL code', true);
+      }
+    }
+
+    function parseZpl(zpl) {
+      const parsed = [];
+      let currentX = 0;
+      let currentY = 0;
+      
+      // Remove ^XA and ^XZ
+      zpl = zpl.replace(/\^XA/gi, '').replace(/\^XZ/gi, '');
+      
+      // Split into commands
+      const commands = zpl.split('^').filter(c => c.trim());
+      
+      for (let i = 0; i < commands.length; i++) {
+        const cmd = commands[i].trim();
+        
+        // Field Origin
+        if (cmd.match(/^FO/i)) {
+          const match = cmd.match(/^FO(\d+),(\d+)/i);
+          if (match) {
+            currentX = parseInt(match[1]);
+            currentY = parseInt(match[2]);
+          }
+        }
+        
+        // Text (A0 font + FD field data)
+        else if (cmd.match(/^A0/i)) {
+          const fontMatch = cmd.match(/^A0([NRIB]?),?(\d+)?,?(\d+)?/i);
+          let fontSize = 30;
+          let rotation = 0;
+          
+          if (fontMatch) {
+            rotation = parseZplRotation(fontMatch[1]);
+            fontSize = parseInt(fontMatch[2]) || 30;
+          }
+          
+          // Look for FD in next commands
+          for (let j = i + 1; j < commands.length && j < i + 3; j++) {
+            const fdMatch = commands[j].match(/^FD(.+?)(\^FS)?$/i);
+            if (fdMatch) {
+              parsed.push({
+                id: nextId++,
+                type: 'text',
+                x: currentX,
+                y: currentY,
+                text: fdMatch[1],
+                fontSize: fontSize,
+                rotation: rotation
+              });
+              break;
+            }
+          }
+        }
+        
+        // Code 128 Barcode
+        else if (cmd.match(/^BC/i)) {
+          const bcMatch = cmd.match(/^BC([NRIB]?),?(\d+)?,?([YN])?,?([YN])?,?([YN])?/i);
+          let height = 80;
+          let rotation = 0;
+          let showText = true;
+          
+          if (bcMatch) {
+            rotation = parseZplRotation(bcMatch[1]);
+            height = parseInt(bcMatch[2]) || 80;
+            showText = bcMatch[3] !== 'N';
+          }
+          
+          // Look for FD
+          for (let j = i + 1; j < commands.length && j < i + 3; j++) {
+            const fdMatch = commands[j].match(/^FD(.+?)(\^FS)?$/i);
+            if (fdMatch) {
+              parsed.push({
+                id: nextId++,
+                type: 'barcode128',
+                x: currentX,
+                y: currentY,
+                data: fdMatch[1],
+                height: height,
+                showText: showText,
+                rotation: rotation
+              });
+              break;
+            }
+          }
+        }
+        
+        // QR Code
+        else if (cmd.match(/^BQ/i)) {
+          const bqMatch = cmd.match(/^BQ([NRIB]?),?(\d)?,?(\d+)?/i);
+          let size = 100;
+          
+          if (bqMatch && bqMatch[3]) {
+            size = parseInt(bqMatch[3]) * 21; // magnification to size
+          }
+          
+          // Look for FD with QA prefix
+          for (let j = i + 1; j < commands.length && j < i + 3; j++) {
+            const fdMatch = commands[j].match(/^FD(?:QA,)?(.+?)(\^FS)?$/i);
+            if (fdMatch) {
+              parsed.push({
+                id: nextId++,
+                type: 'qrcode',
+                x: currentX,
+                y: currentY,
+                data: fdMatch[1],
+                size: size,
+                rotation: 0
+              });
+              break;
+            }
+          }
+        }
+        
+        // Graphic Box (line or rectangle)
+        else if (cmd.match(/^GB/i)) {
+          const gbMatch = cmd.match(/^GB(\d+),(\d+),(\d+)/i);
+          if (gbMatch) {
+            const width = parseInt(gbMatch[1]);
+            const height = parseInt(gbMatch[2]);
+            const thickness = parseInt(gbMatch[3]);
+            
+            // Determine if it's a line or box
+            if (width <= thickness * 2 || height <= thickness * 2) {
+              // It's a line
+              parsed.push({
+                id: nextId++,
+                type: 'line',
+                x: currentX,
+                y: currentY,
+                length: Math.max(width, height),
+                thickness: thickness,
+                orientation: height > width ? 'vertical' : 'horizontal',
+                rotation: 0
+              });
+            } else {
+              // It's a box
+              parsed.push({
+                id: nextId++,
+                type: 'box',
+                x: currentX,
+                y: currentY,
+                width: width,
+                height: height,
+                thickness: thickness,
+                rotation: 0
+              });
+            }
+          }
+        }
+      }
+      
+      return parsed;
+    }
+
+    function parseZplRotation(char) {
+      switch ((char || 'N').toUpperCase()) {
+        case 'R': return 90;
+        case 'I': return 180;
+        case 'B': return 270;
+        default: return 0;
+      }
+    }
+
+    // ============================================
+    // Templates
+    // ============================================
+    function loadTemplate(name) {
+      if (elements.length > 0 && !confirm('Load template? This will replace current elements.')) {
+        return;
+      }
+      
+      elements = [];
+      nextId = 1;
+      
+      switch (name) {
+        case 'shipping':
+          elements = [
+            { id: nextId++, type: 'text', x: 50, y: 30, text: 'SHIP TO:', fontSize: 25, rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 70, text: 'John Smith', fontSize: 40, rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 120, text: '123 Main Street', fontSize: 30, rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 160, text: 'Anytown, ST 12345', fontSize: 30, rotation: 0 },
+            { id: nextId++, type: 'line', x: 50, y: 220, length: 700, thickness: 3, orientation: 'horizontal', rotation: 0 },
+            { id: nextId++, type: 'barcode128', x: 50, y: 250, data: '1Z999AA10123456784', height: 120, showText: true, rotation: 0 },
+            { id: nextId++, type: 'text', x: 500, y: 450, text: 'PRIORITY', fontSize: 50, rotation: 0 },
+            { id: nextId++, type: 'box', x: 480, y: 440, width: 280, height: 70, thickness: 3, rotation: 0 }
+          ];
+          break;
+          
+        case 'product':
+          elements = [
+            { id: nextId++, type: 'text', x: 50, y: 30, text: 'ACME CORP', fontSize: 35, rotation: 0 },
+            { id: nextId++, type: 'line', x: 50, y: 75, length: 300, thickness: 2, orientation: 'horizontal', rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 95, text: 'Widget Pro 3000', fontSize: 30, rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 140, text: 'SKU: WGT-PRO-3000', fontSize: 25, rotation: 0 },
+            { id: nextId++, type: 'barcode128', x: 50, y: 190, data: 'WGT-PRO-3000', height: 80, showText: true, rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 320, text: 'QTY: 1', fontSize: 30, rotation: 0 },
+            { id: nextId++, type: 'qrcode', x: 450, y: 100, data: 'https://acme.com/wgt-pro-3000', size: 150, rotation: 0 }
+          ];
+          break;
+          
+        case 'location':
+          elements = [
+            { id: nextId++, type: 'text', x: 100, y: 50, text: 'A-12-3', fontSize: 100, rotation: 0 },
+            { id: nextId++, type: 'line', x: 50, y: 170, length: 300, thickness: 3, orientation: 'horizontal', rotation: 0 },
+            { id: nextId++, type: 'text', x: 50, y: 190, text: 'Aisle A, Bay 12, Level 3', fontSize: 25, rotation: 0 },
+            { id: nextId++, type: 'barcode128', x: 50, y: 240, data: 'LOC-A-12-3', height: 70, showText: true, rotation: 0 }
+          ];
+          // Adjust for 4x2 size
+          document.getElementById('labelSize').value = '4x2';
+          updateLabelSize();
+          break;
+      }
+      
+      if (name !== 'location') {
+        document.getElementById('labelSize').value = '4x6';
+        updateLabelSize();
+      }
+      
+      selectedId = null;
+      updateCanvas();
+      showToast(`Loaded ${name} template`);
+    }
+
+    // ============================================
+    // Code Panel
+    // ============================================
+    function switchCodeTab(tab) {
+      document.querySelectorAll('.code-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.code-tab[onclick*="${tab}"]`).classList.add('active');
+      
+      document.getElementById('codeTab').classList.toggle('hidden', tab !== 'zpl');
+      document.getElementById('cheatsheetTab').classList.toggle('hidden', tab !== 'cheatsheet');
+      document.getElementById('importTab').classList.toggle('hidden', tab !== 'import');
+    }
+
+    function copyCode() {
+      const code = document.getElementById('zplCode').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast('ZPL code copied!');
+      });
+    }
+
+    function downloadCode() {
+      const code = document.getElementById('zplCode').textContent;
+      const blob = new Blob([code], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'label.zpl';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloaded label.zpl');
+    }
+
+    // ============================================
+    // Sample Data
+    // ============================================
+    const sampleData = {
+      ecommerce: {
+        size: '4x6',
+        elements: [
+          { id: 1, type: 'text', x: 50, y: 30, text: 'SHIP TO:', fontSize: 25, rotation: 0 },
+          { id: 2, type: 'text', x: 50, y: 70, text: 'Sarah Johnson', fontSize: 40, rotation: 0 },
+          { id: 3, type: 'text', x: 50, y: 120, text: '742 Evergreen Terrace', fontSize: 28, rotation: 0 },
+          { id: 4, type: 'text', x: 50, y: 155, text: 'Springfield, IL 62701', fontSize: 28, rotation: 0 },
+          { id: 5, type: 'line', x: 50, y: 210, length: 710, thickness: 2, orientation: 'horizontal', rotation: 0 },
+          { id: 6, type: 'text', x: 50, y: 230, text: 'ORDER #WH-2024-78432', fontSize: 22, rotation: 0 },
+          { id: 7, type: 'barcode128', x: 50, y: 280, data: '1Z999AA10123456784', height: 120, showText: true, rotation: 0 },
+          { id: 8, type: 'text', x: 50, y: 450, text: 'WEIGHT: 2.4 LBS', fontSize: 22, rotation: 0 },
+          { id: 9, type: 'box', x: 500, y: 420, width: 260, height: 70, thickness: 3, rotation: 0 },
+          { id: 10, type: 'text', x: 530, y: 440, text: '2-DAY AIR', fontSize: 40, rotation: 0 },
+          { id: 11, type: 'qrcode', x: 550, y: 230, data: 'https://track.example.com/WH-2024-78432', size: 120, rotation: 0 }
+        ]
+      },
+      warehouse: {
+        size: '4x4',
+        elements: [
+          { id: 1, type: 'text', x: 50, y: 30, text: 'RECEIVING', fontSize: 45, rotation: 0 },
+          { id: 2, type: 'line', x: 50, y: 85, length: 710, thickness: 3, orientation: 'horizontal', rotation: 0 },
+          { id: 3, type: 'text', x: 50, y: 110, text: 'PO# 4500892341', fontSize: 32, rotation: 0 },
+          { id: 4, type: 'text', x: 50, y: 155, text: 'VENDOR: Acme Supply Co.', fontSize: 24, rotation: 0 },
+          { id: 5, type: 'text', x: 50, y: 195, text: 'SKU: ACM-WDG-5000', fontSize: 28, rotation: 0 },
+          { id: 6, type: 'text', x: 50, y: 235, text: 'DESC: Industrial Widget 5000', fontSize: 22, rotation: 0 },
+          { id: 7, type: 'box', x: 50, y: 280, width: 200, height: 60, thickness: 2, rotation: 0 },
+          { id: 8, type: 'text', x: 75, y: 295, text: 'QTY: 48 EA', fontSize: 32, rotation: 0 },
+          { id: 9, type: 'barcode128', x: 50, y: 370, data: 'RCV-4500892341-001', height: 90, showText: true, rotation: 0 },
+          { id: 10, type: 'text', x: 450, y: 110, text: 'DATE:', fontSize: 20, rotation: 0 },
+          { id: 11, type: 'text', x: 450, y: 135, text: '12/29/2024', fontSize: 28, rotation: 0 },
+          { id: 12, type: 'text', x: 450, y: 195, text: 'DOCK: B-7', fontSize: 35, rotation: 0 }
+        ]
+      },
+      retail: {
+        size: '2x1',
+        elements: [
+          { id: 1, type: 'text', x: 20, y: 10, text: 'GADGET WORLD', fontSize: 18, rotation: 0 },
+          { id: 2, type: 'text', x: 20, y: 35, text: 'Wireless Earbuds Pro', fontSize: 20, rotation: 0 },
+          { id: 3, type: 'text', x: 20, y: 65, text: 'SKU: GW-WEP-2024', fontSize: 14, rotation: 0 },
+          { id: 4, type: 'barcode128', x: 20, y: 90, data: '819239012847', height: 50, showText: true, rotation: 0 },
+          { id: 5, type: 'text', x: 280, y: 25, text: '$79.99', fontSize: 40, rotation: 0 },
+          { id: 6, type: 'line', x: 260, y: 10, length: 150, thickness: 1, orientation: 'horizontal', rotation: 0 },
+          { id: 7, type: 'line', x: 260, y: 75, length: 150, thickness: 1, orientation: 'horizontal', rotation: 0 }
+        ]
+      },
+      inventory: {
+        size: '4x2',
+        elements: [
+          { id: 1, type: 'text', x: 50, y: 25, text: 'CYCLE COUNT', fontSize: 35, rotation: 0 },
+          { id: 2, type: 'text', x: 450, y: 30, text: 'Zone: A-12', fontSize: 28, rotation: 0 },
+          { id: 3, type: 'line', x: 50, y: 70, length: 710, thickness: 2, orientation: 'horizontal', rotation: 0 },
+          { id: 4, type: 'text', x: 50, y: 90, text: 'LOCATION:', fontSize: 20, rotation: 0 },
+          { id: 5, type: 'text', x: 50, y: 115, text: 'A-12-B-03', fontSize: 60, rotation: 0 },
+          { id: 6, type: 'barcode128', x: 50, y: 200, data: 'LOC-A12B03', height: 70, showText: true, rotation: 0 },
+          { id: 7, type: 'text', x: 400, y: 90, text: 'BIN TYPE: Reserve', fontSize: 18, rotation: 0 },
+          { id: 8, type: 'text', x: 400, y: 120, text: 'CAPACITY: 50 CS', fontSize: 18, rotation: 0 },
+          { id: 9, type: 'qrcode', x: 550, y: 170, data: 'INV:A-12-B-03:2024-12-29', size: 100, rotation: 0 },
+          { id: 10, type: 'text', x: 400, y: 150, text: 'COUNT DATE: _______', fontSize: 16, rotation: 0 }
+        ]
+      }
+    };
+
+    function loadSampleData(type) {
+      const sample = sampleData[type];
+      if (!sample) return;
+
+      // Set label size
+      document.getElementById('labelSize').value = sample.size;
+      updateLabelSize();
+
+      // Load elements
+      elements = sample.elements.map(el => ({ ...el }));
+      nextId = Math.max(...elements.map(e => e.id)) + 1;
+      selectedId = null;
+      
+      updateCanvas();
+      showToast(`Loaded ${type} sample data`);
+    }
+
+    // ============================================
+    // Utility
+    // ============================================
+    function showToast(message, isError = false) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+      
+      const toast = document.createElement('div');
+      toast.className = 'toast' + (isError ? ' error' : '');
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Initialize
+    init();
+  </script>
+</body>
+</html>
