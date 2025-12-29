@@ -394,12 +394,14 @@
   /* Optimize for print */
   body {
     background: white;
+    color: black;
   }
 
   .section,
   .results-card {
     box-shadow: none;
-    border: 1px solid #000;
+    border: 1px solid #ccc;
+    background: white;
     page-break-inside: avoid;
   }
 
@@ -409,8 +411,13 @@
 
   .results-table th {
     background: #f0f0f0 !important;
+    color: black !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .results-table td {
+    color: black !important;
   }
 
   /* Preserve colors for badges */
@@ -424,6 +431,7 @@
   /* Page breaks */
   h2, h3 {
     page-break-after: avoid;
+    color: black;
   }
 
   .results-table tbody tr {
