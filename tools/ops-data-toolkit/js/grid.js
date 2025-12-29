@@ -50,7 +50,6 @@ export class DataGrid {
      * Render empty state
      */
     renderEmpty() {
-        console.log('DataGrid.renderEmpty() called');
         this.container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">📊</div>
@@ -59,41 +58,44 @@ export class DataGrid {
                 <div class="empty-actions">
                     <button id="importPrompt" class="btn-primary">Import CSV</button>
                     <span class="empty-or">or</span>
-                    <button id="trySamplePrompt" class="btn-secondary">Try Sample Data</button>
+                    <div class="sample-dropdown inline-dropdown" id="inlineSampleDropdown">
+                        <button id="inlineSampleBtn" class="btn-secondary">📋 Try Sample Data ▾</button>
+                        <div class="sample-menu" id="inlineSampleMenu">
+                            <div class="sample-menu-header">Load sample data to explore:</div>
+                            <button data-sample="cycle-count">🔄 Cycle Count Reconciliation</button>
+                            <button data-sample="receiving">📦 Receiving Discrepancies</button>
+                            <button data-sample="duplicates">👯 Duplicate SKUs</button>
+                            <button data-sample="validation">⚠️ Data Quality Issues</button>
+                            <button data-sample="lookup">🔍 Price Lookup</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
         
-        // Re-attach event listeners for dynamically created buttons
-        const importBtn = document.getElementById('importPrompt');
-        const sampleBtn = document.getElementById('trySamplePrompt');
+        // Attach event listeners for dynamically created elements
+        document.getElementById('importPrompt')?.addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
         
-        console.log('importPrompt element:', importBtn);
-        console.log('trySamplePrompt element:', sampleBtn);
+        const inlineSampleBtn = document.getElementById('inlineSampleBtn');
+        const inlineSampleMenu = document.getElementById('inlineSampleMenu');
         
-        if (importBtn) {
-            importBtn.addEventListener('click', () => {
-                console.log('Import button clicked');
-                document.getElementById('fileInput').click();
+        if (inlineSampleBtn && inlineSampleMenu) {
+            inlineSampleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                inlineSampleMenu.classList.toggle('show');
             });
-        }
-        
-        if (sampleBtn) {
-            sampleBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent document click from immediately closing
-                console.log('Try Sample Data button clicked');
-                // Directly toggle the dropdown menu with slight delay
-                setTimeout(() => {
-                    const sampleMenu = document.getElementById('sampleMenu');
-                    if (sampleMenu) {
-                        sampleMenu.classList.add('show');
-                        // Scroll the header dropdown into view
-                        const headerSampleBtn = document.getElementById('loadSample');
-                        if (headerSampleBtn) {
-                            headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                        }
-                    }
-                }, 10);
+            
+            // We need to import handleLoadSample or dispatch a custom event
+            // For now, dispatch event that app.js listens for
+            inlineSampleMenu.querySelectorAll('button[data-sample]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const sampleKey = e.currentTarget.dataset.sample;
+                    // Dispatch custom event for app.js to handle
+                    window.dispatchEvent(new CustomEvent('loadSample', { detail: sampleKey }));
+                    inlineSampleMenu.classList.remove('show');
+                });
             });
         }
     }

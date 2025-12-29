@@ -604,6 +604,14 @@ button:active:not(:disabled) {
     position: relative;
 }
 
+/* Inline dropdown (in empty state) - opens upward */
+.sample-dropdown.inline-dropdown .sample-menu {
+    bottom: 100%;
+    top: auto;
+    margin-bottom: 4px;
+    margin-top: 0;
+}
+
 .sample-menu {
     position: absolute;
     top: 100%;
