@@ -279,6 +279,7 @@ a:hover {
 .tool-card h3 {
   margin-bottom: var(--space-xs);
   color: var(--text);
+  padding-right: 5rem;
 }
 
 .tag {
