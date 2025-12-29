@@ -50,6 +50,7 @@ export class DataGrid {
      * Render empty state
      */
     renderEmpty() {
+        console.log('DataGrid.renderEmpty() called');
         this.container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-icon">📊</div>
@@ -64,17 +65,30 @@ export class DataGrid {
         `;
         
         // Re-attach event listeners for dynamically created buttons
-        document.getElementById('importPrompt')?.addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
+        const importBtn = document.getElementById('importPrompt');
+        const sampleBtn = document.getElementById('trySamplePrompt');
         
-        document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
-            const sampleBtn = document.getElementById('loadSample');
-            if (sampleBtn) {
-                sampleBtn.click();
-                sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-        });
+        console.log('importPrompt element:', importBtn);
+        console.log('trySamplePrompt element:', sampleBtn);
+        
+        if (importBtn) {
+            importBtn.addEventListener('click', () => {
+                console.log('Import button clicked');
+                document.getElementById('fileInput').click();
+            });
+        }
+        
+        if (sampleBtn) {
+            sampleBtn.addEventListener('click', () => {
+                console.log('Try Sample Data button clicked');
+                const headerSampleBtn = document.getElementById('loadSample');
+                console.log('Header sample button:', headerSampleBtn);
+                if (headerSampleBtn) {
+                    headerSampleBtn.click();
+                    headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+        }
     }
     
     /**
