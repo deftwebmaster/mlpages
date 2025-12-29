@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Encode & Hash | Base64, URL Encode, SHA256, MD5</title>
+  <meta name="description" content="Encode and decode Base64, URL components, and generate hashes (MD5, SHA-1, SHA-256, SHA-512). Free, private, runs locally in your browser.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .trust-badge span {
+      color: var(--accent);
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.25rem;
+      margin-bottom: 1.5rem;
+      background: var(--bg-secondary);
+      padding: 0.375rem;
+      border-radius: var(--radius);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.25rem;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .tab-btn .tab-icon {
+      font-size: 1.1rem;
+    }
+
+    /* Main Panel */
+    .tool-panel {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Text Areas */
+    .input-group {
+      margin-bottom: 1rem;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      padding: 1rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      resize: vertical;
+      transition: all 0.2s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    textarea.output {
+      background: var(--bg-card);
+      min-height: 100px;
+    }
+
+    /* File Drop Zone */
+    .file-drop {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 1rem;
+    }
+
+    .file-drop:hover,
+    .file-drop.dragover {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.05);
+    }
+
+    .file-drop-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.7;
+    }
+
+    .file-drop p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .file-drop input {
+      display: none;
+    }
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+    }
+
+    .file-info-icon {
+      font-size: 1.5rem;
+    }
+
+    .file-info-details {
+      flex: 1;
+    }
+
+    .file-info-name {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .file-info-size {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .file-info-remove {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .file-info-remove:hover {
+      color: var(--danger);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-input);
+      border-color: var(--accent);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Button Groups */
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    /* Direction Toggle */
+    .direction-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+    }
+
+    .direction-toggle span {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .direction-toggle span.active-direction {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .toggle-btn {
+      width: 50px;
+      height: 28px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn::before {
+      content: '⇄';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .toggle-btn:hover {
+      border-color: var(--accent);
+    }
+
+    /* Hash Options */
+    .hash-options {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .hash-option {
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .hash-option:hover {
+      border-color: var(--accent);
+    }
+
+    .hash-option.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Hash Results */
+    .hash-results {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .hash-result {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+    }
+
+    .hash-result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .hash-result-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hash-result-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-primary);
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    /* Status Messages */
+    .status {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .status-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+    }
+
+    .status-info {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--accent);
+    }
+
+    /* Byte Counter */
+    .byte-counter {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Compare Section */
+    .compare-section {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .compare-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .compare-inputs input {
+      padding: 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .compare-inputs input:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .compare-result {
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .compare-match {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+
+    .compare-mismatch {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+      }
+
+      .tab-nav {
+        width: 100%;
+      }
+
+      .tab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      .tab-btn .tab-label {
+        display: none;
+      }
+
+      .action-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-group {
+        justify-content: center;
+      }
+
+      .compare-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">#</div>
+        <h1>Encode & Hash</h1>
+      </div>
+      <p class="tagline">Base64, URL encoding, and hash generation in one place</p>
+      <div class="trust-badges">
+        <div class="trust-badge"><span>🔒</span> 100% Private</div>
+        <div class="trust-badge"><span>💻</span> Runs Locally</div>
+        <div class="trust-badge"><span>⚡</span> Instant Results</div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="base64">
+        <span class="tab-icon">📦</span>
+        <span class="tab-label">Base64</span>
+      </button>
+      <button class="tab-btn" data-tab="url">
+        <span class="tab-icon">🔗</span>
+        <span class="tab-label">URL</span>
+      </button>
+      <button class="tab-btn" data-tab="hash">
+        <span class="tab-icon">#️⃣</span>
+        <span class="tab-label">Hash</span>
+      </button>
+    </nav>
+
+    <div class="tool-panel">
+      <!-- Base64 Tab -->
+      <div id="base64" class="tab-content active">
+        <div class="section-header">
+          <div class="section-title">📦 Base64 Encode / Decode</div>
+          <div class="direction-toggle">
+            <span id="base64EncodeLabel" class="active-direction">Encode</span>
+            <button class="toggle-btn" id="base64Toggle" onclick="toggleBase64Direction()"></button>
+            <span id="base64DecodeLabel">Decode</span>
+          </div>
+        </div>
+
+        <!-- File Upload -->
+        <div class="file-drop" id="base64FileDrop">
+          <div class="file-drop-icon">📁</div>
+          <p>Drop a file here or click to upload</p>
+          <input type="file" id="base64FileInput">
+        </div>
+        <div class="file-info hidden" id="base64FileInfo">
+          <span class="file-info-icon">📄</span>
+          <div class="file-info-details">
+            <div class="file-info-name" id="base64FileName">file.txt</div>
+            <div class="file-info-size" id="base64FileSize">0 KB</div>
+          </div>
+          <button class="file-info-remove" onclick="clearBase64File()">×</button>
+        </div>
+
+        <div class="input-group">
+          <div class="section-header">
+            <label for="base64Input" id="base64InputLabel">Text to encode</label>
+            <span class="byte-counter" id="base64InputBytes">0 bytes</span>
+          </div>
+          <textarea id="base64Input" placeholder="Enter text or drop a file above..."></textarea>
+        </div>
+
+        <div class="action-row">
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="processBase64()">
+              <span id="base64ActionText">Encode</span>
+            </button>
+            <button class="btn btn-secondary" onclick="clearBase64()">Clear</button>
+          </div>
+          <label class="trust-badge" style="cursor: pointer;">
+            <input type="checkbox" id="base64UrlSafe" style="margin-right: 0.25rem;">
+            URL-safe Base64
+          </label>
+        </div>
+
+        <div class="input-group">
+          <div class="section-header">
+            <label for="base64Output" id="base64OutputLabel">Encoded result</label>
+            <span class="byte-counter" id="base64OutputBytes">0 bytes</span>
+          </div>
+          <textarea id="base64Output" class="output" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('base64Output')">📋 Copy</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadBase64Output()">💾 Download</button>
+        </div>
+
+        <div id="base64Status"></div>
+      </div>
+
+      <!-- URL Encode Tab -->
+      <div id="url" class="tab-content">
+        <div class="section-header">
+          <div class="section-title">🔗 URL Encode / Decode</div>
+          <div class="direction-toggle">
+            <span id="urlEncodeLabel" class="active-direction">Encode</span>
+            <button class="toggle-btn" id="urlToggle" onclick="toggleUrlDirection()"></button>
+            <span id="urlDecodeLabel">Decode</span>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="section-header">
+            <label for="urlInput" id="urlInputLabel">Text to encode</label>
+            <span class="byte-counter" id="urlInputBytes">0 chars</span>
+          </div>
+          <textarea id="urlInput" placeholder="Enter text or URL to encode..."></textarea>
+        </div>
+
+        <div class="action-row">
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="processUrl()">
+              <span id="urlActionText">Encode</span>
+            </button>
+            <button class="btn btn-secondary" onclick="clearUrl()">Clear</button>
+          </div>
+          <div class="btn-group">
+            <button class="btn btn-secondary btn-sm" onclick="encodeUrlComponent()">encodeURIComponent</button>
+            <button class="btn btn-secondary btn-sm" onclick="encodeFullUrl()">encodeURI</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="section-header">
+            <label for="urlOutput" id="urlOutputLabel">Encoded result</label>
+            <span class="byte-counter" id="urlOutputBytes">0 chars</span>
+          </div>
+          <textarea id="urlOutput" class="output" readonly placeholder="Result will appear here..."></textarea>
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('urlOutput')">📋 Copy</button>
+        </div>
+
+        <div id="urlStatus"></div>
+      </div>
+
+      <!-- Hash Tab -->
+      <div id="hash" class="tab-content">
+        <div class="section-header">
+          <div class="section-title">#️⃣ Hash Generator</div>
+        </div>
+
+        <!-- File Upload for Hash -->
+        <div class="file-drop" id="hashFileDrop">
+          <div class="file-drop-icon">📁</div>
+          <p>Drop a file to hash, or enter text below</p>
+          <input type="file" id="hashFileInput">
+        </div>
+        <div class="file-info hidden" id="hashFileInfo">
+          <span class="file-info-icon">📄</span>
+          <div class="file-info-details">
+            <div class="file-info-name" id="hashFileName">file.txt</div>
+            <div class="file-info-size" id="hashFileSize">0 KB</div>
+          </div>
+          <button class="file-info-remove" onclick="clearHashFile()">×</button>
+        </div>
+
+        <div class="input-group">
+          <div class="section-header">
+            <label for="hashInput">Text to hash</label>
+            <span class="byte-counter" id="hashInputBytes">0 bytes</span>
+          </div>
+          <textarea id="hashInput" placeholder="Enter text or drop a file above..."></textarea>
+        </div>
+
+        <div class="section-header" style="margin-top: 1rem;">
+          <span class="section-title">Select algorithms</span>
+        </div>
+        <div class="hash-options">
+          <button class="hash-option active" data-algo="MD5">MD5</button>
+          <button class="hash-option active" data-algo="SHA-1">SHA-1</button>
+          <button class="hash-option active" data-algo="SHA-256">SHA-256</button>
+          <button class="hash-option" data-algo="SHA-384">SHA-384</button>
+          <button class="hash-option" data-algo="SHA-512">SHA-512</button>
+        </div>
+
+        <div class="action-row">
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateHashes()">Generate Hashes</button>
+            <button class="btn btn-secondary" onclick="clearHash()">Clear</button>
+          </div>
+          <label class="trust-badge" style="cursor: pointer;">
+            <input type="checkbox" id="hashUppercase" style="margin-right: 0.25rem;">
+            Uppercase output
+          </label>
+        </div>
+
+        <div class="hash-results" id="hashResults">
+          <!-- Results generated dynamically -->
+        </div>
+
+        <!-- Hash Compare -->
+        <div class="compare-section">
+          <div class="section-title" style="margin-bottom: 0.75rem;">🔍 Compare Hashes</div>
+          <div class="compare-inputs">
+            <input type="text" id="compareHash1" placeholder="First hash...">
+            <input type="text" id="compareHash2" placeholder="Second hash...">
+          </div>
+          <button class="btn btn-secondary" onclick="compareHashes()" style="width: 100%;">Compare</button>
+          <div id="compareResult" class="hidden"></div>
+        </div>
+
+        <div id="hashStatus"></div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // Tab Navigation
+    // ============================================
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ============================================
+    // Hash Options Toggle
+    // ============================================
+    document.querySelectorAll('.hash-option').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+      });
+    });
+
+    // ============================================
+    // Base64 Tab
+    // ============================================
+    let base64Direction = 'encode';
+    let base64File = null;
+
+    function toggleBase64Direction() {
+      base64Direction = base64Direction === 'encode' ? 'decode' : 'encode';
+      updateBase64Labels();
+    }
+
+    function updateBase64Labels() {
+      const isEncode = base64Direction === 'encode';
+      document.getElementById('base64EncodeLabel').classList.toggle('active-direction', isEncode);
+      document.getElementById('base64DecodeLabel').classList.toggle('active-direction', !isEncode);
+      document.getElementById('base64InputLabel').textContent = isEncode ? 'Text to encode' : 'Base64 to decode';
+      document.getElementById('base64OutputLabel').textContent = isEncode ? 'Encoded result' : 'Decoded result';
+      document.getElementById('base64ActionText').textContent = isEncode ? 'Encode' : 'Decode';
+      document.getElementById('base64Input').placeholder = isEncode ? 'Enter text or drop a file above...' : 'Enter Base64 string to decode...';
+    }
+
+    // File handling
+    const base64FileDrop = document.getElementById('base64FileDrop');
+    const base64FileInput = document.getElementById('base64FileInput');
+
+    base64FileDrop.addEventListener('click', () => base64FileInput.click());
+    base64FileDrop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      base64FileDrop.classList.add('dragover');
+    });
+    base64FileDrop.addEventListener('dragleave', () => base64FileDrop.classList.remove('dragover'));
+    base64FileDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      base64FileDrop.classList.remove('dragover');
+      handleBase64File(e.dataTransfer.files[0]);
+    });
+    base64FileInput.addEventListener('change', (e) => handleBase64File(e.target.files[0]));
+
+    function handleBase64File(file) {
+      if (!file) return;
+      base64File = file;
+      
+      document.getElementById('base64FileName').textContent = file.name;
+      document.getElementById('base64FileSize').textContent = formatBytes(file.size);
+      document.getElementById('base64FileInfo').classList.remove('hidden');
+      base64FileDrop.classList.add('hidden');
+      
+      // Read file and put in input
+      const reader = new FileReader();
+      if (base64Direction === 'encode') {
+        reader.onload = (e) => {
+          // For encoding, we'll handle the raw bytes
+          const base64 = e.target.result.split(',')[1];
+          document.getElementById('base64Output').value = base64;
+          updateBase64Bytes();
+          showStatus('base64Status', 'success', `✓ File encoded to Base64 (${formatBytes(base64.length)})`);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        reader.onload = (e) => {
+          document.getElementById('base64Input').value = e.target.result;
+          updateBase64Bytes();
+        };
+        reader.readAsText(file);
+      }
+    }
+
+    function clearBase64File() {
+      base64File = null;
+      base64FileInput.value = '';
+      document.getElementById('base64FileInfo').classList.add('hidden');
+      base64FileDrop.classList.remove('hidden');
+    }
+
+    function processBase64() {
+      const input = document.getElementById('base64Input').value;
+      const urlSafe = document.getElementById('base64UrlSafe').checked;
+      
+      if (!input.trim()) {
+        showStatus('base64Status', 'error', '❌ Please enter some text');
+        return;
+      }
+
+      try {
+        let result;
+        if (base64Direction === 'encode') {
+          result = btoa(unescape(encodeURIComponent(input)));
+          if (urlSafe) {
+            result = result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+          }
+        } else {
+          let toDecode = input;
+          if (urlSafe) {
+            toDecode = input.replace(/-/g, '+').replace(/_/g, '/');
+            while (toDecode.length % 4) toDecode += '=';
+          }
+          result = decodeURIComponent(escape(atob(toDecode)));
+        }
+        
+        document.getElementById('base64Output').value = result;
+        updateBase64Bytes();
+        showStatus('base64Status', 'success', `✓ ${base64Direction === 'encode' ? 'Encoded' : 'Decoded'} successfully`);
+      } catch (e) {
+        showStatus('base64Status', 'error', `❌ Error: ${e.message}`);
+      }
+    }
+
+    function clearBase64() {
+      document.getElementById('base64Input').value = '';
+      document.getElementById('base64Output').value = '';
+      document.getElementById('base64Status').innerHTML = '';
+      clearBase64File();
+      updateBase64Bytes();
+    }
+
+    function updateBase64Bytes() {
+      const input = document.getElementById('base64Input').value;
+      const output = document.getElementById('base64Output').value;
+      document.getElementById('base64InputBytes').textContent = formatBytes(new Blob([input]).size);
+      document.getElementById('base64OutputBytes').textContent = formatBytes(new Blob([output]).size);
+    }
+
+    document.getElementById('base64Input').addEventListener('input', updateBase64Bytes);
+
+    function downloadBase64Output() {
+      const output = document.getElementById('base64Output').value;
+      if (!output) return;
+      
+      const blob = new Blob([output], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = base64Direction === 'encode' ? 'encoded.txt' : 'decoded.txt';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // ============================================
+    // URL Encode Tab
+    // ============================================
+    let urlDirection = 'encode';
+
+    function toggleUrlDirection() {
+      urlDirection = urlDirection === 'encode' ? 'decode' : 'encode';
+      updateUrlLabels();
+    }
+
+    function updateUrlLabels() {
+      const isEncode = urlDirection === 'encode';
+      document.getElementById('urlEncodeLabel').classList.toggle('active-direction', isEncode);
+      document.getElementById('urlDecodeLabel').classList.toggle('active-direction', !isEncode);
+      document.getElementById('urlInputLabel').textContent = isEncode ? 'Text to encode' : 'URL to decode';
+      document.getElementById('urlOutputLabel').textContent = isEncode ? 'Encoded result' : 'Decoded result';
+      document.getElementById('urlActionText').textContent = isEncode ? 'Encode' : 'Decode';
+    }
+
+    function processUrl() {
+      const input = document.getElementById('urlInput').value;
+      
+      if (!input.trim()) {
+        showStatus('urlStatus', 'error', '❌ Please enter some text');
+        return;
+      }
+
+      try {
+        let result;
+        if (urlDirection === 'encode') {
+          result = encodeURIComponent(input);
+        } else {
+          result = decodeURIComponent(input);
+        }
+        
+        document.getElementById('urlOutput').value = result;
+        updateUrlBytes();
+        showStatus('urlStatus', 'success', `✓ ${urlDirection === 'encode' ? 'Encoded' : 'Decoded'} successfully`);
+      } catch (e) {
+        showStatus('urlStatus', 'error', `❌ Error: ${e.message}`);
+      }
+    }
+
+    function encodeUrlComponent() {
+      const input = document.getElementById('urlInput').value;
+      if (!input) return;
+      document.getElementById('urlOutput').value = encodeURIComponent(input);
+      updateUrlBytes();
+      showStatus('urlStatus', 'info', 'ℹ️ Used encodeURIComponent (encodes all special chars)');
+    }
+
+    function encodeFullUrl() {
+      const input = document.getElementById('urlInput').value;
+      if (!input) return;
+      document.getElementById('urlOutput').value = encodeURI(input);
+      updateUrlBytes();
+      showStatus('urlStatus', 'info', 'ℹ️ Used encodeURI (preserves URL structure chars like :/?#)');
+    }
+
+    function clearUrl() {
+      document.getElementById('urlInput').value = '';
+      document.getElementById('urlOutput').value = '';
+      document.getElementById('urlStatus').innerHTML = '';
+      updateUrlBytes();
+    }
+
+    function updateUrlBytes() {
+      document.getElementById('urlInputBytes').textContent = document.getElementById('urlInput').value.length + ' chars';
+      document.getElementById('urlOutputBytes').textContent = document.getElementById('urlOutput').value.length + ' chars';
+    }
+
+    document.getElementById('urlInput').addEventListener('input', updateUrlBytes);
+
+    // ============================================
+    // Hash Tab
+    // ============================================
+    let hashFile = null;
+
+    // File handling
+    const hashFileDrop = document.getElementById('hashFileDrop');
+    const hashFileInput = document.getElementById('hashFileInput');
+
+    hashFileDrop.addEventListener('click', () => hashFileInput.click());
+    hashFileDrop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      hashFileDrop.classList.add('dragover');
+    });
+    hashFileDrop.addEventListener('dragleave', () => hashFileDrop.classList.remove('dragover'));
+    hashFileDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      hashFileDrop.classList.remove('dragover');
+      handleHashFile(e.dataTransfer.files[0]);
+    });
+    hashFileInput.addEventListener('change', (e) => handleHashFile(e.target.files[0]));
+
+    function handleHashFile(file) {
+      if (!file) return;
+      hashFile = file;
+      
+      document.getElementById('hashFileName').textContent = file.name;
+      document.getElementById('hashFileSize').textContent = formatBytes(file.size);
+      document.getElementById('hashFileInfo').classList.remove('hidden');
+      hashFileDrop.classList.add('hidden');
+      document.getElementById('hashInput').value = '';
+      document.getElementById('hashInput').placeholder = `File loaded: ${file.name}`;
+      updateHashBytes();
+    }
+
+    function clearHashFile() {
+      hashFile = null;
+      hashFileInput.value = '';
+      document.getElementById('hashFileInfo').classList.add('hidden');
+      hashFileDrop.classList.remove('hidden');
+      document.getElementById('hashInput').placeholder = 'Enter text or drop a file above...';
+    }
+
+    async function generateHashes() {
+      const input = document.getElementById('hashInput').value;
+      const uppercase = document.getElementById('hashUppercase').checked;
+      
+      // Get selected algorithms
+      const selectedAlgos = Array.from(document.querySelectorAll('.hash-option.active'))
+        .map(btn => btn.dataset.algo);
+      
+      if (selectedAlgos.length === 0) {
+        showStatus('hashStatus', 'error', '❌ Please select at least one algorithm');
+        return;
+      }
+
+      if (!input.trim() && !hashFile) {
+        showStatus('hashStatus', 'error', '❌ Please enter text or upload a file');
+        return;
+      }
+
+      const resultsContainer = document.getElementById('hashResults');
+      resultsContainer.innerHTML = '<div class="status status-info">⏳ Generating hashes...</div>';
+
+      try {
+        let data;
+        if (hashFile) {
+          data = await hashFile.arrayBuffer();
+        } else {
+          data = new TextEncoder().encode(input);
+        }
+
+        const results = {};
+        
+        for (const algo of selectedAlgos) {
+          if (algo === 'MD5') {
+            results[algo] = await md5(data);
+          } else {
+            const hashBuffer = await crypto.subtle.digest(algo, data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            results[algo] = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+          }
+          
+          if (uppercase) {
+            results[algo] = results[algo].toUpperCase();
+          }
+        }
+
+        // Display results
+        resultsContainer.innerHTML = '';
+        for (const [algo, hash] of Object.entries(results)) {
+          const div = document.createElement('div');
+          div.className = 'hash-result';
+          div.innerHTML = `
+            <div class="hash-result-header">
+              <span class="hash-result-label">${algo}</span>
+              <button class="btn btn-secondary btn-sm" onclick="copyHash('${hash}')">📋 Copy</button>
+            </div>
+            <div class="hash-result-value">${hash}</div>
+          `;
+          resultsContainer.appendChild(div);
+        }
+
+        showStatus('hashStatus', 'success', `✓ Generated ${selectedAlgos.length} hash${selectedAlgos.length > 1 ? 'es' : ''}`);
+      } catch (e) {
+        showStatus('hashStatus', 'error', `❌ Error: ${e.message}`);
+      }
+    }
+
+    function copyHash(hash) {
+      navigator.clipboard.writeText(hash).then(() => showToast('Hash copied!'));
+    }
+
+    function clearHash() {
+      document.getElementById('hashInput').value = '';
+      document.getElementById('hashResults').innerHTML = '';
+      document.getElementById('hashStatus').innerHTML = '';
+      document.getElementById('compareHash1').value = '';
+      document.getElementById('compareHash2').value = '';
+      document.getElementById('compareResult').classList.add('hidden');
+      clearHashFile();
+      updateHashBytes();
+    }
+
+    function updateHashBytes() {
+      const input = document.getElementById('hashInput').value;
+      const bytes = hashFile ? hashFile.size : new Blob([input]).size;
+      document.getElementById('hashInputBytes').textContent = formatBytes(bytes);
+    }
+
+    document.getElementById('hashInput').addEventListener('input', () => {
+      if (hashFile) clearHashFile();
+      updateHashBytes();
+    });
+
+    // Compare hashes
+    function compareHashes() {
+      const hash1 = document.getElementById('compareHash1').value.trim().toLowerCase();
+      const hash2 = document.getElementById('compareHash2').value.trim().toLowerCase();
+      
+      if (!hash1 || !hash2) {
+        return;
+      }
+
+      const resultDiv = document.getElementById('compareResult');
+      resultDiv.classList.remove('hidden', 'compare-match', 'compare-mismatch');
+      
+      if (hash1 === hash2) {
+        resultDiv.classList.add('compare-result', 'compare-match');
+        resultDiv.textContent = '✓ Hashes match!';
+      } else {
+        resultDiv.classList.add('compare-result', 'compare-mismatch');
+        resultDiv.textContent = '✗ Hashes do not match';
+      }
+    }
+
+    // Auto-compare on input
+    document.getElementById('compareHash1').addEventListener('input', compareHashes);
+    document.getElementById('compareHash2').addEventListener('input', compareHashes);
+
+    // ============================================
+    // MD5 Implementation (not in Web Crypto API)
+    // ============================================
+    async function md5(data) {
+      const bytes = data instanceof ArrayBuffer ? new Uint8Array(data) : data;
+      
+      function rotateLeft(x, n) {
+        return (x << n) | (x >>> (32 - n));
+      }
+
+      function addUnsigned(x, y) {
+        return (x + y) >>> 0;
+      }
+
+      const S = [
+        7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+        5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+        4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
+      ];
+
+      const K = new Uint32Array(64);
+      for (let i = 0; i < 64; i++) {
+        K[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000);
+      }
+
+      // Padding
+      const msgLen = bytes.length;
+      const bitLen = msgLen * 8;
+      const padLen = ((msgLen + 8) % 64 === 0) ? 64 : 64 - ((msgLen + 8) % 64);
+      const paddedLen = msgLen + padLen + 8;
+      const padded = new Uint8Array(paddedLen);
+      padded.set(bytes);
+      padded[msgLen] = 0x80;
+      
+      // Length in bits (little-endian)
+      const view = new DataView(padded.buffer);
+      view.setUint32(paddedLen - 8, bitLen >>> 0, true);
+      view.setUint32(paddedLen - 4, Math.floor(bitLen / 0x100000000), true);
+
+      let a0 = 0x67452301;
+      let b0 = 0xefcdab89;
+      let c0 = 0x98badcfe;
+      let d0 = 0x10325476;
+
+      for (let i = 0; i < paddedLen; i += 64) {
+        const M = new Uint32Array(16);
+        for (let j = 0; j < 16; j++) {
+          M[j] = view.getUint32(i + j * 4, true);
+        }
+
+        let A = a0, B = b0, C = c0, D = d0;
+
+        for (let j = 0; j < 64; j++) {
+          let F, g;
+          if (j < 16) {
+            F = (B & C) | (~B & D);
+            g = j;
+          } else if (j < 32) {
+            F = (D & B) | (~D & C);
+            g = (5 * j + 1) % 16;
+          } else if (j < 48) {
+            F = B ^ C ^ D;
+            g = (3 * j + 5) % 16;
+          } else {
+            F = C ^ (B | ~D);
+            g = (7 * j) % 16;
+          }
+
+          F = addUnsigned(F, A);
+          F = addUnsigned(F, K[j]);
+          F = addUnsigned(F, M[g]);
+          A = D;
+          D = C;
+          C = B;
+          B = addUnsigned(B, rotateLeft(F, S[j]));
+        }
+
+        a0 = addUnsigned(a0, A);
+        b0 = addUnsigned(b0, B);
+        c0 = addUnsigned(c0, C);
+        d0 = addUnsigned(d0, D);
+      }
+
+      const result = new Uint8Array(16);
+      const resultView = new DataView(result.buffer);
+      resultView.setUint32(0, a0, true);
+      resultView.setUint32(4, b0, true);
+      resultView.setUint32(8, c0, true);
+      resultView.setUint32(12, d0, true);
+
+      return Array.from(result).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ============================================
+    // Utility Functions
+    // ============================================
+    function copyToClipboard(elementId) {
+      const text = document.getElementById(elementId).value;
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+    }
+
+    function showStatus(elementId, type, message) {
+      document.getElementById(elementId).innerHTML = `<div class="status status-${type}">${message}</div>`;
+    }
+
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 bytes';
+      if (bytes < 1024) return bytes + ' bytes';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+  </script>
+</body>
+</html>
