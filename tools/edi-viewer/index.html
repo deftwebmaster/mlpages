@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EDI Document Viewer | Parse & Understand X12 850, 856, 810</title>
+  <meta name="description" content="Free EDI parser and viewer. Paste raw X12 EDI and see it translated to human-readable format. Supports 850 (PO), 856 (ASN), 810 (Invoice), 820 (Payment), 997 (Acknowledgment).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-tertiary: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 8px;
+      --radius-sm: 4px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Input Section */
+    .input-section {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .input-header h2 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .sample-dropdown {
+      position: relative;
+    }
+
+    .sample-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .sample-btn:hover {
+      background: var(--border);
+    }
+
+    .sample-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem;
+      min-width: 220px;
+      z-index: 100;
+      display: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .sample-menu.show {
+      display: block;
+    }
+
+    .sample-menu button {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+
+    .sample-menu button:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .sample-menu button span {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 1rem;
+      resize: vertical;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .input-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid var(--border);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn:hover {
+      background: var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Results Section */
+    .results-section {
+      display: none;
+    }
+
+    .results-section.show {
+      display: block;
+    }
+
+    /* Document Header Card */
+    .doc-header {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--accent);
+    }
+
+    .doc-type {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .doc-type-badge {
+      padding: 0.35rem 0.75rem;
+      background: var(--accent);
+      color: white;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .doc-type h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .doc-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .doc-meta-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .doc-meta-item label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .doc-meta-item span {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* View Tabs */
+    .view-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .view-tab {
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .view-tab:hover {
+      color: var(--text-primary);
+    }
+
+    .view-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Segments View */
+    .segments-view {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .segment-group {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .segment-group-header {
+      padding: 0.75rem 1rem;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .segment-group-header h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .segment-group-header .toggle {
+      color: var(--text-muted);
+      transition: transform 0.2s;
+    }
+
+    .segment-group.collapsed .toggle {
+      transform: rotate(-90deg);
+    }
+
+    .segment-group.collapsed .segment-group-content {
+      display: none;
+    }
+
+    .segment-group-content {
+      padding: 1rem;
+    }
+
+    /* Segment Card */
+    .segment-card {
+      background: var(--bg-input);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-left: 3px solid var(--border);
+    }
+
+    .segment-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .segment-card.highlight {
+      border-left-color: var(--accent);
+    }
+
+    .segment-card.warning {
+      border-left-color: var(--warning);
+    }
+
+    .segment-card.error {
+      border-left-color: var(--danger);
+    }
+
+    .segment-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .segment-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+    }
+
+    .segment-name {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .segment-help {
+      margin-left: auto;
+      color: var(--text-muted);
+      cursor: help;
+      font-size: 0.85rem;
+    }
+
+    .segment-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .segment-field {
+      display: flex;
+      font-size: 0.8rem;
+    }
+
+    .field-name {
+      color: var(--text-muted);
+      min-width: 180px;
+      flex-shrink: 0;
+    }
+
+    .field-value {
+      color: var(--text-primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .field-value.decoded {
+      color: var(--success);
+    }
+
+    /* Line Items Table */
+    .line-items-section {
+      margin-top: 1.5rem;
+    }
+
+    .line-items-section h3 {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .line-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .line-items-table th,
+    .line-items-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .line-items-table th {
+      background: var(--bg-tertiary);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+    }
+
+    .line-items-table tr:hover td {
+      background: var(--bg-secondary);
+    }
+
+    .line-items-table td {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Validation Messages */
+    .validation-section {
+      margin-top: 1.5rem;
+    }
+
+    .validation-msg {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .validation-msg.error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+
+    .validation-msg.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+    }
+
+    .validation-msg.success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+    }
+
+    .validation-msg .icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* JSON View */
+    .json-view {
+      background: var(--bg-input);
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .json-key {
+      color: var(--accent);
+    }
+
+    .json-string {
+      color: var(--success);
+    }
+
+    .json-number {
+      color: var(--warning);
+    }
+
+    /* Raw View */
+    .raw-view {
+      background: var(--bg-input);
+      border-radius: var(--radius);
+      padding: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      line-height: 1.8;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .raw-segment {
+      display: block;
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .raw-segment:hover {
+      background: var(--bg-secondary);
+    }
+
+    .raw-segment-code {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Export Actions */
+    .export-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 100;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--success);
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 1000;
+      animation: fadeInOut 2s ease;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    .hidden { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .doc-meta {
+        grid-template-columns: 1fr;
+      }
+      
+      .field-name {
+        min-width: 120px;
+      }
+      
+      .line-items-table {
+        font-size: 0.7rem;
+      }
+      
+      .line-items-table th,
+      .line-items-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">📄</div>
+        <h1>EDI Document Viewer</h1>
+      </div>
+      <p class="tagline">Parse and understand X12 EDI documents instantly</p>
+    </header>
+
+    <!-- Input Section -->
+    <section class="input-section">
+      <div class="input-header">
+        <h2>Paste EDI Document</h2>
+        <div class="sample-dropdown">
+          <button class="sample-btn" onclick="toggleSampleMenu()">
+            📋 Load Sample <span>▾</span>
+          </button>
+          <div class="sample-menu" id="sampleMenu">
+            <button onclick="loadSample('850')">850 - Purchase Order <span>Most common</span></button>
+            <button onclick="loadSample('856')">856 - Advance Ship Notice</button>
+            <button onclick="loadSample('810')">810 - Invoice</button>
+            <button onclick="loadSample('820')">820 - Payment Order</button>
+            <button onclick="loadSample('997')">997 - Acknowledgment</button>
+          </div>
+        </div>
+      </div>
+      <textarea id="ediInput" placeholder="Paste your EDI document here...
+
+Example:
+ISA*00*          *00*          *ZZ*SENDER         *ZZ*RECEIVER       *231215*1432*U*00401*000000001*0*P*>~
+GS*PO*SENDER*RECEIVER*20231215*1432*1*X*004010~
+ST*850*0001~
+..."></textarea>
+      <div class="input-actions">
+        <button class="btn" onclick="clearInput()">Clear</button>
+        <button class="btn btn-primary" onclick="parseDocument()">🔍 Parse Document</button>
+      </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+      <!-- Document Header -->
+      <div class="doc-header" id="docHeader">
+        <div class="doc-type">
+          <span class="doc-type-badge" id="docTypeBadge">850</span>
+          <h2 id="docTypeName">Purchase Order</h2>
+        </div>
+        <div class="doc-meta" id="docMeta">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- View Tabs -->
+      <div class="view-tabs">
+        <button class="view-tab active" onclick="switchView('parsed')">Parsed View</button>
+        <button class="view-tab" onclick="switchView('raw')">Raw Segments</button>
+        <button class="view-tab" onclick="switchView('json')">JSON</button>
+      </div>
+
+      <!-- Parsed View -->
+      <div id="parsedView" class="segments-view">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Raw View -->
+      <div id="rawView" class="raw-view hidden">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- JSON View -->
+      <div id="jsonView" class="json-view hidden">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Validation -->
+      <div class="validation-section" id="validationSection">
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Export Actions -->
+      <div class="export-actions">
+        <button class="btn" onclick="copySummary()">📋 Copy Summary</button>
+        <button class="btn" onclick="exportJson()">💾 Export JSON</button>
+        <button class="btn" onclick="window.print()">🖨️ Print</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>EDI Document Viewer — All processing happens locally in your browser</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // EDI Definitions
+    // ============================================
+    
+    const DOC_TYPES = {
+      '850': { name: 'Purchase Order', icon: '📦', color: '#3b82f6' },
+      '856': { name: 'Advance Ship Notice (ASN)', icon: '🚚', color: '#10b981' },
+      '810': { name: 'Invoice', icon: '💰', color: '#f59e0b' },
+      '820': { name: 'Payment Order/Remittance', icon: '💳', color: '#8b5cf6' },
+      '997': { name: 'Functional Acknowledgment', icon: '✅', color: '#6366f1' }
+    };
+
+    const SEGMENT_DEFS = {
+      // Envelope
+      'ISA': { name: 'Interchange Control Header', group: 'envelope', fields: [
+        'Auth Info Qualifier', 'Auth Info', 'Security Info Qualifier', 'Security Info',
+        'Interchange ID Qualifier (Sender)', 'Interchange Sender ID', 'Interchange ID Qualifier (Receiver)',
+        'Interchange Receiver ID', 'Interchange Date', 'Interchange Time', 'Repetition Separator',
+        'Interchange Control Version', 'Interchange Control Number', 'Ack Requested', 'Usage Indicator', 'Component Separator'
+      ]},
+      'GS': { name: 'Functional Group Header', group: 'envelope', fields: [
+        'Functional ID Code', 'Application Sender Code', 'Application Receiver Code',
+        'Date', 'Time', 'Group Control Number', 'Responsible Agency Code', 'Version/Release Code'
+      ]},
+      'ST': { name: 'Transaction Set Header', group: 'envelope', fields: ['Transaction Set ID', 'Transaction Set Control Number'] },
+      'SE': { name: 'Transaction Set Trailer', group: 'envelope', fields: ['Number of Included Segments', 'Transaction Set Control Number'] },
+      'GE': { name: 'Functional Group Trailer', group: 'envelope', fields: ['Number of Transaction Sets', 'Group Control Number'] },
+      'IEA': { name: 'Interchange Control Trailer', group: 'envelope', fields: ['Number of Included Groups', 'Interchange Control Number'] },
+
+      // 850 - Purchase Order
+      'BEG': { name: 'Beginning Segment for PO', group: 'header', fields: [
+        'Transaction Set Purpose', 'PO Type Code', 'PO Number', 'Release Number', 'PO Date', 'Contract Number'
+      ]},
+      'CUR': { name: 'Currency', group: 'header', fields: ['Entity ID Code', 'Currency Code'] },
+      'REF': { name: 'Reference Identification', group: 'header', fields: ['Reference ID Qualifier', 'Reference ID', 'Description'] },
+      'PER': { name: 'Administrative Contact', group: 'header', fields: ['Contact Function Code', 'Name', 'Comm Number Qualifier', 'Comm Number'] },
+      'TAX': { name: 'Tax Reference', group: 'header', fields: ['Tax ID Qualifier', 'Tax ID'] },
+      'FOB': { name: 'F.O.B. Related Instructions', group: 'header', fields: ['FOB Point Code', 'FOB Point', 'Description'] },
+      'CTP': { name: 'Pricing Information', group: 'detail', fields: ['Class of Trade', 'Price ID Code', 'Unit Price'] },
+      'DTM': { name: 'Date/Time Reference', group: 'header', fields: ['Date/Time Qualifier', 'Date', 'Time'] },
+      'TD5': { name: 'Carrier Details', group: 'header', fields: ['Routing Seq Code', 'ID Code Qualifier', 'ID Code', 'Transportation Method', 'Routing'] },
+      'N9': { name: 'Reference Identification', group: 'header', fields: ['Reference ID Qualifier', 'Reference ID', 'Free-form Description'] },
+      'MSG': { name: 'Message Text', group: 'header', fields: ['Free-Form Message Text'] },
+
+      // Name/Address
+      'N1': { name: 'Name', group: 'party', fields: ['Entity ID Code', 'Name', 'ID Code Qualifier', 'ID Code'] },
+      'N2': { name: 'Additional Name', group: 'party', fields: ['Name 1', 'Name 2'] },
+      'N3': { name: 'Address', group: 'party', fields: ['Address Line 1', 'Address Line 2'] },
+      'N4': { name: 'Geographic Location', group: 'party', fields: ['City', 'State', 'Postal Code', 'Country Code'] },
+
+      // Line Items (850)
+      'PO1': { name: 'Purchase Order Line Item', group: 'lineitem', fields: [
+        'Line Number', 'Quantity Ordered', 'Unit of Measure', 'Unit Price', 'Basis of Unit Price',
+        'Product ID Qualifier 1', 'Product ID 1', 'Product ID Qualifier 2', 'Product ID 2',
+        'Product ID Qualifier 3', 'Product ID 3', 'Product ID Qualifier 4', 'Product ID 4'
+      ]},
+      'PID': { name: 'Product/Item Description', group: 'lineitem', fields: ['Item Description Type', 'Product Characteristic Code', 'Agency Code', 'Product Description Code', 'Description'] },
+      'CTT': { name: 'Transaction Totals', group: 'summary', fields: ['Number of Line Items', 'Hash Total'] },
+      'AMT': { name: 'Monetary Amount', group: 'summary', fields: ['Amount Qualifier Code', 'Monetary Amount'] },
+
+      // 856 - ASN
+      'BSN': { name: 'Beginning Segment for Ship Notice', group: 'header', fields: [
+        'Transaction Set Purpose', 'Shipment ID', 'Date', 'Time', 'Hierarchical Structure Code'
+      ]},
+      'HL': { name: 'Hierarchical Level', group: 'hierarchy', fields: ['Hierarchical ID', 'Hierarchical Parent ID', 'Hierarchical Level Code', 'Hierarchical Child Code'] },
+      'TD1': { name: 'Carrier Details (Qty & Weight)', group: 'shipment', fields: ['Packaging Code', 'Lading Quantity', 'Commodity Code Qualifier', 'Commodity Code', 'Lading Description', 'Weight Qualifier', 'Weight', 'Unit of Measure'] },
+      'TD3': { name: 'Carrier Details (Equipment)', group: 'shipment', fields: ['Equipment Description Code', 'Equipment Initial', 'Equipment Number', 'Weight Qualifier', 'Weight'] },
+      'TD4': { name: 'Carrier Details (Special Handling)', group: 'shipment', fields: ['Special Handling Code', 'Hazardous Material Code Qualifier', 'Hazardous Material Code', 'Hazardous Material Description'] },
+      'PRF': { name: 'Purchase Order Reference', group: 'order', fields: ['PO Number', 'Release Number', 'Change Order Seq', 'PO Date'] },
+      'LIN': { name: 'Item Identification', group: 'item', fields: ['Assigned ID', 'Product ID Qualifier', 'Product ID', 'Product ID Qualifier 2', 'Product ID 2'] },
+      'SN1': { name: 'Item Detail (Shipment)', group: 'item', fields: ['Assigned ID', 'Quantity Shipped', 'Unit of Measure', 'Quantity Shipped', 'Unit of Measure', 'Quantity Ordered'] },
+      'MAN': { name: 'Marks and Numbers', group: 'item', fields: ['Marks/Numbers Qualifier', 'Marks/Numbers', 'Marks/Numbers Qualifier 2', 'Marks/Numbers 2'] },
+
+      // 810 - Invoice
+      'BIG': { name: 'Beginning Segment for Invoice', group: 'header', fields: [
+        'Invoice Date', 'Invoice Number', 'PO Date', 'PO Number', 'Release Number', 'Change Order Seq', 'Transaction Type Code'
+      ]},
+      'IT1': { name: 'Invoice Line Item', group: 'lineitem', fields: [
+        'Line Number', 'Quantity Invoiced', 'Unit of Measure', 'Unit Price', 'Basis of Unit Price',
+        'Product ID Qualifier 1', 'Product ID 1', 'Product ID Qualifier 2', 'Product ID 2'
+      ]},
+      'TDS': { name: 'Total Monetary Value Summary', group: 'summary', fields: ['Total Invoice Amount', 'Amount Subject to Terms Discount', 'Discounted Amount Due', 'Terms Discount Amount'] },
+      'CAD': { name: 'Carrier Detail', group: 'shipment', fields: ['Transportation Method Code', 'Equipment Initial', 'Equipment Number', 'Standard Carrier Alpha Code', 'Routing'] },
+      'ISS': { name: 'Invoice Shipment Summary', group: 'summary', fields: ['Number of Units Shipped', 'Unit of Measure', 'Weight', 'Unit of Measure'] },
+
+      // 820 - Payment
+      'BPR': { name: 'Beginning Segment for Payment', group: 'header', fields: [
+        'Transaction Handling Code', 'Monetary Amount', 'Credit/Debit Flag', 'Payment Method Code',
+        'Payment Format Code', 'DFI ID Qualifier (Sender)', 'DFI ID (Sender)', 'Account Number Qualifier (Sender)',
+        'Account Number (Sender)', 'Originating Company ID', 'Originating Company Supp Code',
+        'DFI ID Qualifier (Receiver)', 'DFI ID (Receiver)', 'Account Number Qualifier (Receiver)',
+        'Account Number (Receiver)', 'Payment Date'
+      ]},
+      'TRN': { name: 'Trace', group: 'header', fields: ['Trace Type Code', 'Reference ID', 'Originating Company ID', 'Reference ID 2'] },
+      'RMR': { name: 'Remittance Advice', group: 'detail', fields: ['Reference ID Qualifier', 'Reference ID', 'Payment Action Code', 'Monetary Amount', 'Monetary Amount 2', 'Monetary Amount 3'] },
+      'ENT': { name: 'Entity', group: 'party', fields: ['Assigned Number', 'Entity ID Code', 'ID Code Qualifier', 'ID Code'] },
+
+      // 997 - Acknowledgment
+      'AK1': { name: 'Functional Group Response Header', group: 'header', fields: ['Functional ID Code', 'Group Control Number'] },
+      'AK2': { name: 'Transaction Set Response Header', group: 'detail', fields: ['Transaction Set ID Code', 'Transaction Set Control Number'] },
+      'AK3': { name: 'Data Segment Note', group: 'detail', fields: ['Segment ID Code', 'Segment Position', 'Loop ID Code', 'Segment Syntax Error Code'] },
+      'AK4': { name: 'Data Element Note', group: 'detail', fields: ['Position in Segment', 'Element Position', 'Data Element Reference Number', 'Data Element Syntax Error Code', 'Copy of Bad Data Element'] },
+      'AK5': { name: 'Transaction Set Response Trailer', group: 'detail', fields: ['Transaction Set Acknowledgment Code', 'Transaction Set Syntax Error Code 1-5'] },
+      'AK9': { name: 'Functional Group Response Trailer', group: 'summary', fields: ['Functional Group Ack Code', 'Number of Transaction Sets Included', 'Number of Received Transaction Sets', 'Number of Accepted Transaction Sets', 'Error Codes'] }
+    };
+
+    // Code translations
+    const CODE_TRANSLATIONS = {
+      // Transaction Set Purpose (BEG01, BSN01)
+      transactionPurpose: { '00': 'Original', '01': 'Cancellation', '04': 'Change', '05': 'Replace', '06': 'Confirmation', '07': 'Duplicate' },
+      // PO Type (BEG02)
+      poType: { 'NE': 'New Order', 'RO': 'Rush Order', 'SA': 'Stand-alone', 'DS': 'Drop Ship', 'BK': 'Blanket', 'CN': 'Consignment' },
+      // Entity ID Code (N101)
+      entityId: { 'ST': 'Ship To', 'BT': 'Bill To', 'BY': 'Buying Party', 'SE': 'Selling Party', 'VN': 'Vendor', 'SU': 'Supplier', 'SF': 'Ship From', 'CA': 'Carrier', 'RI': 'Remit To', 'PR': 'Payer', 'PE': 'Payee', 'OB': 'Ordered By', 'RE': 'Party to Receive' },
+      // ID Code Qualifier (N103)
+      idQualifier: { '1': 'D-U-N-S Number', '9': 'D-U-N-S+4', '91': 'Assigned by Seller', '92': 'Assigned by Buyer', 'UL': 'UCC/EAN Location Code' },
+      // Unit of Measure
+      uom: { 'EA': 'Each', 'CS': 'Case', 'BX': 'Box', 'PK': 'Pack', 'CT': 'Carton', 'PL': 'Pallet', 'LB': 'Pound', 'KG': 'Kilogram', 'OZ': 'Ounce', 'IN': 'Inch', 'FT': 'Foot' },
+      // Product ID Qualifier
+      productIdQual: { 'VP': 'Vendor Part Number', 'BP': 'Buyer Part Number', 'UP': 'UPC', 'EN': 'EAN', 'SK': 'SKU', 'MG': 'Manufacturer Part', 'IN': 'Buyer Item Number' },
+      // Reference ID Qualifier (REF01)
+      refQualifier: { 'PO': 'Purchase Order', 'BM': 'Bill of Lading', 'CN': 'Carrier Reference', 'DP': 'Department Number', 'IA': 'Internal Vendor Number', 'IV': 'Invoice Number', 'ON': 'Order Number', 'SI': 'Shipper ID', 'VN': 'Vendor Order Number', 'ZZ': 'Mutually Defined' },
+      // Date/Time Qualifier (DTM01)
+      dtmQualifier: { '002': 'Delivery Requested', '004': 'Purchase Order', '010': 'Requested Ship', '011': 'Shipped', '017': 'Estimated Delivery', '035': 'Delivered', '037': 'Ship Not Before', '038': 'Ship No Later', '063': 'Do Not Deliver After', '064': 'Do Not Ship Before', '118': 'Pick Up' },
+      // Hierarchical Level Code (HL03)
+      hlCode: { 'S': 'Shipment', 'O': 'Order', 'P': 'Pack', 'I': 'Item', 'T': 'Tare' },
+      // Functional ID Code (GS01)
+      functionalId: { 'PO': 'Purchase Order', 'SH': 'Ship Notice/Manifest', 'IN': 'Invoice', 'FA': 'Functional Acknowledgment', 'RA': 'Payment Order/Remittance Advice' },
+      // AK Acknowledgment Codes
+      ackCode: { 'A': 'Accepted', 'E': 'Accepted with Errors', 'M': 'Rejected - Message Auth Code Failed', 'P': 'Partially Accepted', 'R': 'Rejected', 'W': 'Rejected - Failed Validity Tests', 'X': 'Rejected - Decryption Failed' }
+    };
+
+    // ============================================
+    // Sample Documents
+    // ============================================
+    
+    const SAMPLES = {
+      '850': `ISA*00*          *00*          *ZZ*ACMECORP       *ZZ*WAREHOUSEINC   *231215*1432*U*00401*000000001*0*P*>~
+GS*PO*ACMECORP*WAREHOUSEINC*20231215*1432*1*X*004010~
+ST*850*0001~
+BEG*00*NE*PO-2024-78432**20231215~
+REF*DP*067~
+REF*IA*VEND-4521~
+DTM*002*20231220~
+DTM*037*20231218~
+N1*ST*MAIN DISTRIBUTION CENTER*92*DC-001~
+N3*1234 LOGISTICS PARKWAY~
+N4*DALLAS*TX*75201*US~
+N1*BT*ACME CORPORATION*92*ACME-HQ~
+N3*9999 CORPORATE BLVD~
+N4*CHICAGO*IL*60601*US~
+N1*VN*WIDGET SUPPLY CO*91*WGT-001~
+PO1*1*500*EA*12.50*PE*VP*WGT-1001*UP*012345678901~
+PID*F****INDUSTRIAL WIDGET STANDARD~
+PO1*2*200*CS*89.99*PE*VP*WGT-2000*UP*012345678902~
+PID*F****PREMIUM WIDGET BUNDLE 12-PACK~
+PO1*3*1000*EA*3.25*PE*VP*WGT-3000*UP*012345678903~
+PID*F****WIDGET MOUNTING BRACKET~
+CTT*3*1700~
+AMT*TT*27448.00~
+SE*22*0001~
+GE*1*1~
+IEA*1*000000001~`,
+
+      '856': `ISA*00*          *00*          *ZZ*SUPPLIER       *ZZ*RETAILER       *231218*0930*U*00401*000000002*0*P*>~
+GS*SH*SUPPLIER*RETAILER*20231218*0930*2*X*004010~
+ST*856*0002~
+BSN*00*ASN-2024-12345*20231218*0930*0001~
+HL*1**S~
+TD1*CTN*25****G*1250*LB~
+TD5**2*UPSG*M*UPS GROUND~
+REF*BM*BOL-98765~
+REF*CN*1Z999AA10123456784~
+DTM*011*20231218~
+DTM*017*20231220~
+N1*SF*SUPPLIER WAREHOUSE*92*WH-001~
+N3*5678 INDUSTRIAL BLVD~
+N4*CHICAGO*IL*60601*US~
+N1*ST*RETAILER DC EAST*92*DC-EAST~
+N3*9999 COMMERCE WAY~
+N4*EDISON*NJ*08817*US~
+HL*2*1*O~
+PRF*PO-2024-78432***20231215~
+HL*3*2*I~
+LIN**VP*WGT-1001*UP*012345678901~
+SN1**500*EA~
+MAN*GM*00123456789012345675~
+HL*4*2*I~
+LIN**VP*WGT-2000*UP*012345678902~
+SN1**200*CS~
+MAN*GM*00123456789012345682~
+HL*5*2*I~
+LIN**VP*WGT-3000*UP*012345678903~
+SN1**1000*EA~
+MAN*GM*00123456789012345699~
+CTT*5~
+SE*30*0002~
+GE*1*2~
+IEA*1*000000002~`,
+
+      '810': `ISA*00*          *00*          *ZZ*SUPPLIER       *ZZ*BUYER          *231222*1100*U*00401*000000003*0*P*>~
+GS*IN*SUPPLIER*BUYER*20231222*1100*3*X*004010~
+ST*810*0003~
+BIG*20231222*INV-2024-5678*20231215*PO-2024-78432~
+REF*DP*067~
+REF*VN*VEND-4521~
+N1*ST*MAIN DISTRIBUTION CENTER*92*DC-001~
+N3*1234 LOGISTICS PARKWAY~
+N4*DALLAS*TX*75201*US~
+N1*RE*WIDGET SUPPLY CO*91*WGT-001~
+N3*5678 INDUSTRIAL BLVD~
+N4*CHICAGO*IL*60601*US~
+IT1*1*500*EA*12.50*PE*VP*WGT-1001*UP*012345678901~
+IT1*2*200*CS*89.99*PE*VP*WGT-2000*UP*012345678902~
+IT1*3*1000*EA*3.25*PE*VP*WGT-3000*UP*012345678903~
+TDS*2744800~
+CAD*M****UPS GROUND~
+CTT*3~
+SE*17*0003~
+GE*1*3~
+IEA*1*000000003~`,
+
+      '820': `ISA*00*          *00*          *ZZ*PAYER          *ZZ*PAYEE          *231228*1400*U*00401*000000004*0*P*>~
+GS*RA*PAYER*PAYEE*20231228*1400*4*X*004010~
+ST*820*0004~
+BPR*C*27448.00*C*ACH*CTX*01*021000021*DA*123456789**01*026009593*DA*987654321*20231228~
+TRN*1*PAY-2024-9876*1234567890~
+N1*PR*ACME CORPORATION*91*ACME-HQ~
+N1*PE*WIDGET SUPPLY CO*91*WGT-001~
+ENT*1*2~
+RMR*IV*INV-2024-5678*PI*27448.00~
+REF*PO*PO-2024-78432~
+DTM*003*20231222~
+SE*11*0004~
+GE*1*4~
+IEA*1*000000004~`,
+
+      '997': `ISA*00*          *00*          *ZZ*RECEIVER       *ZZ*SENDER         *231215*1500*U*00401*000000005*0*P*>~
+GS*FA*RECEIVER*SENDER*20231215*1500*5*X*004010~
+ST*997*0005~
+AK1*PO*1~
+AK2*850*0001~
+AK5*A~
+AK9*A*1*1*1~
+SE*6*0005~
+GE*1*5~
+IEA*1*000000005~`
+    };
+
+    // ============================================
+    // Parser State
+    // ============================================
+    
+    let parsedData = null;
+    let rawSegments = [];
+    let validationMessages = [];
+
+    // ============================================
+    // Parsing Functions
+    // ============================================
+    
+    function parseDocument() {
+      const input = document.getElementById('ediInput').value.trim();
+      
+      if (!input) {
+        showToast('Please paste an EDI document', true);
+        return;
+      }
+
+      try {
+        // Detect delimiters from ISA segment
+        const elementSep = input.charAt(3) || '*';
+        const segmentSep = detectSegmentSeparator(input);
+        
+        // Split into segments
+        rawSegments = input.split(segmentSep)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+        
+        if (rawSegments.length === 0) {
+          showToast('No valid segments found', true);
+          return;
+        }
+
+        // Parse segments
+        parsedData = {
+          elementSeparator: elementSep,
+          segmentSeparator: segmentSep,
+          envelope: {},
+          header: {},
+          parties: [],
+          lineItems: [],
+          summary: {},
+          hierarchy: [],
+          segments: []
+        };
+
+        validationMessages = [];
+        let docType = null;
+
+        rawSegments.forEach((segmentStr, idx) => {
+          const elements = segmentStr.split(elementSep);
+          const segmentId = elements[0].toUpperCase();
+          
+          const segment = {
+            id: segmentId,
+            elements: elements.slice(1),
+            raw: segmentStr,
+            index: idx
+          };
+
+          parsedData.segments.push(segment);
+
+          // Detect document type from ST segment
+          if (segmentId === 'ST') {
+            docType = elements[1];
+            parsedData.docType = docType;
+          }
+
+          // Parse specific segments
+          parseSegment(segment, parsedData);
+        });
+
+        // Validate
+        validateDocument(parsedData);
+
+        // Render
+        renderResults(parsedData);
+        document.getElementById('resultsSection').classList.add('show');
+
+      } catch (error) {
+        console.error('Parse error:', error);
+        showToast('Error parsing document: ' + error.message, true);
+      }
+    }
+
+    function detectSegmentSeparator(input) {
+      // ISA is always 106 characters including separators in standard format
+      // Segment terminator is typically after position 105
+      // Common terminators: ~, \n, |\n
+      if (input.includes('~')) return '~';
+      if (input.includes('|\n')) return '|';
+      if (input.includes('\n')) {
+        // Check if it's not just line breaks within segments
+        const lines = input.split('\n');
+        if (lines[0].startsWith('ISA')) return '\n';
+      }
+      return '~'; // Default
+    }
+
+    function parseSegment(segment, data) {
+      const { id, elements } = segment;
+      
+      switch (id) {
+        case 'ISA':
+          data.envelope.isa = {
+            senderId: elements[5]?.trim(),
+            receiverId: elements[7]?.trim(),
+            date: formatDate(elements[8]),
+            time: formatTime(elements[9]),
+            controlNumber: elements[12]
+          };
+          break;
+          
+        case 'GS':
+          data.envelope.gs = {
+            functionalId: elements[0],
+            senderCode: elements[1],
+            receiverCode: elements[2],
+            date: formatDate(elements[3]),
+            time: formatTime(elements[4]),
+            controlNumber: elements[5],
+            version: elements[7]
+          };
+          break;
+
+        case 'ST':
+          data.envelope.st = {
+            transactionSetId: elements[0],
+            controlNumber: elements[1]
+          };
+          break;
+
+        case 'BEG': // 850
+          data.header = {
+            ...data.header,
+            purpose: elements[0],
+            poType: elements[1],
+            poNumber: elements[2],
+            releaseNumber: elements[3],
+            poDate: formatDate(elements[4])
+          };
+          break;
+
+        case 'BSN': // 856
+          data.header = {
+            ...data.header,
+            purpose: elements[0],
+            shipmentId: elements[1],
+            date: formatDate(elements[2]),
+            time: formatTime(elements[3])
+          };
+          break;
+
+        case 'BIG': // 810
+          data.header = {
+            ...data.header,
+            invoiceDate: formatDate(elements[0]),
+            invoiceNumber: elements[1],
+            poDate: formatDate(elements[2]),
+            poNumber: elements[3]
+          };
+          break;
+
+        case 'BPR': // 820
+          data.header = {
+            ...data.header,
+            transactionHandling: elements[0],
+            amount: parseFloat(elements[1]) || 0,
+            creditDebit: elements[2],
+            paymentMethod: elements[3],
+            paymentDate: formatDate(elements[15])
+          };
+          break;
+
+        case 'AK1': // 997
+          data.header = {
+            ...data.header,
+            functionalIdCode: elements[0],
+            groupControlNumber: elements[1]
+          };
+          break;
+
+        case 'AK9': // 997
+          data.summary = {
+            ...data.summary,
+            ackCode: elements[0],
+            includedSets: elements[1],
+            receivedSets: elements[2],
+            acceptedSets: elements[3]
+          };
+          break;
+
+        case 'N1':
+          const party = {
+            type: elements[0],
+            name: elements[1],
+            idQualifier: elements[2],
+            id: elements[3]
+          };
+          data.parties.push(party);
+          break;
+
+        case 'N3':
+          if (data.parties.length > 0) {
+            data.parties[data.parties.length - 1].address1 = elements[0];
+            data.parties[data.parties.length - 1].address2 = elements[1];
+          }
+          break;
+
+        case 'N4':
+          if (data.parties.length > 0) {
+            data.parties[data.parties.length - 1].city = elements[0];
+            data.parties[data.parties.length - 1].state = elements[1];
+            data.parties[data.parties.length - 1].zip = elements[2];
+            data.parties[data.parties.length - 1].country = elements[3];
+          }
+          break;
+
+        case 'PO1': // 850 line item
+          data.lineItems.push({
+            lineNumber: elements[0],
+            quantity: parseFloat(elements[1]) || 0,
+            uom: elements[2],
+            unitPrice: parseFloat(elements[3]) || 0,
+            basisOfPrice: elements[4],
+            productIds: parseProductIds(elements.slice(5))
+          });
+          break;
+
+        case 'IT1': // 810 line item
+          data.lineItems.push({
+            lineNumber: elements[0],
+            quantity: parseFloat(elements[1]) || 0,
+            uom: elements[2],
+            unitPrice: parseFloat(elements[3]) || 0,
+            basisOfPrice: elements[4],
+            productIds: parseProductIds(elements.slice(5))
+          });
+          break;
+
+        case 'HL':
+          data.hierarchy.push({
+            id: elements[0],
+            parentId: elements[1],
+            levelCode: elements[2],
+            childCode: elements[3]
+          });
+          break;
+
+        case 'LIN':
+          data.lineItems.push({
+            assignedId: elements[0],
+            productIds: parseProductIds(elements.slice(1))
+          });
+          break;
+
+        case 'SN1':
+          if (data.lineItems.length > 0) {
+            data.lineItems[data.lineItems.length - 1].quantityShipped = parseFloat(elements[1]) || 0;
+            data.lineItems[data.lineItems.length - 1].uom = elements[2];
+          }
+          break;
+
+        case 'MAN':
+          if (data.lineItems.length > 0) {
+            data.lineItems[data.lineItems.length - 1].marks = {
+              qualifier: elements[0],
+              value: elements[1]
+            };
+          }
+          break;
+
+        case 'PRF':
+          data.header.poNumber = elements[0];
+          data.header.poDate = formatDate(elements[3]);
+          break;
+
+        case 'REF':
+          if (!data.references) data.references = [];
+          data.references.push({
+            qualifier: elements[0],
+            id: elements[1],
+            description: elements[2]
+          });
+          break;
+
+        case 'DTM':
+          if (!data.dates) data.dates = [];
+          data.dates.push({
+            qualifier: elements[0],
+            date: formatDate(elements[1]),
+            time: formatTime(elements[2])
+          });
+          break;
+
+        case 'CTT':
+          data.summary.lineItemCount = parseInt(elements[0]) || 0;
+          data.summary.hashTotal = elements[1];
+          break;
+
+        case 'TDS':
+          data.summary.totalAmount = parseFloat(elements[0]) / 100 || 0; // TDS is in cents
+          break;
+
+        case 'AMT':
+          data.summary.amountQualifier = elements[0];
+          data.summary.amount = parseFloat(elements[1]) || 0;
+          break;
+
+        case 'RMR':
+          if (!data.remittances) data.remittances = [];
+          data.remittances.push({
+            qualifier: elements[0],
+            invoiceNumber: elements[1],
+            paymentAction: elements[2],
+            amount: parseFloat(elements[3]) || 0
+          });
+          break;
+      }
+    }
+
+    function parseProductIds(elements) {
+      const ids = {};
+      for (let i = 0; i < elements.length - 1; i += 2) {
+        const qualifier = elements[i];
+        const value = elements[i + 1];
+        if (qualifier && value) {
+          ids[qualifier] = value;
+        }
+      }
+      return ids;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      // Handle YYYYMMDD or YYMMDD
+      if (dateStr.length === 8) {
+        return `${dateStr.substr(0, 4)}-${dateStr.substr(4, 2)}-${dateStr.substr(6, 2)}`;
+      } else if (dateStr.length === 6) {
+        const year = parseInt(dateStr.substr(0, 2));
+        const fullYear = year > 50 ? 1900 + year : 2000 + year;
+        return `${fullYear}-${dateStr.substr(2, 2)}-${dateStr.substr(4, 2)}`;
+      }
+      return dateStr;
+    }
+
+    function formatTime(timeStr) {
+      if (!timeStr) return '';
+      if (timeStr.length >= 4) {
+        return `${timeStr.substr(0, 2)}:${timeStr.substr(2, 2)}`;
+      }
+      return timeStr;
+    }
+
+    // ============================================
+    // Validation
+    // ============================================
+    
+    function validateDocument(data) {
+      // Check for required envelope segments
+      if (!data.envelope.isa) {
+        validationMessages.push({ type: 'error', message: 'Missing ISA (Interchange Control Header) segment' });
+      }
+      if (!data.envelope.gs) {
+        validationMessages.push({ type: 'error', message: 'Missing GS (Functional Group Header) segment' });
+      }
+      if (!data.envelope.st) {
+        validationMessages.push({ type: 'error', message: 'Missing ST (Transaction Set Header) segment' });
+      }
+
+      // Check for matching trailers
+      const hasIEA = data.segments.some(s => s.id === 'IEA');
+      const hasGE = data.segments.some(s => s.id === 'GE');
+      const hasSE = data.segments.some(s => s.id === 'SE');
+
+      if (!hasSE) {
+        validationMessages.push({ type: 'warning', message: 'Missing SE (Transaction Set Trailer) segment' });
+      }
+      if (!hasGE) {
+        validationMessages.push({ type: 'warning', message: 'Missing GE (Functional Group Trailer) segment' });
+      }
+      if (!hasIEA) {
+        validationMessages.push({ type: 'warning', message: 'Missing IEA (Interchange Control Trailer) segment' });
+      }
+
+      // Document-specific validation
+      const docType = data.docType;
+
+      if (docType === '850') {
+        if (!data.header.poNumber) {
+          validationMessages.push({ type: 'error', message: 'Missing PO Number in BEG segment' });
+        }
+        if (data.lineItems.length === 0) {
+          validationMessages.push({ type: 'warning', message: 'No line items (PO1) found' });
+        }
+      }
+
+      if (docType === '856') {
+        if (!data.header.shipmentId) {
+          validationMessages.push({ type: 'error', message: 'Missing Shipment ID in BSN segment' });
+        }
+        if (data.hierarchy.length === 0) {
+          validationMessages.push({ type: 'warning', message: 'No hierarchical levels (HL) found' });
+        }
+      }
+
+      if (docType === '810') {
+        if (!data.header.invoiceNumber) {
+          validationMessages.push({ type: 'error', message: 'Missing Invoice Number in BIG segment' });
+        }
+        if (data.lineItems.length === 0) {
+          validationMessages.push({ type: 'warning', message: 'No line items (IT1) found' });
+        }
+      }
+
+      // Success message if no errors
+      if (validationMessages.filter(m => m.type === 'error').length === 0) {
+        validationMessages.push({ type: 'success', message: 'Document structure is valid' });
+      }
+    }
+
+    // ============================================
+    // Rendering
+    // ============================================
+    
+    function renderResults(data) {
+      renderDocHeader(data);
+      renderParsedView(data);
+      renderRawView(data);
+      renderJsonView(data);
+      renderValidation();
+    }
+
+    function renderDocHeader(data) {
+      const docType = data.docType || '???';
+      const typeInfo = DOC_TYPES[docType] || { name: 'Unknown Document', icon: '📄', color: '#64748b' };
+
+      document.getElementById('docTypeBadge').textContent = docType;
+      document.getElementById('docTypeBadge').style.background = typeInfo.color;
+      document.getElementById('docTypeName').textContent = typeInfo.name;
+
+      // Build meta info
+      let metaHtml = '';
+
+      // Common fields
+      if (data.header.poNumber) {
+        metaHtml += `<div class="doc-meta-item"><label>PO Number</label><span>${data.header.poNumber}</span></div>`;
+      }
+      if (data.header.invoiceNumber) {
+        metaHtml += `<div class="doc-meta-item"><label>Invoice Number</label><span>${data.header.invoiceNumber}</span></div>`;
+      }
+      if (data.header.shipmentId) {
+        metaHtml += `<div class="doc-meta-item"><label>Shipment ID</label><span>${data.header.shipmentId}</span></div>`;
+      }
+      if (data.header.poDate) {
+        metaHtml += `<div class="doc-meta-item"><label>PO Date</label><span>${data.header.poDate}</span></div>`;
+      }
+      if (data.header.invoiceDate) {
+        metaHtml += `<div class="doc-meta-item"><label>Invoice Date</label><span>${data.header.invoiceDate}</span></div>`;
+      }
+      if (data.header.date) {
+        metaHtml += `<div class="doc-meta-item"><label>Date</label><span>${data.header.date}</span></div>`;
+      }
+      if (data.envelope.isa) {
+        metaHtml += `<div class="doc-meta-item"><label>Sender</label><span>${data.envelope.isa.senderId}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Receiver</label><span>${data.envelope.isa.receiverId}</span></div>`;
+      }
+      if (data.header.amount) {
+        metaHtml += `<div class="doc-meta-item"><label>Amount</label><span>$${data.header.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>`;
+      }
+      if (data.summary.totalAmount) {
+        metaHtml += `<div class="doc-meta-item"><label>Total</label><span>$${data.summary.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>`;
+      }
+
+      document.getElementById('docMeta').innerHTML = metaHtml;
+    }
+
+    function renderParsedView(data) {
+      let html = '';
+
+      // Group segments
+      const groups = {
+        envelope: { name: 'Envelope', icon: '📨', segments: [] },
+        header: { name: 'Header', icon: '📋', segments: [] },
+        party: { name: 'Parties & Addresses', icon: '👥', segments: [] },
+        detail: { name: 'Details', icon: '📝', segments: [] },
+        lineitem: { name: 'Line Items', icon: '📦', segments: [] },
+        hierarchy: { name: 'Hierarchy', icon: '🔗', segments: [] },
+        shipment: { name: 'Shipment Details', icon: '🚚', segments: [] },
+        summary: { name: 'Summary & Totals', icon: '📊', segments: [] },
+        other: { name: 'Other Segments', icon: '📄', segments: [] }
+      };
+
+      data.segments.forEach(segment => {
+        const def = SEGMENT_DEFS[segment.id];
+        const group = def?.group || 'other';
+        if (groups[group]) {
+          groups[group].segments.push(segment);
+        } else {
+          groups.other.segments.push(segment);
+        }
+      });
+
+      // Render each group
+      Object.entries(groups).forEach(([key, group]) => {
+        if (group.segments.length === 0) return;
+
+        html += `
+          <div class="segment-group" id="group-${key}">
+            <div class="segment-group-header" onclick="toggleGroup('${key}')">
+              <h3>${group.icon} ${group.name} <span style="color: var(--text-muted); font-weight: normal;">(${group.segments.length})</span></h3>
+              <span class="toggle">▼</span>
+            </div>
+            <div class="segment-group-content">
+              ${group.segments.map(s => renderSegmentCard(s)).join('')}
+            </div>
+          </div>
+        `;
+      });
+
+      // Line items table
+      if (data.lineItems.length > 0 && (data.docType === '850' || data.docType === '810')) {
+        html += renderLineItemsTable(data);
+      }
+
+      document.getElementById('parsedView').innerHTML = html;
+    }
+
+    function renderSegmentCard(segment) {
+      const def = SEGMENT_DEFS[segment.id];
+      const name = def?.name || 'Unknown Segment';
+      const fieldDefs = def?.fields || [];
+
+      let fieldsHtml = '';
+      segment.elements.forEach((value, idx) => {
+        if (!value || value.trim() === '') return;
+        
+        const fieldName = fieldDefs[idx] || `Element ${idx + 1}`;
+        let displayValue = value;
+        let decoded = '';
+
+        // Try to decode known codes
+        decoded = decodeValue(segment.id, idx, value);
+
+        fieldsHtml += `
+          <div class="segment-field">
+            <span class="field-name">${fieldName}:</span>
+            <span class="field-value">${displayValue}${decoded ? ` <span class="decoded">(${decoded})</span>` : ''}</span>
+          </div>
+        `;
+      });
+
+      return `
+        <div class="segment-card">
+          <div class="segment-header">
+            <span class="segment-code">${segment.id}</span>
+            <span class="segment-name">${name}</span>
+          </div>
+          <div class="segment-fields">
+            ${fieldsHtml || '<span style="color: var(--text-muted);">No data elements</span>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function decodeValue(segmentId, elementIdx, value) {
+      // BEG segment
+      if (segmentId === 'BEG') {
+        if (elementIdx === 0) return CODE_TRANSLATIONS.transactionPurpose[value];
+        if (elementIdx === 1) return CODE_TRANSLATIONS.poType[value];
+      }
+      // BSN segment
+      if (segmentId === 'BSN' && elementIdx === 0) {
+        return CODE_TRANSLATIONS.transactionPurpose[value];
+      }
+      // N1 segment
+      if (segmentId === 'N1') {
+        if (elementIdx === 0) return CODE_TRANSLATIONS.entityId[value];
+        if (elementIdx === 2) return CODE_TRANSLATIONS.idQualifier[value];
+      }
+      // GS segment
+      if (segmentId === 'GS' && elementIdx === 0) {
+        return CODE_TRANSLATIONS.functionalId[value];
+      }
+      // HL segment
+      if (segmentId === 'HL' && elementIdx === 2) {
+        return CODE_TRANSLATIONS.hlCode[value];
+      }
+      // REF segment
+      if (segmentId === 'REF' && elementIdx === 0) {
+        return CODE_TRANSLATIONS.refQualifier[value];
+      }
+      // DTM segment
+      if (segmentId === 'DTM' && elementIdx === 0) {
+        return CODE_TRANSLATIONS.dtmQualifier[value];
+      }
+      // PO1/IT1 - UOM
+      if ((segmentId === 'PO1' || segmentId === 'IT1') && elementIdx === 2) {
+        return CODE_TRANSLATIONS.uom[value];
+      }
+      // AK9/AK5 ack codes
+      if ((segmentId === 'AK9' || segmentId === 'AK5') && elementIdx === 0) {
+        return CODE_TRANSLATIONS.ackCode[value];
+      }
+      return '';
+    }
+
+    function renderLineItemsTable(data) {
+      const isInvoice = data.docType === '810';
+      
+      let html = `
+        <div class="line-items-section">
+          <h3>📦 Line Items (${data.lineItems.length})</h3>
+          <div style="overflow-x: auto;">
+            <table class="line-items-table">
+              <thead>
+                <tr>
+                  <th>Line</th>
+                  <th>Qty</th>
+                  <th>UOM</th>
+                  <th>Unit Price</th>
+                  <th>Ext. Price</th>
+                  <th>Vendor Part</th>
+                  <th>UPC</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      data.lineItems.forEach(item => {
+        const extPrice = (item.quantity * item.unitPrice).toFixed(2);
+        html += `
+          <tr>
+            <td>${item.lineNumber || '-'}</td>
+            <td>${item.quantity || '-'}</td>
+            <td>${item.uom || '-'}</td>
+            <td>$${item.unitPrice?.toFixed(2) || '-'}</td>
+            <td>$${extPrice}</td>
+            <td>${item.productIds?.VP || item.productIds?.BP || '-'}</td>
+            <td>${item.productIds?.UP || item.productIds?.EN || '-'}</td>
+          </tr>
+        `;
+      });
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function renderRawView(data) {
+      let html = '';
+      data.segments.forEach(segment => {
+        const def = SEGMENT_DEFS[segment.id];
+        html += `<span class="raw-segment"><span class="raw-segment-code">${segment.id}</span>${segment.raw.substring(segment.id.length)}</span>\n`;
+      });
+      document.getElementById('rawView').innerHTML = html;
+    }
+
+    function renderJsonView(data) {
+      const json = JSON.stringify(data, null, 2);
+      // Syntax highlight
+      const highlighted = json
+        .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+        .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
+        .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>');
+      document.getElementById('jsonView').innerHTML = highlighted;
+    }
+
+    function renderValidation() {
+      let html = '';
+      validationMessages.forEach(msg => {
+        const icons = { error: '❌', warning: '⚠️', success: '✅' };
+        html += `
+          <div class="validation-msg ${msg.type}">
+            <span class="icon">${icons[msg.type]}</span>
+            <span>${msg.message}</span>
+          </div>
+        `;
+      });
+      document.getElementById('validationSection').innerHTML = html;
+    }
+
+    // ============================================
+    // UI Functions
+    // ============================================
+    
+    function toggleGroup(groupId) {
+      const group = document.getElementById(`group-${groupId}`);
+      group.classList.toggle('collapsed');
+    }
+
+    function switchView(view) {
+      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+      document.querySelector(`.view-tab[onclick*="${view}"]`).classList.add('active');
+
+      document.getElementById('parsedView').classList.toggle('hidden', view !== 'parsed');
+      document.getElementById('rawView').classList.toggle('hidden', view !== 'raw');
+      document.getElementById('jsonView').classList.toggle('hidden', view !== 'json');
+    }
+
+    function toggleSampleMenu() {
+      document.getElementById('sampleMenu').classList.toggle('show');
+    }
+
+    function loadSample(type) {
+      document.getElementById('ediInput').value = SAMPLES[type] || '';
+      document.getElementById('sampleMenu').classList.remove('show');
+      parseDocument();
+    }
+
+    function clearInput() {
+      document.getElementById('ediInput').value = '';
+      document.getElementById('resultsSection').classList.remove('show');
+      parsedData = null;
+      rawSegments = [];
+      validationMessages = [];
+    }
+
+    function copySummary() {
+      if (!parsedData) return;
+
+      const docType = parsedData.docType;
+      const typeInfo = DOC_TYPES[docType] || { name: 'Document' };
+      
+      let summary = `${typeInfo.name} (${docType})\n`;
+      summary += `${'='.repeat(40)}\n\n`;
+
+      if (parsedData.header.poNumber) summary += `PO Number: ${parsedData.header.poNumber}\n`;
+      if (parsedData.header.invoiceNumber) summary += `Invoice Number: ${parsedData.header.invoiceNumber}\n`;
+      if (parsedData.header.shipmentId) summary += `Shipment ID: ${parsedData.header.shipmentId}\n`;
+      if (parsedData.envelope.isa) {
+        summary += `Sender: ${parsedData.envelope.isa.senderId}\n`;
+        summary += `Receiver: ${parsedData.envelope.isa.receiverId}\n`;
+      }
+      if (parsedData.header.poDate) summary += `PO Date: ${parsedData.header.poDate}\n`;
+      if (parsedData.header.invoiceDate) summary += `Invoice Date: ${parsedData.header.invoiceDate}\n`;
+
+      if (parsedData.lineItems.length > 0) {
+        summary += `\nLine Items: ${parsedData.lineItems.length}\n`;
+      }
+
+      if (parsedData.summary.totalAmount) {
+        summary += `Total: $${parsedData.summary.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })}\n`;
+      }
+
+      navigator.clipboard.writeText(summary).then(() => {
+        showToast('Summary copied to clipboard');
+      });
+    }
+
+    function exportJson() {
+      if (!parsedData) return;
+
+      const blob = new Blob([JSON.stringify(parsedData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `edi-${parsedData.docType || 'document'}-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('JSON exported');
+    }
+
+    function showToast(message, isError = false) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.sample-dropdown')) {
+        document.getElementById('sampleMenu').classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
