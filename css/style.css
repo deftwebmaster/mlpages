@@ -293,7 +293,6 @@ a:hover {
 
 .tool-card .button {
   width: 100%;
-  margin-top: auto;
 }
 
 .tag {
@@ -305,6 +304,7 @@ a:hover {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   margin-bottom: var(--space-sm);
+  width: fit-content;
 }
 
 .tag-warehouse {
