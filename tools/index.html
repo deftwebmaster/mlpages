@@ -193,7 +193,7 @@
     </footer>
   </div>
 
-  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  <script>
     // Filter functionality
     (function() {
       const filterBtns = document.querySelectorAll('.filter-btn');
@@ -210,4 +210,14 @@
           // Filter cards
           cards.forEach(card => {
             if (filter === 'all' || card.dataset.category === filter) {
-              card.style.display 
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html> 
