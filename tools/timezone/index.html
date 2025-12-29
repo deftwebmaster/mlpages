@@ -3,226 +3,817 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Time Zone Overlap Finder</title>
+  <title>TimeSync - Timezone Overlap Finder</title>
+  <meta name="description" content="Find the best meeting times across timezones. Free tool for remote teams.">
   <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #475569;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       line-height: 1.6;
-      padding: 2rem;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
       max-width: 1200px;
       margin: 0 auto;
-      background: #f5f5f5;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
     }
 
+    /* Header */
     header {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
+      text-align: center;
       margin-bottom: 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 2rem 0;
     }
 
-    header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-
-    .controls {
-      display: flex;
-      gap: 1rem;
+    .logo {
+      display: inline-flex;
       align-items: center;
-      margin-top: 1rem;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    header .tagline {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-top: 0.25rem;
+    }
+
+    .trust-badges {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
       flex-wrap: wrap;
     }
 
-    button {
-      background: #007aff;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.9rem;
-    }
-
-    button:hover { background: #005ecb; }
-
-    section {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #333; }
-
-    /* Person row */
-    .person-row {
-      display: grid;
-      grid-template-columns: 150px 200px 120px 120px auto;
-      gap: 0.75rem;
+    .trust-badge {
+      display: flex;
       align-items: center;
-      margin-bottom: 0.75rem;
-      padding: 0.75rem;
-      background: #f9f9f9;
-      border-radius: 6px;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
 
-    .person-row input, .person-row select {
-      padding: 0.5rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+    .trust-badge span {
+      color: var(--accent);
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .controls-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .toggle-switch {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
       font-size: 0.9rem;
+      cursor: pointer;
     }
 
-    .person-row button {
-      background: #ff3b30;
-      padding: 0.5rem;
+    .toggle-switch input {
+      width: 40px;
+      height: 22px;
+      appearance: none;
+      background: var(--bg-card);
+      border-radius: 11px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .toggle-switch input::before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s;
+    }
+
+    .toggle-switch input:checked {
+      background: var(--accent);
+    }
+
+    .toggle-switch input:checked::before {
+      transform: translateX(18px);
+      background: white;
+    }
+
+    .current-time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .current-time .time {
+      color: var(--accent);
+      font-weight: 600;
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-input);
+      border-color: var(--accent);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Sections */
+    section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .section-icon {
+      font-size: 1.25rem;
+    }
+
+    /* Person Cards */
+    .person-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .person-card {
+      display: grid;
+      grid-template-columns: auto 1fr 200px auto auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s;
+    }
+
+    .person-card:hover {
+      border-color: var(--accent);
+    }
+
+    .person-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .person-card input,
+    .person-card select {
+      padding: 0.6rem 0.875rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .person-card input:focus,
+    .person-card select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .person-card input[type="text"] {
+      min-width: 0;
+    }
+
+    .person-card select {
+      min-width: 0;
+    }
+
+    .time-inputs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .time-inputs span {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .time-inputs input[type="time"] {
+      width: 110px;
+      padding: 0.6rem;
+    }
+
+    .btn-delete {
+      flex-shrink: 0;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
     }
 
     /* Timeline */
-    #timeline-container { 
-      margin-top: 1rem;
+    .timeline-container {
       position: relative;
-      padding-left: 180px;
+      margin-top: 1rem;
     }
 
     .timeline-header {
+      display: flex;
       position: relative;
-      height: 30px;
-      background: #f0f0f0;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
+      height: 32px;
+      margin-bottom: 0.75rem;
+      margin-left: 180px;
     }
 
     .timeline-tick {
       position: absolute;
-      top: 0;
-      font-size: 0.7rem;
-      color: #666;
+      font-size: 0.75rem;
+      color: var(--text-muted);
       transform: translateX(-50%);
+      font-family: 'SF Mono', 'Monaco', monospace;
+    }
+
+    .timeline-tick::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      width: 1px;
+      height: 6px;
+      background: var(--border);
+    }
+
+    .timeline-rows {
+      position: relative;
     }
 
     .timeline-row {
-      position: relative;
-      height: 32px;
-      background: #fafafa;
-      border-radius: 4px;
+      display: flex;
+      align-items: center;
       margin-bottom: 0.5rem;
-      border: 1px solid #e0e0e0;
     }
 
     .timeline-label {
-      position: absolute;
-      left: -170px;
-      top: 50%;
-      transform: translateY(-50%);
+      width: 170px;
+      padding-right: 1rem;
       font-size: 0.85rem;
-      color: #555;
-      width: 160px;
+      color: var(--text-secondary);
       text-align: right;
+      flex-shrink: 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
+    .timeline-label strong {
+      color: var(--text-primary);
+    }
+
+    .timeline-label small {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .timeline-track {
+      flex: 1;
+      height: 36px;
+      background: var(--bg-card);
+      border-radius: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
     .timeline-bar {
       position: absolute;
       height: 100%;
-      background: #007aff;
-      opacity: 0.6;
-      border-radius: 3px;
+      border-radius: 4px;
+      opacity: 0.85;
+      transition: opacity 0.2s, transform 0.2s;
       cursor: pointer;
-      transition: opacity 0.2s;
     }
 
-    .timeline-bar:hover { 
-      opacity: 0.9;
+    .timeline-bar:hover {
+      opacity: 1;
+      transform: scaleY(1.1);
+      z-index: 10;
+    }
+
+    .timeline-bar-inner {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+    }
+
+    .timeline-row.overlap-row .timeline-track {
+      height: 44px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
     }
 
     .timeline-bar.overlap {
-      background: #34c759;
-      opacity: 0.8;
-      height: 40px;
-      top: -4px;
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      box-shadow: 0 0 20px var(--success-glow);
+      animation: pulse-glow 2s ease-in-out infinite;
     }
 
-    .tooltip {
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 10px var(--success-glow); }
+      50% { box-shadow: 0 0 25px var(--success-glow), 0 0 40px rgba(16, 185, 129, 0.2); }
+    }
+
+    .timeline-now {
       position: absolute;
-      background: rgba(0,0,0,0.8);
-      color: white;
-      padding: 0.5rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--danger);
+      z-index: 20;
+      pointer-events: none;
+    }
+
+    .timeline-now::before {
+      content: 'NOW';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--danger);
+      letter-spacing: 0.05em;
+    }
+
+    /* Suggestions */
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .suggestion-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .suggestion-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--success), var(--accent));
+    }
+
+    .suggestion-card.best::before {
+      height: 4px;
+      background: linear-gradient(90deg, var(--success), #10b981);
+    }
+
+    .suggestion-card.best {
+      border-color: var(--success);
+    }
+
+    .suggestion-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+
+    .suggestion-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    .suggestion-times {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .suggestion-time {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .suggestion-time .time {
+      font-weight: 600;
+      color: var(--accent);
+      font-family: 'SF Mono', 'Monaco', monospace;
+      min-width: 70px;
+    }
+
+    .suggestion-time .name {
+      color: var(--text-secondary);
+    }
+
+    .suggestion-duration {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .no-overlap {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-sm);
+    }
+
+    .no-overlap-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .no-overlap h3 {
+      color: var(--warning);
+      margin-bottom: 0.5rem;
+    }
+
+    .no-overlap p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
       font-size: 0.8rem;
       pointer-events: none;
       z-index: 1000;
       white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Suggestions */
-    .suggestion-item {
-      padding: 0.75rem;
-      background: #f0f9ff;
-      border-left: 3px solid #007aff;
-      margin-bottom: 0.5rem;
-      border-radius: 4px;
+    /* Responsive */
+    @media (max-width: 900px) {
+      .person-card {
+        grid-template-columns: auto 1fr auto;
+        gap: 0.75rem;
+      }
+
+      .person-card select {
+        grid-column: 1 / -1;
+        order: 10;
+      }
+
+      .time-inputs {
+        grid-column: 1 / -2;
+        order: 11;
+      }
+
+      .time-inputs input[type="time"] {
+        width: 100px;
+      }
+
+      .btn-delete {
+        grid-row: 1;
+        grid-column: 3;
+      }
+
+      .timeline-header {
+        margin-left: 0;
+      }
+
+      .timeline-label {
+        width: 100%;
+        text-align: left;
+        padding: 0 0 0.25rem 0;
+        position: static;
+      }
+
+      .timeline-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
 
-    .no-overlap {
-      background: #fff3cd;
-      border-left-color: #ffc107;
-    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1rem;
+      }
 
-    @media (max-width: 768px) {
-      body { padding: 1rem; }
-      
-      .person-row {
+      header h1 {
+        font-size: 1.75rem;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .controls-left {
+        justify-content: center;
+      }
+
+      .trust-badges {
+        gap: 1rem;
+      }
+
+      .suggestions-grid {
         grid-template-columns: 1fr;
       }
-      
-      #timeline-container {
-        padding-left: 0;
-      }
-      
-      .timeline-label {
-        position: static;
-        transform: none;
-        text-align: left;
-        margin-bottom: 0.25rem;
-        width: 100%;
-      }
     }
+
+    /* Color palette for person bars */
+    .color-0 { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+    .color-1 { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+    .color-2 { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+    .color-3 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+    .color-4 { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
+    .color-5 { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); }
+    .color-6 { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+    .color-7 { background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); }
+
+    .dot-0 { background: #3b82f6; }
+    .dot-1 { background: #8b5cf6; }
+    .dot-2 { background: #ec4899; }
+    .dot-3 { background: #f59e0b; }
+    .dot-4 { background: #14b8a6; }
+    .dot-5 { background: #f43f5e; }
+    .dot-6 { background: #06b6d4; }
+    .dot-7 { background: #84cc16; }
+
+    /* Hidden */
+    .hidden { display: none !important; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Time Zone Overlap Finder</h1>
-    <div class="controls">
-      <label>
-        <input type="checkbox" id="toggle24h" checked> 24-hour time
-      </label>
-      <button id="shareBtn">📋 Copy share link</button>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="logo-icon">🌍</div>
+        <h1>TimeSync</h1>
+      </div>
+      <p class="tagline">Find the perfect meeting time across timezones</p>
+      <div class="trust-badges">
+        <div class="trust-badge"><span>🔒</span> 100% Private</div>
+        <div class="trust-badge"><span>🔗</span> Shareable Links</div>
+        <div class="trust-badge"><span>⚡</span> Instant Results</div>
+      </div>
+    </header>
+
+    <div class="controls-bar">
+      <div class="controls-left">
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle24h" checked>
+          <span>24-hour time</span>
+        </label>
+        <div class="current-time">
+          <span>🕐</span>
+          <span>Your time:</span>
+          <span class="time" id="currentTime">--:--</span>
+        </div>
+      </div>
+      <div class="controls-right">
+        <button class="btn btn-secondary" id="shareBtn">
+          <span>📋</span> Copy Link
+        </button>
+      </div>
     </div>
-  </header>
 
-  <main>
-    <section id="people-section">
-      <h2>People & Working Hours</h2>
-      <div id="people-list"></div>
-      <button id="addPersonBtn">+ Add person</button>
-    </section>
+    <main>
+      <section id="people-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-icon">👥</span>
+            <span>Team Members</span>
+          </div>
+          <button class="btn btn-primary" id="addPersonBtn">
+            <span>+</span> Add Person
+          </button>
+        </div>
+        <div id="people-list" class="person-list"></div>
+      </section>
 
-    <section id="timeline-section">
-      <h2>Timeline (UTC reference)</h2>
-      <div id="timeline-container"></div>
-    </section>
+      <section id="timeline-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-icon">📊</span>
+            <span>Working Hours Timeline</span>
+          </div>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Times shown in UTC</span>
+        </div>
+        <div id="timeline-container" class="timeline-container"></div>
+      </section>
 
-    <section id="suggestions-section">
-      <h2>Best Meeting Times</h2>
-      <div id="suggestions"></div>
-    </section>
-  </main>
+      <section id="suggestions-section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="section-icon">✨</span>
+            <span>Best Meeting Times</span>
+          </div>
+        </div>
+        <div id="suggestions"></div>
+      </section>
+    </main>
+
+    <footer>
+      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    </footer>
+  </div>
+
+  <div id="tooltip" class="tooltip hidden"></div>
 
   <script>
     const { DateTime } = luxon;
@@ -230,18 +821,40 @@
     // State
     const state = {
       use24h: true,
-      anchorDate: DateTime.now().plus({ days: 1 }).startOf('day'), // Tomorrow
+      anchorDate: DateTime.now().plus({ days: 1 }).startOf('day'),
       people: []
     };
 
-    // Common time zones (top 20)
-    const commonZones = [
-      'America/New_York', 'America/Chicago', 'America/Denver', 'America/Los_Angeles',
-      'America/Toronto', 'America/Mexico_City', 'America/Sao_Paulo',
-      'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Europe/Amsterdam',
-      'Asia/Tokyo', 'Asia/Shanghai', 'Asia/Singapore', 'Asia/Dubai', 'Asia/Kolkata',
-      'Australia/Sydney', 'Pacific/Auckland',
-      'UTC'
+    // Extended timezone list with friendly names
+    const timezones = [
+      { id: 'Pacific/Auckland', label: 'Auckland (NZST)', offset: '+12:00' },
+      { id: 'Australia/Sydney', label: 'Sydney (AEST)', offset: '+10:00' },
+      { id: 'Asia/Tokyo', label: 'Tokyo (JST)', offset: '+9:00' },
+      { id: 'Asia/Shanghai', label: 'Shanghai (CST)', offset: '+8:00' },
+      { id: 'Asia/Singapore', label: 'Singapore (SGT)', offset: '+8:00' },
+      { id: 'Asia/Bangkok', label: 'Bangkok (ICT)', offset: '+7:00' },
+      { id: 'Asia/Dhaka', label: 'Dhaka (BST)', offset: '+6:00' },
+      { id: 'Asia/Kolkata', label: 'Mumbai/Delhi (IST)', offset: '+5:30' },
+      { id: 'Asia/Karachi', label: 'Karachi (PKT)', offset: '+5:00' },
+      { id: 'Asia/Dubai', label: 'Dubai (GST)', offset: '+4:00' },
+      { id: 'Europe/Moscow', label: 'Moscow (MSK)', offset: '+3:00' },
+      { id: 'Europe/Istanbul', label: 'Istanbul (TRT)', offset: '+3:00' },
+      { id: 'Africa/Cairo', label: 'Cairo (EET)', offset: '+2:00' },
+      { id: 'Europe/Berlin', label: 'Berlin/Paris (CET)', offset: '+1:00' },
+      { id: 'Europe/Amsterdam', label: 'Amsterdam (CET)', offset: '+1:00' },
+      { id: 'Europe/London', label: 'London (GMT)', offset: '+0:00' },
+      { id: 'UTC', label: 'UTC', offset: '+0:00' },
+      { id: 'America/Sao_Paulo', label: 'São Paulo (BRT)', offset: '-3:00' },
+      { id: 'America/New_York', label: 'New York (EST)', offset: '-5:00' },
+      { id: 'America/Toronto', label: 'Toronto (EST)', offset: '-5:00' },
+      { id: 'America/Chicago', label: 'Chicago (CST)', offset: '-6:00' },
+      { id: 'America/Mexico_City', label: 'Mexico City (CST)', offset: '-6:00' },
+      { id: 'America/Denver', label: 'Denver (MST)', offset: '-7:00' },
+      { id: 'America/Phoenix', label: 'Phoenix (MST)', offset: '-7:00' },
+      { id: 'America/Los_Angeles', label: 'Los Angeles (PST)', offset: '-8:00' },
+      { id: 'America/Vancouver', label: 'Vancouver (PST)', offset: '-8:00' },
+      { id: 'America/Anchorage', label: 'Anchorage (AKST)', offset: '-9:00' },
+      { id: 'Pacific/Honolulu', label: 'Honolulu (HST)', offset: '-10:00' },
     ];
 
     let nextId = 1;
@@ -249,24 +862,38 @@
     // Initialize
     function init() {
       loadFromURL();
+      
       if (state.people.length === 0) {
         const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        addPerson('You', userTz, 9*60, 17*60);
+        const matchedTz = timezones.find(tz => tz.id === userTz)?.id || 'America/New_York';
+        addPerson('You', matchedTz, 9 * 60, 17 * 60);
       }
-      
+
       document.getElementById('toggle24h').addEventListener('change', (e) => {
         state.use24h = e.target.checked;
         render();
       });
-      
+
       document.getElementById('addPersonBtn').addEventListener('click', () => {
-        addPerson('', 'UTC', 9*60, 17*60);
+        addPerson('', 'UTC', 9 * 60, 17 * 60);
         render();
       });
-      
+
       document.getElementById('shareBtn').addEventListener('click', copyShareLink);
-      
+
+      // Update current time every second
+      updateCurrentTime();
+      setInterval(updateCurrentTime, 1000);
+
       render();
+    }
+
+    function updateCurrentTime() {
+      const now = DateTime.now();
+      const timeStr = state.use24h 
+        ? now.toFormat('HH:mm:ss')
+        : now.toFormat('h:mm:ss a');
+      document.getElementById('currentTime').textContent = timeStr;
     }
 
     function addPerson(name, tz, startMin, endMin) {
@@ -284,6 +911,14 @@
       render();
     }
 
+    function updatePerson(id, field, value) {
+      const person = state.people.find(p => p.id === id);
+      if (person) {
+        person[field] = value;
+        render();
+      }
+    }
+
     // Render
     function render() {
       renderPeopleList();
@@ -293,133 +928,246 @@
 
     function renderPeopleList() {
       const container = document.getElementById('people-list');
-      container.innerHTML = state.people.map(person => `
-        <div class="person-row" data-id="${person.id}">
-          <input type="text" value="${person.name}" placeholder="Name" 
-                 onchange="updatePerson('${person.id}', 'name', this.value)">
-          <select onchange="updatePerson('${person.id}', 'tz', this.value)">
-            ${commonZones.map(tz => `
-              <option value="${tz}" ${tz === person.tz ? 'selected' : ''}>${tz.replace(/_/g, ' ')}</option>
-            `).join('')}
-          </select>
-          <input type="time" value="${minToTime(person.startMin)}" 
-                 onchange="updatePerson('${person.id}', 'startMin', timeToMin(this.value))">
-          <input type="time" value="${minToTime(person.endMin)}" 
-                 onchange="updatePerson('${person.id}', 'endMin', timeToMin(this.value))">
-          <button onclick="removePerson('${person.id}')">Remove</button>
-        </div>
-      `).join('');
+      
+      if (state.people.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <p>Add team members to find overlapping hours</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = state.people.map((person, index) => {
+        const colorIndex = index % 8;
+        return `
+          <div class="person-card" data-id="${person.id}">
+            <div class="person-color dot-${colorIndex}"></div>
+            <input type="text" value="${person.name}" placeholder="Name" 
+                   onchange="updatePerson('${person.id}', 'name', this.value)">
+            <select onchange="updatePerson('${person.id}', 'tz', this.value)">
+              ${timezones.map(tz => `
+                <option value="${tz.id}" ${tz.id === person.tz ? 'selected' : ''}>
+                  ${tz.label}
+                </option>
+              `).join('')}
+            </select>
+            <div class="time-inputs">
+              <input type="time" value="${minToTime(person.startMin)}" 
+                     onchange="updatePerson('${person.id}', 'startMin', timeToMin(this.value))">
+              <span>to</span>
+              <input type="time" value="${minToTime(person.endMin)}" 
+                     onchange="updatePerson('${person.id}', 'endMin', timeToMin(this.value))">
+            </div>
+            <button class="btn btn-danger btn-delete" onclick="removePerson('${person.id}')">✕</button>
+          </div>
+        `;
+      }).join('');
     }
 
     function renderTimeline() {
       const container = document.getElementById('timeline-container');
       
-      // Header ticks (UTC hours)
+      if (state.people.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      // Header with hour ticks
       let headerHTML = '<div class="timeline-header">';
       for (let h = 0; h <= 24; h += 3) {
-        headerHTML += `<div class="timeline-tick" style="left: ${h/24*100}%">${String(h).padStart(2, '0')}:00</div>`;
+        const left = (h / 24) * 100;
+        headerHTML += `<div class="timeline-tick" style="left: ${left}%">${String(h).padStart(2, '0')}:00</div>`;
       }
       headerHTML += '</div>';
+
+      // Timeline rows
+      let rowsHTML = '<div class="timeline-rows">';
       
-      // Person rows
-      let rowsHTML = '';
-      state.people.forEach(person => {
+      // Current time indicator position (in UTC)
+      const nowUTC = DateTime.utc();
+      const nowMinutes = nowUTC.hour * 60 + nowUTC.minute;
+      const nowLeft = (nowMinutes / 1440) * 100;
+
+      state.people.forEach((person, index) => {
+        const colorIndex = index % 8;
         const intervals = localToUTCIntervals(person);
-        rowsHTML += `<div class="timeline-row">`;
-        rowsHTML += `<div class="timeline-label">${person.name} (${person.tz.split('/').pop().replace(/_/g, ' ')})</div>`;
-        intervals.forEach(([start, end]) => {
-          const left = (start / 1440) * 100;
-          const width = ((end - start) / 1440) * 100;
-          const localStart = formatTime(person.startMin);
-          const localEnd = formatTime(person.endMin);
-          rowsHTML += `<div class="timeline-bar" 
-                           style="left: ${left}%; width: ${width}%"
-                           title="${localStart} - ${localEnd} (${person.name})"></div>`;
-        });
-        rowsHTML += '</div>';
+        const tzInfo = timezones.find(tz => tz.id === person.tz);
+        const shortTz = tzInfo ? tzInfo.label.split(' ')[0] : person.tz.split('/').pop();
+        
+        rowsHTML += `
+          <div class="timeline-row">
+            <div class="timeline-label">
+              <strong>${person.name}</strong>
+              <small>${shortTz}</small>
+            </div>
+            <div class="timeline-track">
+              ${intervals.map(([start, end]) => {
+                const left = (start / 1440) * 100;
+                const width = ((end - start) / 1440) * 100;
+                return `<div class="timeline-bar color-${colorIndex}" 
+                            style="left: ${left}%; width: ${width}%"
+                            data-person="${person.name}"
+                            data-start="${formatTime(person.startMin)}"
+                            data-end="${formatTime(person.endMin)}">
+                          <div class="timeline-bar-inner"></div>
+                        </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
       });
-      
+
       // Overlap row
       const overlap = computeOverlap();
       if (overlap.length > 0) {
-        rowsHTML += `<div class="timeline-row">`;
-        rowsHTML += `<div class="timeline-label"><strong>⭐ Overlap</strong></div>`;
-        overlap.forEach(([start, end]) => {
-          const left = (start / 1440) * 100;
-          const width = ((end - start) / 1440) * 100;
-          const durationMin = end - start;
-          const durationHr = Math.floor(durationMin / 60);
-          const durationRemainder = durationMin % 60;
-          const durationStr = durationHr > 0 
-            ? `${durationHr}h ${durationRemainder}m` 
-            : `${durationRemainder}m`;
-          rowsHTML += `<div class="timeline-bar overlap" 
-                           style="left: ${left}%; width: ${width}%"
-                           title="Overlap: ${durationStr}"></div>`;
-        });
-        rowsHTML += '</div>';
+        rowsHTML += `
+          <div class="timeline-row overlap-row">
+            <div class="timeline-label">
+              <strong>⭐ Overlap</strong>
+              <small>Best times</small>
+            </div>
+            <div class="timeline-track">
+              ${overlap.map(([start, end]) => {
+                const left = (start / 1440) * 100;
+                const width = ((end - start) / 1440) * 100;
+                const duration = end - start;
+                const hours = Math.floor(duration / 60);
+                const mins = duration % 60;
+                const durationStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+                return `<div class="timeline-bar overlap" 
+                            style="left: ${left}%; width: ${width}%"
+                            data-duration="${durationStr}">
+                          <div class="timeline-bar-inner"></div>
+                        </div>`;
+              }).join('')}
+              <div class="timeline-now" style="left: ${nowLeft}%"></div>
+            </div>
+          </div>
+        `;
       }
-      
+
+      rowsHTML += '</div>';
+
       container.innerHTML = headerHTML + rowsHTML;
+
+      // Add hover tooltips
+      container.querySelectorAll('.timeline-bar').forEach(bar => {
+        bar.addEventListener('mouseenter', showTooltip);
+        bar.addEventListener('mouseleave', hideTooltip);
+        bar.addEventListener('mousemove', moveTooltip);
+      });
     }
 
     function renderSuggestions() {
       const container = document.getElementById('suggestions');
       const overlap = computeOverlap();
-      
-      if (overlap.length === 0) {
-        container.innerHTML = '<div class="suggestion-item no-overlap">⚠️ No overlap found. Consider async communication or flexible hours.</div>';
+
+      if (state.people.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📅</div>
+            <p>Add team members to see meeting suggestions</p>
+          </div>
+        `;
         return;
       }
+
+      if (overlap.length === 0) {
+        container.innerHTML = `
+          <div class="no-overlap">
+            <div class="no-overlap-icon">😔</div>
+            <h3>No Overlap Found</h3>
+            <p>Working hours don't overlap. Consider async communication, adjusting schedules, or splitting into smaller groups.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by duration (longest first)
+      const sorted = [...overlap].sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
+
+      let html = '<div class="suggestions-grid">';
       
-      // Sort by duration
-      const sorted = overlap.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
-      
-      let html = '';
       sorted.slice(0, 3).forEach(([start, end], i) => {
         const mid = Math.floor((start + end) / 2);
-        const midRounded = Math.round(mid / 15) * 15; // Round to 15min
-        
-        const times = state.people.map(p => {
-          const localTime = utcToLocal(midRounded, p.tz);
-          return `<strong>${formatTime(localTime)}</strong> ${p.name}`;
-        }).join(' • ');
+        const midRounded = Math.round(mid / 15) * 15;
         
         const durationMin = end - start;
         const durationHr = Math.floor(durationMin / 60);
         const durationRemainder = durationMin % 60;
         const durationStr = durationHr > 0 
-          ? `${durationHr}h ${durationRemainder}m window` 
+          ? `${durationHr}h ${durationRemainder > 0 ? durationRemainder + 'm' : ''} window`
           : `${durationRemainder}m window`;
-        
-        html += `<div class="suggestion-item">
-          <div><strong>Option ${i + 1}:</strong> ${times}</div>
-          <div style="font-size: 0.85rem; color: #666; margin-top: 0.25rem;">${durationStr}</div>
-        </div>`;
+
+        const isBest = i === 0;
+
+        html += `
+          <div class="suggestion-card ${isBest ? 'best' : ''}">
+            ${isBest ? '<div class="suggestion-badge">⭐ Best Option</div>' : `<div class="suggestion-badge" style="background: var(--bg-input); color: var(--text-muted);">Option ${i + 1}</div>`}
+            <div class="suggestion-times">
+              ${state.people.map(p => {
+                const localTime = utcToLocal(midRounded, p.tz);
+                return `
+                  <div class="suggestion-time">
+                    <span class="time">${formatTime(localTime)}</span>
+                    <span class="name">${p.name}</span>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+            <div class="suggestion-duration">📏 ${durationStr}</div>
+          </div>
+        `;
       });
-      
+
+      html += '</div>';
       container.innerHTML = html;
     }
 
-    // Time conversion
+    // Tooltip handlers
+    function showTooltip(e) {
+      const bar = e.target.closest('.timeline-bar');
+      const tooltip = document.getElementById('tooltip');
+      
+      let content = '';
+      if (bar.classList.contains('overlap')) {
+        content = `⭐ Overlap: ${bar.dataset.duration}`;
+      } else {
+        content = `${bar.dataset.person}: ${bar.dataset.start} - ${bar.dataset.end}`;
+      }
+      
+      tooltip.textContent = content;
+      tooltip.classList.remove('hidden');
+    }
+
+    function hideTooltip() {
+      document.getElementById('tooltip').classList.add('hidden');
+    }
+
+    function moveTooltip(e) {
+      const tooltip = document.getElementById('tooltip');
+      tooltip.style.left = (e.clientX + 10) + 'px';
+      tooltip.style.top = (e.clientY - 30) + 'px';
+    }
+
+    // Time calculations
     function localToUTCIntervals(person) {
       const { tz, startMin, endMin } = person;
-      
+
       try {
         const base = state.anchorDate.setZone(tz);
-        
         const startDT = base.set({ hour: Math.floor(startMin / 60), minute: startMin % 60 });
         const endDT = base.set({ hour: Math.floor(endMin / 60), minute: endMin % 60 });
-        
-        const startUTC = startDT.toUTC().diff(state.anchorDate.toUTC(), 'minutes').minutes;
+
+        let startUTC = startDT.toUTC().diff(state.anchorDate.toUTC(), 'minutes').minutes;
         let endUTC = endDT.toUTC().diff(state.anchorDate.toUTC(), 'minutes').minutes;
-        
-        // Handle midnight wrap
+
         if (endMin <= startMin) {
           endUTC += 1440;
         }
-        
-        // Normalize to 0-1440 range
+
         const intervals = [];
         if (startUTC < 0) {
           intervals.push([startUTC + 1440, 1440]);
@@ -430,7 +1178,7 @@
         } else {
           intervals.push([startUTC, endUTC]);
         }
-        
+
         return intervals;
       } catch (e) {
         console.error('Error converting time for', person, e);
@@ -443,21 +1191,20 @@
         const dt = state.anchorDate.toUTC().plus({ minutes: utcMin }).setZone(tz);
         return dt.hour * 60 + dt.minute;
       } catch (e) {
-        console.error('Error converting UTC to local', e);
         return 0;
       }
     }
 
     function computeOverlap() {
       if (state.people.length === 0) return [];
-      
+
       let intervals = [[0, 1440]];
-      
+
       state.people.forEach(person => {
         const personIntervals = localToUTCIntervals(person);
         intervals = intersectIntervals(intervals, personIntervals);
       });
-      
+
       return intervals.filter(([start, end]) => end > start);
     }
 
@@ -474,14 +1221,6 @@
     }
 
     // Utilities
-    function updatePerson(id, field, value) {
-      const person = state.people.find(p => p.id === id);
-      if (person) {
-        person[field] = value;
-        render();
-      }
-    }
-
     function minToTime(min) {
       const h = Math.floor(min / 60);
       const m = min % 60;
@@ -494,7 +1233,7 @@
     }
 
     function formatTime(min) {
-      const h = Math.floor(min / 60);
+      const h = Math.floor(min / 60) % 24;
       const m = min % 60;
       if (state.use24h) {
         return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
@@ -506,35 +1245,46 @@
 
     // Share link
     function copyShareLink() {
-      const params = state.people.map(p => 
+      const params = state.people.map(p =>
         `${encodeURIComponent(p.name)},${p.tz},${p.startMin},${p.endMin}`
       ).join(';');
-      
+
       const url = `${window.location.origin}${window.location.pathname}?p=${params}`;
+      
       navigator.clipboard.writeText(url).then(() => {
         const btn = document.getElementById('shareBtn');
-        const originalText = btn.textContent;
-        btn.textContent = '✓ Copied!';
-        setTimeout(() => btn.textContent = originalText, 2000);
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<span>✓</span> Copied!';
+        btn.style.background = 'var(--success)';
+        btn.style.borderColor = 'var(--success)';
+        setTimeout(() => {
+          btn.innerHTML = originalHTML;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+        }, 2000);
       });
     }
 
     function loadFromURL() {
       const params = new URLSearchParams(window.location.search);
       const pData = params.get('p');
-      
+
       if (pData) {
-        const people = pData.split(';').map(entry => {
-          const [name, tz, start, end] = entry.split(',');
-          return {
-            id: `p${nextId++}`,
-            name: decodeURIComponent(name),
-            tz,
-            startMin: parseInt(start),
-            endMin: parseInt(end)
-          };
-        });
-        state.people = people;
+        try {
+          const people = pData.split(';').map(entry => {
+            const [name, tz, start, end] = entry.split(',');
+            return {
+              id: `p${nextId++}`,
+              name: decodeURIComponent(name),
+              tz,
+              startMin: parseInt(start),
+              endMin: parseInt(end)
+            };
+          });
+          state.people = people;
+        } catch (e) {
+          console.error('Error parsing URL params', e);
+        }
       }
     }
 
