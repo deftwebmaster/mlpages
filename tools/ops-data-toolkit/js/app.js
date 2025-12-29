@@ -96,18 +96,30 @@ function setupEventListeners() {
         document.getElementById('fileInput').click();
     });
     
-    document.getElementById('importPrompt')?.addEventListener('click', () => {
-        document.getElementById('fileInput').click();
-    });
+    const importPromptBtn = document.getElementById('importPrompt');
+    const trySampleBtn = document.getElementById('trySamplePrompt');
     
-    document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
-        // Trigger the header dropdown
-        const sampleBtn = document.getElementById('loadSample');
-        if (sampleBtn) {
-            sampleBtn.click();
-            sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-    });
+    console.log('setupEventListeners - importPrompt:', importPromptBtn);
+    console.log('setupEventListeners - trySamplePrompt:', trySampleBtn);
+    
+    if (importPromptBtn) {
+        importPromptBtn.addEventListener('click', () => {
+            console.log('importPrompt clicked from setupEventListeners');
+            document.getElementById('fileInput').click();
+        });
+    }
+    
+    if (trySampleBtn) {
+        trySampleBtn.addEventListener('click', () => {
+            console.log('trySamplePrompt clicked from setupEventListeners');
+            // Trigger the header dropdown
+            const sampleBtn = document.getElementById('loadSample');
+            if (sampleBtn) {
+                sampleBtn.click();
+                sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        });
+    }
     
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);
     
