@@ -112,11 +112,15 @@ function setupEventListeners() {
     if (trySampleBtn) {
         trySampleBtn.addEventListener('click', () => {
             console.log('trySamplePrompt clicked from setupEventListeners');
-            // Trigger the header dropdown
-            const sampleBtn = document.getElementById('loadSample');
-            if (sampleBtn) {
-                sampleBtn.click();
-                sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Directly toggle the dropdown menu
+            const sampleMenu = document.getElementById('sampleMenu');
+            if (sampleMenu) {
+                sampleMenu.classList.add('show');
+                // Scroll the header dropdown into view
+                const sampleBtn = document.getElementById('loadSample');
+                if (sampleBtn) {
+                    sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
             }
         });
     }

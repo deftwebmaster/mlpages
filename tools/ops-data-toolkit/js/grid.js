@@ -81,11 +81,15 @@ export class DataGrid {
         if (sampleBtn) {
             sampleBtn.addEventListener('click', () => {
                 console.log('Try Sample Data button clicked');
-                const headerSampleBtn = document.getElementById('loadSample');
-                console.log('Header sample button:', headerSampleBtn);
-                if (headerSampleBtn) {
-                    headerSampleBtn.click();
-                    headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // Directly toggle the dropdown menu
+                const sampleMenu = document.getElementById('sampleMenu');
+                if (sampleMenu) {
+                    sampleMenu.classList.add('show');
+                    // Scroll the header dropdown into view
+                    const headerSampleBtn = document.getElementById('loadSample');
+                    if (headerSampleBtn) {
+                        headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 }
             });
         }
