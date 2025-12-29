@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pallet Load Calculator | Matt Livingston</title>
+    <meta name="description" content="Visual palletization, cube utilization, and weight-limit planning for warehouse operations. Calculate optimal box stacking with 2D and 3D visualization.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Pallet Load Calculator</h1>
+                <p class="subtitle">Visual palletization, cube utilization, and weight-limit planning for warehouse operations.</p>
+            </div>
+            <div class="privacy-badge">🔒 Runs locally</div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- Left Panel: Inputs -->
+            <aside class="input-panel">
+                <!-- Box Dimensions -->
+                <section class="input-section">
+                    <h2>
+                        Box Dimensions
+                        <button type="button" class="tooltip-trigger" data-tooltip="Enter the outer dimensions of your shipping carton or case. The calculator will test both orientations to find the best fit.">?</button>
+                    </h2>
+                    
+                    <div class="input-row triple">
+                        <div class="input-group">
+                            <label for="boxLength">Length</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="boxLength" value="18" min="1" max="96" step="0.25">
+                                <span class="unit" id="lengthUnit">in</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="boxWidth">Width</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="boxWidth" value="14" min="1" max="96" step="0.25">
+                                <span class="unit" id="widthUnit">in</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="boxHeight">Height</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="boxHeight" value="12" min="1" max="96" step="0.25">
+                                <span class="unit" id="heightUnit">in</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row double">
+                        <div class="input-group">
+                            <label for="boxWeight">Box Weight</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="boxWeight" value="25" min="0.1" max="500" step="0.5">
+                                <span class="unit" id="weightUnit">lbs</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="boxQuantity">Total Quantity</label>
+                            <input type="number" id="boxQuantity" value="150" min="1" max="10000" step="1">
+                        </div>
+                    </div>
+
+                    <div class="preset-row">
+                        <label>Quick presets:</label>
+                        <div class="preset-buttons">
+                            <button type="button" class="preset-btn" data-preset="standard">Standard Case</button>
+                            <button type="button" class="preset-btn" data-preset="small">Small Box</button>
+                            <button type="button" class="preset-btn" data-preset="large">Master Case</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Pallet Configuration -->
+                <section class="input-section">
+                    <h2>
+                        Pallet Configuration
+                        <button type="button" class="tooltip-trigger" data-tooltip="Standard GMA pallet is 48×40 inches. Height limits depend on your racking or trailer. Weight limits vary by pallet type and handling equipment.">?</button>
+                    </h2>
+
+                    <div class="input-group">
+                        <label for="palletPreset">Pallet Size</label>
+                        <select id="palletPreset">
+                            <option value="48x40" selected>48 × 40 in — GMA Standard</option>
+                            <option value="42x42">42 × 42 in — Square</option>
+                            <option value="48x48">48 × 48 in — Large Square</option>
+                            <option value="EUR">800 × 1200 mm — EUR</option>
+                            <option value="custom">Custom dimensions</option>
+                        </select>
+                    </div>
+
+                    <div class="input-row double custom-pallet-dims" style="display: none;">
+                        <div class="input-group">
+                            <label for="palletLength">Pallet Length</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="palletLength" value="48" min="12" max="120" step="1">
+                                <span class="unit">in</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="palletWidth">Pallet Width</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="palletWidth" value="40" min="12" max="120" step="1">
+                                <span class="unit">in</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="input-row double">
+                        <div class="input-group">
+                            <label for="maxHeight">Max Stack Height</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="maxHeight" value="48" min="12" max="120" step="1">
+                                <span class="unit" id="maxHeightUnit">in</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="maxWeight">Max Pallet Weight</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="maxWeight" value="2500" min="100" max="10000" step="50">
+                                <span class="unit" id="maxWeightUnit">lbs</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Optimization Mode -->
+                <section class="input-section">
+                    <h2>
+                        Optimize For
+                        <button type="button" class="tooltip-trigger" data-tooltip="Max Cube: fit the most boxes per pallet. Weight Safety: stay well under weight limits. Min Pallets: use fewest pallets for your quantity.">?</button>
+                    </h2>
+
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="optimizeFor" value="cube" checked>
+                            <span class="radio-label">
+                                <strong>Max Cube</strong>
+                                <small>Maximize boxes per pallet</small>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="optimizeFor" value="weight">
+                            <span class="radio-label">
+                                <strong>Weight Safety</strong>
+                                <small>Stay under 80% weight capacity</small>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="optimizeFor" value="pallets">
+                            <span class="radio-label">
+                                <strong>Min Pallets</strong>
+                                <small>Fewest pallets for total quantity</small>
+                            </span>
+                        </label>
+                    </div>
+                </section>
+
+                <!-- Units Toggle -->
+                <section class="input-section units-section">
+                    <div class="units-toggle">
+                        <span>Units:</span>
+                        <button type="button" class="unit-btn active" data-unit="imperial">Imperial (in/lbs)</button>
+                        <button type="button" class="unit-btn" data-unit="metric">Metric (cm/kg)</button>
+                    </div>
+                </section>
+
+                <!-- Calculate Button -->
+                <button type="button" class="calculate-btn" id="calculateBtn">
+                    Calculate Pallet Load
+                </button>
+            </aside>
+
+            <!-- Right Panel: Visualization & Results -->
+            <main class="output-panel">
+                <!-- 3D Preview -->
+                <section class="preview-section">
+                    <div class="preview-header">
+                        <h2>3D Preview</h2>
+                        <div class="preview-controls">
+                            <button type="button" class="preview-btn" id="resetViewBtn" title="Reset view">↻</button>
+                            <button type="button" class="preview-btn" id="toggleRotateBtn" title="Auto-rotate">⟳</button>
+                        </div>
+                    </div>
+                    <div class="preview-3d" id="preview3d">
+                        <div class="preview-placeholder">
+                            <span>Enter dimensions and click Calculate</span>
+                        </div>
+                    </div>
+                    <div class="preview-legend">
+                        <span class="legend-item"><span class="legend-color box-color"></span> Boxes</span>
+                        <span class="legend-item"><span class="legend-color pallet-color"></span> Pallet</span>
+                        <span class="legend-item"><span class="legend-color limit-color"></span> Height limit</span>
+                    </div>
+                </section>
+
+                <!-- 2D Views -->
+                <section class="views-2d">
+                    <div class="view-2d">
+                        <h3>Top View (Layer Pattern)</h3>
+                        <div class="view-canvas" id="topView">
+                            <div class="view-placeholder">—</div>
+                        </div>
+                    </div>
+                    <div class="view-2d">
+                        <h3>Side View (Stack Height)</h3>
+                        <div class="view-canvas" id="sideView">
+                            <div class="view-placeholder">—</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Results -->
+                <section class="results-section" id="resultsSection">
+                    <h2>Results</h2>
+                    
+                    <!-- Optimization Note -->
+                    <div class="optimization-note" id="optimizationNote" style="display: none;">
+                        <span class="note-icon">💡</span>
+                        <span class="note-text" id="noteText"></span>
+                    </div>
+
+                    <div class="results-grid">
+                        <div class="result-card primary">
+                            <span class="result-value" id="resultPalletsNeeded">—</span>
+                            <span class="result-label">Pallets Needed</span>
+                        </div>
+                        <div class="result-card primary">
+                            <span class="result-value" id="resultBoxesPerPallet">—</span>
+                            <span class="result-label">Boxes per Pallet</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-value" id="resultBoxesPerLayer">—</span>
+                            <span class="result-label">Boxes per Layer</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-value" id="resultLayers">—</span>
+                            <span class="result-label">Layers</span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-value" id="resultCubeUtil">—</span>
+                            <span class="result-label">
+                                Cube Utilization
+                                <button type="button" class="tooltip-trigger small" data-tooltip="Percentage of available pallet volume used by boxes. Higher is better, but 100% is rarely achievable due to box shapes.">?</button>
+                            </span>
+                        </div>
+                        <div class="result-card">
+                            <span class="result-value" id="resultWeightUtil">—</span>
+                            <span class="result-label">
+                                Weight Utilization
+                                <button type="button" class="tooltip-trigger small" data-tooltip="Percentage of max weight capacity used. Stay under 100% — some operations prefer under 80% for safety.">?</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Constraint Info -->
+                    <div class="constraint-info" id="constraintInfo" style="display: none;">
+                        <div class="constraint-item" id="heightConstraint">
+                            <span class="constraint-icon">📏</span>
+                            <span class="constraint-text"></span>
+                        </div>
+                        <div class="constraint-item" id="weightConstraint">
+                            <span class="constraint-icon">⚖️</span>
+                            <span class="constraint-text"></span>
+                        </div>
+                    </div>
+
+                    <!-- Orientation Note -->
+                    <div class="orientation-note" id="orientationNote" style="display: none;">
+                        <span class="orientation-icon">↻</span>
+                        <span class="orientation-text" id="orientationText"></span>
+                    </div>
+
+                    <!-- Export Buttons -->
+                    <div class="export-buttons">
+                        <button type="button" class="export-btn" id="exportPdfBtn">
+                            <span class="btn-icon">📄</span> Export PDF
+                        </button>
+                        <button type="button" class="export-btn" id="printBtn">
+                            <span class="btn-icon">🖨️</span> Print
+                        </button>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <span>Built by <a href="https://mattlivingston.com">Matt Livingston</a></span>
+            <span class="separator">•</span>
+            <span>Part of the <a href="/tools/">Ops Toolkit</a></span>
+        </footer>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div class="tooltip" id="tooltip"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
