@@ -543,8 +543,7 @@
             settings: {
                 lineEnding: document.getElementById('lineEnding').value,
                 commentVerbosity: document.getElementById('commentVerbosity').value,
-                timestampFormat: document.getElementById('timestampFormat').value,
-                preset: document.getElementById('preset').value
+                timestampFormat: document.getElementById('timestampFormat').value
             },
             placeholder: {
                 paragraphCount: document.getElementById('paragraphCount').value,
@@ -702,26 +701,192 @@
     }
 
     // =========================================================================
-    // Download All (placeholder for now)
+    // Download All
     // =========================================================================
 
     function initDownloadAll() {
-        document.getElementById('downloadAllBtn').addEventListener('click', () => {
-            alert('Download Everything will be available once all modules are complete.');
-        });
+        document.getElementById('downloadAllBtn').addEventListener('click', downloadAll);
     }
 
-    // =========================================================================
-    // Presets
-    // =========================================================================
+    async function downloadAll() {
+        const zip = new JSZip();
+        const le = getLineEnding();
+        const files = [];
 
-    function initPresets() {
-        document.getElementById('preset').addEventListener('change', (e) => {
-            const preset = e.target.value;
-            // Presets will affect defaults across tabs
-            // For now, just save the selection
-            saveToLocalStorage();
+        // Generate all files by triggering each generator
+        // and capturing the output
+
+        // 1. robots.txt
+        generateRobots();
+        const robotsContent = document.getElementById('robotsOutput').querySelector('pre')?.textContent;
+        if (robotsContent && !robotsContent.startsWith('#')) {
+            zip.file('robots.txt', robotsContent);
+            files.push('robots.txt');
+        }
+
+        // 2. sitemap.xml
+        generateSitemap();
+        const sitemapContent = document.getElementById('sitemapOutput').querySelector('pre')?.textContent;
+        if (sitemapContent && sitemapContent.includes('<?xml')) {
+            zip.file('sitemap.xml', sitemapContent);
+            files.push('sitemap.xml');
+        }
+
+        // 3. .htaccess
+        generateHtaccess();
+        const htaccessContent = document.getElementById('htaccessOutput').querySelector('pre')?.textContent;
+        if (htaccessContent && !htaccessContent.startsWith('#')) {
+            zip.file('.htaccess', htaccessContent);
+            files.push('.htaccess');
+        }
+
+        // 4. humans.txt
+        generateHumans();
+        const humansContent = document.getElementById('humansOutput').querySelector('pre')?.textContent;
+        if (humansContent && humansContent.includes('/* TEAM */')) {
+            zip.file('humans.txt', humansContent);
+            files.push('humans.txt');
+        }
+
+        // 5. Security headers (based on selected format)
+        generateSecurity();
+        const securityContent = document.getElementById('securityOutput').querySelector('pre')?.textContent;
+        const securityFormat = document.getElementById('securityOutputFormat').value;
+        if (securityContent && !securityContent.startsWith('#')) {
+            let securityFilename;
+            switch (securityFormat) {
+                case 'htaccess':
+                    securityFilename = 'security-headers.htaccess';
+                    break;
+                case 'netlify':
+                    securityFilename = '_headers';
+                    break;
+                case 'nginx':
+                    securityFilename = 'security-headers.nginx.conf';
+                    break;
+                case 'cloudflare':
+                    securityFilename = 'cloudflare-headers.txt';
+                    break;
+                default:
+                    securityFilename = 'security-headers.txt';
+            }
+            zip.file(securityFilename, securityContent);
+            files.push(securityFilename);
+        }
+
+        // 6. Meta tags (as HTML snippet)
+        generateMetaTags();
+        const metaContent = document.getElementById('metaOutput').querySelector('pre')?.textContent;
+        if (metaContent && metaContent.includes('<meta')) {
+            zip.file('meta-tags.html', metaContent);
+            files.push('meta-tags.html');
+        }
+
+        // 7. Legal documents
+        const legalTypes = ['privacy', 'terms', 'cookies', 'affiliate'];
+        const legalFormat = document.getElementById('legalOutputFormat').value;
+        const currentLegalType = document.querySelector('input[name="legalDocType"]:checked').value;
+        
+        // Generate each legal document
+        for (const docType of legalTypes) {
+            // Select the radio
+            const radio = document.querySelector(`input[name="legalDocType"][value="${docType}"]`);
+            if (radio) {
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+                
+                // Generate
+                generateLegal();
+                const content = document.getElementById('legalOutput').querySelector('pre')?.textContent;
+                
+                if (content && !content.startsWith('#')) {
+                    const ext = legalFormat === 'html' ? 'html' : legalFormat === 'markdown' ? 'md' : 'txt';
+                    const filenames = {
+                        privacy: `privacy-policy.${ext}`,
+                        terms: `terms-of-service.${ext}`,
+                        cookies: `cookie-policy.${ext}`,
+                        affiliate: `affiliate-disclosure.${ext}`
+                    };
+                    zip.file(filenames[docType], content);
+                    files.push(filenames[docType]);
+                }
+            }
+        }
+        
+        // Restore original legal selection
+        const originalRadio = document.querySelector(`input[name="legalDocType"][value="${currentLegalType}"]`);
+        if (originalRadio) {
+            originalRadio.checked = true;
+            originalRadio.dispatchEvent(new Event('change'));
+        }
+
+        // 8. Add a README
+        const readmeContent = generateReadme(files, le);
+        zip.file('README.txt', readmeContent);
+
+        // Generate and download ZIP
+        if (files.length === 0) {
+            alert('No files to download. Generate some content first!');
+            return;
+        }
+
+        try {
+            const blob = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'website-launch-kit.zip';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            console.error('Failed to generate ZIP:', err);
+            alert('Failed to generate ZIP file. Please try again.');
+        }
+    }
+
+    function generateReadme(files, le) {
+        const lines = [
+            'WEBSITE LAUNCH KIT',
+            '==================',
+            '',
+            'Generated by Website Launch Kit',
+            'https://mattlivingston.com/tools/launch-kit/',
+            '',
+            `Generated on: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`,
+            '',
+            'FILES INCLUDED:',
+            '---------------',
+            ''
+        ];
+
+        files.forEach(file => {
+            lines.push(`• ${file}`);
         });
+
+        lines.push('');
+        lines.push('INSTALLATION:');
+        lines.push('-------------');
+        lines.push('');
+        lines.push('1. robots.txt - Upload to your site root');
+        lines.push('2. sitemap.xml - Upload to site root, submit to Google Search Console');
+        lines.push('3. .htaccess - Upload to site root (Apache servers only)');
+        lines.push('4. humans.txt - Upload to site root');
+        lines.push('5. _headers - Upload to site root (Netlify only)');
+        lines.push('6. meta-tags.html - Copy contents into your <head> tag');
+        lines.push('7. Legal docs - Create pages and paste content');
+        lines.push('');
+        lines.push('IMPORTANT:');
+        lines.push('----------');
+        lines.push('• Always backup existing files before replacing');
+        lines.push('• Test on staging environment first');
+        lines.push('• Legal documents are templates - consult a lawyer for compliance');
+        lines.push('');
+        lines.push('---');
+        lines.push('Built by Matt Livingston');
+
+        return lines.join(le);
     }
 
     // =========================================================================
@@ -735,7 +900,6 @@
         initConfigButtons();
         initAutoSave();
         initDownloadAll();
-        initPresets();
         initMetaTags();
         initRobots();
         initSitemap();
