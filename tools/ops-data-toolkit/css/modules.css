@@ -10,19 +10,19 @@
 
 .module-controls {
     padding: var(--space-lg);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-alt);
     border-bottom: 1px solid var(--color-border);
 }
 
 .module-controls h3 {
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: var(--space-md);
 }
 
 .module-controls p {
-    font-size: 13px;
+    font-size: 0.85rem;
     color: var(--color-text-muted);
     margin-bottom: var(--space-lg);
     line-height: 1.6;
@@ -41,26 +41,37 @@
     gap: var(--space-sm);
     padding: var(--space-sm);
     cursor: pointer;
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.85rem;
+    color: var(--color-text);
 }
 
 .control-group label:hover {
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg-elevated);
 }
 
 .control-group input[type="checkbox"] {
     width: 16px;
     height: 16px;
     cursor: pointer;
+    accent-color: var(--color-primary);
 }
 
 .control-group input[type="text"],
 .control-group input[type="number"] {
     padding: var(--space-sm);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    font-size: 13px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.85rem;
     width: 100%;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.control-group input[type="text"]:focus,
+.control-group input[type="number"]:focus {
+    outline: none;
+    border-color: var(--color-primary);
 }
 
 .control-row {
@@ -78,16 +89,21 @@
 }
 
 .control-field label {
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 500;
     color: var(--color-text-muted);
+    padding: 0;
+}
+
+.control-field label:hover {
+    background: none;
 }
 
 /* ============================================
    Rule Builder
    ============================================ */
 .rule-builder {
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: var(--space-md);
@@ -102,7 +118,7 @@
 }
 
 .rule-builder-header h4 {
-    font-size: 13px;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-text);
 }
@@ -118,9 +134,9 @@
     align-items: center;
     gap: var(--space-sm);
     padding: var(--space-sm);
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-alt);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
 }
 
 .rule-item select,
@@ -128,16 +144,24 @@
     flex: 1;
     padding: 4px var(--space-sm);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    font-size: 12px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.8rem;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+.rule-item select:focus,
+.rule-item input:focus {
+    outline: none;
+    border-color: var(--color-primary);
 }
 
 .rule-remove {
     padding: 4px var(--space-sm);
     background-color: var(--color-danger);
     color: white;
-    border-radius: var(--border-radius);
-    font-size: 12px;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.75rem;
 }
 
 .rule-add {
@@ -145,9 +169,9 @@
     padding: var(--space-sm);
     background-color: var(--color-bg);
     border: 1px dashed var(--color-border);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     color: var(--color-text-muted);
-    font-size: 13px;
+    font-size: 0.85rem;
 }
 
 .rule-add:hover {
@@ -161,28 +185,33 @@
 .conversion-table {
     width: 100%;
     margin-bottom: var(--space-md);
+    border-collapse: collapse;
 }
 
 .conversion-table th {
     padding: var(--space-sm);
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg-elevated);
     border: 1px solid var(--color-border);
-    font-size: 12px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-align: left;
+    color: var(--color-text-muted);
 }
 
 .conversion-table td {
     padding: var(--space-xs);
     border: 1px solid var(--color-border);
+    background-color: var(--color-bg);
 }
 
 .conversion-table input {
     width: 100%;
     padding: 4px;
     border: none;
-    font-size: 12px;
+    font-size: 0.8rem;
     font-family: var(--font-mono);
+    background-color: transparent;
+    color: var(--color-text);
 }
 
 .conversion-table input:focus {
@@ -198,15 +227,15 @@
 }
 
 .logic-section h4 {
-    font-size: 14px;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: var(--space-sm);
 }
 
 .logic-description {
-    font-size: 13px;
-    color: var(--color-text);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
     margin-bottom: var(--space-md);
     line-height: 1.6;
 }
@@ -218,19 +247,19 @@
 }
 
 .logic-steps li {
-    font-size: 13px;
+    font-size: 0.85rem;
     color: var(--color-text);
     margin-bottom: var(--space-sm);
     line-height: 1.6;
 }
 
 .logic-code {
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: var(--space-md);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 0.8rem;
     overflow-x: auto;
     margin-bottom: var(--space-md);
 }
@@ -238,7 +267,7 @@
 .logic-code code {
     display: block;
     white-space: pre;
-    color: var(--color-text);
+    color: var(--color-success);
 }
 
 .logic-equivalent {
@@ -255,7 +284,7 @@
 
 .logic-equivalent-label {
     font-weight: 600;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     min-width: 80px;
 }
@@ -263,11 +292,11 @@
 .logic-equivalent-value {
     flex: 1;
     font-family: var(--font-mono);
-    font-size: 12px;
-    color: var(--color-text);
-    background-color: var(--color-bg-alt);
+    font-size: 0.8rem;
+    color: var(--color-primary);
+    background-color: var(--color-bg);
     padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
 }
 
 /* ============================================
@@ -275,20 +304,20 @@
    ============================================ */
 .summary-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: var(--space-md);
     padding: var(--space-lg);
 }
 
 .summary-card {
-    background-color: var(--color-bg);
+    background-color: var(--color-bg-alt);
     border: 1px solid var(--color-border);
     border-radius: var(--border-radius);
     padding: var(--space-md);
 }
 
 .summary-card-label {
-    font-size: 12px;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--color-text-muted);
     text-transform: uppercase;
@@ -297,7 +326,7 @@
 }
 
 .summary-card-value {
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-text);
 }
@@ -322,9 +351,10 @@
     gap: var(--space-sm);
     padding: var(--space-sm);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     margin-bottom: var(--space-sm);
-    font-size: 13px;
+    font-size: 0.85rem;
+    background-color: var(--color-bg-alt);
 }
 
 .diff-field {
@@ -334,8 +364,10 @@
 .diff-label {
     font-weight: 600;
     color: var(--color-text-muted);
-    font-size: 11px;
+    font-size: 0.7rem;
     margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .diff-value {
@@ -357,12 +389,12 @@
    Validation Results
    ============================================ */
 .validation-error {
-    padding: var(--space-sm);
-    background-color: #fee2e2;
+    padding: var(--space-sm) var(--space-md);
+    background-color: rgba(239, 68, 68, 0.1);
     border-left: 4px solid var(--color-danger);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     margin-bottom: var(--space-sm);
-    font-size: 13px;
+    font-size: 0.85rem;
 }
 
 .validation-error-header {
@@ -372,18 +404,28 @@
 }
 
 .validation-error-details {
-    color: var(--color-text);
+    color: var(--color-text-muted);
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 0.8rem;
 }
 
 .validation-warning {
-    padding: var(--space-sm);
-    background-color: #fef3c7;
+    padding: var(--space-sm) var(--space-md);
+    background-color: rgba(245, 158, 11, 0.1);
     border-left: 4px solid var(--color-warning);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-sm);
     margin-bottom: var(--space-sm);
-    font-size: 13px;
+    font-size: 0.85rem;
+}
+
+.validation-success {
+    padding: var(--space-sm) var(--space-md);
+    background-color: rgba(16, 185, 129, 0.1);
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--space-sm);
+    font-size: 0.85rem;
+    color: var(--color-success);
 }
 
 /* ============================================
@@ -398,24 +440,29 @@
     justify-content: space-between;
     align-items: center;
     padding: var(--space-sm);
-    background-color: var(--color-bg-alt);
-    border-radius: var(--border-radius);
+    background-color: var(--color-bg-elevated);
+    border-radius: var(--border-radius-sm);
     margin-bottom: var(--space-sm);
 }
 
 .duplicate-group-key {
     font-weight: 600;
     font-family: var(--font-mono);
-    color: var(--color-text);
+    color: var(--color-primary);
 }
 
 .duplicate-group-count {
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
+    background: var(--color-bg);
+    padding: 2px 8px;
+    border-radius: 10px;
 }
 
 .duplicate-group-items {
     padding-left: var(--space-lg);
+    border-left: 2px solid var(--color-border);
+    margin-left: var(--space-sm);
 }
 
 /* ============================================
@@ -429,18 +476,101 @@
 
 .btn-small {
     padding: 4px var(--space-sm);
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 /* ============================================
-   Responsive
+   Info Badges
+   ============================================ */
+.info-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding: 2px var(--space-sm);
+    background-color: var(--color-bg-elevated);
+    border-radius: var(--border-radius-sm);
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+}
+
+.info-badge.success {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: var(--color-success);
+}
+
+.info-badge.warning {
+    background-color: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+}
+
+.info-badge.danger {
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--color-danger);
+}
+
+/* ============================================
+   Responsive - Module Controls
    ============================================ */
 @media (max-width: 768px) {
+    .module-controls {
+        padding: var(--space-md);
+    }
+    
+    .module-controls h3 {
+        font-size: 0.85rem;
+    }
+    
+    .module-controls p {
+        font-size: 0.8rem;
+    }
+    
     .control-row {
         flex-direction: column;
         align-items: stretch;
     }
     
+    .rule-item {
+        flex-wrap: wrap;
+    }
+    
+    .rule-item select,
+    .rule-item input {
+        min-width: 100px;
+    }
+    
+    .summary-cards {
+        grid-template-columns: repeat(2, 1fr);
+        padding: var(--space-md);
+        gap: var(--space-sm);
+    }
+    
+    .summary-card {
+        padding: var(--space-sm);
+    }
+    
+    .summary-card-label {
+        font-size: 0.6rem;
+    }
+    
+    .summary-card-value {
+        font-size: 1.1rem;
+    }
+    
+    .diff-row {
+        flex-direction: column;
+    }
+    
+    .logic-equivalent-item {
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+    
+    .logic-equivalent-label {
+        min-width: auto;
+    }
+}
+
+@media (max-width: 480px) {
     .summary-cards {
         grid-template-columns: 1fr;
     }

@@ -5,7 +5,7 @@
 
 import State from './state.js';
 import { DataGrid, ResultsGrid } from './grid.js';
-import { parseCSV, parseClipboard, validateData, cleanData, generateSample, generateCountSample } from './parser.js';
+import { parseCSV, parseClipboard, validateData, cleanData, generateSample, generateCountSample, getSampleScenario, SAMPLE_SCENARIOS } from './parser.js';
 import { loadProject, saveProject, autoSave } from './storage.js';
 import { exportData, exportToClipboard, showToast } from './export.js';
 
@@ -64,6 +64,33 @@ function init() {
  * Set up all event listeners
  */
 function setupEventListeners() {
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const moduleRail = document.querySelector('.module-rail');
+    const moduleOverlay = document.getElementById('moduleOverlay');
+    
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            moduleRail.classList.toggle('open');
+            moduleOverlay.classList.toggle('show');
+        });
+    }
+    
+    if (moduleOverlay) {
+        moduleOverlay.addEventListener('click', () => {
+            moduleRail.classList.remove('open');
+            moduleOverlay.classList.remove('show');
+        });
+    }
+    
+    // Close sidebar when selecting a module on mobile
+    const closeSidebarOnMobile = () => {
+        if (window.innerWidth <= 768) {
+            moduleRail.classList.remove('open');
+            moduleOverlay.classList.remove('show');
+        }
+    };
+    
     // File import
     document.getElementById('importCSV').addEventListener('click', () => {
         document.getElementById('fileInput').click();
@@ -73,13 +100,41 @@ function setupEventListeners() {
         document.getElementById('fileInput').click();
     });
     
+    document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
+        document.getElementById('sampleMenu')?.classList.add('show');
+    });
+    
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);
     
     // Paste from clipboard
     document.getElementById('pasteTable').addEventListener('click', handlePaste);
     
-    // Load sample data
-    document.getElementById('loadSample').addEventListener('click', handleLoadSample);
+    // Load sample data dropdown
+    const sampleBtn = document.getElementById('loadSample');
+    const sampleMenu = document.getElementById('sampleMenu');
+    
+    if (sampleBtn && sampleMenu) {
+        sampleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sampleMenu.classList.toggle('show');
+        });
+        
+        // Handle sample selection
+        sampleMenu.querySelectorAll('button[data-sample]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const sampleKey = e.currentTarget.dataset.sample;
+                handleLoadSample(sampleKey);
+                sampleMenu.classList.remove('show');
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.sample-dropdown')) {
+                sampleMenu.classList.remove('show');
+            }
+        });
+    }
     
     // Export
     document.getElementById('exportCSV').addEventListener('click', handleExport);
@@ -199,19 +254,57 @@ async function handlePaste() {
 }
 
 /**
- * Load sample data
+ * Load sample data scenario
  */
-function handleLoadSample() {
-    const sample = generateSample();
+function handleLoadSample(scenarioKey) {
+    const scenario = getSampleScenario(scenarioKey);
     
-    State.setSheet('A', sample);
+    if (!scenario) {
+        // Fallback to basic sample
+        const sample = generateSample();
+        State.setSheet('A', sample);
+        State.setActiveSheet('A');
+        
+        const countSample = generateCountSample();
+        State.setSheet('B', countSample);
+        
+        showToast('Sample data loaded', 'success');
+        return;
+    }
+    
+    // Load Sheet A
+    if (scenario.sheetA) {
+        State.setSheet('A', {
+            data: scenario.sheetA.data,
+            columns: scenario.sheetA.columns,
+            name: scenario.sheetA.name,
+            originalColumns: scenario.sheetA.columns.map(c => c.toUpperCase().replace(/_/g, ' '))
+        });
+    }
+    
+    // Load Sheet B if present
+    if (scenario.sheetB) {
+        State.setSheet('B', {
+            data: scenario.sheetB.data,
+            columns: scenario.sheetB.columns,
+            name: scenario.sheetB.name,
+            originalColumns: scenario.sheetB.columns.map(c => c.toUpperCase().replace(/_/g, ' '))
+        });
+    } else {
+        // Clear Sheet B if scenario doesn't use it
+        State.clearSheet('B');
+    }
+    
     State.setActiveSheet('A');
     
-    // Optionally load Sheet B with count data
-    const countSample = generateCountSample();
-    State.setSheet('B', countSample);
+    // Auto-select suggested module if available
+    if (scenario.suggestedModule && modules[scenario.suggestedModule]) {
+        setTimeout(() => {
+            switchModule(scenario.suggestedModule);
+        }, 100);
+    }
     
-    showToast('Sample data loaded into both sheets', 'success');
+    showToast(`Loaded: ${scenario.name}`, 'success');
 }
 
 /**
@@ -400,6 +493,12 @@ function switchModule(moduleId) {
     if (!module) {
         showToast(`Module "${moduleId}" not yet implemented`, 'warning');
         return;
+    }
+    
+    // Close sidebar on mobile
+    if (window.innerWidth <= 768) {
+        document.querySelector('.module-rail')?.classList.remove('open');
+        document.getElementById('moduleOverlay')?.classList.remove('show');
     }
     
     // Update active state

@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ops Data Toolkit</title>
-    <meta name="description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ops Data Toolkit | Warehouse Data Analysis</title>
+    <meta name="description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser. Private and secure.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/grid.css">
     <link rel="stylesheet" href="css/modules.css">
@@ -12,11 +15,22 @@
 <body>
     <header class="app-header">
         <div class="header-left">
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
             <h1>Ops Data Toolkit</h1>
             <span class="privacy-badge" title="All processing happens locally in your browser">🔒 Nothing leaves your browser</span>
         </div>
         <div class="header-actions">
-            <button id="loadSample" class="btn-secondary">Load Sample</button>
+            <div class="sample-dropdown" id="sampleDropdown">
+                <button id="loadSample" class="btn-secondary">📋 Try Sample Data ▾</button>
+                <div class="sample-menu" id="sampleMenu">
+                    <div class="sample-menu-header">Load sample data to explore:</div>
+                    <button data-sample="cycle-count">🔄 Cycle Count Reconciliation</button>
+                    <button data-sample="receiving">📦 Receiving Discrepancies</button>
+                    <button data-sample="duplicates">👯 Duplicate SKUs</button>
+                    <button data-sample="validation">⚠️ Data Quality Issues</button>
+                    <button data-sample="lookup">🔍 Price Lookup</button>
+                </div>
+            </div>
             <button id="importCSV" class="btn-primary">Import CSV</button>
             <button id="pasteTable" class="btn-secondary">Paste Table</button>
             <button id="exportCSV" class="btn-secondary" disabled>Export CSV</button>
@@ -24,6 +38,7 @@
         </div>
     </header>
 
+    <div class="module-rail-overlay" id="moduleOverlay"></div>
     <div class="app-container">
         <aside class="module-rail">
             <h2>Modules</h2>
@@ -62,8 +77,12 @@
                     <div class="empty-state">
                         <div class="empty-icon">📊</div>
                         <h3>No Data Loaded</h3>
-                        <p>Import a CSV file or paste data to get started</p>
-                        <button id="importPrompt" class="btn-primary">Import CSV</button>
+                        <p>Import a CSV file or try a sample scenario</p>
+                        <div class="empty-actions">
+                            <button id="importPrompt" class="btn-primary">Import CSV</button>
+                            <span class="empty-or">or</span>
+                            <button id="trySamplePrompt" class="btn-secondary">Try Sample Data</button>
+                        </div>
                     </div>
                 </div>
             </section>

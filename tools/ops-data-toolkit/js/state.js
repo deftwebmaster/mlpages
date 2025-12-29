@@ -109,6 +109,13 @@ const State = {
     },
     
     /**
+     * Clear sheet data
+     */
+    clearSheet(name) {
+        this.update(`sheets.${name}`, null);
+    },
+    
+    /**
      * Set active sheet
      */
     setActiveSheet(name) {

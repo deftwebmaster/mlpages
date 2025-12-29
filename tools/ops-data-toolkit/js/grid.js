@@ -54,9 +54,23 @@ export class DataGrid {
             <div class="empty-state">
                 <div class="empty-icon">📊</div>
                 <h3>No Data Loaded</h3>
-                <p>Import a CSV file or paste data to get started</p>
+                <p>Import a CSV file or try a sample scenario</p>
+                <div class="empty-actions">
+                    <button id="importPrompt" class="btn-primary">Import CSV</button>
+                    <span class="empty-or">or</span>
+                    <button id="trySamplePrompt" class="btn-secondary">Try Sample Data</button>
+                </div>
             </div>
         `;
+        
+        // Re-attach event listeners for dynamically created buttons
+        document.getElementById('importPrompt')?.addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+        
+        document.getElementById('trySamplePrompt')?.addEventListener('click', () => {
+            document.getElementById('sampleMenu')?.classList.add('show');
+        });
     }
     
     /**

@@ -12,7 +12,7 @@
 .grid-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 0.85rem;
     font-family: var(--font-mono);
 }
 
@@ -31,13 +31,15 @@
     padding: var(--space-sm) var(--space-md);
     text-align: left;
     font-weight: 600;
-    font-size: 12px;
-    color: var(--color-text);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
     background-color: var(--color-bg-alt);
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border-light);
     white-space: nowrap;
     user-select: none;
     cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .grid-header th:last-child {
@@ -45,13 +47,14 @@
 }
 
 .grid-header th:hover {
-    background-color: #e2e8f0;
+    background-color: var(--color-bg-elevated);
+    color: var(--color-text);
 }
 
 .grid-header th.sortable:after {
     content: ' ↕';
-    color: var(--color-text-muted);
-    font-size: 10px;
+    color: var(--color-text-dim);
+    font-size: 0.65rem;
     margin-left: var(--space-xs);
 }
 
@@ -73,7 +76,7 @@
 }
 
 .grid-body tr {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border-light);
 }
 
 .grid-body tr:nth-child(even) {
@@ -81,16 +84,17 @@
 }
 
 .grid-body tr:hover {
-    background-color: #f1f5f9;
+    background-color: var(--color-bg-elevated);
 }
 
 .grid-body td {
     padding: var(--space-sm) var(--space-md);
-    border-right: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border-light);
     max-width: 300px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: var(--color-text);
 }
 
 .grid-body td:last-child {
@@ -103,10 +107,11 @@
 .cell-number {
     text-align: right;
     font-family: var(--font-mono);
+    color: var(--color-primary);
 }
 
 .cell-null {
-    color: var(--color-text-muted);
+    color: var(--color-text-dim);
     font-style: italic;
 }
 
@@ -116,17 +121,17 @@
 }
 
 .cell-warning {
-    background-color: #fef3c7;
+    background-color: rgba(245, 158, 11, 0.15);
     color: var(--color-warning);
 }
 
 .cell-highlight {
-    background-color: #dbeafe;
+    background-color: rgba(59, 130, 246, 0.15);
     font-weight: 500;
 }
 
 .cell-changed {
-    background-color: #dcfce7;
+    background-color: rgba(16, 185, 129, 0.15);
     position: relative;
 }
 
@@ -135,7 +140,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 3px;
     height: 100%;
     background-color: var(--color-success);
 }
@@ -144,20 +149,20 @@
    Row States
    ============================================ */
 .row-duplicate {
-    background-color: #fef3c7 !important;
+    background-color: rgba(245, 158, 11, 0.1) !important;
 }
 
 .row-error {
-    background-color: #fee2e2 !important;
+    background-color: rgba(239, 68, 68, 0.1) !important;
 }
 
 .row-selected {
-    background-color: #dbeafe !important;
+    background-color: rgba(59, 130, 246, 0.15) !important;
 }
 
 .row-index {
-    color: var(--color-text-muted);
-    font-size: 11px;
+    color: var(--color-text-dim);
+    font-size: 0.7rem;
     width: 50px;
     text-align: right;
     font-weight: 400;
@@ -177,7 +182,6 @@
 }
 
 .grid-spacer {
-    /* Used for virtual scrolling - creates space for non-rendered rows */
     height: 0;
 }
 
@@ -195,7 +199,7 @@
 
 .grid-info {
     flex: 1;
-    font-size: 12px;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
 }
 
@@ -205,7 +209,7 @@
 }
 
 /* ============================================
-   Column Resizing (future enhancement)
+   Column Resizing
    ============================================ */
 .column-resizer {
     position: absolute;
@@ -234,7 +238,7 @@
 
 .grid-loading:before {
     content: '⏳';
-    font-size: 24px;
+    font-size: 1.5rem;
     margin-right: var(--space-sm);
     animation: spin 2s linear infinite;
 }
@@ -255,16 +259,16 @@
 
 .grid-error:before {
     content: '⚠️';
-    font-size: 32px;
+    font-size: 2rem;
     display: block;
     margin-bottom: var(--space-md);
 }
 
 /* ============================================
-   Compact Mode (for results)
+   Compact Mode
    ============================================ */
 .grid-compact .grid-table {
-    font-size: 12px;
+    font-size: 0.75rem;
 }
 
 .grid-compact td,
@@ -280,28 +284,72 @@
 }
 
 /* ============================================
-   Scrollbar Styling (Webkit)
+   Scrollbar Styling
    ============================================ */
 .data-grid::-webkit-scrollbar,
 .results-grid::-webkit-scrollbar {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
 }
 
 .data-grid::-webkit-scrollbar-track,
 .results-grid::-webkit-scrollbar-track {
-    background-color: var(--color-bg-alt);
+    background-color: var(--color-bg);
 }
 
 .data-grid::-webkit-scrollbar-thumb,
 .results-grid::-webkit-scrollbar-thumb {
-    background-color: var(--color-border);
-    border-radius: 6px;
+    background-color: var(--color-bg-elevated);
+    border-radius: 5px;
+    border: 2px solid var(--color-bg);
 }
 
 .data-grid::-webkit-scrollbar-thumb:hover,
 .results-grid::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-secondary);
+    background-color: var(--color-border);
+}
+
+.data-grid::-webkit-scrollbar-corner,
+.results-grid::-webkit-scrollbar-corner {
+    background-color: var(--color-bg);
+}
+
+/* ============================================
+   Mobile Grid
+   ============================================ */
+@media (max-width: 768px) {
+    .grid-table {
+        font-size: 0.75rem;
+    }
+    
+    .grid-header th {
+        padding: var(--space-xs) var(--space-sm);
+        font-size: 0.65rem;
+    }
+    
+    .grid-body td {
+        padding: var(--space-xs) var(--space-sm);
+        max-width: 150px;
+    }
+    
+    .row-index {
+        width: 35px;
+        font-size: 0.6rem;
+    }
+    
+    /* Horizontal scroll hint */
+    .data-grid::after,
+    .results-grid::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 20px;
+        background: linear-gradient(to right, transparent, var(--color-bg));
+        pointer-events: none;
+        opacity: 0.7;
+    }
 }
 
 /* ============================================
@@ -319,5 +367,11 @@
     .grid-actions,
     .empty-state {
         display: none;
+    }
+    
+    .grid-body td,
+    .grid-header th {
+        border: 1px solid #ccc;
+        color: #000;
     }
 }
