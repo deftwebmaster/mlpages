@@ -653,13 +653,13 @@
 
     <!-- Tab Navigation -->
     <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="numbers">
-        <span class="tab-icon">🔢</span>
-        <span>Numbers</span>
-      </button>
-      <button class="tab-btn" data-tab="picker">
+      <button class="tab-btn active" data-tab="picker">
         <span class="tab-icon">🎯</span>
         <span>Picker</span>
+      </button>
+      <button class="tab-btn" data-tab="numbers">
+        <span class="tab-icon">🔢</span>
+        <span>Numbers</span>
       </button>
       <button class="tab-btn" data-tab="tournament" style="display: none;">
         <span class="tab-icon">🏆</span>
@@ -668,7 +668,7 @@
     </nav>
 
     <!-- Numbers Tab -->
-    <div id="numbers" class="tab-content active">
+    <div id="numbers" class="tab-content">
       <div class="section">
         <div class="result-display" id="numberResult">
           <div class="result-value">?</div>
@@ -743,7 +743,7 @@
     </div>
 
     <!-- Picker Tab -->
-    <div id="picker" class="tab-content">
+    <div id="picker" class="tab-content active">
       <div class="section">
         <div class="result-display" id="pickerResult">
           <div class="result-emoji">🤔</div>
@@ -753,7 +753,7 @@
         <div class="category-pills">
           <button class="category-pill active" data-category="cuisine" onclick="setPickerCategory('cuisine')">🍽️ Cuisine</button>
           <button class="category-pill" data-category="food" onclick="setPickerCategory('food')">🍕 Food Type</button>
-          <button class="category-pill" data-category="meal" onclick="setPickerCategory('meal')">🍳 Meal</button>
+          <button class="category-pill" data-category="meal" onclick="setPickerCategory('meal')" style="display: none;">🍳 Meal</button>
           <button class="category-pill" data-category="activity" onclick="setPickerCategory('activity')">🎮 Activity</button>
           <button class="category-pill" data-category="yesno" onclick="setPickerCategory('yesno')">🎱 Yes/No</button>
           <button class="category-pill" data-category="custom" onclick="setPickerCategory('custom')">✏️ Custom</button>
