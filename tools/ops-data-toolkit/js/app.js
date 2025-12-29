@@ -110,18 +110,21 @@ function setupEventListeners() {
     }
     
     if (trySampleBtn) {
-        trySampleBtn.addEventListener('click', () => {
+        trySampleBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent document click from immediately closing
             console.log('trySamplePrompt clicked from setupEventListeners');
-            // Directly toggle the dropdown menu
-            const sampleMenu = document.getElementById('sampleMenu');
-            if (sampleMenu) {
-                sampleMenu.classList.add('show');
-                // Scroll the header dropdown into view
-                const sampleBtn = document.getElementById('loadSample');
-                if (sampleBtn) {
-                    sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            // Directly toggle the dropdown menu with slight delay
+            setTimeout(() => {
+                const sampleMenu = document.getElementById('sampleMenu');
+                if (sampleMenu) {
+                    sampleMenu.classList.add('show');
+                    // Scroll the header dropdown into view
+                    const sampleBtn = document.getElementById('loadSample');
+                    if (sampleBtn) {
+                        sampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 }
-            }
+            }, 10);
         });
     }
     

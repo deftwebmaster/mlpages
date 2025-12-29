@@ -79,18 +79,21 @@ export class DataGrid {
         }
         
         if (sampleBtn) {
-            sampleBtn.addEventListener('click', () => {
+            sampleBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent document click from immediately closing
                 console.log('Try Sample Data button clicked');
-                // Directly toggle the dropdown menu
-                const sampleMenu = document.getElementById('sampleMenu');
-                if (sampleMenu) {
-                    sampleMenu.classList.add('show');
-                    // Scroll the header dropdown into view
-                    const headerSampleBtn = document.getElementById('loadSample');
-                    if (headerSampleBtn) {
-                        headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                // Directly toggle the dropdown menu with slight delay
+                setTimeout(() => {
+                    const sampleMenu = document.getElementById('sampleMenu');
+                    if (sampleMenu) {
+                        sampleMenu.classList.add('show');
+                        // Scroll the header dropdown into view
+                        const headerSampleBtn = document.getElementById('loadSample');
+                        if (headerSampleBtn) {
+                            headerSampleBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
                     }
-                }
+                }, 10);
             });
         }
     }
