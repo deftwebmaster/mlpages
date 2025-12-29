@@ -3,30 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Tools & Projects | Matt Livingston</title>
-  <meta name="description" content="Warehouse operations tools and web development projects by Matt Livingston. Barcode validation, inventory analysis, QR generation, and more.">
-  <link rel="stylesheet" href="../css/style.css">
+  <meta name="description" content="Browser-first tools built from warehouse & logistics reality. Barcode validation, inventory analysis, data cleanup, and practical utilities by Matt Livingston.">
+  <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mattlivingston.com/tools/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Tools & Projects | Matt Livingston">
+  <meta property="og:description" content="Browser-first tools built from warehouse & logistics reality. Practical utilities and systems-minded work.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/">
+  <!-- <meta property="og:image" content="https://mattlivingston.com/assets/og-tools.png"> -->
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Tools & Projects | Matt Livingston">
+  <meta name="twitter:description" content="Browser-first tools built from warehouse & logistics reality. Practical utilities and systems-minded work.">
+  <!-- <meta name="twitter:image" content="https://mattlivingston.com/assets/og-tools.png"> -->
+
+  <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
   <div class="container">
     <header class="page-header">
       <h1>Matt Livingston</h1>
-      <p class="tagline">Warehouse ops tools I built to solve real problems</p>
+      <p class="tagline">Tools that survive contact with reality</p>
       <p class="trust-signal">🔒 All tools run locally — no data leaves your browser</p>
     </header>
 
+    <!-- Why Section (compact) -->
+    <section class="why-section">
+      <p>I work in warehouse & logistics operations — constraints, edge cases, real throughput. These tools are built from that perspective: lightweight, practical, designed to remove friction.</p>
+    </section>
+
+    <!-- Filter Bar -->
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="warehouse">Warehouse</button>
       <button class="filter-btn" data-filter="webdev">Web Dev</button>
     </div>
 
-    <div class="tools-grid">
+    <div class="tools-grid" id="toolsGrid">
       
       <!-- Warehouse Operations Tools -->
       
-      <article class="tool-card featured" data-category="warehouse">
+      <article class="tool-card featured" data-category="warehouse" data-title="Ops Data Toolkit" data-tags="csv,reconciliation,validation,duplicates,sumif,countif,lookup,cleaning,excel">
         <div class="featured-badge">Featured</div>
         <h3>Ops Data Toolkit</h3>
         <span class="tag tag-warehouse">Warehouse</span>
@@ -36,10 +58,10 @@
           <span class="tech-badge">PapaParse</span>
           <span class="tech-badge">6 Modules</span>
         </div>
-        <a href="/tools/ops-data-toolkit/" class="button button-small">View Tool →</a>
+        <a href="/tools/ops-data-toolkit/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card featured" data-category="warehouse">
+      <article class="tool-card featured" data-category="warehouse" data-title="Barcode Validator" data-tags="upc,ean,check digit,scanning,wms">
         <div class="featured-badge">Featured</div>
         <h3>Barcode Validator</h3>
         <span class="tag tag-warehouse">Warehouse</span>
@@ -48,12 +70,12 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">Zero Dependencies</span>
         </div>
-        <a href="/tools/barcode-validator/" class="button button-small">View Tool →</a>
+        <a href="/tools/barcode-validator/" class="button button-small">Open tool →</a>
       </article>
 
       <!-- Web Development Tools -->
 
-      <article class="tool-card featured" data-category="webdev">
+      <article class="tool-card featured" data-category="webdev" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
         <div class="featured-badge">Featured</div>
         <h3>Smart Tip Calculator</h3>
         <span class="tag tag-webdev">Web Dev</span>
@@ -62,10 +84,10 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">PWA-Ready</span>
         </div>
-        <a href="/tools/tip-calculator/" class="button button-small">View Tool →</a>
+        <a href="/tools/tip-calculator/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="webdev">
+      <article class="tool-card" data-category="webdev" data-title="QR Code Generator" data-tags="qr,privacy,url,text,contact,vcard">
         <h3>QR Code Generator</h3>
         <span class="tag tag-webdev">Web Dev</span>
         <p>Privacy-first QR code creation. Generates codes locally in your browser—no data sent to servers. Supports URLs, text, and contact cards.</p>
@@ -73,10 +95,10 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">QRCode.js</span>
         </div>
-        <a href="/tools/qr-generator/" class="button button-small">View Tool →</a>
+        <a href="/tools/qr-generator/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="webdev">
+      <article class="tool-card" data-category="webdev" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
         <h3>Browser Fingerprint Viewer</h3>
         <span class="tag tag-webdev">Web Dev</span>
         <p>See what websites can learn about your browser without cookies. Displays canvas fingerprint, WebGL info, and other tracking vectors.</p>
@@ -84,10 +106,10 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">Canvas API</span>
         </div>
-        <a href="/tools/fingerprint/" class="button button-small">View Tool →</a>
+        <a href="/tools/fingerprint/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="webdev">
+      <article class="tool-card" data-category="webdev" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
         <h3>Pseudonym Generator</h3>
         <span class="tag tag-webdev">Web Dev</span>
         <p>Creates consistent fake identities for testing or privacy. Generates names, addresses, and other persona details locally.</p>
@@ -95,10 +117,10 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">Seeded RNG</span>
         </div>
-        <a href="/tools/pseudonym/" class="button button-small">View Tool →</a>
+        <a href="/tools/pseudonym/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="webdev">
+      <article class="tool-card" data-category="webdev" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
         <h3>Time Zone Overlap Finder</h3>
         <span class="tag tag-webdev">Web Dev</span>
         <p>Find overlapping work hours across time zones. Useful for scheduling meetings with distributed teams.</p>
@@ -106,10 +128,10 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">Dynamic UI</span>
         </div>
-        <a href="/tools/timezone/" class="button button-small">View Tool →</a>
+        <a href="/tools/timezone/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="webdev">
+      <article class="tool-card" data-category="webdev" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
         <h3>FinanceSmart Calculator Suite</h3>
         <span class="tag tag-webdev">Web Dev</span>
         <p>Collection of financial calculators: compound interest, loan amortization, savings goals, and debt payoff planning.</p>
@@ -117,7 +139,7 @@
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">4-in-1 Suite</span>
         </div>
-        <a href="/tools/finance/" class="button button-small">View Tool →</a>
+        <a href="/tools/finance/" class="button button-small">Open tool →</a>
       </article>
 
     </div>
@@ -125,11 +147,41 @@
     <footer class="footer">
       <div class="footer-content">
         <span>&copy; 2025 Matt Livingston</span>
+        <span class="footer-tagline">Practical systems &gt; clever abstractions</span>
         <div class="footer-links">
-          <a href="#">Contact</a>
+          <a href="mailto:matt@mattlivingston.com">Contact</a>
+          <!-- <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
+          <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> -->
         </div>
       </div>
     </footer>
   </div>
 
-  <script da
+  <script>
+    // Filter functionality
+    (function() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.tool-card');
+      
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          
+          // Update active state
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Filter cards
+          cards.forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = '';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
