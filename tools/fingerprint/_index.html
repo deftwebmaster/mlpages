@@ -90,48 +90,6 @@
       color: var(--text-muted);
     }
 
-    /* Incognito Alert */
-    .incognito-alert {
-      background: rgba(255, 51, 102, 0.2);
-      border: 2px solid var(--accent-danger);
-      border-radius: 0.5rem;
-      padding: 1rem 1.5rem;
-      margin: 1rem auto;
-      max-width: 800px;
-      display: none;
-      align-items: center;
-      gap: 1rem;
-      animation: pulse 2s infinite;
-    }
-
-    .incognito-alert.detected {
-      display: flex;
-    }
-
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.4); }
-      50% { box-shadow: 0 0 20px 5px rgba(255, 51, 102, 0.2); }
-    }
-
-    .incognito-alert .alert-icon {
-      font-size: 2rem;
-    }
-
-    .incognito-alert .alert-text {
-      flex: 1;
-    }
-
-    .incognito-alert .alert-title {
-      font-weight: 700;
-      color: var(--accent-danger);
-      margin-bottom: 0.25rem;
-    }
-
-    .incognito-alert .alert-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
     /* Status Card */
     .status-card {
       background: var(--bg-surface);
@@ -206,7 +164,7 @@
 
     .uniqueness-score {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 1rem;
       margin-top: 1.5rem;
     }
@@ -220,7 +178,7 @@
     }
 
     .score-value {
-      font-size: 2rem;
+      font-size: 2.5rem;
       font-weight: 700;
       margin-bottom: 0.25rem;
     }
@@ -230,7 +188,7 @@
     .score-value.low { color: var(--accent-primary); }
 
     .score-label {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -357,13 +315,6 @@
       border: 1px solid var(--accent-primary);
     }
 
-    .risk-critical {
-      background: rgba(255, 51, 102, 0.3);
-      color: #ff6699;
-      border: 2px solid var(--accent-danger);
-      animation: pulse 2s infinite;
-    }
-
     .data-point {
       margin-bottom: 1rem;
     }
@@ -385,11 +336,6 @@
       padding: 0.5rem 0.75rem;
       border-radius: 0.25rem;
       border: 1px solid var(--border);
-    }
-
-    .data-value.danger {
-      border-color: var(--accent-danger);
-      color: var(--accent-danger);
     }
 
     .data-explanation {
@@ -468,25 +414,6 @@
       line-height: 1.6;
     }
 
-    /* Footer */
-    .footer {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .footer a {
-      color: var(--accent-primary);
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
       h1 {
@@ -505,16 +432,6 @@
       .scan-btn {
         width: 100%;
       }
-
-      .uniqueness-score {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .warning-banner,
-      .incognito-alert {
-        flex-direction: column;
-        text-align: center;
-      }
     }
 
     /* Hidden */
@@ -532,15 +449,7 @@
       <div class="warning-banner">
         <span class="warning-icon">⚠️</span>
         <div class="warning-text">
-          <strong>Privacy Alert:</strong> Your browser leaks a unique digital fingerprint that can track you across the web — even without cookies. This tool shows you exactly what's exposed.
-        </div>
-      </div>
-
-      <div id="incognito-alert" class="incognito-alert">
-        <span class="alert-icon">🕵️</span>
-        <div class="alert-text">
-          <div class="alert-title">Private/Incognito Mode Detected</div>
-          <div class="alert-desc">You're using private browsing, but we can still detect it. This means websites know you're trying to hide — which itself is identifying information.</div>
+          <strong>Privacy Alert:</strong> Your browser leaks a unique digital fingerprint that can track you across the web - even without cookies. This tool shows you exactly what's exposed.
         </div>
       </div>
     </header>
@@ -570,7 +479,7 @@
         <div class="uniqueness-score">
           <div class="score-item">
             <div class="score-value high" id="uniqueness-score">--</div>
-            <div class="score-label">Uniqueness</div>
+            <div class="score-label">Uniqueness Score</div>
           </div>
           <div class="score-item">
             <div class="score-value medium" id="entropy-bits">--</div>
@@ -579,10 +488,6 @@
           <div class="score-item">
             <div class="score-value low" id="data-points">--</div>
             <div class="score-label">Data Points</div>
-          </div>
-          <div class="score-item">
-            <div class="score-value" id="fonts-detected">--</div>
-            <div class="score-label">Fonts Found</div>
           </div>
         </div>
 
@@ -620,7 +525,7 @@
       <div class="tip-item">
         <div class="tip-title">Limit Browser Extensions</div>
         <div class="tip-description">
-          Each extension can be detected and adds to your unique fingerprint. Only install essential extensions and use them sparingly.
+          Each extension can be detected and adds to your unique fingerprint. Only install essential extensions and use them in private/incognito mode sparingly.
         </div>
       </div>
 
@@ -638,79 +543,13 @@
         </div>
       </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
-    </footer>
   </div>
 
   <script>
-    // Extended font list for detection (80+ fonts)
-    const FONT_LIST = [
-      // Windows System Fonts
-      'Arial', 'Arial Black', 'Arial Narrow', 'Arial Rounded MT Bold',
-      'Calibri', 'Cambria', 'Cambria Math', 'Candara', 'Century Gothic',
-      'Comic Sans MS', 'Consolas', 'Constantia', 'Corbel', 'Courier New',
-      'Ebrima', 'Franklin Gothic Medium', 'Gabriola', 'Gadugi', 'Georgia',
-      'Impact', 'Ink Free', 'Javanese Text', 'Leelawadee UI', 'Lucida Console',
-      'Lucida Sans Unicode', 'Malgun Gothic', 'Marlett', 'Microsoft Himalaya',
-      'Microsoft JhengHei', 'Microsoft New Tai Lue', 'Microsoft PhagsPa',
-      'Microsoft Sans Serif', 'Microsoft Tai Le', 'Microsoft YaHei',
-      'Microsoft Yi Baiti', 'MingLiU-ExtB', 'Mongolian Baiti', 'MS Gothic',
-      'MV Boli', 'Myanmar Text', 'Nirmala UI', 'Palatino Linotype',
-      'Segoe MDL2 Assets', 'Segoe Print', 'Segoe Script', 'Segoe UI',
-      'Segoe UI Emoji', 'Segoe UI Historic', 'Segoe UI Symbol', 'SimSun',
-      'Sitka Text', 'Sylfaen', 'Symbol', 'Tahoma', 'Times New Roman',
-      'Trebuchet MS', 'Verdana', 'Webdings', 'Wingdings', 'Yu Gothic',
-      
-      // macOS System Fonts
-      'American Typewriter', 'Andale Mono', 'Apple Braille', 'Apple Chancery',
-      'Apple Color Emoji', 'Apple SD Gothic Neo', 'Apple Symbols', 'AppleGothic',
-      'AppleMyungjo', 'Avenir', 'Avenir Next', 'Avenir Next Condensed',
-      'Baskerville', 'Big Caslon', 'Bodoni 72', 'Bradley Hand', 'Brush Script MT',
-      'Chalkboard', 'Chalkboard SE', 'Chalkduster', 'Charter', 'Cochin',
-      'Copperplate', 'Corsiva Hebrew', 'Courier', 'Damascus', 'DecoType Naskh',
-      'Devanagari MT', 'Didot', 'DIN Alternate', 'DIN Condensed', 'Euphemia UCAS',
-      'Futura', 'Geneva', 'Gill Sans', 'Gujarati MT', 'Gurmukhi MN',
-      'Heiti SC', 'Heiti TC', 'Helvetica', 'Helvetica Neue', 'Herculanum',
-      'Hiragino Kaku Gothic Pro', 'Hiragino Maru Gothic Pro', 'Hiragino Mincho Pro',
-      'Hiragino Sans', 'Hoefler Text', 'Impact', 'InaiMathi', 'Kailasa',
-      'Kannada MN', 'Kefa', 'Khmer MN', 'Kohinoor Bangla', 'Kohinoor Devanagari',
-      'Kohinoor Telugu', 'Kokonor', 'Krungthep', 'KufiStandardGK', 'Lao MN',
-      'Lucida Grande', 'Luminari', 'Malayalam MN', 'Marion', 'Marker Felt',
-      'Menlo', 'Microsoft Sans Serif', 'Mishafi', 'Monaco', 'Mshtakan',
-      'Mukta Mahee', 'Muna', 'Myanmar MN', 'Nadeem', 'New Peninim MT',
-      'Noteworthy', 'Noto Nastaliq Urdu', 'Optima', 'Oriya MN', 'Palatino',
-      'Papyrus', 'Party LET', 'Phosphate', 'PingFang HK', 'PingFang SC',
-      'PingFang TC', 'Plantagenet Cherokee', 'Raanana', 'Rockwell', 'Sana',
-      'Sathu', 'Savoye LET', 'SF Pro', 'Shree Devanagari 714', 'SignPainter',
-      'Silom', 'Sinhala MN', 'Skia', 'Snell Roundhand', 'Songti SC',
-      'STIXGeneral', 'Sukhumvit Set', 'Superclarendon', 'Symbol', 'Tahoma',
-      'Tamil MN', 'Telugu MN', 'Thonburi', 'Times', 'Trattatello',
-      'Waseem', 'Zapf Dingbats', 'Zapfino',
-      
-      // Linux Common Fonts
-      'Ubuntu', 'Ubuntu Mono', 'Ubuntu Condensed', 'DejaVu Sans', 'DejaVu Serif',
-      'DejaVu Sans Mono', 'Liberation Sans', 'Liberation Serif', 'Liberation Mono',
-      'Nimbus Sans', 'Nimbus Roman', 'Nimbus Mono', 'Noto Sans', 'Noto Serif',
-      'Noto Mono', 'Droid Sans', 'Droid Serif', 'Droid Sans Mono', 'Roboto',
-      'Open Sans', 'Lato', 'Source Sans Pro', 'Source Code Pro', 'Fira Sans',
-      'Fira Mono', 'Cantarell', 'FreeSans', 'FreeSerif', 'FreeMono',
-      
-      // Common Web/Google Fonts (if installed locally)
-      'Montserrat', 'Oswald', 'Raleway', 'Playfair Display', 'Merriweather',
-      'PT Sans', 'PT Serif', 'Nunito', 'Rubik', 'Work Sans', 'Poppins',
-      'Inter', 'Quicksand', 'Karla', 'Josefin Sans', 'Lora', 'Mukta',
-      'Titillium Web', 'Inconsolata', 'Crimson Text', 'Arimo', 'Tinos',
-      'Cousine', 'IBM Plex Sans', 'IBM Plex Mono', 'IBM Plex Serif'
-    ];
-
     // Fingerprinting Engine
     const FingerprintScanner = {
       results: {},
       fingerprint: '',
-      isIncognito: false,
       
       // Hash function
       async hashString(str) {
@@ -721,107 +560,6 @@
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
       },
 
-      // Incognito/Private Mode Detection
-      async detectIncognito() {
-        const start = performance.now();
-        const signals = {
-          detected: false,
-          methods: [],
-          confidence: 0
-        };
-
-        // Method 1: Storage Quota (Chrome/Edge)
-        try {
-          if (navigator.storage && navigator.storage.estimate) {
-            const estimate = await navigator.storage.estimate();
-            // Incognito typically has much lower quota (< 120MB)
-            if (estimate.quota && estimate.quota < 120000000) {
-              signals.methods.push('storage_quota');
-              signals.confidence += 30;
-            }
-          }
-        } catch (e) {}
-
-        // Method 2: FileSystem API (Chrome-specific)
-        try {
-          if (window.webkitRequestFileSystem) {
-            await new Promise((resolve, reject) => {
-              window.webkitRequestFileSystem(
-                window.TEMPORARY,
-                100,
-                () => resolve(),
-                () => {
-                  signals.methods.push('filesystem_api');
-                  signals.confidence += 40;
-                  reject();
-                }
-              );
-            });
-          }
-        } catch (e) {
-          if (e !== undefined) {
-            signals.methods.push('filesystem_api');
-            signals.confidence += 40;
-          }
-        }
-
-        // Method 3: IndexedDB behavior
-        try {
-          const db = await new Promise((resolve, reject) => {
-            const request = indexedDB.open('test_incognito');
-            request.onerror = () => {
-              signals.methods.push('indexeddb_error');
-              signals.confidence += 25;
-              reject();
-            };
-            request.onsuccess = () => {
-              resolve(request.result);
-              request.result.close();
-              indexedDB.deleteDatabase('test_incognito');
-            };
-          });
-        } catch (e) {}
-
-        // Method 4: Safari-specific
-        try {
-          if (typeof safari !== 'undefined' && safari.pushNotification) {
-            const permission = safari.pushNotification.permission('com.example.test');
-            if (permission.permission === 'denied') {
-              signals.methods.push('safari_push');
-              signals.confidence += 35;
-            }
-          }
-        } catch (e) {}
-
-        // Method 5: Performance memory (Chrome)
-        try {
-          if (performance.memory) {
-            // In incognito, jsHeapSizeLimit is typically lower
-            if (performance.memory.jsHeapSizeLimit < 500000000) {
-              signals.methods.push('memory_limit');
-              signals.confidence += 15;
-            }
-          }
-        } catch (e) {}
-
-        // Method 6: Service Worker availability
-        try {
-          if ('serviceWorker' in navigator) {
-            const registrations = await navigator.serviceWorker.getRegistrations();
-            // Can't access in some private modes
-          }
-        } catch (e) {
-          signals.methods.push('service_worker');
-          signals.confidence += 20;
-        }
-
-        signals.detected = signals.confidence >= 30;
-        signals.detectionTime = Math.round(performance.now() - start);
-        
-        this.isIncognito = signals.detected;
-        return signals;
-      },
-
       // Basic browser info
       async scanBasicInfo() {
         return {
@@ -830,11 +568,10 @@
           languages: navigator.languages.join(', '),
           platform: navigator.platform,
           hardwareConcurrency: navigator.hardwareConcurrency || 'Unknown',
-          deviceMemory: navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'Unknown',
+          deviceMemory: navigator.deviceMemory || 'Unknown',
           cookieEnabled: navigator.cookieEnabled,
           doNotTrack: navigator.doNotTrack || 'Not set',
-          maxTouchPoints: navigator.maxTouchPoints || 0,
-          pdfViewerEnabled: navigator.pdfViewerEnabled ?? 'Unknown'
+          maxTouchPoints: navigator.maxTouchPoints || 0
         };
       },
 
@@ -856,8 +593,8 @@
         const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         return {
           timezone: timezone,
-          timezoneOffset: `UTC${offset > 0 ? '-' : '+'}${Math.abs(offset / 60)}`,
-          locale: Intl.DateTimeFormat().resolvedOptions().locale
+          timezoneOffset: offset,
+          timestamp: new Date().toISOString()
         };
       },
 
@@ -865,50 +602,30 @@
       async scanCanvas() {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        canvas.width = 280;
-        canvas.height = 60;
+        canvas.width = 200;
+        canvas.height = 50;
 
-        // More complex drawing for better uniqueness
+        // Draw unique pattern
         ctx.textBaseline = 'top';
         ctx.font = '14px "Arial"';
+        ctx.textBaseline = 'alphabetic';
         ctx.fillStyle = '#f60';
         ctx.fillRect(125, 1, 62, 20);
-        
-        // Gradient
-        const gradient = ctx.createLinearGradient(0, 0, 280, 0);
-        gradient.addColorStop(0, '#ff0000');
-        gradient.addColorStop(0.5, '#00ff00');
-        gradient.addColorStop(1, '#0000ff');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 30, 280, 20);
-        
-        // Text with shadows
-        ctx.shadowColor = 'rgba(0,0,0,0.5)';
-        ctx.shadowBlur = 2;
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 2;
         ctx.fillStyle = '#069';
         ctx.fillText('Browser Fingerprint 🔍', 2, 15);
         ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
-        ctx.fillText('Canvas Test αβγ', 4, 35);
-
-        // Arc
-        ctx.beginPath();
-        ctx.arc(250, 30, 15, 0, Math.PI * 2);
-        ctx.fillStyle = '#ff6600';
-        ctx.fill();
+        ctx.fillText('Canvas Test', 4, 17);
 
         const dataURL = canvas.toDataURL();
         const hash = await this.hashString(dataURL);
         
         return {
           canvasHash: hash.substring(0, 16),
-          canvasDataLength: dataURL.length,
           canvasSupported: true
         };
       },
 
-      // WebGL fingerprinting with render hash
+      // WebGL fingerprinting
       async scanWebGL() {
         const canvas = document.createElement('canvas');
         const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
@@ -919,31 +636,13 @@
 
         const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
         
-        // Get extension list and hash it
-        const extensions = gl.getSupportedExtensions() || [];
-        const extensionHash = await this.hashString(extensions.join(','));
-        
-        // Render a scene and hash it
-        canvas.width = 100;
-        canvas.height = 100;
-        
-        // Simple render to create GPU-specific output
-        gl.clearColor(0.2, 0.4, 0.6, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        
-        const pixels = new Uint8Array(100 * 100 * 4);
-        gl.readPixels(0, 0, 100, 100, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
-        const renderHash = await this.hashString(pixels.join(','));
-        
         return {
           webGLSupported: true,
           vendor: gl.getParameter(gl.VENDOR),
           renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'Unknown',
           version: gl.getParameter(gl.VERSION),
-          shadingLanguage: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
-          extensionCount: extensions.length,
-          extensionHash: extensionHash.substring(0, 12),
-          renderHash: renderHash.substring(0, 12)
+          shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
+          extensions: gl.getSupportedExtensions().length
         };
       },
 
@@ -951,62 +650,54 @@
       async scanAudio() {
         try {
           const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContext) return { audioSupported: false };
-          
           const context = new AudioContext();
           const oscillator = context.createOscillator();
           const analyser = context.createAnalyser();
           const gainNode = context.createGain();
-          const compressor = context.createDynamicsCompressor();
-
-          // Set specific values for fingerprinting
-          compressor.threshold.value = -50;
-          compressor.knee.value = 40;
-          compressor.ratio.value = 12;
-          compressor.attack.value = 0;
-          compressor.release.value = 0.25;
+          const scriptProcessor = context.createScriptProcessor(4096, 1, 1);
 
           gainNode.gain.value = 0; // Mute
-          oscillator.type = 'triangle';
-          oscillator.frequency.value = 10000;
-
-          oscillator.connect(compressor);
-          compressor.connect(analyser);
-          analyser.connect(gainNode);
+          oscillator.connect(analyser);
+          analyser.connect(scriptProcessor);
+          scriptProcessor.connect(gainNode);
           gainNode.connect(context.destination);
 
           oscillator.start(0);
           
-          // Get frequency data
-          await new Promise(r => setTimeout(r, 100));
-          const frequencyData = new Uint8Array(analyser.frequencyBinCount);
-          analyser.getByteFrequencyData(frequencyData);
-          
-          oscillator.stop();
-          await context.close();
+          const audioData = await new Promise((resolve) => {
+            scriptProcessor.onaudioprocess = function(event) {
+              const output = event.outputBuffer.getChannelData(0);
+              resolve(Array.from(output.slice(0, 30)).join(','));
+              oscillator.stop();
+              scriptProcessor.disconnect();
+            };
+          });
 
-          const hash = await this.hashString(frequencyData.join(','));
+          const hash = await this.hashString(audioData);
 
           return {
             audioHash: hash.substring(0, 16),
-            sampleRate: context.sampleRate,
-            channelCount: context.destination.maxChannelCount,
             audioSupported: true
           };
         } catch (e) {
-          return { audioSupported: false, error: e.message };
+          return { audioSupported: false };
         }
       },
 
-      // Extended Font detection
+      // Font detection
       async scanFonts() {
         const baseFonts = ['monospace', 'sans-serif', 'serif'];
+        const testFonts = [
+          'Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia',
+          'Palatino', 'Garamond', 'Bookman', 'Comic Sans MS', 'Trebuchet MS',
+          'Impact', 'Lucida Console', 'Tahoma', 'Helvetica', 'Calibri'
+        ];
+
         const testString = 'mmmmmmmmmmlli';
         const testSize = '72px';
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Get baseline widths
         const baselines = {};
         baseFonts.forEach(baseFont => {
           ctx.font = testSize + ' ' + baseFont;
@@ -1014,137 +705,33 @@
         });
 
         const detectedFonts = [];
-        const fontCategories = {
-          windows: [],
-          macos: [],
-          linux: [],
-          web: []
-        };
-
-        for (const font of FONT_LIST) {
+        testFonts.forEach(font => {
           let detected = false;
-          for (const baseFont of baseFonts) {
-            ctx.font = `${testSize} "${font}", ${baseFont}`;
+          baseFonts.forEach(baseFont => {
+            ctx.font = testSize + ' ' + font + ',' + baseFont;
             const width = ctx.measureText(testString).width;
             if (width !== baselines[baseFont]) {
               detected = true;
-              break;
             }
-          }
+          });
           if (detected) {
             detectedFonts.push(font);
           }
-        }
-
-        // Categorize detected fonts
-        const windowsFonts = ['Calibri', 'Segoe UI', 'Consolas', 'Cambria'];
-        const macosFonts = ['Helvetica Neue', 'SF Pro', 'Menlo', 'Monaco'];
-        const linuxFonts = ['Ubuntu', 'DejaVu Sans', 'Liberation Sans'];
-
-        let osHint = 'Unknown';
-        if (detectedFonts.some(f => windowsFonts.includes(f))) osHint = 'Windows';
-        else if (detectedFonts.some(f => macosFonts.includes(f))) osHint = 'macOS';
-        else if (detectedFonts.some(f => linuxFonts.includes(f))) osHint = 'Linux';
-
-        const fontHash = await this.hashString(detectedFonts.join(','));
+        });
 
         return {
           fontsDetected: detectedFonts.length,
-          fontsTested: FONT_LIST.length,
-          fontHash: fontHash.substring(0, 16),
-          osHint: osHint,
-          sampleFonts: detectedFonts.slice(0, 8).join(', ') + (detectedFonts.length > 8 ? '...' : '')
+          sampleFonts: detectedFonts.slice(0, 5).join(', ')
         };
-      },
-
-      // Hardware fingerprint
-      async scanHardware() {
-        const results = {
-          hardwareSupported: true
-        };
-
-        // CPU Benchmark - measure time for known operations
-        const cpuStart = performance.now();
-        let sum = 0;
-        for (let i = 0; i < 1000000; i++) {
-          sum += Math.sqrt(i) * Math.sin(i);
-        }
-        results.cpuBenchmark = Math.round(performance.now() - cpuStart);
-        results.cpuScore = sum.toFixed(2).slice(-8); // Last 8 chars as fingerprint
-
-        // Math precision fingerprint
-        const mathResults = [
-          Math.tan(-1e300),
-          Math.sin(1e20),
-          Math.cos(1e20),
-          Math.pow(2, 1024 - 1),
-          Math.log(1e-10),
-          Math.exp(1),
-          Math.sinh(1),
-          Math.atanh(0.5),
-          Math.expm1(1),
-          Math.log1p(1e-10)
-        ];
-        results.mathFingerprint = await this.hashString(mathResults.map(x => x.toString()).join('|'));
-        results.mathFingerprint = results.mathFingerprint.substring(0, 12);
-
-        // Memory pattern (if available)
-        if (performance.memory) {
-          results.jsHeapLimit = Math.round(performance.memory.jsHeapSizeLimit / 1048576) + ' MB';
-        }
-
-        // GPU Benchmark via WebGL
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = 256;
-          canvas.height = 256;
-          const gl = canvas.getContext('webgl');
-          
-          if (gl) {
-            const gpuStart = performance.now();
-            
-            // Render multiple frames
-            for (let i = 0; i < 100; i++) {
-              gl.clearColor(Math.random(), Math.random(), Math.random(), 1);
-              gl.clear(gl.COLOR_BUFFER_BIT);
-            }
-            gl.finish(); // Force GPU sync
-            
-            results.gpuBenchmark = Math.round(performance.now() - gpuStart);
-          }
-        } catch (e) {
-          results.gpuBenchmark = 'N/A';
-        }
-
-        // Timing precision (fingerprints timer resolution)
-        const timings = [];
-        for (let i = 0; i < 20; i++) {
-          const t1 = performance.now();
-          const t2 = performance.now();
-          timings.push(t2 - t1);
-        }
-        const minTiming = Math.min(...timings.filter(t => t > 0));
-        results.timerResolution = minTiming > 0 ? minTiming.toFixed(4) + ' ms' : '< 0.001 ms';
-
-        return results;
       },
 
       // Storage & Permissions
       async scanStorage() {
-        let quota = 'Unknown';
-        try {
-          if (navigator.storage && navigator.storage.estimate) {
-            const estimate = await navigator.storage.estimate();
-            quota = Math.round(estimate.quota / 1048576) + ' MB';
-          }
-        } catch (e) {}
-
         return {
           localStorage: typeof localStorage !== 'undefined',
           sessionStorage: typeof sessionStorage !== 'undefined',
           indexedDB: typeof indexedDB !== 'undefined',
-          cookiesEnabled: navigator.cookieEnabled,
-          storageQuota: quota
+          cookiesEnabled: navigator.cookieEnabled
         };
       },
 
@@ -1154,8 +741,8 @@
         
         return {
           effectiveType: connection?.effectiveType || 'Unknown',
-          downlink: connection?.downlink ? connection.downlink + ' Mbps' : 'Unknown',
-          rtt: connection?.rtt ? connection.rtt + ' ms' : 'Unknown',
+          downlink: connection?.downlink || 'Unknown',
+          rtt: connection?.rtt || 'Unknown',
           saveData: connection?.saveData || false
         };
       },
@@ -1166,13 +753,15 @@
           if (navigator.getBattery) {
             const battery = await navigator.getBattery();
             return {
-              charging: battery.charging ? 'Yes' : 'No',
+              charging: battery.charging,
               level: Math.round(battery.level * 100) + '%',
-              chargingTime: battery.chargingTime === Infinity ? 'N/A' : battery.chargingTime + 's',
-              dischargingTime: battery.dischargingTime === Infinity ? 'N/A' : battery.dischargingTime + 's'
+              chargingTime: battery.chargingTime === Infinity ? 'N/A' : battery.chargingTime,
+              dischargingTime: battery.dischargingTime === Infinity ? 'N/A' : battery.dischargingTime
             };
           }
-        } catch (e) {}
+        } catch (e) {
+          return { batterySupported: false };
+        }
         return { batterySupported: false };
       },
 
@@ -1182,13 +771,14 @@
           if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
             const devices = await navigator.mediaDevices.enumerateDevices();
             return {
-              totalDevices: devices.length,
               videoInputs: devices.filter(d => d.kind === 'videoinput').length,
               audioInputs: devices.filter(d => d.kind === 'audioinput').length,
               audioOutputs: devices.filter(d => d.kind === 'audiooutput').length
             };
           }
-        } catch (e) {}
+        } catch (e) {
+          return { mediaDevicesSupported: false };
+        }
         return { mediaDevicesSupported: false };
       },
 
@@ -1203,22 +793,16 @@
       calculateEntropy() {
         let bits = 0;
         
-        // Weight by actual uniqueness contribution
-        if (this.results.basicInfo) bits += 10; // User agent varies widely
+        // Each unique characteristic adds entropy
+        if (this.results.basicInfo) bits += 8; // User agent varies widely
         if (this.results.screen) bits += 6; // Screen resolution
-        if (this.results.canvas) bits += 12; // Canvas is highly unique
-        if (this.results.webgl) bits += 10; // WebGL renderer + extensions
-        if (this.results.audio) bits += 8; // Audio fingerprint
-        if (this.results.fonts) {
-          // More fonts = more entropy
-          const fontCount = this.results.fonts.fontsDetected || 0;
-          bits += Math.min(12, Math.round(fontCount / 5)); // Up to 12 bits
-        }
-        if (this.results.hardware) bits += 8; // Hardware timing
+        if (this.results.canvas) bits += 10; // Canvas is highly unique
+        if (this.results.webgl) bits += 8; // WebGL renderer
+        if (this.results.audio) bits += 6; // Audio fingerprint
+        if (this.results.fonts) bits += 5; // Font detection
         if (this.results.timezone) bits += 4; // Timezone
-        if (this.results.incognito?.detected) bits += 2; // Incognito detection
-        if (this.results.battery?.batterySupported !== false) bits += 2;
-        if (this.results.mediaDevices?.mediaDevicesSupported !== false) bits += 3;
+        if (this.results.battery) bits += 2; // Battery status
+        if (this.results.mediaDevices) bits += 3; // Media devices
         
         return bits;
       }
@@ -1237,8 +821,6 @@
       uniquenessScore: document.getElementById('uniqueness-score'),
       entropyBits: document.getElementById('entropy-bits'),
       dataPoints: document.getElementById('data-points'),
-      fontsDetected: document.getElementById('fonts-detected'),
-      incognitoAlert: document.getElementById('incognito-alert'),
 
       init() {
         this.scanBtn.addEventListener('click', () => this.startScan());
@@ -1253,19 +835,16 @@
         this.resultsSummary.classList.add('hidden');
         this.resultsGrid.classList.add('hidden');
         this.tipsSection.classList.add('hidden');
-        this.incognitoAlert.classList.remove('detected');
         this.resultsGrid.innerHTML = '';
 
         const scans = [
-          { name: 'Private Browsing Detection', fn: 'detectIncognito', key: 'incognito' },
           { name: 'Basic Browser Info', fn: 'scanBasicInfo', key: 'basicInfo' },
           { name: 'Screen & Display', fn: 'scanScreen', key: 'screen' },
           { name: 'Timezone Data', fn: 'scanTimezone', key: 'timezone' },
           { name: 'Canvas Fingerprint', fn: 'scanCanvas', key: 'canvas' },
           { name: 'WebGL Capabilities', fn: 'scanWebGL', key: 'webgl' },
           { name: 'Audio Fingerprint', fn: 'scanAudio', key: 'audio' },
-          { name: 'Font Detection (80+ fonts)', fn: 'scanFonts', key: 'fonts' },
-          { name: 'Hardware Fingerprint', fn: 'scanHardware', key: 'hardware' },
+          { name: 'Font Detection', fn: 'scanFonts', key: 'fonts' },
           { name: 'Storage APIs', fn: 'scanStorage', key: 'storage' },
           { name: 'Network Info', fn: 'scanNetwork', key: 'network' },
           { name: 'Battery Status', fn: 'scanBattery', key: 'battery' },
@@ -1278,18 +857,12 @@
           this.progressFill.style.width = `${((i + 1) / scans.length) * 100}%`;
           
           FingerprintScanner.results[scan.key] = await FingerprintScanner[scan.fn]();
-          
-          // Check incognito immediately
-          if (scan.key === 'incognito' && FingerprintScanner.results.incognito.detected) {
-            this.incognitoAlert.classList.add('detected');
-          }
-          
-          await this.delay(150); // Faster but still visible
+          await this.delay(300); // Dramatic pause
         }
 
         this.currentScanText.textContent = 'Generating fingerprint hash...';
         await FingerprintScanner.generateFingerprint();
-        await this.delay(300);
+        await this.delay(500);
 
         this.displayResults();
       },
@@ -1310,65 +883,49 @@
 
         // Calculate scores
         const entropy = FingerprintScanner.calculateEntropy();
-        const uniqueness = Math.min(99.9, (entropy / 70) * 100).toFixed(1);
-        const fontCount = FingerprintScanner.results.fonts?.fontsDetected || 0;
+        const dataPoints = Object.keys(FingerprintScanner.results).length;
+        const uniqueness = Math.min(99.9, (entropy / 60) * 100).toFixed(1);
 
         this.uniquenessScore.textContent = uniqueness + '%';
-        this.uniquenessScore.className = 'score-value ' + (uniqueness > 80 ? 'high' : uniqueness > 50 ? 'medium' : 'low');
         this.entropyBits.textContent = entropy;
-        this.dataPoints.textContent = Object.keys(FingerprintScanner.results).length;
-        this.fontsDetected.textContent = fontCount;
-        this.fontsDetected.className = 'score-value ' + (fontCount > 40 ? 'high' : fontCount > 20 ? 'medium' : 'low');
+        this.dataPoints.textContent = dataPoints;
 
         // Render categories
-        if (FingerprintScanner.results.incognito?.detected) {
-          this.renderCategory('🕵️ Private Browsing', {
-            detected: 'YES - You are detected!',
-            confidence: FingerprintScanner.results.incognito.confidence + '%',
-            methods: FingerprintScanner.results.incognito.methods.join(', ') || 'Multiple signals',
-            detectionTime: FingerprintScanner.results.incognito.detectionTime + 'ms'
-          }, 'critical', 
-          'Your private/incognito mode was detected! Websites can tell you\'re trying to hide, which itself is identifying information.');
-        }
-
         this.renderCategory('🌐 Basic Info', FingerprintScanner.results.basicInfo, 'medium', 
-          'User agent and platform info can identify your browser, OS, and device type. Combined with other data, this creates a unique profile.');
+          'User agent and language settings can identify your browser and OS. Combined with other data, this creates a unique profile.');
         
         this.renderCategory('🖥️ Screen & Display', FingerprintScanner.results.screen, 'medium',
-          'Screen resolution and pixel ratio are highly identifying, especially on less common displays or multi-monitor setups.');
+          'Screen resolution and pixel ratio are highly identifying, especially on less common displays.');
         
         this.renderCategory('🕐 Timezone', FingerprintScanner.results.timezone, 'low',
-          'Timezone narrows down your geographic location and adds to fingerprint uniqueness.');
+          'Timezone narrows down your location and adds to fingerprint uniqueness.');
         
         this.renderCategory('🎨 Canvas Fingerprint', FingerprintScanner.results.canvas, 'high',
-          'Canvas rendering is highly unique due to GPU, driver, and font rendering differences. This is a major tracking vector.');
+          'Canvas rendering is highly unique due to GPU and driver differences. This is a major tracking vector.');
         
         this.renderCategory('🎮 WebGL', FingerprintScanner.results.webgl, 'high',
-          'WebGL exposes your GPU model, driver version, and supported extensions — creating a highly unique identifier.');
+          'WebGL exposes GPU information and capabilities, creating a highly unique identifier.');
         
         this.renderCategory('🔊 Audio', FingerprintScanner.results.audio, 'high',
-          'Audio processing creates unique signatures based on your hardware and drivers.');
+          'Audio processing creates unique signatures based on hardware and drivers.');
         
-        this.renderCategory('🔤 Fonts (' + fontCount + ' detected)', FingerprintScanner.results.fonts, 'high',
-          'We tested ' + (FingerprintScanner.results.fonts?.fontsTested || 0) + ' fonts. Your installed fonts are highly identifying — different OS and software installs create unique font sets.');
-
-        this.renderCategory('⚡ Hardware', FingerprintScanner.results.hardware, 'high',
-          'CPU and GPU benchmarks, math precision, and timer resolution vary by hardware — even identical models show subtle differences.');
+        this.renderCategory('🔤 Fonts', FingerprintScanner.results.fonts, 'medium',
+          'Installed fonts vary by user and system, adding significant entropy to your fingerprint.');
         
         this.renderCategory('💾 Storage', FingerprintScanner.results.storage, 'low',
-          'Storage API availability and quota can indicate browser settings and private browsing mode.');
+          'Storage API availability is consistent but still adds to your profile.');
         
         this.renderCategory('📡 Network', FingerprintScanner.results.network, 'low',
-          'Connection type and speed provide additional tracking data points.');
+          'Connection type and speed can change but provide additional tracking data.');
         
-        if (FingerprintScanner.results.battery?.batterySupported !== false) {
+        if (FingerprintScanner.results.battery.batterySupported !== false) {
           this.renderCategory('🔋 Battery', FingerprintScanner.results.battery, 'medium',
-            'Battery status can track you across sites and sessions. Exact charge level + charging state is surprisingly unique.');
+            'Battery status can be used for tracking and adds uniqueness to your fingerprint.');
         }
         
-        if (FingerprintScanner.results.mediaDevices?.mediaDevicesSupported !== false) {
+        if (FingerprintScanner.results.mediaDevices.mediaDevicesSupported !== false) {
           this.renderCategory('🎥 Media Devices', FingerprintScanner.results.mediaDevices, 'low',
-            'Number and type of cameras/microphones adds to your fingerprint.');
+            'Number and type of media devices (cameras, microphones) adds to your fingerprint.');
         }
       },
 
@@ -1382,11 +939,10 @@
 
         let dataHTML = '';
         for (const [key, value] of Object.entries(data)) {
-          const isDanger = key === 'detected' && value.toString().includes('YES');
           dataHTML += `
             <div class="data-point">
               <div class="data-label">${this.formatLabel(key)}</div>
-              <div class="data-value ${isDanger ? 'danger' : ''}">${this.formatValue(value)}</div>
+              <div class="data-value">${this.formatValue(value)}</div>
             </div>
           `;
         }
@@ -1427,9 +983,8 @@
         const data = {
           fingerprint: FingerprintScanner.fingerprint,
           timestamp: new Date().toISOString(),
-          entropy: FingerprintScanner.calculateEntropy(),
-          isIncognito: FingerprintScanner.isIncognito,
-          results: FingerprintScanner.results
+          results: FingerprintScanner.results,
+          entropy: FingerprintScanner.calculateEntropy()
         };
 
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -1451,19 +1006,7 @@
             btn.textContent = originalText;
           }, 2000);
         } catch (e) {
-          // Fallback for older browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = FingerprintScanner.fingerprint;
-          document.body.appendChild(textArea);
-          textArea.select();
-          document.execCommand('copy');
-          document.body.removeChild(textArea);
-          
-          const btn = document.getElementById('copy-hash-btn');
-          btn.textContent = '✓ Copied!';
-          setTimeout(() => {
-            btn.textContent = '📋 Copy Hash';
-          }, 2000);
+          alert('Failed to copy hash');
         }
       }
     };
