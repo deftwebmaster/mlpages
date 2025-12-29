@@ -23,6 +23,29 @@
   <!-- <meta name="twitter:image" content="https://mattlivingston.com/assets/og-tools.png"> -->
 
   <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* New category tag colors */
+    .tag-dev {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+    }
+    .tag-personal {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+    }
+    /* Privacy badge */
+    .privacy-badge {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: rgba(139, 92, 246, 0.15);
+      color: #a78bfa;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -34,14 +57,15 @@
 
     <!-- Why Section (compact) -->
     <section class="why-section">
-      <p>I work in warehouse & logistics operations — constraints, edge cases, real throughput. These tools are built from that perspective: lightweight, practical, designed to remove friction.</p>
+      <p>Your data never leaves your browser. These tools are lightweight, private, and built from real-world ops experience — no accounts, no tracking, no nonsense.</p>
     </section>
 
     <!-- Filter Bar -->
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">All</button>
       <button class="filter-btn" data-filter="warehouse">Warehouse</button>
-      <button class="filter-btn" data-filter="utility">Utilities</button>
+      <button class="filter-btn" data-filter="dev">Dev Tools</button>
+      <button class="filter-btn" data-filter="personal">Personal Ops</button>
     </div>
 
     <div class="tools-grid" id="toolsGrid">
@@ -73,12 +97,48 @@
         <a href="/tools/barcode-validator/" class="button button-small">Open tool →</a>
       </article>
 
-      <!-- Web Development Tools -->
+      <article class="tool-card featured" data-category="warehouse" data-title="Labor Cost Calculator" data-tags="labor,cost,cpu,productivity,uph,efficiency,warehouse,operations">
+        <div class="featured-badge">Featured</div>
+        <h3>Labor Cost per Unit Calculator</h3>
+        <span class="tag tag-warehouse">Warehouse</span>
+        <p>Break down labor costs by operation. Calculate cost per unit across receiving, picking, packing, and shipping. Compare periods and export reports.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Comparison Mode</span>
+        </div>
+        <a href="/tools/labor-cost/" class="button button-small">Open tool →</a>
+      </article>
 
-      <article class="tool-card featured" data-category="utility" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
+      <article class="tool-card featured" data-category="warehouse" data-title="ZPL Label Designer" data-tags="zpl,zebra,label,barcode,thermal,printer,shipping,warehouse">
+        <div class="featured-badge">Featured</div>
+        <h3>ZPL Label Designer</h3>
+        <span class="tag tag-warehouse">Warehouse</span>
+        <p>Visual drag-and-drop label builder for Zebra printers. Add text, barcodes, QR codes, and shapes. Live ZPL code generation with import/export. Includes sample data and cheat sheet.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Canvas API</span>
+        </div>
+        <a href="/tools/zpl-designer/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card featured" data-category="warehouse" data-title="EDI Document Viewer" data-tags="edi,x12,850,856,810,820,997,purchase order,asn,invoice,parser">
+        <div class="featured-badge">Featured</div>
+        <h3>EDI Document Viewer</h3>
+        <span class="tag tag-warehouse">Warehouse</span>
+        <p>Parse and understand X12 EDI documents instantly. Supports 850 (PO), 856 (ASN), 810 (Invoice), 820 (Payment), and 997 (Acknowledgment). Translates cryptic codes to human-readable format.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">5 Doc Types</span>
+        </div>
+        <a href="/tools/edi-viewer/" class="button button-small">Open tool →</a>
+      </article>
+
+      <!-- Personal Ops Tools -->
+
+      <article class="tool-card featured" data-category="personal" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
         <div class="featured-badge">Featured</div>
         <h3>Smart Tip Calculator</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-personal">Personal Ops</span>
         <p>Stop arguing about who ordered what. Itemized bill splitting with alcohol adjustments, service quality sliders, and Venmo/Cash App payment link generator. Works offline.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -87,9 +147,11 @@
         <a href="/tools/tip-calculator/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="utility" data-title="QR Code Generator" data-tags="qr,privacy,url,text,contact,vcard">
+      <!-- Dev Tools -->
+
+      <article class="tool-card" data-category="dev" data-title="QR Code Generator" data-tags="qr,privacy,url,text,contact,vcard">
         <h3>QR Code Generator</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-dev">Dev Tools</span>
         <p>Privacy-first QR code creation. Generates codes locally in your browser—no data sent to servers. Supports URLs, text, and contact cards.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -98,9 +160,46 @@
         <a href="/tools/qr-generator/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="utility" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
+      <article class="tool-card featured" data-category="dev" data-title="JSON CSV Converter" data-tags="json,csv,convert,data,export,import,flatten,nested">
+        <div class="featured-badge">Featured</div>
+        <h3>JSON ↔ CSV Converter</h3>
+        <span class="tag tag-dev">Dev Tools</span>
+        <p>Convert between JSON and CSV instantly. Handles nested objects with dot notation flattening, arrays, type inference, and large files. Drag & drop or paste.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Zero Dependencies</span>
+        </div>
+        <a href="/tools/json-csv/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card featured" data-category="dev" data-title="Favicon Generator" data-tags="favicon,ico,png,apple-touch-icon,pwa,manifest,icons">
+        <div class="featured-badge">Featured</div>
+        <h3>Favicon Generator</h3>
+        <span class="tag tag-dev">Dev Tools</span>
+        <p>Generate all favicon sizes from one image. Creates ICO, PNG, Apple Touch Icon, Android Chrome icons, and PWA manifest. Downloads as ZIP with ready-to-use HTML.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">JSZip</span>
+        </div>
+        <a href="/tools/favicon/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card featured" data-category="dev" data-title="Encode & Hash" data-tags="base64,url,encode,decode,hash,md5,sha256,sha1,sha512,checksum">
+        <div class="featured-badge">Featured</div>
+        <h3>Encode & Hash</h3>
+        <span class="tag tag-dev">Dev Tools</span>
+        <p>Base64 encode/decode, URL encoding, and hash generation (MD5, SHA-1, SHA-256, SHA-512) in one tool. Supports text and file input with hash comparison.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Web Crypto API</span>
+        </div>
+        <a href="/tools/encode-hash/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="dev" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
+        <div class="privacy-badge">🔒 Privacy-Focused</div>
         <h3>Browser Fingerprint Viewer</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-dev">Dev Tools</span>
         <p>See what websites can learn about your browser without cookies. Displays canvas fingerprint, WebGL info, and other tracking vectors.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -109,9 +208,10 @@
         <a href="/tools/fingerprint/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="utility" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
+      <article class="tool-card" data-category="personal" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
+        <div class="privacy-badge">🔒 Privacy-Focused</div>
         <h3>Pseudonym Generator</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-personal">Personal Ops</span>
         <p>Creates consistent fake identities for testing or privacy. Generates names, addresses, and other persona details locally.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -120,9 +220,9 @@
         <a href="/tools/pseudonym/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="utility" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
+      <article class="tool-card" data-category="personal" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
         <h3>Time Zone Overlap Finder</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-personal">Personal Ops</span>
         <p>Find overlapping work hours across time zones. Useful for scheduling meetings with distributed teams.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -131,9 +231,9 @@
         <a href="/tools/timezone/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="utility" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
+      <article class="tool-card" data-category="personal" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
         <h3>FinanceSmart Calculator Suite</h3>
-        <span class="tag tag-utility">Utility</span>
+        <span class="tag tag-personal">Personal Ops</span>
         <p>Collection of financial calculators: compound interest, loan amortization, savings goals, and debt payoff planning.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -142,17 +242,22 @@
         <a href="/tools/finance/" class="button button-small">Open tool →</a>
       </article>
 
+      <article class="tool-card" data-category="personal" data-title="Chaos Engine" data-tags="random,number,generator,picker,decision,food,tournament,dice,coin">
+        <h3>Chaos Engine</h3>
+        <span class="tag tag-personal">Personal Ops</span>
+        <p>Random number generator with advanced options, decision picker for food and activities, and tournament bracket mode. Let chaos decide.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">3-in-1 Tool</span>
+        </div>
+        <a href="/tools/chaos/" class="button button-small">Open tool →</a>
+      </article>
+
     </div>
 
     <footer class="footer">
       <div class="footer-content">
         <span>&copy; 2025 Matt Livingston</span>
-        <span class="footer-tagline">&nbsp;</span>
-        <div class="footer-links">
-          <a href="mailto:mattlivingston@fastmail.com">Contact</a>
-          <!-- <a href="https://linkedin.com/in/" target="_blank" rel="noopener">LinkedIn</a>
-          <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a> -->
-        </div>
       </div>
     </footer>
   </div>
@@ -184,4 +289,4 @@
     })();
   </script>
 </body>
-</html>
+</html> 
