@@ -1,0 +1,1901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Launch Kit | Matt Livingston</title>
+    <meta name="description" content="Everything you need to launch a website. Placeholder content, meta tags, robots.txt, sitemap, security headers, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <a href="/tools/" class="back-link">← Tools</a>
+                <span class="privacy-badge">🔒 Nothing leaves your browser</span>
+            </div>
+            <h1 class="title">Website Launch Kit</h1>
+            <p class="subtitle">Everything you need before your site has real content.</p>
+        </header>
+
+        <!-- Global Controls -->
+        <section class="global-controls">
+            <div class="preset-selector">
+                <label for="preset">Preset:</label>
+                <select id="preset">
+                    <option value="custom">Custom</option>
+                    <option value="personal">Personal Site</option>
+                    <option value="marketing">Marketing Site</option>
+                    <option value="saas">SaaS Landing Page</option>
+                    <option value="blog">Blog</option>
+                    <option value="docs">Docs Site</option>
+                </select>
+            </div>
+            <div class="global-actions">
+                <button type="button" class="btn btn-secondary" id="importConfigBtn">Import Config</button>
+                <button type="button" class="btn btn-secondary" id="exportConfigBtn">Export Config</button>
+                <button type="button" class="btn btn-primary" id="downloadAllBtn">Download Everything</button>
+            </div>
+        </section>
+
+        <!-- Settings Panel -->
+        <details class="settings-panel">
+            <summary>Settings</summary>
+            <div class="settings-grid">
+                <div class="setting">
+                    <label for="lineEnding">Line Endings:</label>
+                    <select id="lineEnding">
+                        <option value="lf">LF (Unix/Mac)</option>
+                        <option value="crlf">CRLF (Windows)</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="commentVerbosity">Comments:</label>
+                    <select id="commentVerbosity">
+                        <option value="minimal">Minimal</option>
+                        <option value="normal">Normal</option>
+                        <option value="teach">Teach Me</option>
+                    </select>
+                </div>
+                <div class="setting">
+                    <label for="timestampFormat">Timestamps:</label>
+                    <select id="timestampFormat">
+                        <option value="iso">ISO 8601</option>
+                        <option value="human">Human Readable</option>
+                    </select>
+                </div>
+            </div>
+        </details>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav" role="tablist">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="placeholder">Content</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="meta">Meta Tags</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="robots">robots.txt</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="sitemap">Sitemap</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="htaccess">.htaccess</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="humans">humans.txt</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="security">Security</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="legal">Legal</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="checklist">Checklist</button>
+        </nav>
+
+        <!-- Tab Panels -->
+        <main class="tab-panels">
+            <!-- Placeholder Content Tab -->
+            <section class="tab-panel active" id="placeholder-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Placeholder Content</h2>
+                    <p>Generate realistic filler content for development and design.</p>
+                </div>
+
+                <div class="generator-grid">
+                    <!-- Text Placeholders -->
+                    <div class="generator-card">
+                        <h3>Paragraphs</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="paragraphCount" value="3" min="1" max="20">
+                            </label>
+                            <label>
+                                Length:
+                                <select id="paragraphLength">
+                                    <option value="short">Short</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="long">Long</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="paragraphs">Generate</button>
+                        <div class="output-box" id="paragraphsOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Headlines</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="headlineCount" value="5" min="1" max="20">
+                            </label>
+                            <label>
+                                Style:
+                                <select id="headlineStyle">
+                                    <option value="h1">H1 - Page Titles</option>
+                                    <option value="h2" selected>H2 - Section Headers</option>
+                                    <option value="h3">H3 - Subsections</option>
+                                    <option value="mixed">Mixed</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="headlines">Generate</button>
+                        <div class="output-box" id="headlinesOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Lists</h3>
+                        <div class="input-row">
+                            <label>
+                                Items:
+                                <input type="number" id="listItemCount" value="5" min="1" max="20">
+                            </label>
+                            <label>
+                                Type:
+                                <select id="listType">
+                                    <option value="ul">Bulleted</option>
+                                    <option value="ol">Numbered</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="lists">Generate</button>
+                        <div class="output-box" id="listsOutput"></div>
+                    </div>
+
+                    <!-- Data Placeholders -->
+                    <div class="generator-card">
+                        <h3>Names</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="nameCount" value="5" min="1" max="50">
+                            </label>
+                            <label>
+                                Type:
+                                <select id="nameType">
+                                    <option value="full">Full Names</option>
+                                    <option value="first">First Names</option>
+                                    <option value="last">Last Names</option>
+                                    <option value="company">Companies</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="names">Generate</button>
+                        <div class="output-box" id="namesOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Addresses</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="addressCount" value="3" min="1" max="20">
+                            </label>
+                            <label>
+                                Format:
+                                <select id="addressFormat">
+                                    <option value="us">US</option>
+                                    <option value="eu">EU</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="addresses">Generate</button>
+                        <div class="output-box" id="addressesOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Contact Info</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="contactCount" value="5" min="1" max="20">
+                            </label>
+                            <label>
+                                Type:
+                                <select id="contactType">
+                                    <option value="phone">Phone Numbers</option>
+                                    <option value="email">Email Addresses</option>
+                                    <option value="both">Both</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="contacts">Generate</button>
+                        <div class="output-box" id="contactsOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Prices</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="priceCount" value="5" min="1" max="20">
+                            </label>
+                            <label>
+                                Range:
+                                <select id="priceRange">
+                                    <option value="low">$1 - $50</option>
+                                    <option value="medium" selected>$10 - $500</option>
+                                    <option value="high">$100 - $10,000</option>
+                                    <option value="saas">SaaS Tiers</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="prices">Generate</button>
+                        <div class="output-box" id="pricesOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Dates & Times</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="dateCount" value="5" min="1" max="20">
+                            </label>
+                            <label>
+                                Type:
+                                <select id="dateType">
+                                    <option value="date">Dates Only</option>
+                                    <option value="datetime">Date + Time</option>
+                                    <option value="relative">Relative</option>
+                                    <option value="timestamp">Unix Timestamp</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="dates">Generate</button>
+                        <div class="output-box" id="datesOutput"></div>
+                    </div>
+
+                    <div class="generator-card">
+                        <h3>Image Placeholders</h3>
+                        <div class="input-row">
+                            <label>
+                                Count:
+                                <input type="number" id="imageCount" value="3" min="1" max="10">
+                            </label>
+                            <label>
+                                Size:
+                                <select id="imageSize">
+                                    <option value="thumbnail">150×150</option>
+                                    <option value="small">300×200</option>
+                                    <option value="medium" selected>600×400</option>
+                                    <option value="large">1200×800</option>
+                                    <option value="hero">1920×1080</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div class="input-row">
+                            <label>
+                                Output:
+                                <select id="imageOutput">
+                                    <option value="url">Placeholder URLs</option>
+                                    <option value="svg">Inline SVG</option>
+                                    <option value="img">IMG Tags</option>
+                                </select>
+                            </label>
+                        </div>
+                        <button type="button" class="btn btn-generate" data-generator="images">Generate</button>
+                        <div class="output-box" id="imagesOutput"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Meta Tags Tab -->
+            <section class="tab-panel" id="meta-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Meta Tags</h2>
+                    <p>Generate a complete &lt;head&gt; block for SEO and social sharing.</p>
+                </div>
+
+                <div class="meta-layout">
+                    <div class="meta-form">
+                        <!-- Basic Meta -->
+                        <div class="form-section">
+                            <h3>Basic Information</h3>
+                            <div class="form-group">
+                                <label for="metaTitle">Page Title</label>
+                                <input type="text" id="metaTitle" placeholder="My Awesome Website" maxlength="60">
+                                <span class="char-count"><span id="metaTitleCount">0</span>/60</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="metaDescription">Description</label>
+                                <textarea id="metaDescription" placeholder="A brief description of your page for search results..." maxlength="160" rows="3"></textarea>
+                                <span class="char-count"><span id="metaDescriptionCount">0</span>/160</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="metaKeywords">Keywords <span class="optional">(optional)</span></label>
+                                <input type="text" id="metaKeywords" placeholder="keyword1, keyword2, keyword3">
+                            </div>
+                            <div class="form-group">
+                                <label for="metaCanonical">Canonical URL</label>
+                                <input type="url" id="metaCanonical" placeholder="https://example.com/page">
+                            </div>
+                        </div>
+
+                        <!-- Open Graph -->
+                        <div class="form-section">
+                            <h3>Open Graph <span class="tag-hint">Facebook, LinkedIn</span></h3>
+                            <div class="form-group">
+                                <label for="ogTitle">OG Title <span class="optional">(defaults to page title)</span></label>
+                                <input type="text" id="ogTitle" placeholder="Override title for social">
+                            </div>
+                            <div class="form-group">
+                                <label for="ogDescription">OG Description <span class="optional">(defaults to description)</span></label>
+                                <textarea id="ogDescription" placeholder="Override description for social..." rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="ogImage">OG Image URL</label>
+                                <input type="url" id="ogImage" placeholder="https://example.com/og-image.jpg">
+                                <span class="hint">Recommended: 1200×630px</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="ogType">OG Type</label>
+                                <select id="ogType">
+                                    <option value="website">website</option>
+                                    <option value="article">article</option>
+                                    <option value="product">product</option>
+                                    <option value="profile">profile</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ogSiteName">Site Name</label>
+                                <input type="text" id="ogSiteName" placeholder="My Website">
+                            </div>
+                        </div>
+
+                        <!-- Twitter Card -->
+                        <div class="form-section">
+                            <h3>Twitter Card</h3>
+                            <div class="form-group">
+                                <label for="twitterCard">Card Type</label>
+                                <select id="twitterCard">
+                                    <option value="summary">summary</option>
+                                    <option value="summary_large_image" selected>summary_large_image</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="twitterSite">@Site Handle <span class="optional">(optional)</span></label>
+                                <input type="text" id="twitterSite" placeholder="@yoursite">
+                            </div>
+                            <div class="form-group">
+                                <label for="twitterCreator">@Creator Handle <span class="optional">(optional)</span></label>
+                                <input type="text" id="twitterCreator" placeholder="@yourname">
+                            </div>
+                        </div>
+
+                        <!-- Favicon -->
+                        <div class="form-section">
+                            <h3>Favicon</h3>
+                            <div class="form-group">
+                                <label for="faviconPath">Favicon Path</label>
+                                <input type="text" id="faviconPath" placeholder="/favicon.ico">
+                            </div>
+                            <div class="form-group">
+                                <label for="appleTouchIcon">Apple Touch Icon Path <span class="optional">(optional)</span></label>
+                                <input type="text" id="appleTouchIcon" placeholder="/apple-touch-icon.png">
+                            </div>
+                        </div>
+
+                        <!-- Additional -->
+                        <div class="form-section">
+                            <h3>Additional Tags</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="metaViewport" checked>
+                                    Include viewport meta
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="metaCharset" checked>
+                                    Include charset
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="metaRobots">
+                                    Include robots meta
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="metaThemeColor">
+                                    Include theme-color
+                                </label>
+                            </div>
+                            <div class="form-group" id="robotsOptions" style="display: none;">
+                                <label for="metaRobotsValue">Robots Value</label>
+                                <select id="metaRobotsValue">
+                                    <option value="index, follow">index, follow (default)</option>
+                                    <option value="noindex, follow">noindex, follow</option>
+                                    <option value="index, nofollow">index, nofollow</option>
+                                    <option value="noindex, nofollow">noindex, nofollow</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="themeColorOption" style="display: none;">
+                                <label for="metaThemeColorValue">Theme Color</label>
+                                <input type="text" id="metaThemeColorValue" placeholder="#3b82f6">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary btn-generate-meta" id="generateMetaBtn">Generate Meta Tags</button>
+                    </div>
+
+                    <div class="meta-output-section">
+                        <!-- Preview -->
+                        <div class="preview-section">
+                            <h3>Preview</h3>
+                            <div class="preview-tabs">
+                                <button type="button" class="preview-tab active" data-preview="google">Google</button>
+                                <button type="button" class="preview-tab" data-preview="facebook">Facebook</button>
+                                <button type="button" class="preview-tab" data-preview="twitter">Twitter</button>
+                            </div>
+                            
+                            <div class="preview-panel active" id="preview-google">
+                                <div class="google-preview">
+                                    <div class="google-title" id="previewGoogleTitle">Page Title</div>
+                                    <div class="google-url" id="previewGoogleUrl">https://example.com</div>
+                                    <div class="google-description" id="previewGoogleDescription">Your page description will appear here...</div>
+                                </div>
+                            </div>
+
+                            <div class="preview-panel" id="preview-facebook">
+                                <div class="og-preview">
+                                    <div class="og-image" id="previewOgImage">
+                                        <span>1200 × 630</span>
+                                    </div>
+                                    <div class="og-content">
+                                        <div class="og-site" id="previewOgSite">example.com</div>
+                                        <div class="og-title" id="previewOgTitle">Page Title</div>
+                                        <div class="og-description" id="previewOgDescription">Your description...</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="preview-panel" id="preview-twitter">
+                                <div class="twitter-preview">
+                                    <div class="twitter-image" id="previewTwitterImage">
+                                        <span>1200 × 630</span>
+                                    </div>
+                                    <div class="twitter-content">
+                                        <div class="twitter-title" id="previewTwitterTitle">Page Title</div>
+                                        <div class="twitter-description" id="previewTwitterDescription">Your description...</div>
+                                        <div class="twitter-url" id="previewTwitterUrl">example.com</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3>Generated Code</h3>
+                                <button type="button" class="btn btn-copy" id="copyMetaBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="metaOutput">
+                                <pre><!-- Fill in the form and click Generate --></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- robots.txt Tab -->
+            <section class="tab-panel" id="robots-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>robots.txt</h2>
+                    <p>Control how search engines crawl your site.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Presets -->
+                        <div class="form-section">
+                            <h3>Quick Presets</h3>
+                            <div class="preset-buttons">
+                                <button type="button" class="btn btn-secondary btn-sm" data-robots-preset="allow-all">Allow All</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-robots-preset="block-all">Block All</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-robots-preset="standard">Standard</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-robots-preset="wordpress">WordPress</button>
+                            </div>
+                        </div>
+
+                        <!-- User Agents -->
+                        <div class="form-section">
+                            <h3>User Agents</h3>
+                            <div class="user-agent-list" id="robotsUserAgents">
+                                <div class="user-agent-group" data-agent-index="0">
+                                    <div class="form-group">
+                                        <label>User-agent</label>
+                                        <select class="agent-select">
+                                            <option value="*">* (All bots)</option>
+                                            <option value="Googlebot">Googlebot</option>
+                                            <option value="Bingbot">Bingbot</option>
+                                            <option value="GPTBot">GPTBot (OpenAI)</option>
+                                            <option value="ChatGPT-User">ChatGPT-User</option>
+                                            <option value="Claude-Web">Claude-Web</option>
+                                            <option value="Applebot">Applebot</option>
+                                            <option value="DuckDuckBot">DuckDuckBot</option>
+                                            <option value="Slurp">Slurp (Yahoo)</option>
+                                            <option value="facebookexternalhit">Facebook</option>
+                                            <option value="Twitterbot">Twitterbot</option>
+                                            <option value="custom">Custom...</option>
+                                        </select>
+                                        <input type="text" class="agent-custom" placeholder="Custom user-agent" style="display: none; margin-top: 0.5rem;">
+                                    </div>
+                                    <div class="rules-container">
+                                        <div class="form-group">
+                                            <label>Rules</label>
+                                            <div class="rules-list">
+                                                <div class="rule-row">
+                                                    <select class="rule-type">
+                                                        <option value="Allow">Allow</option>
+                                                        <option value="Disallow">Disallow</option>
+                                                    </select>
+                                                    <input type="text" class="rule-path" placeholder="/" value="/">
+                                                    <button type="button" class="btn btn-icon btn-remove-rule" title="Remove rule">×</button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-add-rule">+ Add Rule</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            Crawl-delay <span class="optional">(seconds, optional)</span>
+                                        </label>
+                                        <input type="number" class="crawl-delay" placeholder="e.g., 10" min="0" max="60">
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger btn-remove-agent" style="display: none;">Remove User-agent</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="addUserAgentBtn">+ Add User-agent Block</button>
+                        </div>
+
+                        <!-- Sitemap -->
+                        <div class="form-section">
+                            <h3>Sitemap</h3>
+                            <div class="form-group">
+                                <label for="robotsSitemap">Sitemap URL <span class="optional">(optional)</span></label>
+                                <input type="url" id="robotsSitemap" placeholder="https://example.com/sitemap.xml">
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="robotsMultipleSitemaps">
+                                    Multiple sitemaps
+                                </label>
+                            </div>
+                            <div class="form-group" id="additionalSitemapsGroup" style="display: none;">
+                                <label>Additional Sitemaps</label>
+                                <textarea id="robotsAdditionalSitemaps" rows="3" placeholder="https://example.com/sitemap-posts.xml&#10;https://example.com/sitemap-pages.xml"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Host -->
+                        <div class="form-section">
+                            <h3>Additional Directives</h3>
+                            <div class="form-group">
+                                <label for="robotsHost">Host <span class="optional">(optional, for Yandex)</span></label>
+                                <input type="text" id="robotsHost" placeholder="https://example.com">
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateRobotsBtn">Generate robots.txt</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Validation -->
+                        <div class="validation-section">
+                            <h3>Validation</h3>
+                            <div class="validation-indicators" id="robotsValidation">
+                                <div class="validation-item pending">
+                                    <span class="validation-icon">○</span>
+                                    <span>Generate to validate</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3>robots.txt</h3>
+                                <button type="button" class="btn btn-copy" id="copyRobotsBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="robotsOutput">
+                                <pre># Configure options and click Generate</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sitemap Tab -->
+            <section class="tab-panel" id="sitemap-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Sitemap</h2>
+                    <p>Generate a valid sitemap.xml for search engines.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Settings -->
+                        <div class="form-section">
+                            <h3>Settings</h3>
+                            <div class="form-group">
+                                <label for="sitemapBaseUrl">Base URL</label>
+                                <input type="url" id="sitemapBaseUrl" placeholder="https://example.com">
+                                <span class="hint">All URLs will be prefixed with this</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="sitemapDefaultFreq">Default Change Frequency</label>
+                                <select id="sitemapDefaultFreq">
+                                    <option value="">None</option>
+                                    <option value="always">always</option>
+                                    <option value="hourly">hourly</option>
+                                    <option value="daily">daily</option>
+                                    <option value="weekly" selected>weekly</option>
+                                    <option value="monthly">monthly</option>
+                                    <option value="yearly">yearly</option>
+                                    <option value="never">never</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sitemapDefaultPriority">Default Priority</label>
+                                <select id="sitemapDefaultPriority">
+                                    <option value="">None</option>
+                                    <option value="1.0">1.0 (Highest)</option>
+                                    <option value="0.9">0.9</option>
+                                    <option value="0.8">0.8</option>
+                                    <option value="0.7">0.7</option>
+                                    <option value="0.6">0.6</option>
+                                    <option value="0.5" selected>0.5 (Default)</option>
+                                    <option value="0.4">0.4</option>
+                                    <option value="0.3">0.3</option>
+                                    <option value="0.2">0.2</option>
+                                    <option value="0.1">0.1</option>
+                                    <option value="0.0">0.0 (Lowest)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Quick Add -->
+                        <div class="form-section">
+                            <h3>Quick Add Common Pages</h3>
+                            <div class="quick-add-buttons">
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/">Homepage</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/about">About</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/contact">Contact</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/blog">Blog</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/services">Services</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/products">Products</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/pricing">Pricing</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-sitemap-quick="/faq">FAQ</button>
+                            </div>
+                        </div>
+
+                        <!-- URL List -->
+                        <div class="form-section">
+                            <h3>URLs</h3>
+                            <div class="sitemap-urls" id="sitemapUrls">
+                                <div class="sitemap-url-row" data-url-index="0">
+                                    <div class="url-main">
+                                        <input type="text" class="url-path" placeholder="/page-path" value="/">
+                                        <button type="button" class="btn btn-icon btn-toggle-options" title="Options">⚙</button>
+                                        <button type="button" class="btn btn-icon btn-remove-url" title="Remove">×</button>
+                                    </div>
+                                    <div class="url-options" style="display: none;">
+                                        <div class="url-options-grid">
+                                            <label>
+                                                <span>Priority</span>
+                                                <select class="url-priority">
+                                                    <option value="">Default</option>
+                                                    <option value="1.0" selected>1.0 (Highest)</option>
+                                                    <option value="0.9">0.9</option>
+                                                    <option value="0.8">0.8</option>
+                                                    <option value="0.7">0.7</option>
+                                                    <option value="0.6">0.6</option>
+                                                    <option value="0.5">0.5</option>
+                                                    <option value="0.4">0.4</option>
+                                                    <option value="0.3">0.3</option>
+                                                    <option value="0.2">0.2</option>
+                                                    <option value="0.1">0.1</option>
+                                                    <option value="0.0">0.0</option>
+                                                </select>
+                                            </label>
+                                            <label>
+                                                <span>Frequency</span>
+                                                <select class="url-changefreq">
+                                                    <option value="">Default</option>
+                                                    <option value="always">always</option>
+                                                    <option value="hourly">hourly</option>
+                                                    <option value="daily">daily</option>
+                                                    <option value="weekly">weekly</option>
+                                                    <option value="monthly">monthly</option>
+                                                    <option value="yearly">yearly</option>
+                                                    <option value="never">never</option>
+                                                </select>
+                                            </label>
+                                            <label>
+                                                <span>Last Modified</span>
+                                                <input type="date" class="url-lastmod">
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="addSitemapUrlBtn">+ Add URL</button>
+                        </div>
+
+                        <!-- Bulk Import -->
+                        <div class="form-section">
+                            <h3>Bulk Import</h3>
+                            <div class="form-group">
+                                <label for="sitemapBulkUrls">Paste URLs <span class="optional">(one per line)</span></label>
+                                <textarea id="sitemapBulkUrls" rows="4" placeholder="/page-1&#10;/page-2&#10;/blog/post-1"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="importSitemapUrlsBtn">Import URLs</button>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateSitemapBtn">Generate sitemap.xml</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Stats -->
+                        <div class="validation-section">
+                            <h3>Summary</h3>
+                            <div class="sitemap-stats" id="sitemapStats">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="sitemapUrlCount">1</span>
+                                    <span class="stat-label">URLs</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3>sitemap.xml</h3>
+                                <button type="button" class="btn btn-copy" id="copySitemapBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="sitemapOutput">
+                                <pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!-- Add URLs and click Generate --&gt;</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- .htaccess Tab -->
+            <section class="tab-panel" id="htaccess-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>.htaccess</h2>
+                    <p>Apache configuration for redirects, caching, and more.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Redirects -->
+                        <div class="form-section">
+                            <h3>Redirects</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessHttpsRedirect" checked>
+                                    Force HTTPS
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessWwwRedirect">
+                                    Redirect www → non-www
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessNonWwwRedirect">
+                                    Redirect non-www → www
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessTrailingSlash">
+                                    Remove trailing slashes
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Custom Redirects -->
+                        <div class="form-section">
+                            <h3>Custom Redirects</h3>
+                            <div class="custom-redirects" id="htaccessCustomRedirects">
+                                <div class="redirect-row">
+                                    <select class="redirect-type">
+                                        <option value="301">301 (Permanent)</option>
+                                        <option value="302">302 (Temporary)</option>
+                                    </select>
+                                    <input type="text" class="redirect-from" placeholder="/old-page">
+                                    <span class="redirect-arrow">→</span>
+                                    <input type="text" class="redirect-to" placeholder="/new-page">
+                                    <button type="button" class="btn btn-icon btn-remove-redirect" title="Remove">×</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="addRedirectBtn">+ Add Redirect</button>
+                        </div>
+
+                        <!-- Caching -->
+                        <div class="form-section">
+                            <h3>Browser Caching</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessCaching" checked>
+                                    Enable browser caching
+                                </label>
+                            </div>
+                            <div class="cache-options" id="cacheOptions">
+                                <div class="form-group">
+                                    <label for="htaccessCacheImages">Images (jpg, png, gif, webp, svg, ico)</label>
+                                    <select id="htaccessCacheImages">
+                                        <option value="1 month">1 month</option>
+                                        <option value="3 months">3 months</option>
+                                        <option value="6 months">6 months</option>
+                                        <option value="1 year" selected>1 year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="htaccessCacheCSS">CSS & JavaScript</label>
+                                    <select id="htaccessCacheCSS">
+                                        <option value="1 week">1 week</option>
+                                        <option value="1 month" selected>1 month</option>
+                                        <option value="3 months">3 months</option>
+                                        <option value="6 months">6 months</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="htaccessCacheFonts">Fonts (woff, woff2, ttf, otf)</label>
+                                    <select id="htaccessCacheFonts">
+                                        <option value="1 month">1 month</option>
+                                        <option value="6 months">6 months</option>
+                                        <option value="1 year" selected>1 year</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compression -->
+                        <div class="form-section">
+                            <h3>Compression</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessGzip" checked>
+                                    Enable Gzip compression
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessDeflate">
+                                    Use mod_deflate (alternative)
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Error Pages -->
+                        <div class="form-section">
+                            <h3>Custom Error Pages</h3>
+                            <div class="form-group">
+                                <label for="htaccess404">404 Not Found</label>
+                                <input type="text" id="htaccess404" placeholder="/404.html">
+                            </div>
+                            <div class="form-group">
+                                <label for="htaccess403">403 Forbidden</label>
+                                <input type="text" id="htaccess403" placeholder="/403.html">
+                            </div>
+                            <div class="form-group">
+                                <label for="htaccess500">500 Server Error</label>
+                                <input type="text" id="htaccess500" placeholder="/500.html">
+                            </div>
+                        </div>
+
+                        <!-- Security -->
+                        <div class="form-section">
+                            <h3>Security</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessHideServerInfo" checked>
+                                    Hide server signature
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessBlockDotFiles" checked>
+                                    Block access to hidden files (.htaccess, .git, etc.)
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessDisableDirectoryListing" checked>
+                                    Disable directory listing
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessBlockHotlinking">
+                                    Block image hotlinking
+                                </label>
+                            </div>
+                            <div class="form-group" id="hotlinkDomainGroup" style="display: none;">
+                                <label for="htaccessHotlinkDomain">Your domain (for hotlink protection)</label>
+                                <input type="text" id="htaccessHotlinkDomain" placeholder="example.com">
+                            </div>
+                        </div>
+
+                        <!-- Performance -->
+                        <div class="form-section">
+                            <h3>Performance</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessEtags">
+                                    Disable ETags (can improve caching)
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="htaccessKeepAlive">
+                                    Enable Keep-Alive connections
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateHtaccessBtn">Generate .htaccess</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Warning -->
+                        <div class="warning-box">
+                            <strong>⚠️ Important:</strong> Always backup your existing .htaccess before replacing it. Test on a staging environment first.
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3>.htaccess</h3>
+                                <button type="button" class="btn btn-copy" id="copyHtaccessBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="htaccessOutput">
+                                <pre># Configure options and click Generate</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- humans.txt Tab -->
+            <section class="tab-panel" id="humans-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>humans.txt</h2>
+                    <p>Credit the people behind your site. The fun one.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Team Section -->
+                        <div class="form-section">
+                            <h3>Team</h3>
+                            <div class="team-members" id="humanTeamMembers">
+                                <div class="team-member-row" data-member-index="0">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" class="member-name" placeholder="Jane Smith">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Role</label>
+                                        <input type="text" class="member-role" placeholder="Developer">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Contact/Social <span class="optional">(optional)</span></label>
+                                        <input type="text" class="member-contact" placeholder="@janesmith or email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Location <span class="optional">(optional)</span></label>
+                                        <input type="text" class="member-location" placeholder="Austin, TX">
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger btn-remove-member" style="display: none;">Remove</button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-secondary" id="addTeamMemberBtn">+ Add Team Member</button>
+                        </div>
+
+                        <!-- Thanks Section -->
+                        <div class="form-section">
+                            <h3>Thanks <span class="optional">(optional)</span></h3>
+                            <div class="form-group">
+                                <label for="humansThanks">People or organizations to thank</label>
+                                <textarea id="humansThanks" rows="3" placeholder="Mom, caffeine, Stack Overflow..."></textarea>
+                                <span class="hint">One per line, or comma-separated</span>
+                            </div>
+                        </div>
+
+                        <!-- Site Info -->
+                        <div class="form-section">
+                            <h3>Site Info</h3>
+                            <div class="form-group">
+                                <label for="humansLastUpdate">Last Update</label>
+                                <input type="date" id="humansLastUpdate">
+                            </div>
+                            <div class="form-group">
+                                <label for="humansLanguage">Language</label>
+                                <input type="text" id="humansLanguage" placeholder="English" value="English">
+                            </div>
+                            <div class="form-group">
+                                <label for="humansDoctype">Doctype</label>
+                                <input type="text" id="humansDoctype" placeholder="HTML5" value="HTML5">
+                            </div>
+                        </div>
+
+                        <!-- Technology -->
+                        <div class="form-section">
+                            <h3>Technology</h3>
+                            <div class="form-group">
+                                <label>Quick Add</label>
+                                <div class="tech-quick-add">
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="HTML5">HTML5</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="CSS3">CSS3</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="JavaScript">JavaScript</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="React">React</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="Vue.js">Vue.js</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="Node.js">Node.js</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="Python">Python</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="WordPress">WordPress</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="Cloudflare">Cloudflare</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-tech="GitHub">GitHub</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="humansTech">Technologies Used</label>
+                                <textarea id="humansTech" rows="3" placeholder="HTML5, CSS3, JavaScript..."></textarea>
+                                <span class="hint">One per line, or comma-separated</span>
+                            </div>
+                        </div>
+
+                        <!-- Software -->
+                        <div class="form-section">
+                            <h3>Software <span class="optional">(optional)</span></h3>
+                            <div class="form-group">
+                                <label>Quick Add</label>
+                                <div class="tech-quick-add">
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="VS Code">VS Code</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Figma">Figma</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Photoshop">Photoshop</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Illustrator">Illustrator</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Sketch">Sketch</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Sublime Text">Sublime Text</button>
+                                    <button type="button" class="btn btn-sm btn-secondary" data-software="Claude">Claude</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="humansSoftware">Software Used</label>
+                                <textarea id="humansSoftware" rows="2" placeholder="VS Code, Figma..."></textarea>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateHumansBtn">Generate humans.txt</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Fun Fact -->
+                        <div class="form-section humans-fun-section">
+                            <h3>🎲 Fun Additions <span class="optional">(optional)</span></h3>
+                            <div class="form-group">
+                                <label for="humansFunFact">Fun Fact</label>
+                                <input type="text" id="humansFunFact" placeholder="This site was built entirely on coffee">
+                            </div>
+                            <div class="form-group">
+                                <label for="humansEasterEgg">Easter Egg Hint</label>
+                                <input type="text" id="humansEasterEgg" placeholder="Try the Konami code...">
+                            </div>
+                            <div class="form-group">
+                                <label for="humansHiring">We're Hiring? <span class="optional">(optional)</span></label>
+                                <input type="text" id="humansHiring" placeholder="Check out /careers">
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3>humans.txt</h3>
+                                <button type="button" class="btn btn-copy" id="copyHumansBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="humansOutput">
+                                <pre>/* Fill in the form and click Generate */</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Headers Tab -->
+            <section class="tab-panel" id="security-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Security Headers</h2>
+                    <p>Protect your site with proper HTTP security headers.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Preset -->
+                        <div class="form-section">
+                            <h3>Quick Presets</h3>
+                            <div class="preset-buttons">
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="basic">Basic</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="strict">Strict</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="api">API / Backend</button>
+                            </div>
+                        </div>
+
+                        <!-- Content-Security-Policy -->
+                        <div class="form-section">
+                            <h3>Content-Security-Policy</h3>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityCSP" checked>
+                                    Enable CSP
+                                </label>
+                            </div>
+                            <div class="csp-options" id="cspOptions">
+                                <div class="form-group">
+                                    <label for="cspDefaultSrc">default-src</label>
+                                    <input type="text" id="cspDefaultSrc" value="'self'" placeholder="'self'">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspScriptSrc">script-src</label>
+                                    <input type="text" id="cspScriptSrc" value="'self'" placeholder="'self' 'unsafe-inline'">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspStyleSrc">style-src</label>
+                                    <input type="text" id="cspStyleSrc" value="'self' 'unsafe-inline'" placeholder="'self' 'unsafe-inline'">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspImgSrc">img-src</label>
+                                    <input type="text" id="cspImgSrc" value="'self' data: https:" placeholder="'self' data: https:">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspFontSrc">font-src</label>
+                                    <input type="text" id="cspFontSrc" value="'self' https://fonts.gstatic.com" placeholder="'self' https://fonts.gstatic.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspConnectSrc">connect-src</label>
+                                    <input type="text" id="cspConnectSrc" value="'self'" placeholder="'self' https://api.example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspFrameSrc">frame-src</label>
+                                    <input type="text" id="cspFrameSrc" value="'none'" placeholder="'none' or https://youtube.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cspObjectSrc">object-src</label>
+                                    <input type="text" id="cspObjectSrc" value="'none'" placeholder="'none'">
+                                </div>
+                                <div class="checkbox-group" style="margin-top: 0.75rem;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cspUpgradeInsecure">
+                                        upgrade-insecure-requests
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cspBlockMixed" checked>
+                                        block-all-mixed-content
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Headers -->
+                        <div class="form-section">
+                            <h3>Other Security Headers</h3>
+                            
+                            <!-- X-Frame-Options -->
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityXFrame" checked>
+                                    X-Frame-Options
+                                </label>
+                            </div>
+                            <div class="form-group indent" id="xFrameOptions">
+                                <select id="xFrameValue">
+                                    <option value="DENY">DENY (no framing allowed)</option>
+                                    <option value="SAMEORIGIN" selected>SAMEORIGIN (same domain only)</option>
+                                </select>
+                            </div>
+
+                            <!-- X-Content-Type-Options -->
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityXContentType" checked>
+                                    X-Content-Type-Options: nosniff
+                                </label>
+                            </div>
+
+                            <!-- Referrer-Policy -->
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityReferrer" checked>
+                                    Referrer-Policy
+                                </label>
+                            </div>
+                            <div class="form-group indent" id="referrerOptions">
+                                <select id="referrerValue">
+                                    <option value="no-referrer">no-referrer</option>
+                                    <option value="no-referrer-when-downgrade">no-referrer-when-downgrade</option>
+                                    <option value="origin">origin</option>
+                                    <option value="origin-when-cross-origin">origin-when-cross-origin</option>
+                                    <option value="same-origin">same-origin</option>
+                                    <option value="strict-origin" selected>strict-origin</option>
+                                    <option value="strict-origin-when-cross-origin">strict-origin-when-cross-origin</option>
+                                </select>
+                            </div>
+
+                            <!-- Strict-Transport-Security -->
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityHSTS" checked>
+                                    Strict-Transport-Security (HSTS)
+                                </label>
+                            </div>
+                            <div class="form-group indent" id="hstsOptions">
+                                <label for="hstsMaxAge">max-age (seconds)</label>
+                                <select id="hstsMaxAge">
+                                    <option value="86400">1 day (testing)</option>
+                                    <option value="2592000">30 days</option>
+                                    <option value="15768000">6 months</option>
+                                    <option value="31536000" selected>1 year</option>
+                                    <option value="63072000">2 years</option>
+                                </select>
+                                <div class="checkbox-group" style="margin-top: 0.5rem;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="hstsSubdomains" checked>
+                                        includeSubDomains
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="hstsPreload">
+                                        preload
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Permissions-Policy -->
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="securityPermissions">
+                                    Permissions-Policy
+                                </label>
+                            </div>
+                            <div class="form-group indent" id="permissionsOptions" style="display: none;">
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="permGeolocation" checked>
+                                        Disable geolocation
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="permMicrophone" checked>
+                                        Disable microphone
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="permCamera" checked>
+                                        Disable camera
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="permPayment" checked>
+                                        Disable payment
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output Format -->
+                        <div class="form-section">
+                            <h3>Output Format</h3>
+                            <div class="form-group">
+                                <select id="securityOutputFormat">
+                                    <option value="htaccess">.htaccess (Apache)</option>
+                                    <option value="netlify">Netlify _headers</option>
+                                    <option value="cloudflare">Cloudflare (Transform Rules)</option>
+                                    <option value="nginx">nginx.conf</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateSecurityBtn">Generate Security Headers</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Info -->
+                        <div class="info-box">
+                            <strong>💡 Why security headers?</strong>
+                            <p>Security headers protect against clickjacking, XSS, MIME sniffing, and other common attacks. They're free, easy to add, and expected by security audits.</p>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section">
+                            <div class="output-header">
+                                <h3 id="securityOutputTitle">Security Headers</h3>
+                                <button type="button" class="btn btn-copy" id="copySecurityBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="securityOutput">
+                                <pre># Configure options and click Generate</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Legal Tab -->
+            <section class="tab-panel" id="legal-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Legal Boilerplate</h2>
+                    <p>Privacy policies, terms of service, and disclosures.</p>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="warning-box legal-disclaimer">
+                    <strong>⚠️ Not Legal Advice</strong>
+                    <p>These templates are starting points only. They are not a substitute for professional legal counsel. Consult a lawyer for your specific situation, especially for GDPR, CCPA, or industry-specific compliance.</p>
+                </div>
+
+                <div class="two-column-layout">
+                    <div class="form-column">
+                        <!-- Site Info -->
+                        <div class="form-section">
+                            <h3>Your Information</h3>
+                            <div class="form-group">
+                                <label for="legalSiteName">Website / Company Name</label>
+                                <input type="text" id="legalSiteName" placeholder="Acme Inc.">
+                            </div>
+                            <div class="form-group">
+                                <label for="legalSiteUrl">Website URL</label>
+                                <input type="url" id="legalSiteUrl" placeholder="https://example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="legalContactEmail">Contact Email</label>
+                                <input type="email" id="legalContactEmail" placeholder="legal@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="legalCountry">Country / Jurisdiction</label>
+                                <select id="legalCountry">
+                                    <option value="US">United States</option>
+                                    <option value="UK">United Kingdom</option>
+                                    <option value="EU">European Union</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="AU">Australia</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Document Type -->
+                        <div class="form-section">
+                            <h3>Document Type</h3>
+                            <div class="legal-doc-selector">
+                                <label class="legal-doc-option">
+                                    <input type="radio" name="legalDocType" value="privacy" checked>
+                                    <span class="legal-doc-card">
+                                        <strong>Privacy Policy</strong>
+                                        <small>How you collect and use data</small>
+                                    </span>
+                                </label>
+                                <label class="legal-doc-option">
+                                    <input type="radio" name="legalDocType" value="terms">
+                                    <span class="legal-doc-card">
+                                        <strong>Terms of Service</strong>
+                                        <small>Rules for using your site</small>
+                                    </span>
+                                </label>
+                                <label class="legal-doc-option">
+                                    <input type="radio" name="legalDocType" value="cookies">
+                                    <span class="legal-doc-card">
+                                        <strong>Cookie Notice</strong>
+                                        <small>Cookie usage disclosure</small>
+                                    </span>
+                                </label>
+                                <label class="legal-doc-option">
+                                    <input type="radio" name="legalDocType" value="affiliate">
+                                    <span class="legal-doc-card">
+                                        <strong>Affiliate Disclosure</strong>
+                                        <small>FTC-compliant disclosure</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Privacy Policy Options -->
+                        <div class="form-section legal-options" id="privacyOptions">
+                            <h3>Privacy Policy Options</h3>
+                            <div class="form-group">
+                                <label>What data do you collect?</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyCollectsEmail" checked>
+                                        Email addresses
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyCollectsName" checked>
+                                        Names
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyCollectsAnalytics" checked>
+                                        Analytics / Usage data
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyCollectsPayment">
+                                        Payment information
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyCollectsLocation">
+                                        Location data
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Third-party services used?</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyUsesGoogleAnalytics" checked>
+                                        Google Analytics
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyUsesStripe">
+                                        Stripe / Payment processor
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyUsesMailchimp">
+                                        Email marketing (Mailchimp, etc.)
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="privacyUsesSocial">
+                                        Social media integrations
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Compliance level</label>
+                                <select id="privacyCompliance">
+                                    <option value="minimal">Minimal (basic disclosure)</option>
+                                    <option value="standard" selected>Standard (recommended)</option>
+                                    <option value="gdpr">GDPR-aware (EU visitors)</option>
+                                    <option value="ccpa">CCPA-aware (California)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Terms Options -->
+                        <div class="form-section legal-options" id="termsOptions" style="display: none;">
+                            <h3>Terms of Service Options</h3>
+                            <div class="form-group">
+                                <label>Site type</label>
+                                <select id="termsSiteType">
+                                    <option value="informational">Informational / Blog</option>
+                                    <option value="saas">SaaS / Web Application</option>
+                                    <option value="ecommerce">E-commerce</option>
+                                    <option value="community">Community / Forum</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Include sections for:</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="termsUserContent">
+                                        User-generated content
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="termsAccounts">
+                                        User accounts
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="termsPayments">
+                                        Payments / Subscriptions
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="termsTermination" checked>
+                                        Termination clause
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cookie Options -->
+                        <div class="form-section legal-options" id="cookieOptions" style="display: none;">
+                            <h3>Cookie Notice Options</h3>
+                            <div class="form-group">
+                                <label>Cookie types used:</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cookiesEssential" checked>
+                                        Essential / Necessary
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cookiesAnalytics" checked>
+                                        Analytics
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cookiesMarketing">
+                                        Marketing / Advertising
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="cookiesPreferences">
+                                        Preferences / Functionality
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Format</label>
+                                <select id="cookieFormat">
+                                    <option value="short">Short (banner text)</option>
+                                    <option value="full" selected>Full page</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Affiliate Options -->
+                        <div class="form-section legal-options" id="affiliateOptions" style="display: none;">
+                            <h3>Affiliate Disclosure Options</h3>
+                            <div class="form-group">
+                                <label>Affiliate programs:</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="affiliateAmazon" checked>
+                                        Amazon Associates
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="affiliateGeneric" checked>
+                                        Other affiliate programs
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="affiliateSponsored">
+                                        Sponsored content
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Format</label>
+                                <select id="affiliateFormat">
+                                    <option value="short">Short (inline disclosure)</option>
+                                    <option value="full" selected>Full page</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" id="generateLegalBtn">Generate Document</button>
+                    </div>
+
+                    <div class="output-column">
+                        <!-- Output Format -->
+                        <div class="form-section">
+                            <h3>Output Format</h3>
+                            <div class="form-group">
+                                <select id="legalOutputFormat">
+                                    <option value="html">HTML</option>
+                                    <option value="markdown">Markdown</option>
+                                    <option value="text">Plain Text</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="output-section legal-output">
+                            <div class="output-header">
+                                <h3 id="legalOutputTitle">Privacy Policy</h3>
+                                <button type="button" class="btn btn-copy" id="copyLegalBtn">Copy</button>
+                            </div>
+                            <div class="output-box has-content" id="legalOutput">
+                                <pre># Fill in your information and click Generate</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Launch Checklist Tab -->
+            <section class="tab-panel" id="checklist-panel" role="tabpanel">
+                <div class="panel-header">
+                    <h2>Launch Checklist</h2>
+                    <p>Final sanity checks before you ship.</p>
+                </div>
+
+                <div class="checklist-layout">
+                    <!-- Progress Summary -->
+                    <div class="checklist-progress">
+                        <div class="progress-ring-container">
+                            <svg class="progress-ring" viewBox="0 0 120 120">
+                                <circle class="progress-ring-bg" cx="60" cy="60" r="52" />
+                                <circle class="progress-ring-fill" cx="60" cy="60" r="52" id="progressRing" />
+                            </svg>
+                            <div class="progress-text">
+                                <span class="progress-number" id="progressNumber">0</span>
+                                <span class="progress-label">% ready</span>
+                            </div>
+                        </div>
+                        <div class="progress-summary" id="progressSummary">
+                            <span class="summary-complete"><span id="completedCount">0</span> complete</span>
+                            <span class="summary-divider">•</span>
+                            <span class="summary-remaining"><span id="remainingCount">0</span> remaining</span>
+                        </div>
+                    </div>
+
+                    <!-- Checklist Categories -->
+                    <div class="checklist-categories">
+                        <!-- Essential -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>🔒 Essential</h3>
+                                <span class="category-count" data-category="essential">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="essential">
+                                    <input type="checkbox" id="checkHttps">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>HTTPS enabled</strong>
+                                        <small>SSL certificate installed and redirects working</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="essential">
+                                    <input type="checkbox" id="checkMeta">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Meta tags in place</strong>
+                                        <small>Title, description, Open Graph, Twitter Card</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="essential">
+                                    <input type="checkbox" id="checkRobots">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>robots.txt configured</strong>
+                                        <small>Not accidentally blocking crawlers</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="essential">
+                                    <input type="checkbox" id="checkSitemap">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Sitemap submitted</strong>
+                                        <small>sitemap.xml exists and is valid</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="essential">
+                                    <input type="checkbox" id="check404">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>404 page works</strong>
+                                        <small>Custom error page, not a broken layout</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- SEO -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>📈 SEO</h3>
+                                <span class="category-count" data-category="seo">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="seo">
+                                    <input type="checkbox" id="checkCanonical">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Canonical URLs set</strong>
+                                        <small>Avoid duplicate content issues</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="seo">
+                                    <input type="checkbox" id="checkHeadings">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Heading hierarchy correct</strong>
+                                        <small>One H1 per page, logical H2-H6 structure</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="seo">
+                                    <input type="checkbox" id="checkAltText">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Images have alt text</strong>
+                                        <small>Descriptive, not keyword-stuffed</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="seo">
+                                    <input type="checkbox" id="checkSearchConsole">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Google Search Console connected</strong>
+                                        <small>Verify ownership and submit sitemap</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Performance -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>⚡ Performance</h3>
+                                <span class="category-count" data-category="performance">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="performance">
+                                    <input type="checkbox" id="checkCompression">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Compression enabled</strong>
+                                        <small>Gzip or Brotli for text assets</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="performance">
+                                    <input type="checkbox" id="checkCaching">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Browser caching configured</strong>
+                                        <small>Appropriate cache headers for assets</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="performance">
+                                    <input type="checkbox" id="checkImages">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Images optimized</strong>
+                                        <small>Compressed, proper format, lazy loaded</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="performance">
+                                    <input type="checkbox" id="checkMinified">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>CSS/JS minified</strong>
+                                        <small>Remove unnecessary bytes</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Security -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>🛡️ Security</h3>
+                                <span class="category-count" data-category="security">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="security">
+                                    <input type="checkbox" id="checkSecurityHeaders">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Security headers set</strong>
+                                        <small>CSP, X-Frame-Options, HSTS, etc.</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="security">
+                                    <input type="checkbox" id="checkNoSecrets">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>No exposed secrets</strong>
+                                        <small>API keys, passwords not in source</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="security">
+                                    <input type="checkbox" id="checkBackups">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Backup strategy in place</strong>
+                                        <small>Can you recover if something breaks?</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Legal -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>⚖️ Legal</h3>
+                                <span class="category-count" data-category="legal">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="legal">
+                                    <input type="checkbox" id="checkPrivacy">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Privacy policy published</strong>
+                                        <small>Required if you collect any data</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="legal">
+                                    <input type="checkbox" id="checkTerms">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Terms of service (if needed)</strong>
+                                        <small>Especially for apps, user accounts, payments</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="legal">
+                                    <input type="checkbox" id="checkCookies">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Cookie consent (if EU visitors)</strong>
+                                        <small>GDPR compliance for tracking cookies</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Analytics -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>📊 Analytics</h3>
+                                <span class="category-count" data-category="analytics">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="analytics">
+                                    <input type="checkbox" id="checkAnalytics">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Analytics installed</strong>
+                                        <small>Know how people use your site</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="analytics">
+                                    <input type="checkbox" id="checkGoals">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Goals/conversions configured</strong>
+                                        <small>Track what matters</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Nice to Have -->
+                        <div class="checklist-category">
+                            <div class="category-header">
+                                <h3>✨ Nice to Have</h3>
+                                <span class="category-count" data-category="nice">0/0</span>
+                            </div>
+                            <div class="checklist-items">
+                                <label class="checklist-item" data-category="nice">
+                                    <input type="checkbox" id="checkFavicon">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Favicon present</strong>
+                                        <small>All sizes for all devices</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="nice">
+                                    <input type="checkbox" id="checkHumans">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>humans.txt exists</strong>
+                                        <small>Because you care about craft</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="nice">
+                                    <input type="checkbox" id="checkSocial">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Social preview tested</strong>
+                                        <small>Share on Twitter/LinkedIn to verify cards</small>
+                                    </span>
+                                </label>
+                                <label class="checklist-item" data-category="nice">
+                                    <input type="checkbox" id="checkMobile">
+                                    <span class="checkmark"></span>
+                                    <span class="item-content">
+                                        <strong>Mobile tested</strong>
+                                        <small>Actually use it on a phone</small>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ship It -->
+                    <div class="ship-it-section" id="shipItSection">
+                        <div class="ship-it-message" id="shipItMessage">
+                            <span class="ship-it-icon">🚀</span>
+                            <p>Ship when green. Iterate after.</p>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-large" id="resetChecklistBtn">Reset Checklist</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>© 2025 Matt Livingston</p>
+        </footer>
+    </div>
+
+    <input type="file" id="importConfigInput" accept=".json" style="display: none;">
+    <script src="script.js"></script>
+</body>
+</html>
