@@ -61,8 +61,8 @@ export class DataGrid {
                     <button class="task-card task-card-featured" data-task="reconcile">
                         <div class="task-card-icon">⚖️</div>
                         <div class="task-card-content">
-                            <h3>Reconcile a Cycle Count</h3>
-                            <p>Compare physical count vs system inventory, find variances and shrinkage</p>
+                            <h3>Reconcile Cycle Count</h3>
+                            <p>Compare physical count vs system, find variances</p>
                         </div>
                         <span class="task-card-badge">Most Popular</span>
                     </button>
@@ -70,16 +70,16 @@ export class DataGrid {
                     <button class="task-card" data-task="duplicates">
                         <div class="task-card-icon">👯</div>
                         <div class="task-card-content">
-                            <h3>Find Duplicate SKUs</h3>
-                            <p>Detect duplicate records before they cause inventory conflicts</p>
+                            <h3>Find Duplicates</h3>
+                            <p>Detect duplicate SKUs before they cause conflicts</p>
                         </div>
                     </button>
                     
                     <button class="task-card" data-task="validation">
                         <div class="task-card-icon">✓</div>
                         <div class="task-card-content">
-                            <h3>Validate Before Upload</h3>
-                            <p>Check data quality and required fields before WMS import</p>
+                            <h3>Validate Data</h3>
+                            <p>Check required fields before WMS import</p>
                         </div>
                     </button>
                 </div>
