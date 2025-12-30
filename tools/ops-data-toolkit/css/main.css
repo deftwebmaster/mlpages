@@ -513,6 +513,39 @@ button:active:not(:disabled) {
     color: var(--color-danger);
 }
 
+/* Clickable/Filterable Metrics */
+.metric-filterable {
+    cursor: pointer;
+    padding: var(--space-sm);
+    margin: calc(var(--space-sm) * -1);
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.metric-filterable:hover {
+    background-color: var(--color-bg-elevated);
+}
+
+.metric-filterable:active {
+    transform: scale(0.98);
+}
+
+.metric-filterable .metric-value.clickable {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+}
+
+.metric-filterable.metric-active {
+    background-color: var(--color-bg-elevated);
+    box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+
+.metric-filterable.metric-active .metric-label::after {
+    content: ' ✓';
+    color: var(--color-primary);
+}
+
 /* ============================================
    Modal
    ============================================ */

@@ -596,16 +596,33 @@ function updateResults(results) {
 function renderMetrics(metrics) {
     const strip = document.getElementById('metricsStrip');
     
+    // Metrics that can be clicked to filter results
+    const filterableMetrics = {
+        'missing_in_a': 'Missing in System',
+        'missing_in_b': 'Missing in Physical',
+        'variances': 'Variance',
+        'perfect_matches': 'Match',
+        'rows_with_errors': 'error',
+        'duplicate_keys': 'duplicate'
+    };
+    
     const html = Object.entries(metrics).map(([key, value]) => {
         let valueClass = '';
+        const isFilterable = filterableMetrics[key] && value > 0;
+        
         if (typeof value === 'number') {
             if (key.includes('error') || key.includes('missing')) {
                 valueClass = value > 0 ? 'danger' : 'success';
             }
         }
         
+        if (isFilterable) {
+            valueClass += ' clickable';
+        }
+        
         return `
-            <div class="metric">
+            <div class="metric ${isFilterable ? 'metric-filterable' : ''}" 
+                 ${isFilterable ? `data-filter="${filterableMetrics[key]}"` : ''}>
                 <div class="metric-label">${key.replace(/_/g, ' ')}</div>
                 <div class="metric-value ${valueClass}">${value}</div>
             </div>
@@ -613,6 +630,53 @@ function renderMetrics(metrics) {
     }).join('');
     
     strip.innerHTML = html;
+    
+    // Attach click handlers for filterable metrics
+    strip.querySelectorAll('.metric-filterable').forEach(metric => {
+        metric.addEventListener('click', () => {
+            const filterValue = metric.dataset.filter;
+            filterResultsByStatus(filterValue, metric);
+        });
+    });
+}
+
+/**
+ * Filter results grid by status value
+ */
+function filterResultsByStatus(statusValue, clickedMetric) {
+    const results = State.project.results;
+    if (!results || !results.data) return;
+    
+    const strip = document.getElementById('metricsStrip');
+    const isAlreadyActive = clickedMetric.classList.contains('metric-active');
+    
+    // Clear all active states
+    strip.querySelectorAll('.metric-filterable').forEach(m => {
+        m.classList.remove('metric-active');
+    });
+    
+    if (isAlreadyActive) {
+        // Toggle off - show all results
+        resultsGrid.render(results.data, results.columns);
+        showToast('Showing all results', 'info');
+    } else {
+        // Filter to just this status
+        const filtered = results.data.filter(row => {
+            // Check status column if it exists
+            if (row.status) {
+                return row.status === statusValue;
+            }
+            // For validation errors, check severity
+            if (row.severity) {
+                return row.severity === statusValue;
+            }
+            return false;
+        });
+        
+        clickedMetric.classList.add('metric-active');
+        resultsGrid.render(filtered, results.columns);
+        showToast(`Filtered to ${filtered.length} "${statusValue}" rows — click again to clear`, 'info');
+    }
 }
 
 /**
