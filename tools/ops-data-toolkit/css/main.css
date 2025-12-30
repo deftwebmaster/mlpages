@@ -526,6 +526,13 @@ button:active:not(:disabled) {
     margin-bottom: var(--space-xl);
 }
 
+@media (max-width: 768px) {
+    .task-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 .task-card {
     display: flex;
     align-items: flex-start;
