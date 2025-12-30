@@ -392,6 +392,23 @@
 }
 
 /* ============================================
+   Clickable Row Numbers
+   ============================================ */
+.clickable-row {
+    color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+    transition: all 0.15s ease;
+}
+
+.clickable-row:hover {
+    color: var(--color-primary-hover);
+    text-decoration-style: solid;
+}
+
+/* ============================================
    Print Styles
    ============================================ */
 @media print {

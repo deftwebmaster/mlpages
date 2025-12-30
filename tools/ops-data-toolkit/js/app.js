@@ -41,6 +41,14 @@ function init() {
     dataGrid = new DataGrid(document.getElementById('dataGrid'));
     resultsGrid = new ResultsGrid(document.getElementById('resultsGrid'));
     
+    // Set up row click handler for results grid
+    resultsGrid.setRowClickHandler((rowIndex) => {
+        // Highlight and scroll to the row in the data grid
+        dataGrid.clearHighlights();
+        dataGrid.highlightRows([rowIndex], 'row-highlight');
+        dataGrid.scrollToRow(rowIndex);
+    });
+    
     // Set up event listeners
     setupEventListeners();
     
@@ -220,16 +228,13 @@ function setupEventListeners() {
     
     // Filter banner close button
     document.getElementById('clearFilterBanner')?.addEventListener('click', () => {
-        hideFilterBanner();
-        dataGrid.clearHighlights();
-        // Clear active metric state
-        document.querySelectorAll('.metric-filterable').forEach(m => {
-            m.classList.remove('metric-active');
-        });
-        // Restore full results
-        const results = State.project.results;
-        if (results?.data) {
-            resultsGrid.render(results.data, results.columns);
+        clearAllFiltersAndHighlights();
+    });
+    
+    // Escape key to clear filters and highlights
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            clearAllFiltersAndHighlights();
         }
     });
     
@@ -237,6 +242,25 @@ function setupEventListeners() {
     window.addEventListener('loadSample', (e) => {
         handleLoadSample(e.detail);
     });
+}
+
+/**
+ * Clear all active filters, highlights, and banners
+ */
+function clearAllFiltersAndHighlights() {
+    hideFilterBanner();
+    dataGrid.clearHighlights();
+    
+    // Clear active metric state
+    document.querySelectorAll('.metric-filterable').forEach(m => {
+        m.classList.remove('metric-active');
+    });
+    
+    // Restore full results if we have them
+    const results = State.project.results;
+    if (results?.data) {
+        resultsGrid.render(results.data, results.columns);
+    }
 }
 
 /**
@@ -711,7 +735,13 @@ function filterResultsByStatus(statusValue, clickedMetric) {
         });
         
         clickedMetric.classList.add('metric-active');
-        resultsGrid.render(filtered, results.columns);
+        
+        // Show filtered results or empty state
+        if (filtered.length === 0) {
+            resultsGrid.renderFilteredEmpty();
+        } else {
+            resultsGrid.render(filtered, results.columns);
+        }
         
         // Now highlight the source rows in the data grid based on module type
         if (results._reconciliation) {

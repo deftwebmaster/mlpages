@@ -371,6 +371,14 @@ export class DataGrid {
 export class ResultsGrid {
     constructor(container) {
         this.container = container;
+        this.onRowClick = null; // Callback for clickable rows
+    }
+    
+    /**
+     * Set callback for when a row number is clicked
+     */
+    setRowClickHandler(callback) {
+        this.onRowClick = callback;
     }
     
     render(data, columns, title = 'Results') {
@@ -392,7 +400,7 @@ export class ResultsGrid {
                     ${data.map(row => `
                         <tr>
                             ${columns.map(col => `
-                                <td>${this.formatValue(row[col])}</td>
+                                <td>${this.formatValue(row[col], col, row)}</td>
                             `).join('')}
                         </tr>
                     `).join('')}
@@ -401,8 +409,14 @@ export class ResultsGrid {
         `;
         
         this.container.innerHTML = html;
+        
+        // Attach click handlers for clickable row numbers
+        this.attachRowClickHandlers();
     }
     
+    /**
+     * Render empty state for no results
+     */
     renderEmpty() {
         this.container.innerHTML = `
             <div class="empty-state">
@@ -413,15 +427,44 @@ export class ResultsGrid {
         `;
     }
     
+    /**
+     * Render empty state specifically for filtered results
+     */
+    renderFilteredEmpty() {
+        this.container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🔍</div>
+                <h3>No Items Match This Filter</h3>
+                <p>Click the metric again to clear the filter and see all results</p>
+            </div>
+        `;
+    }
+    
     formatColumnName(col) {
         return col
             .replace(/_/g, ' ')
             .replace(/\b\w/g, char => char.toUpperCase());
     }
     
-    formatValue(value) {
+    formatValue(value, column, row) {
         if (value === null || value === undefined || value === '') {
             return '<span class="cell-null">—</span>';
+        }
+        
+        // Make row number columns clickable
+        if (column === 'row' && typeof value === 'number') {
+            const rowIndex = row.rowIndex !== undefined ? row.rowIndex : value - 1;
+            return `<span class="clickable-row" data-row-index="${rowIndex}" title="Click to jump to row ${value}">${value}</span>`;
+        }
+        
+        // Make row_numbers column clickable (for duplicates - comma separated)
+        if (column === 'row_numbers' && typeof value === 'string') {
+            const rowNums = value.split(',').map(n => n.trim());
+            const clickableNums = rowNums.map(num => {
+                const idx = parseInt(num) - 1;
+                return `<span class="clickable-row" data-row-index="${idx}" title="Click to jump to row ${num}">${num}</span>`;
+            });
+            return clickableNums.join(', ');
         }
         
         if (typeof value === 'number') {
@@ -429,5 +472,19 @@ export class ResultsGrid {
         }
         
         return String(value);
+    }
+    
+    /**
+     * Attach click handlers for clickable row numbers
+     */
+    attachRowClickHandlers() {
+        this.container.querySelectorAll('.clickable-row').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const rowIndex = parseInt(e.target.dataset.rowIndex);
+                if (!isNaN(rowIndex) && this.onRowClick) {
+                    this.onRowClick(rowIndex);
+                }
+            });
+        });
     }
 }
