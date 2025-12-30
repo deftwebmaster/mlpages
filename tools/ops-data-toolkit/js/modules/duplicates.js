@@ -137,7 +137,8 @@ export const DuplicatesModule = {
             columns: ['key_value', 'count', 'row_numbers', 'sample_data'],
             metrics: result.stats,
             explanation: this.getExplanation(options),
-            _duplicateGroups: result.groups // Store for export
+            _duplicateGroups: result.groups, // Store for export
+            _duplicateData: result // Store full result for highlighting
         });
         
         return result;
@@ -171,14 +172,22 @@ export const DuplicatesModule = {
         
         // Analyze groups
         const duplicateGroups = [];
+        const uniqueGroups = [];
+        
+        // Collect all duplicate row indices for highlighting
+        const duplicateIndices = [];
         
         for (const [key, rows] of groups) {
             if (rows.length > 1) {
                 stats.duplicate_keys++;
                 stats.duplicate_rows += rows.length;
                 duplicateGroups.push({ key, rows });
+                
+                // Collect indices for highlighting
+                rows.forEach(r => duplicateIndices.push(r.index));
             } else {
                 stats.unique_keys++;
+                uniqueGroups.push({ key, rows });
             }
         }
         
@@ -206,6 +215,8 @@ export const DuplicatesModule = {
         
         return {
             groups: duplicateGroups,
+            uniqueGroups,
+            duplicateIndices,
             display,
             stats
         };

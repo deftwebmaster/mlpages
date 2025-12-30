@@ -280,7 +280,8 @@ export const ValidationModule = {
             data: result.errors,
             columns: ['row', 'column', 'value', 'rule', 'severity', 'message'],
             metrics: result.stats,
-            explanation: this.getExplanation(rules)
+            explanation: this.getExplanation(rules),
+            _validationData: result // Store full result for highlighting
         });
         
         return result;
@@ -299,8 +300,13 @@ export const ValidationModule = {
         };
         
         const rowsWithErrors = new Set();
+        const errorIndices = []; // Track row indices with errors
+        const warningIndices = []; // Track row indices with warnings
         
         data.forEach((row, rowIndex) => {
+            let rowHasError = false;
+            let rowHasWarning = false;
+            
             rules.forEach(rule => {
                 const value = row[rule.column];
                 const validator = this.ruleTypes[rule.type];
@@ -316,6 +322,7 @@ export const ValidationModule = {
                 if (!isValid) {
                     errors.push({
                         row: rowIndex + 1,
+                        rowIndex: rowIndex, // Store actual index for highlighting
                         column: rule.column,
                         value: value === null || value === undefined ? '(null)' : String(value),
                         rule: validator.label,
@@ -326,8 +333,20 @@ export const ValidationModule = {
                     stats.total_errors++;
                     stats.errors_by_severity[rule.severity]++;
                     rowsWithErrors.add(rowIndex);
+                    
+                    if (rule.severity === 'error') {
+                        rowHasError = true;
+                    } else {
+                        rowHasWarning = true;
+                    }
                 }
             });
+            
+            if (rowHasError) {
+                errorIndices.push(rowIndex);
+            } else if (rowHasWarning) {
+                warningIndices.push(rowIndex);
+            }
         });
         
         stats.rows_with_errors = rowsWithErrors.size;
@@ -335,7 +354,10 @@ export const ValidationModule = {
         
         return {
             errors,
-            stats
+            stats,
+            errorIndices,
+            warningIndices,
+            allErrorIndices: [...rowsWithErrors] // All rows with any issue
         };
     },
     

@@ -713,10 +713,16 @@ function filterResultsByStatus(statusValue, clickedMetric) {
         clickedMetric.classList.add('metric-active');
         resultsGrid.render(filtered, results.columns);
         
-        // Now highlight the source rows in the data grid
+        // Now highlight the source rows in the data grid based on module type
         if (results._reconciliation) {
             highlightReconciliationRows(statusValue, results._reconciliation);
             showFilterBanner(statusValue, filtered, results._reconciliation);
+        } else if (results._duplicateData) {
+            highlightDuplicateRows(statusValue, results._duplicateData);
+            showDuplicateBanner(statusValue, results._duplicateData);
+        } else if (results._validationData) {
+            highlightValidationRows(statusValue, results._validationData);
+            showValidationBanner(statusValue, results._validationData);
         }
     }
 }
@@ -891,6 +897,101 @@ function highlightReconciliationRows(statusValue, reconciliation) {
             dataGrid.scrollToRow(indices[0]);
         }
     }, 100);
+}
+
+/**
+ * Highlight rows in data grid for duplicate detection
+ */
+function highlightDuplicateRows(statusValue, duplicateData) {
+    if (statusValue !== 'duplicate') return;
+    
+    const indices = duplicateData.duplicateIndices || [];
+    
+    if (indices.length === 0) return;
+    
+    // Highlight the rows
+    setTimeout(() => {
+        dataGrid.highlightRows(indices, 'row-highlight-warning');
+        
+        // Scroll to first highlighted row
+        if (indices.length > 0) {
+            dataGrid.scrollToRow(indices[0]);
+        }
+    }, 100);
+}
+
+/**
+ * Show banner for duplicate detection
+ */
+function showDuplicateBanner(statusValue, duplicateData) {
+    if (statusValue !== 'duplicate') return;
+    
+    const banner = document.getElementById('filterBanner');
+    const title = document.getElementById('filterBannerTitle');
+    const desc = document.getElementById('filterBannerDesc');
+    const icon = banner.querySelector('.filter-banner-icon');
+    
+    const stats = duplicateData.stats;
+    const groups = duplicateData.groups || [];
+    
+    // Get the top duplicate keys for display
+    const topDupes = groups.slice(0, 3).map(g => g.key).join(', ');
+    const moreCount = groups.length > 3 ? ` and ${groups.length - 3} more` : '';
+    
+    icon.textContent = '👯';
+    title.textContent = `${stats.duplicate_rows} rows are duplicates across ${stats.duplicate_keys} keys`;
+    desc.textContent = `Keys with duplicates: ${topDupes}${moreCount}. These rows share the same key value and may cause conflicts during import or processing.`;
+    
+    banner.classList.remove('hidden', 'banner-error', 'banner-warning', 'banner-info');
+    banner.classList.add('banner-warning');
+}
+
+/**
+ * Highlight rows in data grid for validation errors
+ */
+function highlightValidationRows(statusValue, validationData) {
+    if (statusValue !== 'error') return;
+    
+    const indices = validationData.allErrorIndices || [];
+    
+    if (indices.length === 0) return;
+    
+    // Highlight the rows
+    setTimeout(() => {
+        dataGrid.highlightRows(indices, 'row-highlight-error');
+        
+        // Scroll to first highlighted row
+        if (indices.length > 0) {
+            dataGrid.scrollToRow(indices[0]);
+        }
+    }, 100);
+}
+
+/**
+ * Show banner for validation errors
+ */
+function showValidationBanner(statusValue, validationData) {
+    if (statusValue !== 'error') return;
+    
+    const banner = document.getElementById('filterBanner');
+    const title = document.getElementById('filterBannerTitle');
+    const desc = document.getElementById('filterBannerDesc');
+    const icon = banner.querySelector('.filter-banner-icon');
+    
+    const stats = validationData.stats;
+    const errors = validationData.errors || [];
+    
+    // Get unique columns with errors
+    const errorColumns = [...new Set(errors.map(e => e.column))];
+    const columnList = errorColumns.slice(0, 3).join(', ');
+    const moreColumns = errorColumns.length > 3 ? ` and ${errorColumns.length - 3} more` : '';
+    
+    icon.textContent = '⚠️';
+    title.textContent = `${stats.rows_with_errors} rows have validation errors`;
+    desc.textContent = `${stats.total_errors} total errors found in columns: ${columnList}${moreColumns}. These rows fail one or more validation rules and should be corrected before import.`;
+    
+    banner.classList.remove('hidden', 'banner-error', 'banner-warning', 'banner-info');
+    banner.classList.add('banner-error');
 }
 
 /**
