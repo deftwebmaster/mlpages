@@ -579,24 +579,21 @@ function populateKeyColumnSelect(columns) {
 function renderModuleNav() {
     const nav = document.getElementById('moduleNav');
     
-    // Module list with enabled state
+    // Module list
     const moduleList = [
         { id: 'cleaning', module: modules.cleaning, icon: '🧹' },
         { id: 'validation', module: modules.validation, icon: '✓' },
         { id: 'duplicates', module: modules.duplicates, icon: '👯' },
         { id: 'sumif', module: modules.sumif, icon: '∑' },
         { id: 'reconcile', module: modules.reconcile, icon: '⚖️' },
-        { id: 'lookup', module: modules.lookup, icon: '🔍' },
-        { id: 'pivot', name: 'Pivot', icon: '📊', disabled: true },
-        { id: 'uom', name: 'UOM', icon: '📏', disabled: true }
+        { id: 'lookup', module: modules.lookup, icon: '🔍' }
     ];
     
     nav.innerHTML = moduleList.map(mod => `
         <button 
             class="module-btn" 
-            data-module="${mod.id}"
-            ${mod.disabled ? 'disabled' : ''}>
-            ${mod.icon} ${mod.module ? mod.module.name : mod.name}
+            data-module="${mod.id}">
+            ${mod.icon} ${mod.module.name}
         </button>
     `).join('');
     
