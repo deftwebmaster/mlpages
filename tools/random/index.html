@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chaos Engine | Random Number Generator & Decision Picker</title>
-  <meta name="description" content="Random number generator with advanced options, plus a decision picker for food, activities, and custom lists. Features tournament mode and slot machine animations.">
+  <title>Random Number Generator & Decision Helper | Free Online Tool</title>
+  <meta name="description" content="Free random number generator with advanced options, plus a decision helper for picking from lists. Great for QA sampling, team assignments, raffles, and breaking ties.">
+  <meta name="keywords" content="random number generator, decision picker, list randomizer, name picker, random choice, number picker, shuffle list">
+  <link rel="canonical" href="https://mattlivingston.com/tools/random/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -20,14 +22,12 @@
       --bg-secondary: #1e293b;
       --bg-card: #334155;
       --bg-input: #0f172a;
-      --accent: #f59e0b;
-      --accent-hover: #d97706;
-      --accent-glow: rgba(245, 158, 11, 0.3);
-      --purple: #8b5cf6;
-      --purple-glow: rgba(139, 92, 246, 0.3);
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
       --success: #10b981;
       --danger: #ef4444;
-      --blue: #3b82f6;
+      --warning: #f59e0b;
       --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
@@ -44,26 +44,10 @@
       min-height: 100vh;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse at 20% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
     .container {
-      max-width: 800px;
+      max-width: 700px;
       margin: 0 auto;
       padding: 2rem 1.5rem;
-      position: relative;
-      z-index: 1;
     }
 
     /* Header */
@@ -72,44 +56,20 @@
       margin-bottom: 2rem;
     }
 
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 20px var(--accent-glow);
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 4px 20px var(--accent-glow); }
-      50% { box-shadow: 0 4px 30px var(--purple-glow); }
-    }
-
-    header h1 {
-      font-size: 2rem;
+    .site-title {
+      font-size: 1.75rem;
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .site-title span {
+      color: var(--accent);
     }
 
     .tagline {
       color: var(--text-secondary);
-      font-size: 1rem;
-      margin-top: 0.25rem;
+      font-size: 0.95rem;
     }
 
     /* Tab Navigation */
@@ -148,7 +108,7 @@
     }
 
     .tab-btn.active {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      background: var(--accent);
       color: white;
     }
 
@@ -285,7 +245,8 @@
 
     input[type="number"],
     input[type="text"],
-    select {
+    select,
+    textarea {
       padding: 0.6rem 0.75rem;
       background: var(--bg-input);
       border: 1px solid var(--border);
@@ -294,35 +255,38 @@
       font-size: 0.9rem;
       font-family: inherit;
       width: 100%;
+      -moz-appearance: textfield;
     }
 
-    input:focus,
-    select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     textarea {
-      padding: 0.75rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: inherit;
-      width: 100%;
-      min-height: 80px;
+      min-height: 100px;
       resize: vertical;
     }
 
+    input:focus,
+    select:focus,
     textarea:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px var(--accent-glow);
     }
 
-    /* Checkbox */
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* Checkboxes */
     .checkbox-row {
       display: flex;
       flex-wrap: wrap;
@@ -334,31 +298,47 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      cursor: pointer;
       font-size: 0.85rem;
       color: var(--text-secondary);
-      cursor: pointer;
     }
 
     .checkbox-label input {
-      width: 18px;
-      height: 18px;
+      width: 16px;
+      height: 16px;
       accent-color: var(--accent);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      width: 100%;
+      padding: 0.875rem 1.5rem;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
     }
 
-    /* Presets */
-    .presets {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
-    .preset-btn {
-      padding: 0.4rem 0.75rem;
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      padding: 0.5rem 1rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: var(--radius-sm);
       color: var(--text-secondary);
       font-size: 0.8rem;
       cursor: pointer;
@@ -366,181 +346,31 @@
       font-family: inherit;
     }
 
-    .preset-btn:hover {
+    .btn-secondary:hover {
+      background: var(--bg-input);
       border-color: var(--accent);
       color: var(--text-primary);
     }
 
-    .preset-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    /* Generate Button */
-    .generate-btn {
-      width: 100%;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      border: none;
-      border-radius: var(--radius-sm);
-      color: white;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+    .btn-row {
       display: flex;
-      align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-    }
-
-    .generate-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px var(--accent-glow);
-    }
-
-    .generate-btn:active {
-      transform: translateY(0);
-    }
-
-    .generate-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* History */
-    .history-section {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
-    }
-
-    .history-title {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .history-clear {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      cursor: pointer;
-      text-decoration: underline;
-    }
-
-    .history-clear:hover {
-      color: var(--danger);
-    }
-
-    .history-list {
-      display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      margin-top: 0.75rem;
     }
 
-    .history-item {
+    /* Use Cases Hint */
+    .use-cases {
       background: var(--bg-card);
-      padding: 0.35rem 0.75rem;
-      border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    /* Tournament Mode */
-    .tournament-container {
-      margin-top: 1rem;
-    }
-
-    .tournament-round {
-      margin-bottom: 1rem;
-    }
-
-    .round-title {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-    }
-
-    .matchups {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .matchup {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-card);
-      padding: 0.5rem 0.75rem;
       border-radius: var(--radius-sm);
-    }
-
-    .matchup-item {
-      flex: 1;
-      padding: 0.5rem;
-      background: var(--bg-secondary);
-      border-radius: 4px;
-      text-align: center;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 2px solid transparent;
-    }
-
-    .matchup-item:hover {
-      border-color: var(--accent);
-    }
-
-    .matchup-item.winner {
-      background: var(--accent);
-      color: white;
-      font-weight: 600;
-    }
-
-    .matchup-item.eliminated {
-      opacity: 0.4;
-      text-decoration: line-through;
-    }
-
-    .matchup-vs {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
-      font-size: 0.75rem;
-      font-weight: 600;
     }
 
-    .tournament-winner {
-      text-align: center;
-      padding: 1.5rem;
-      background: linear-gradient(135deg, var(--accent-glow) 0%, var(--purple-glow) 100%);
-      border-radius: var(--radius);
-      margin-top: 1rem;
-    }
-
-    .tournament-winner-label {
-      font-size: 0.85rem;
+    .use-cases strong {
       color: var(--text-secondary);
-      margin-bottom: 0.5rem;
-    }
-
-    .tournament-winner-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--accent);
     }
 
     /* Category Pills */
@@ -552,15 +382,14 @@
     }
 
     .category-pill {
-      padding: 0.5rem 1rem;
+      padding: 0.4rem 0.75rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 20px;
       color: var(--text-secondary);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.2s;
-      font-family: inherit;
     }
 
     .category-pill:hover {
@@ -569,52 +398,243 @@
     }
 
     .category-pill.active {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      background: var(--accent);
       border-color: var(--accent);
       color: white;
     }
 
-    /* Secondary button */
-    .btn-secondary {
+    /* Current List Display */
+    .current-list {
+      background: var(--bg-primary);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .current-list-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .list-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .list-item {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--bg-card);
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    .list-item.eliminated {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    /* History */
+    .history-section {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .history-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .history-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .history-item {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--bg-card);
+      border-radius: 4px;
+      color: var(--text-secondary);
+    }
+
+    /* Tournament Styles */
+    .tournament-section {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .tournament-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .tournament-toggle:hover {
+      color: var(--text-secondary);
+    }
+
+    .tournament-toggle .arrow {
+      transition: transform 0.2s;
+    }
+
+    .tournament-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .tournament-content {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .tournament-content.open {
+      display: block;
+    }
+
+    .tournament-round {
+      margin-bottom: 1.5rem;
+    }
+
+    .round-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      text-align: center;
+    }
+
+    .matchups {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .matchup {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .matchup-item {
       padding: 0.5rem 1rem;
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-primary);
+      border-radius: var(--radius-sm);
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
-      font-family: inherit;
+      min-width: 100px;
+      text-align: center;
     }
 
-    .btn-secondary:hover {
+    .matchup-item:hover {
       border-color: var(--accent);
     }
 
-    .btn-row {
-      display: flex;
-      gap: 0.5rem;
+    .matchup-item.winner {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
+    }
+
+    .matchup-item.eliminated {
+      opacity: 0.4;
+      text-decoration: line-through;
+      cursor: default;
+    }
+
+    .matchup-vs {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .tournament-winner {
+      text-align: center;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+      border-radius: var(--radius);
       margin-top: 1rem;
-      flex-wrap: wrap;
+    }
+
+    .tournament-winner-label {
+      font-size: 0.9rem;
+      color: var(--success);
+      margin-bottom: 0.5rem;
+    }
+
+    .tournament-winner-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
     }
 
     /* Footer */
     footer {
       text-align: center;
-      padding: 2rem 0;
-      margin-top: 1rem;
+      padding-top: 2rem;
+      margin-top: 2rem;
       border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.85rem;
     }
 
-    footer a {
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
       color: var(--accent);
+    }
+
+    .footer-credit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-credit a {
+      color: var(--text-secondary);
       text-decoration: none;
     }
 
-    footer a:hover {
-      text-decoration: underline;
+    .footer-credit a:hover {
+      color: var(--accent);
     }
 
     /* Toast */
@@ -623,175 +643,178 @@
       bottom: 2rem;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--success);
-      color: white;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: var(--radius);
       font-size: 0.9rem;
-      font-weight: 500;
-      z-index: 1000;
-      animation: fadeInOut 2s ease;
+      z-index: 100;
+      animation: slideUp 0.3s ease;
     }
 
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
     }
 
-    /* Responsive */
-    @media (max-width: 600px) {
-      .container { padding: 1rem; }
-      header h1 { font-size: 1.5rem; }
-      .result-value { font-size: 3rem; }
-      .result-value.text-result { font-size: 1.75rem; }
-      .slot-item { font-size: 3rem; }
-      .input-row { grid-template-columns: 1fr 1fr; }
+    /* Mobile */
+    @media (max-width: 500px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      .site-title {
+        font-size: 1.4rem;
+      }
+
+      .result-value {
+        font-size: 3rem;
+      }
+
+      .result-value.text-result {
+        font-size: 1.75rem;
+      }
+
+      .tab-btn {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .tab-btn .tab-icon {
+        display: none;
+      }
     }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
-
-    .hidden { display: none !important; }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Header -->
     <header>
-      <div class="logo">
-        <div class="logo-icon">🎲</div>
-        <h1>Chaos Engine</h1>
-      </div>
-      <p class="tagline">Random numbers, decisions, and chaos on demand</p>
+      <h1 class="site-title">Random Number Generator <span>&</span> Decision Helper</h1>
+      <p class="tagline">Pick random numbers, shuffle lists, and let chaos decide.</p>
     </header>
 
     <!-- Tab Navigation -->
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="numbers">
-        <span class="tab-icon">🔢</span>
-        <span>Numbers</span>
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('numbers')">
+        <span class="tab-icon">🎲</span>
+        Numbers
       </button>
-      <button class="tab-btn" data-tab="picker">
+      <button class="tab-btn" onclick="switchTab('picker')">
         <span class="tab-icon">🎯</span>
-        <span>Picker</span>
+        Decision Helper
       </button>
-      <button class="tab-btn" data-tab="tournament">
-        <span class="tab-icon">🏆</span>
-        <span>Tournament</span>
-      </button>
-    </nav>
+    </div>
 
     <!-- Numbers Tab -->
-    <div id="numbers" class="tab-content active">
+    <div id="numbersTab" class="tab-content active">
       <div class="section">
+        <!-- Use Cases -->
+        <div class="use-cases">
+          <strong>Great for:</strong> QA sampling, raffle picks, random audits, dice rolls, PIN generation
+        </div>
+
+        <!-- Result Display -->
         <div class="result-display" id="numberResult">
-          <div class="result-value">?</div>
-          <div class="result-subtitle">Press generate to begin</div>
+          <div class="result-value">—</div>
+          <div class="result-subtitle">Set your range and generate</div>
         </div>
 
-        <div class="presets">
-          <button class="preset-btn" onclick="setNumberPreset('coin')">🪙 Coin</button>
-          <button class="preset-btn" onclick="setNumberPreset('d6')">🎲 D6</button>
-          <button class="preset-btn" onclick="setNumberPreset('d20')">⚔️ D20</button>
-          <button class="preset-btn" onclick="setNumberPreset('percent')">📊 1-100</button>
-          <button class="preset-btn" onclick="setNumberPreset('lottery')">🎰 Lottery</button>
-        </div>
-
+        <!-- Inputs -->
         <div class="input-row">
           <div class="input-group">
-            <label for="numMin">Minimum</label>
-            <input type="number" id="numMin" value="1">
+            <label for="minNum">Minimum</label>
+            <input type="number" id="minNum" value="1">
           </div>
           <div class="input-group">
-            <label for="numMax">Maximum</label>
-            <input type="number" id="numMax" value="100">
+            <label for="maxNum">Maximum</label>
+            <input type="number" id="maxNum" value="100">
           </div>
           <div class="input-group">
-            <label for="numCount">Quantity</label>
-            <input type="number" id="numCount" value="1" min="1" max="100">
-          </div>
-          <div class="input-group">
-            <label for="numStep">Step</label>
-            <input type="number" id="numStep" value="1" min="1">
+            <label for="quantity">How Many</label>
+            <input type="number" id="quantity" value="1" min="1" max="100">
           </div>
         </div>
 
+        <!-- Options -->
         <div class="checkbox-row">
           <label class="checkbox-label">
-            <input type="checkbox" id="numAllowDupes" checked>
-            Allow duplicates
+            <input type="checkbox" id="uniqueOnly" checked>
+            Unique numbers only
           </label>
           <label class="checkbox-label">
-            <input type="checkbox" id="numDecimals">
-            Include decimals
+            <input type="checkbox" id="sortResults">
+            Sort results
           </label>
           <label class="checkbox-label">
-            <input type="checkbox" id="numAnimate" checked>
+            <input type="checkbox" id="animateNumber" checked>
             Animate
           </label>
         </div>
 
-        <div class="input-row">
-          <div class="input-group" style="flex: 2;">
-            <label for="numExclude">Exclude (comma-separated)</label>
-            <input type="text" id="numExclude" placeholder="e.g., 13, 7, 42">
-          </div>
-          <div class="input-group" style="flex: 1;">
-            <label for="numSeed">Seed (optional)</label>
-            <input type="text" id="numSeed" placeholder="Random">
-          </div>
-        </div>
-
-        <button class="generate-btn" onclick="generateNumber()">
-          🎲 Generate
+        <!-- Generate Button -->
+        <button class="btn-primary" onclick="generateNumber()">
+          Generate Random Number
         </button>
 
-        <div class="history-section" id="numberHistory">
+        <!-- History -->
+        <div class="history-section">
           <div class="history-header">
-            <span class="history-title">Recent Results</span>
-            <button class="history-clear" onclick="clearNumberHistory()">Clear</button>
+            <span class="history-title">History</span>
+            <button class="btn-secondary" onclick="clearNumberHistory()">Clear</button>
           </div>
-          <div class="history-list" id="numberHistoryList"></div>
+          <div class="history-list" id="numberHistory"></div>
         </div>
       </div>
     </div>
 
     <!-- Picker Tab -->
-    <div id="picker" class="tab-content">
+    <div id="pickerTab" class="tab-content">
       <div class="section">
+        <!-- Use Cases -->
+        <div class="use-cases">
+          <strong>Great for:</strong> Team assignments, lunch decisions, random selection from lists, breaking ties
+        </div>
+
+        <!-- Result Display -->
         <div class="result-display" id="pickerResult">
-          <div class="result-emoji">🤔</div>
-          <div class="result-value text-result">Pick something!</div>
+          <div class="result-value text-result">—</div>
+          <div class="result-subtitle">Pick a category or enter your own list</div>
         </div>
 
+        <!-- Category Pills -->
         <div class="category-pills">
-          <button class="category-pill active" data-category="cuisine" onclick="setPickerCategory('cuisine')">🍽️ Cuisine</button>
-          <button class="category-pill" data-category="food" onclick="setPickerCategory('food')">🍕 Food Type</button>
-          <button class="category-pill" data-category="meal" onclick="setPickerCategory('meal')">🍳 Meal</button>
-          <button class="category-pill" data-category="activity" onclick="setPickerCategory('activity')">🎮 Activity</button>
-          <button class="category-pill" data-category="yesno" onclick="setPickerCategory('yesno')">🎱 Yes/No</button>
-          <button class="category-pill" data-category="custom" onclick="setPickerCategory('custom')">✏️ Custom</button>
+          <button class="category-pill active" onclick="selectCategory('food')">🍕 Food</button>
+          <button class="category-pill" onclick="selectCategory('activities')">🎮 Activities</button>
+          <button class="category-pill" onclick="selectCategory('movies')">🎬 Movie Genre</button>
+          <button class="category-pill" onclick="selectCategory('custom')">✏️ Custom</button>
         </div>
 
-        <div id="customListContainer" class="hidden">
-          <div class="input-group" style="margin-bottom: 1rem;">
-            <label for="customList">Custom List (one per line or comma-separated)</label>
-            <textarea id="customList" placeholder="Option 1&#10;Option 2&#10;Option 3"></textarea>
+        <!-- Current List -->
+        <div class="current-list">
+          <div class="current-list-title">Current List</div>
+          <div class="list-items" id="currentListDisplay"></div>
+        </div>
+
+        <!-- Custom List Input -->
+        <div id="customListSection" style="display: none; margin-bottom: 1rem;">
+          <div class="input-group">
+            <label for="customList">Your items (one per line or comma-separated)</label>
+            <textarea id="customList" placeholder="Pizza&#10;Tacos&#10;Sushi&#10;Burgers"></textarea>
           </div>
-          <div class="btn-row" style="margin-bottom: 1rem;">
-            <button class="btn-secondary" onclick="saveCustomList()">💾 Save List</button>
-            <button class="btn-secondary" onclick="loadCustomList()">📂 Load Saved</button>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="saveCustomList()">Save List</button>
+            <button class="btn-secondary" onclick="loadCustomList()">Load Saved</button>
           </div>
         </div>
 
-        <div id="currentListDisplay" class="presets" style="margin-bottom: 1rem;">
-          <!-- Current options shown here -->
-        </div>
-
+        <!-- Options -->
         <div class="checkbox-row">
           <label class="checkbox-label">
             <input type="checkbox" id="pickerAnimate" checked>
@@ -799,79 +822,84 @@
           </label>
           <label class="checkbox-label">
             <input type="checkbox" id="pickerEliminate">
-            Eliminate after picking
+            Eliminate picked items
           </label>
         </div>
 
-        <button class="generate-btn" onclick="pickItem()">
-          🎯 Pick!
+        <!-- Pick Button -->
+        <button class="btn-primary" onclick="pickItem()">
+          Pick Random Item
         </button>
 
         <div class="btn-row">
-          <button class="btn-secondary" onclick="resetEliminated()">🔄 Reset Eliminated</button>
+          <button class="btn-secondary" onclick="resetEliminated()">Reset Eliminated</button>
         </div>
 
-        <div class="history-section" id="pickerHistory">
+        <!-- History -->
+        <div class="history-section">
           <div class="history-header">
             <span class="history-title">Recent Picks</span>
-            <button class="history-clear" onclick="clearPickerHistory()">Clear</button>
+            <button class="btn-secondary" onclick="clearPickerHistory()">Clear</button>
           </div>
           <div class="history-list" id="pickerHistoryList"></div>
         </div>
+
+        <!-- Tournament Mode (Collapsible) -->
+        <div class="tournament-section">
+          <div class="tournament-toggle" onclick="toggleTournament()">
+            <span>🏆 Tournament Bracket Mode</span>
+            <span class="arrow">▼</span>
+          </div>
+          <div class="tournament-content" id="tournamentContent">
+            <div class="input-group" style="margin-bottom: 1rem;">
+              <label for="tournamentList">Contestants (one per line)</label>
+              <textarea id="tournamentList" placeholder="Enter contestants..."></textarea>
+            </div>
+            <div class="btn-row" style="margin-bottom: 1rem;">
+              <button class="btn-secondary" onclick="loadTournamentPreset('food')">Load Food</button>
+              <button class="btn-secondary" onclick="loadTournamentPreset('activities')">Load Activities</button>
+              <button class="btn-secondary" onclick="loadTournamentPreset('movies')">Load Movies</button>
+            </div>
+            <button class="btn-primary" onclick="startTournament()">Start Tournament</button>
+            <div id="tournamentContainer" style="margin-top: 1rem;"></div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Tournament Tab -->
-    <div id="tournament" class="tab-content">
-      <div class="section">
-        <div class="input-group" style="margin-bottom: 1rem;">
-          <label for="tournamentList">Contestants (one per line, 4-16 items work best)</label>
-          <textarea id="tournamentList" placeholder="Mexican&#10;Italian&#10;Chinese&#10;Thai&#10;Indian&#10;Japanese&#10;American&#10;Mediterranean"></textarea>
-        </div>
-
-        <div class="presets" style="margin-bottom: 1rem;">
-          <button class="preset-btn" onclick="loadTournamentPreset('cuisine')">🍽️ Cuisines</button>
-          <button class="preset-btn" onclick="loadTournamentPreset('food')">🍕 Foods</button>
-          <button class="preset-btn" onclick="loadTournamentPreset('activity')">🎮 Activities</button>
-        </div>
-
-        <button class="generate-btn" onclick="startTournament()">
-          🏆 Start Tournament
-        </button>
-
-        <div class="tournament-container" id="tournamentContainer"></div>
-      </div>
-    </div>
-
+    <!-- Footer -->
     <footer>
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • Embrace the chaos</p>
+      <div class="footer-links">
+        <a href="/tools/">← All Tools</a>
+      </div>
+      <p class="footer-credit">
+        Built by <a href="https://mattlivingston.com">Matt Livingston</a>
+      </p>
     </footer>
   </div>
 
   <script>
     // ============================================
-    // Data
+    // State
     // ============================================
+    let numberHistory = [];
+    let pickerHistory = [];
+    let currentCategory = 'food';
+    let eliminatedItems = new Set();
+    let tournamentState = null;
+
     const pickerLists = {
-      cuisine: {
-        emoji: '🍽️',
-        items: ['🇲🇽 Mexican', '🇮🇹 Italian', '🇨🇳 Chinese', '🇯🇵 Japanese', '🇹🇭 Thai', '🇮🇳 Indian', '🇺🇸 American', '🌊 Mediterranean', '🇰🇷 Korean', '🇻🇳 Vietnamese', '🇬🇷 Greek', '🇫🇷 French']
-      },
       food: {
         emoji: '🍕',
-        items: ['🍕 Pizza', '🍔 Burgers', '🌮 Tacos', '🍣 Sushi', '🥗 Salad', '🥪 Sandwiches', '🍝 Pasta', '🥘 Stir-fry', '🍖 BBQ', '🦐 Seafood', '🍜 Ramen', '🥙 Wraps']
+        items: ['🍕 Pizza', '🌮 Tacos', '🍣 Sushi', '🍔 Burgers', '🍜 Ramen', '🥗 Salad', '🍝 Pasta', '🥪 Sandwiches', '🍛 Curry', '🌯 Burritos', '🍱 Poke Bowl', '🥡 Chinese', '🍗 Fried Chicken']
       },
-      meal: {
-        emoji: '🍳',
-        items: ['🌅 Breakfast', '🥂 Brunch', '☀️ Lunch', '🌙 Dinner', '🍿 Snack', '🍰 Dessert']
-      },
-      activity: {
+      activities: {
         emoji: '🎮',
-        items: ['🎬 Movie', '🎮 Game Night', '🚶 Walk', '👨‍🍳 Cook', '📚 Read', '📞 Call Friend', '🧹 Clean', '😴 Nap', '💪 Exercise', '🎵 Music', '🎨 Create', '🧘 Meditate']
+        items: ['🎮 Video Games', '📺 Watch TV', '🎬 Movie Night', '📚 Read', '🚶 Go for a Walk', '🎨 Draw/Create', '🧩 Puzzles', '🎵 Listen to Music', '🍳 Cook Something', '☎️ Call a Friend', '🧘 Meditate', '🛒 Go Shopping']
       },
-      yesno: {
-        emoji: '🎱',
-        items: ['✅ Yes', '❌ No', '🤷 Maybe', '🔮 Ask Again Later', '💯 Definitely', '⛔ No Way']
+      movies: {
+        emoji: '🎬',
+        items: ['🎬 Action', '😂 Comedy', '😱 Horror', '💕 Romance', '🚀 Sci-Fi', '🔍 Mystery', '📖 Documentary', '🦸 Superhero', '🎭 Drama', '✨ Fantasy', '🔫 Thriller', '🤠 Western']
       },
       custom: {
         emoji: '✏️',
@@ -879,185 +907,115 @@
       }
     };
 
-    let currentCategory = 'cuisine';
-    let eliminatedItems = new Set();
-    let numberHistory = [];
-    let pickerHistory = [];
-    let tournamentState = null;
-
     // ============================================
     // Tab Navigation
     // ============================================
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(tab + 'Tab').classList.add('active');
+      event.target.closest('.tab-btn').classList.add('active');
+    }
 
     // ============================================
     // Number Generator
     // ============================================
-    function setNumberPreset(preset) {
-      const presets = {
-        coin: { min: 1, max: 2, count: 1, step: 1 },
-        d6: { min: 1, max: 6, count: 1, step: 1 },
-        d20: { min: 1, max: 20, count: 1, step: 1 },
-        percent: { min: 1, max: 100, count: 1, step: 1 },
-        lottery: { min: 1, max: 69, count: 5, step: 1 }
-      };
-      
-      const p = presets[preset];
-      document.getElementById('numMin').value = p.min;
-      document.getElementById('numMax').value = p.max;
-      document.getElementById('numCount').value = p.count;
-      document.getElementById('numStep').value = p.step;
-      
-      if (preset === 'lottery') {
-        document.getElementById('numAllowDupes').checked = false;
-      }
-    }
-
-    function seededRandom(seed) {
-      const x = Math.sin(seed++) * 10000;
-      return x - Math.floor(x);
-    }
-
     function generateNumber() {
-      const min = parseInt(document.getElementById('numMin').value) || 0;
-      const max = parseInt(document.getElementById('numMax').value) || 100;
-      const count = Math.min(parseInt(document.getElementById('numCount').value) || 1, 100);
-      const step = parseInt(document.getElementById('numStep').value) || 1;
-      const allowDupes = document.getElementById('numAllowDupes').checked;
-      const decimals = document.getElementById('numDecimals').checked;
-      const animate = document.getElementById('numAnimate').checked;
-      const excludeStr = document.getElementById('numExclude').value;
-      const seedStr = document.getElementById('numSeed').value;
+      const min = parseInt(document.getElementById('minNum').value) || 0;
+      const max = parseInt(document.getElementById('maxNum').value) || 100;
+      const qty = Math.min(parseInt(document.getElementById('quantity').value) || 1, 100);
+      const unique = document.getElementById('uniqueOnly').checked;
+      const sort = document.getElementById('sortResults').checked;
+      const animate = document.getElementById('animateNumber').checked;
 
-      // Parse excluded numbers
-      const excluded = new Set(
-        excludeStr.split(',')
-          .map(s => parseFloat(s.trim()))
-          .filter(n => !isNaN(n))
-      );
-
-      // Build valid numbers pool
-      let pool = [];
-      for (let n = min; n <= max; n += step) {
-        if (!excluded.has(n)) {
-          pool.push(n);
-        }
-      }
-
-      if (pool.length === 0) {
-        showToast('No valid numbers in range!');
+      if (min > max) {
+        showToast('Min must be less than max!');
         return;
       }
 
-      // Generate numbers
-      const results = [];
-      let seed = seedStr ? hashCode(seedStr) : null;
-      
-      for (let i = 0; i < count && pool.length > 0; i++) {
-        const rand = seed !== null ? seededRandom(seed + i) : Math.random();
-        const idx = Math.floor(rand * pool.length);
-        let num = pool[idx];
-        
-        if (decimals && step === 1) {
-          num = num + (seed !== null ? seededRandom(seed + i + 1000) : Math.random());
-          num = Math.round(num * 100) / 100;
+      const range = max - min + 1;
+      if (unique && qty > range) {
+        showToast(`Can only generate ${range} unique numbers in this range`);
+        return;
+      }
+
+      let results = [];
+      if (unique) {
+        const pool = Array.from({ length: range }, (_, i) => min + i);
+        for (let i = 0; i < qty; i++) {
+          const idx = Math.floor(Math.random() * pool.length);
+          results.push(pool.splice(idx, 1)[0]);
         }
-        
-        results.push(num);
-        
-        if (!allowDupes) {
-          pool.splice(idx, 1);
+      } else {
+        for (let i = 0; i < qty; i++) {
+          results.push(Math.floor(Math.random() * range) + min);
         }
       }
 
-      // Display
-      if (animate) {
-        animateNumberResult(results);
+      if (sort) results.sort((a, b) => a - b);
+
+      if (animate && qty === 1) {
+        animateNumberResult(results[0]);
       } else {
         displayNumberResult(results);
       }
 
       // Add to history
-      const historyEntry = count === 1 ? results[0].toString() : `[${results.join(', ')}]`;
+      const historyEntry = qty === 1 ? results[0].toString() : `[${results.join(', ')}]`;
       numberHistory.unshift(historyEntry);
-      if (numberHistory.length > 20) numberHistory.pop();
+      if (numberHistory.length > 10) numberHistory.pop();
       updateNumberHistory();
     }
 
-    function animateNumberResult(finalResults) {
+    function animateNumberResult(finalValue) {
       const display = document.getElementById('numberResult');
-      const isMultiple = finalResults.length > 1;
-      const min = parseInt(document.getElementById('numMin').value) || 0;
-      const max = parseInt(document.getElementById('numMax').value) || 100;
-      
       display.classList.add('spinning');
       
+      const min = parseInt(document.getElementById('minNum').value) || 0;
+      const max = parseInt(document.getElementById('maxNum').value) || 100;
+      
       let frame = 0;
-      const totalFrames = 20;
+      const totalFrames = 15;
       
       const interval = setInterval(() => {
         frame++;
-        
-        if (isMultiple) {
-          const randoms = finalResults.map(() => 
-            Math.floor(Math.random() * (max - min + 1)) + min
-          );
-          display.innerHTML = `
-            <div class="result-multi">
-              ${randoms.map(n => `<span class="result-chip">${n}</span>`).join('')}
-            </div>
-          `;
-        } else {
-          const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-          display.innerHTML = `<div class="result-value">${randomNum}</div>`;
-        }
+        const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+        display.innerHTML = `<div class="result-value">${randomNum}</div>`;
         
         if (frame >= totalFrames) {
           clearInterval(interval);
           display.classList.remove('spinning');
-          displayNumberResult(finalResults);
+          display.innerHTML = `
+            <div class="result-value">${finalValue}</div>
+            <div class="result-subtitle">Generated from ${min} to ${max}</div>
+          `;
         }
-      }, 50);
+      }, 60);
     }
 
     function displayNumberResult(results) {
       const display = document.getElementById('numberResult');
+      const min = document.getElementById('minNum').value;
+      const max = document.getElementById('maxNum').value;
       
       if (results.length === 1) {
-        // Special display for coin flip
-        const min = parseInt(document.getElementById('numMin').value);
-        const max = parseInt(document.getElementById('numMax').value);
-        
-        if (min === 1 && max === 2) {
-          const coinResult = results[0] === 1 ? '🪙 Heads' : '🪙 Tails';
-          display.innerHTML = `
-            <div class="result-value text-result">${coinResult}</div>
-          `;
-        } else {
-          display.innerHTML = `
-            <div class="result-value">${results[0]}</div>
-          `;
-        }
+        display.innerHTML = `
+          <div class="result-value">${results[0]}</div>
+          <div class="result-subtitle">Generated from ${min} to ${max}</div>
+        `;
       } else {
         display.innerHTML = `
           <div class="result-multi">
             ${results.map(n => `<span class="result-chip">${n}</span>`).join('')}
           </div>
-          <div class="result-subtitle">${results.length} numbers generated</div>
+          <div class="result-subtitle">${results.length} numbers from ${min} to ${max}</div>
         `;
       }
     }
 
     function updateNumberHistory() {
-      const list = document.getElementById('numberHistoryList');
+      const list = document.getElementById('numberHistory');
       list.innerHTML = numberHistory.map(h => 
         `<span class="history-item">${h}</span>`
       ).join('');
@@ -1068,57 +1026,38 @@
       updateNumberHistory();
     }
 
-    function hashCode(str) {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
-    }
-
     // ============================================
-    // Picker
+    // Decision Picker
     // ============================================
-    function setPickerCategory(category) {
+    function selectCategory(category) {
       currentCategory = category;
       eliminatedItems.clear();
       
-      document.querySelectorAll('.category-pill').forEach(p => {
-        p.classList.toggle('active', p.dataset.category === category);
-      });
+      document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
       
-      document.getElementById('customListContainer').classList.toggle('hidden', category !== 'custom');
+      document.getElementById('customListSection').style.display = 
+        category === 'custom' ? 'block' : 'none';
       
       updateCurrentListDisplay();
-      
-      // Reset result display
-      const display = document.getElementById('pickerResult');
-      const emoji = pickerLists[category].emoji;
-      display.innerHTML = `
-        <div class="result-emoji">${emoji}</div>
-        <div class="result-value text-result">Pick something!</div>
-      `;
     }
 
     function updateCurrentListDisplay() {
-      const container = document.getElementById('currentListDisplay');
+      const display = document.getElementById('currentListDisplay');
       let items = [...pickerLists[currentCategory].items];
       
       if (currentCategory === 'custom') {
         const customText = document.getElementById('customList').value.trim();
         if (customText) {
-          items = customText.includes('\n') 
+          items = customText.includes('\n')
             ? customText.split('\n').map(s => s.trim()).filter(s => s)
             : customText.split(',').map(s => s.trim()).filter(s => s);
-          pickerLists.custom.items = items;
         }
       }
       
-      container.innerHTML = items.map(item => {
+      display.innerHTML = items.map(item => {
         const isEliminated = eliminatedItems.has(item);
-        return `<span class="preset-btn${isEliminated ? ' eliminated' : ''}" style="${isEliminated ? 'opacity: 0.4; text-decoration: line-through;' : ''}">${item}</span>`;
+        return `<span class="list-item ${isEliminated ? 'eliminated' : ''}">${item}</span>`;
       }).join('');
     }
 
@@ -1191,7 +1130,7 @@
       const display = document.getElementById('pickerResult');
       display.innerHTML = `
         <div class="result-value text-result">${winner}</div>
-        <div class="result-subtitle">The chaos has spoken!</div>
+        <div class="result-subtitle">The universe has spoken!</div>
       `;
     }
 
@@ -1215,12 +1154,12 @@
 
     function saveCustomList() {
       const list = document.getElementById('customList').value;
-      localStorage.setItem('chaosEngine_customList', list);
+      localStorage.setItem('randomTool_customList', list);
       showToast('Custom list saved!');
     }
 
     function loadCustomList() {
-      const saved = localStorage.getItem('chaosEngine_customList');
+      const saved = localStorage.getItem('randomTool_customList');
       if (saved) {
         document.getElementById('customList').value = saved;
         updateCurrentListDisplay();
@@ -1233,6 +1172,13 @@
     // ============================================
     // Tournament
     // ============================================
+    function toggleTournament() {
+      const toggle = document.querySelector('.tournament-toggle');
+      const content = document.getElementById('tournamentContent');
+      toggle.classList.toggle('open');
+      content.classList.toggle('open');
+    }
+
     function loadTournamentPreset(preset) {
       const items = pickerLists[preset].items.map(item => {
         // Remove emoji for cleaner tournament display
@@ -1339,7 +1285,6 @@
       
       tournamentState.rounds.forEach((round, roundIdx) => {
         const roundName = roundNames[Math.min(roundIdx, roundNames.length - 1)];
-        const isCurrentRound = roundIdx === tournamentState.rounds.length - 1 && !tournamentState.winner;
         
         html += `
           <div class="tournament-round">
