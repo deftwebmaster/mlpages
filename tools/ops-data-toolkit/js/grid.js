@@ -52,52 +52,71 @@ export class DataGrid {
     renderEmpty() {
         this.container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">📊</div>
-                <h3>No Data Loaded</h3>
-                <p>Import a CSV file or try a sample scenario</p>
+                <div class="empty-hero">
+                    <h2>What do you need to do?</h2>
+                    <p class="empty-subtitle">Pick a task to get started, or import your own data</p>
+                </div>
+                
+                <div class="task-cards">
+                    <button class="task-card task-card-featured" data-task="reconcile">
+                        <div class="task-card-icon">⚖️</div>
+                        <div class="task-card-content">
+                            <h3>Reconcile a Cycle Count</h3>
+                            <p>Compare physical count vs system inventory, find variances and shrinkage</p>
+                        </div>
+                        <span class="task-card-badge">Most Popular</span>
+                    </button>
+                    
+                    <button class="task-card" data-task="duplicates">
+                        <div class="task-card-icon">👯</div>
+                        <div class="task-card-content">
+                            <h3>Find Duplicate SKUs</h3>
+                            <p>Detect duplicate records before they cause inventory conflicts</p>
+                        </div>
+                    </button>
+                    
+                    <button class="task-card" data-task="validation">
+                        <div class="task-card-icon">✓</div>
+                        <div class="task-card-content">
+                            <h3>Validate Before Upload</h3>
+                            <p>Check data quality and required fields before WMS import</p>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="empty-divider">
+                    <span>or start with your own data</span>
+                </div>
+                
                 <div class="empty-actions">
                     <button id="importPrompt" class="btn-primary">Import CSV</button>
-                    <span class="empty-or">or</span>
-                    <div class="sample-dropdown inline-dropdown" id="inlineSampleDropdown">
-                        <button id="inlineSampleBtn" class="btn-secondary">📋 Try Sample Data ▾</button>
-                        <div class="sample-menu" id="inlineSampleMenu">
-                            <div class="sample-menu-header">Load sample data to explore:</div>
-                            <button data-sample="cycle-count">🔄 Cycle Count Reconciliation</button>
-                            <button data-sample="receiving">📦 Receiving Discrepancies</button>
-                            <button data-sample="duplicates">👯 Duplicate SKUs</button>
-                            <button data-sample="validation">⚠️ Data Quality Issues</button>
-                            <button data-sample="lookup">🔍 Price Lookup</button>
-                        </div>
-                    </div>
+                    <button id="pastePrompt" class="btn-secondary">Paste from Excel</button>
                 </div>
             </div>
         `;
         
-        // Attach event listeners for dynamically created elements
+        // Attach event listeners
         document.getElementById('importPrompt')?.addEventListener('click', () => {
             document.getElementById('fileInput').click();
         });
         
-        const inlineSampleBtn = document.getElementById('inlineSampleBtn');
-        const inlineSampleMenu = document.getElementById('inlineSampleMenu');
+        document.getElementById('pastePrompt')?.addEventListener('click', () => {
+            document.getElementById('pasteTable').click();
+        });
         
-        if (inlineSampleBtn && inlineSampleMenu) {
-            inlineSampleBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                inlineSampleMenu.classList.toggle('show');
+        // Task card clicks - load sample and switch to module
+        this.container.querySelectorAll('.task-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const task = card.dataset.task;
+                // Map tasks to sample scenarios
+                const taskToSample = {
+                    'reconcile': 'cycle-count',
+                    'duplicates': 'duplicates',
+                    'validation': 'validation'
+                };
+                window.dispatchEvent(new CustomEvent('loadSample', { detail: taskToSample[task] }));
             });
-            
-            // We need to import handleLoadSample or dispatch a custom event
-            // For now, dispatch event that app.js listens for
-            inlineSampleMenu.querySelectorAll('button[data-sample]').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const sampleKey = e.currentTarget.dataset.sample;
-                    // Dispatch custom event for app.js to handle
-                    window.dispatchEvent(new CustomEvent('loadSample', { detail: sampleKey }));
-                    inlineSampleMenu.classList.remove('show');
-                });
-            });
-        }
+        });
     }
     
     /**

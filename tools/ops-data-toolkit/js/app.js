@@ -78,6 +78,11 @@ function init() {
     // Initialize module navigation
     renderModuleNav();
     
+    // Auto-select Reconcile as the default module (the hero workflow)
+    setTimeout(() => {
+        switchModule('reconcile');
+    }, 100);
+    
     console.log('App initialized');
 }
 
