@@ -522,7 +522,7 @@ button:active:not(:disabled) {
     gap: var(--space-md);
     flex-wrap: wrap;
     justify-content: center;
-    max-width: 900px;
+    max-width: 920px;
     margin-bottom: var(--space-xl);
 }
 
@@ -537,9 +537,10 @@ button:active:not(:disabled) {
     cursor: pointer;
     text-align: left;
     transition: all 0.2s ease;
-    width: 290px;
+    width: 280px;
     min-height: 90px;
     position: relative;
+    box-sizing: border-box;
 }
 
 .task-card:hover {
@@ -568,6 +569,8 @@ button:active:not(:disabled) {
 .task-card-content {
     flex: 1;
     min-width: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .task-card-content h3 {
@@ -575,13 +578,15 @@ button:active:not(:disabled) {
     font-weight: 600;
     color: var(--color-text);
     margin-bottom: 6px;
+    word-wrap: break-word;
 }
 
 .task-card-content p {
-    font-size: 0.73rem;
+    font-size: 0.75rem;
     color: var(--color-text-muted);
     line-height: 1.4;
     margin: 0;
+    word-wrap: break-word;
 }
 
 .task-card-badge {
