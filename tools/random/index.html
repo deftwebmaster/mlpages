@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Random Number Generator & Decision Helper | Free Online Tool</title>
-  <meta name="description" content="Free random number generator with advanced options, plus a decision helper for picking from lists. Great for QA sampling, team assignments, raffles, and breaking ties.">
-  <meta name="keywords" content="random number generator, decision picker, list randomizer, name picker, random choice, number picker, shuffle list">
+  <meta name="description" content="Free random number generator, coin flip, and decision picker. Great for QA sampling, team assignments, raffles, settling debates, and breaking ties. No ads, no signup.">
+  <meta name="keywords" content="random number generator, coin flip, flip a coin, decision picker, list randomizer, name picker, random choice, number picker, shuffle list, heads or tails">
   <link rel="canonical" href="https://mattlivingston.com/tools/random/">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -156,7 +156,7 @@
 
     .result-value {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 4rem;
+      font-size: 4.5rem;
       font-weight: 700;
       color: var(--accent);
       line-height: 1;
@@ -168,15 +168,70 @@
       font-size: 2.5rem;
     }
 
+    .result-value.pop {
+      animation: popIn 0.3s ease-out;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
     .result-emoji {
-      font-size: 3rem;
+      font-size: 4rem;
       margin-bottom: 0.5rem;
+    }
+
+    .coin-result {
+      font-size: 5rem;
+      margin-bottom: 0.25rem;
     }
 
     .result-subtitle {
       color: var(--text-muted);
       font-size: 0.85rem;
       margin-top: 0.5rem;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      padding: 0.4rem 0.6rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: none;
+    }
+
+    .copy-btn:hover {
+      background: var(--bg-secondary);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .copy-btn.visible {
+      display: block;
+    }
+
+    .copy-btn.copied {
+      background: var(--success);
+      border-color: var(--success);
+      color: white;
     }
 
     .result-multi {
@@ -357,6 +412,38 @@
       gap: 0.5rem;
       flex-wrap: wrap;
       margin-top: 0.75rem;
+    }
+
+    .keyboard-hint {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+    }
+
+    .keyboard-hint kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+    }
+
+    .coin-stats {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+
+    .stat-item {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .stat-item strong {
+      color: var(--accent);
+      font-family: var(--font-mono);
     }
 
     /* Use Cases Hint */
@@ -706,6 +793,10 @@
         <span class="tab-icon">🎲</span>
         Numbers
       </button>
+      <button class="tab-btn" onclick="switchTab('coin')">
+        <span class="tab-icon">🪙</span>
+        Coin Flip
+      </button>
       <button class="tab-btn" onclick="switchTab('picker')">
         <span class="tab-icon">🎯</span>
         Decision Helper
@@ -722,6 +813,7 @@
 
         <!-- Result Display -->
         <div class="result-display" id="numberResult">
+          <button class="copy-btn" id="numberCopyBtn" onclick="copyResult('number')">📋 Copy</button>
           <div class="result-value">—</div>
           <div class="result-subtitle">Set your range and generate</div>
         </div>
@@ -759,9 +851,10 @@
         </div>
 
         <!-- Generate Button -->
-        <button class="btn-primary" onclick="generateNumber()">
+        <button class="btn-primary" id="generateNumberBtn" onclick="generateNumber()">
           Generate Random Number
         </button>
+        <div class="keyboard-hint">or press <kbd>Space</kbd></div>
 
         <!-- History -->
         <div class="history-section">
@@ -770,6 +863,43 @@
             <button class="btn-secondary" onclick="clearNumberHistory()">Clear</button>
           </div>
           <div class="history-list" id="numberHistory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coin Flip Tab -->
+    <div id="coinTab" class="tab-content">
+      <div class="section">
+        <!-- Use Cases -->
+        <div class="use-cases">
+          <strong>Great for:</strong> Quick decisions, settling debates, heads or tails, 50/50 choices
+        </div>
+
+        <!-- Result Display -->
+        <div class="result-display" id="coinResult">
+          <button class="copy-btn" id="coinCopyBtn" onclick="copyResult('coin')">📋 Copy</button>
+          <div class="coin-result">🪙</div>
+          <div class="result-value text-result">—</div>
+          <div class="result-subtitle">Click to flip</div>
+        </div>
+
+        <!-- Flip Button -->
+        <button class="btn-primary" id="flipCoinBtn" onclick="flipCoin()">
+          Flip Coin
+        </button>
+        <div class="keyboard-hint">or press <kbd>Space</kbd></div>
+
+        <!-- Stats -->
+        <div class="history-section">
+          <div class="history-header">
+            <span class="history-title">Flip Stats</span>
+            <button class="btn-secondary" onclick="clearCoinStats()">Reset</button>
+          </div>
+          <div class="coin-stats" id="coinStats">
+            <span class="stat-item">Heads: <strong id="headsCount">0</strong></span>
+            <span class="stat-item">Tails: <strong id="tailsCount">0</strong></span>
+            <span class="stat-item">Total: <strong id="totalFlips">0</strong></span>
+          </div>
         </div>
       </div>
     </div>
@@ -784,6 +914,7 @@
 
         <!-- Result Display -->
         <div class="result-display" id="pickerResult">
+          <button class="copy-btn" id="pickerCopyBtn" onclick="copyResult('picker')">📋 Copy</button>
           <div class="result-value text-result">—</div>
           <div class="result-subtitle">Pick a category or enter your own list</div>
         </div>
@@ -827,9 +958,10 @@
         </div>
 
         <!-- Pick Button -->
-        <button class="btn-primary" onclick="pickItem()">
+        <button class="btn-primary" id="pickItemBtn" onclick="pickItem()">
           Pick Random Item
         </button>
+        <div class="keyboard-hint">or press <kbd>Space</kbd></div>
 
         <div class="btn-row">
           <button class="btn-secondary" onclick="resetEliminated()">Reset Eliminated</button>
@@ -887,6 +1019,9 @@
     let currentCategory = 'food';
     let eliminatedItems = new Set();
     let tournamentState = null;
+    let currentTab = 'numbers';
+    let lastResult = { number: null, coin: null, picker: null };
+    let coinStats = { heads: 0, tails: 0 };
 
     const pickerLists = {
       food: {
@@ -911,6 +1046,7 @@
     // Tab Navigation
     // ============================================
     function switchTab(tab) {
+      currentTab = tab;
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       
@@ -981,13 +1117,18 @@
       const interval = setInterval(() => {
         frame++;
         const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
-        display.innerHTML = `<div class="result-value">${randomNum}</div>`;
+        display.innerHTML = `
+          <button class="copy-btn" id="numberCopyBtn" onclick="copyResult('number')">📋 Copy</button>
+          <div class="result-value">${randomNum}</div>
+        `;
         
         if (frame >= totalFrames) {
           clearInterval(interval);
           display.classList.remove('spinning');
+          lastResult.number = finalValue.toString();
           display.innerHTML = `
-            <div class="result-value">${finalValue}</div>
+            <button class="copy-btn visible" id="numberCopyBtn" onclick="copyResult('number')">📋 Copy</button>
+            <div class="result-value pop">${finalValue}</div>
             <div class="result-subtitle">Generated from ${min} to ${max}</div>
           `;
         }
@@ -999,14 +1140,19 @@
       const min = document.getElementById('minNum').value;
       const max = document.getElementById('maxNum').value;
       
+      lastResult.number = results.length === 1 ? results[0].toString() : results.join(', ');
+      document.getElementById('numberCopyBtn').classList.add('visible');
+      
       if (results.length === 1) {
         display.innerHTML = `
-          <div class="result-value">${results[0]}</div>
+          <button class="copy-btn visible" id="numberCopyBtn" onclick="copyResult('number')">📋 Copy</button>
+          <div class="result-value pop">${results[0]}</div>
           <div class="result-subtitle">Generated from ${min} to ${max}</div>
         `;
       } else {
         display.innerHTML = `
-          <div class="result-multi">
+          <button class="copy-btn visible" id="numberCopyBtn" onclick="copyResult('number')">📋 Copy</button>
+          <div class="result-multi pop">
             ${results.map(n => `<span class="result-chip">${n}</span>`).join('')}
           </div>
           <div class="result-subtitle">${results.length} numbers from ${min} to ${max}</div>
@@ -1115,6 +1261,7 @@
         frame++;
         const randomItem = items[Math.floor(Math.random() * items.length)];
         display.innerHTML = `
+          <button class="copy-btn" id="pickerCopyBtn" onclick="copyResult('picker')">📋 Copy</button>
           <div class="result-value text-result">${randomItem}</div>
         `;
         
@@ -1128,8 +1275,10 @@
 
     function displayPickerResult(winner) {
       const display = document.getElementById('pickerResult');
+      lastResult.picker = winner;
       display.innerHTML = `
-        <div class="result-value text-result">${winner}</div>
+        <button class="copy-btn visible" id="pickerCopyBtn" onclick="copyResult('picker')">📋 Copy</button>
+        <div class="result-value text-result pop">${winner}</div>
         <div class="result-subtitle">The universe has spoken!</div>
       `;
     }
@@ -1340,6 +1489,106 @@
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 2000);
     }
+
+    // ============================================
+    // Coin Flip
+    // ============================================
+    function flipCoin() {
+      const display = document.getElementById('coinResult');
+      const isHeads = Math.random() < 0.5;
+      const result = isHeads ? 'Heads' : 'Tails';
+      const emoji = isHeads ? '🪙' : '🪙';
+      
+      // Update stats
+      if (isHeads) {
+        coinStats.heads++;
+      } else {
+        coinStats.tails++;
+      }
+      updateCoinStats();
+      
+      // Animate
+      display.classList.add('spinning');
+      let frame = 0;
+      const totalFrames = 12;
+      
+      const interval = setInterval(() => {
+        frame++;
+        const flipEmoji = frame % 2 === 0 ? '🪙' : '⚪';
+        display.innerHTML = `
+          <button class="copy-btn" id="coinCopyBtn" onclick="copyResult('coin')">📋 Copy</button>
+          <div class="coin-result">${flipEmoji}</div>
+          <div class="result-value text-result">${frame % 2 === 0 ? 'Heads' : 'Tails'}</div>
+        `;
+        
+        if (frame >= totalFrames) {
+          clearInterval(interval);
+          display.classList.remove('spinning');
+          lastResult.coin = result;
+          display.innerHTML = `
+            <button class="copy-btn visible" id="coinCopyBtn" onclick="copyResult('coin')">📋 Copy</button>
+            <div class="coin-result pop">${emoji}</div>
+            <div class="result-value text-result pop">${result}</div>
+            <div class="result-subtitle">Flip #${coinStats.heads + coinStats.tails}</div>
+          `;
+        }
+      }, 80);
+    }
+
+    function updateCoinStats() {
+      document.getElementById('headsCount').textContent = coinStats.heads;
+      document.getElementById('tailsCount').textContent = coinStats.tails;
+      document.getElementById('totalFlips').textContent = coinStats.heads + coinStats.tails;
+    }
+
+    function clearCoinStats() {
+      coinStats = { heads: 0, tails: 0 };
+      updateCoinStats();
+      showToast('Stats reset!');
+    }
+
+    // ============================================
+    // Copy to Clipboard
+    // ============================================
+    function copyResult(type) {
+      const text = lastResult[type];
+      if (!text) {
+        showToast('Nothing to copy yet!');
+        return;
+      }
+      
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById(type + 'CopyBtn');
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Copy';
+          btn.classList.remove('copied');
+        }, 1500);
+      }).catch(() => {
+        showToast('Failed to copy');
+      });
+    }
+
+    // ============================================
+    // Keyboard Shortcuts
+    // ============================================
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger if typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+      
+      if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        
+        if (currentTab === 'numbers') {
+          generateNumber();
+        } else if (currentTab === 'coin') {
+          flipCoin();
+        } else if (currentTab === 'picker') {
+          pickItem();
+        }
+      }
+    });
 
     // Initialize
     updateCurrentListDisplay();
