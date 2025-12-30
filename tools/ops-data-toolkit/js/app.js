@@ -201,9 +201,22 @@ function setupEventListeners() {
     // Modal
     document.getElementById('showLogic').addEventListener('click', showLogicModal);
     document.querySelectorAll('.modal-close').forEach(btn => {
-        btn.addEventListener('click', hideLogicModal);
+        btn.addEventListener('click', () => {
+            hideLogicModal();
+            hideReportModal();
+        });
     });
-    document.querySelector('.modal-overlay')?.addEventListener('click', hideLogicModal);
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', () => {
+            hideLogicModal();
+            hideReportModal();
+        });
+    });
+    
+    // Report modal
+    document.getElementById('viewReport')?.addEventListener('click', showReportModal);
+    document.getElementById('copyReport')?.addEventListener('click', copyReportToClipboard);
+    document.getElementById('exportPDF')?.addEventListener('click', exportReportToPDF);
     
     // Filter banner close button
     document.getElementById('clearFilterBanner')?.addEventListener('click', () => {
@@ -565,6 +578,7 @@ function switchModule(moduleId) {
     document.getElementById('metricsStrip').innerHTML = '';
     document.getElementById('copyTSV').disabled = true;
     document.getElementById('showLogic').disabled = true;
+    document.getElementById('viewReport').disabled = true;
     
     // Render module controls in results panel
     const resultsPanel = document.querySelector('.results-panel');
@@ -607,6 +621,9 @@ function updateResults(results) {
     // Enable actions
     document.getElementById('copyTSV').disabled = false;
     document.getElementById('showLogic').disabled = !results.explanation;
+    
+    // Enable report button only for reconciliation results
+    document.getElementById('viewReport').disabled = !results._reconciliation;
 }
 
 /**
@@ -946,6 +963,609 @@ function showLogicModal() {
  */
 function hideLogicModal() {
     document.getElementById('logicModal').classList.add('hidden');
+}
+
+/**
+ * Show reconciliation report modal
+ */
+function showReportModal() {
+    const results = State.project.results;
+    if (!results || !results._reconciliation) {
+        showToast('No reconciliation data available', 'error');
+        return;
+    }
+    
+    const modal = document.getElementById('reportModal');
+    const content = document.getElementById('reportContent');
+    
+    content.innerHTML = generateReconciliationReport(results._reconciliation, results.metrics);
+    modal.classList.remove('hidden');
+}
+
+/**
+ * Hide report modal
+ */
+function hideReportModal() {
+    document.getElementById('reportModal').classList.add('hidden');
+}
+
+/**
+ * Generate reconciliation report HTML
+ */
+function generateReconciliationReport(recon, metrics) {
+    const sheetA = State.getSheet('A');
+    
+    // Calculate totals
+    const totalDollarImpact = calculateTotalDollarImpact(recon);
+    const varianceItems = recon.variances || [];
+    const missingInA = recon.missingInA || [];
+    const missingInB = recon.missingInB || [];
+    const matched = recon.matched || [];
+    
+    // Build dollar impact breakdown
+    const dollarBreakdown = buildDollarBreakdown(recon, sheetA);
+    
+    // Generate narrative
+    const narrative = generateNarrative(recon, totalDollarImpact, dollarBreakdown);
+    
+    let html = `
+        <!-- Executive Summary -->
+        <div class="report-section">
+            <h4>📋 Executive Summary</h4>
+            <div class="report-narrative">
+                ${narrative}
+            </div>
+        </div>
+        
+        <!-- Key Metrics -->
+        <div class="report-section">
+            <h4>📊 Key Metrics</h4>
+            <div class="report-summary">
+                <div class="report-stat">
+                    <div class="report-stat-value">${matched.length}</div>
+                    <div class="report-stat-label">Perfect Matches</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-value">${varianceItems.length}</div>
+                    <div class="report-stat-label">Variances</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-value">${missingInB.length}</div>
+                    <div class="report-stat-label">Missing in Count</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-value">${missingInA.length}</div>
+                    <div class="report-stat-label">Found (Not in WMS)</div>
+                </div>
+                <div class="report-stat">
+                    <div class="report-stat-value ${totalDollarImpact >= 0 ? 'positive' : 'negative'}">
+                        ${formatCurrency(totalDollarImpact)}
+                    </div>
+                    <div class="report-stat-label">Net Dollar Impact</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dollar Impact Breakdown -->
+        <div class="report-section">
+            <h4>💰 Dollar Impact Breakdown</h4>
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Description</th>
+                        <th>Issue</th>
+                        <th class="number">Variance</th>
+                        <th class="number">Unit Cost</th>
+                        <th class="number">Impact</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${dollarBreakdown.items.map(item => `
+                        <tr>
+                            <td><strong>${item.sku}</strong></td>
+                            <td>${item.description}</td>
+                            <td>${item.issue}</td>
+                            <td class="number ${item.variance > 0 ? 'positive' : 'negative'}">${item.variance > 0 ? '+' : ''}${item.variance}</td>
+                            <td class="number">${formatCurrency(item.unitCost)}</td>
+                            <td class="number ${item.impact > 0 ? 'positive' : 'negative'}">${formatCurrency(item.impact)}</td>
+                        </tr>
+                    `).join('')}
+                    <tr class="total-row">
+                        <td colspan="5"><strong>Net Total</strong></td>
+                        <td class="number ${totalDollarImpact >= 0 ? 'positive' : 'negative'}">
+                            <strong>${formatCurrency(totalDollarImpact)}</strong>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+    
+    // Add issues requiring attention if any
+    if (missingInB.length > 0 || missingInA.length > 0) {
+        html += `
+            <div class="report-section">
+                <h4>⚠️ Items Requiring Investigation</h4>
+        `;
+        
+        if (missingInB.length > 0) {
+            html += `
+                <p style="color: var(--color-text-muted); font-size: 0.85rem; margin-bottom: var(--space-sm);">
+                    <strong>Ghost Inventory</strong> — In WMS but not found during count:
+                </p>
+                <ul class="report-list">
+                    ${missingInB.map(item => {
+                        const rowA = item.rowA || {};
+                        const desc = rowA.description || 'Unknown';
+                        const cost = item.unit_cost || 0;
+                        const impact = -Math.abs(item.system_qty * cost);
+                        return `
+                            <li>
+                                <div>
+                                    <span class="item-name">${item.key}</span>
+                                    <span class="item-detail"> — ${desc}</span>
+                                </div>
+                                <span class="item-value negative">${item.system_qty} units (${formatCurrency(impact)})</span>
+                            </li>
+                        `;
+                    }).join('')}
+                </ul>
+            `;
+        }
+        
+        if (missingInA.length > 0) {
+            html += `
+                <p style="color: var(--color-text-muted); font-size: 0.85rem; margin: var(--space-md) 0 var(--space-sm) 0;">
+                    <strong>Found Inventory</strong> — Counted but not in WMS:
+                </p>
+                <ul class="report-list">
+                    ${missingInA.map(item => `
+                        <li>
+                            <div>
+                                <span class="item-name">${item.key}</span>
+                                <span class="item-detail"> — Location: ${item.rowB?.location || 'Unknown'}</span>
+                            </div>
+                            <span class="item-value">${item.physical_qty} units found</span>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+        
+        html += `</div>`;
+    }
+    
+    return html;
+}
+
+/**
+ * Calculate total dollar impact from reconciliation
+ */
+function calculateTotalDollarImpact(recon) {
+    let total = 0;
+    
+    // Variances
+    (recon.variances || []).forEach(item => {
+        if (item.dollar_impact !== null) {
+            total += item.dollar_impact;
+        }
+    });
+    
+    // Missing in B (ghost inventory - negative impact)
+    (recon.missingInB || []).forEach(item => {
+        if (item.unit_cost) {
+            total -= Math.abs(item.system_qty * item.unit_cost);
+        }
+    });
+    
+    return total;
+}
+
+/**
+ * Build dollar breakdown items
+ */
+function buildDollarBreakdown(recon, sheetA) {
+    const items = [];
+    
+    // Add variances with cost
+    (recon.variances || []).forEach(item => {
+        if (item.unit_cost !== null && item.variance !== 0) {
+            const rowA = item.rowA || {};
+            items.push({
+                sku: item.key,
+                description: rowA.description || 'Unknown',
+                issue: item.variance > 0 ? 'Overage' : 'Shortage',
+                variance: item.variance,
+                unitCost: item.unit_cost,
+                impact: item.dollar_impact || 0
+            });
+        }
+    });
+    
+    // Add missing in B (ghost inventory)
+    (recon.missingInB || []).forEach(item => {
+        const rowA = item.rowA || {};
+        const unitCost = item.unit_cost || 0;
+        if (unitCost > 0) {
+            items.push({
+                sku: item.key,
+                description: rowA.description || 'Unknown',
+                issue: 'Not Found (Ghost)',
+                variance: -item.system_qty,
+                unitCost: unitCost,
+                impact: -Math.abs(item.system_qty * unitCost)
+            });
+        }
+    });
+    
+    // Sort by absolute impact descending
+    items.sort((a, b) => Math.abs(b.impact) - Math.abs(a.impact));
+    
+    return { items };
+}
+
+/**
+ * Generate natural language narrative
+ */
+function generateNarrative(recon, totalImpact, breakdown) {
+    const matched = recon.matched?.length || 0;
+    const variances = recon.variances?.length || 0;
+    const missingInB = recon.missingInB?.length || 0;
+    const missingInA = recon.missingInA?.length || 0;
+    const total = matched + variances + missingInB;
+    
+    let narrative = '';
+    
+    // Overall accuracy
+    const accuracy = total > 0 ? ((matched / total) * 100).toFixed(0) : 0;
+    narrative += `This cycle count reconciled <strong>${total} SKUs</strong> with an inventory accuracy of <strong>${accuracy}%</strong>. `;
+    
+    // Dollar impact
+    if (totalImpact < 0) {
+        narrative += `The count revealed a net <strong style="color: var(--color-danger);">shrinkage of ${formatCurrency(Math.abs(totalImpact))}</strong>. `;
+    } else if (totalImpact > 0) {
+        narrative += `The count revealed a net <strong style="color: var(--color-success);">overage of ${formatCurrency(totalImpact)}</strong>. `;
+    } else {
+        narrative += `The count shows <strong>no net dollar impact</strong>. `;
+    }
+    
+    // Biggest issues
+    if (breakdown.items.length > 0) {
+        const biggest = breakdown.items[0];
+        if (biggest.impact < -100) {
+            narrative += `<br><br>The largest issue is <strong>${biggest.sku}</strong> (${biggest.description}) with a <strong>${formatCurrency(biggest.impact)}</strong> impact — this should be investigated first.`;
+        }
+    }
+    
+    // Ghost inventory callout
+    if (missingInB > 0) {
+        narrative += `<br><br>⚠️ <strong>${missingInB} item${missingInB > 1 ? 's' : ''}</strong> appear${missingInB === 1 ? 's' : ''} in the WMS but ${missingInB === 1 ? 'was' : 'were'}n't found during the physical count. These "ghost inventory" items need immediate investigation.`;
+    }
+    
+    // Found inventory callout
+    if (missingInA > 0) {
+        narrative += `<br><br>📦 <strong>${missingInA} item${missingInA > 1 ? 's' : ''}</strong> ${missingInA === 1 ? 'was' : 'were'} found on the floor but ${missingInA === 1 ? "doesn't" : "don't"} exist in the WMS. These may be unreceived goods or receiving errors.`;
+    }
+    
+    return narrative;
+}
+
+/**
+ * Format number as currency
+ */
+function formatCurrency(value) {
+    if (value === null || value === undefined) return '—';
+    const absValue = Math.abs(value);
+    const formatted = absValue.toLocaleString('en-US', { 
+        style: 'currency', 
+        currency: 'USD',
+        minimumFractionDigits: 2
+    });
+    return value < 0 ? `-${formatted}` : formatted;
+}
+
+/**
+ * Copy report to clipboard as text
+ */
+async function copyReportToClipboard() {
+    const results = State.project.results;
+    if (!results || !results._reconciliation) return;
+    
+    const recon = results._reconciliation;
+    const totalImpact = calculateTotalDollarImpact(recon);
+    const breakdown = buildDollarBreakdown(recon, State.getSheet('A'));
+    
+    let text = `CYCLE COUNT RECONCILIATION REPORT\n`;
+    text += `${'='.repeat(50)}\n\n`;
+    
+    text += `SUMMARY\n`;
+    text += `Perfect Matches: ${recon.matched?.length || 0}\n`;
+    text += `Variances: ${recon.variances?.length || 0}\n`;
+    text += `Missing in Count: ${recon.missingInB?.length || 0}\n`;
+    text += `Found (Not in WMS): ${recon.missingInA?.length || 0}\n`;
+    text += `Net Dollar Impact: ${formatCurrency(totalImpact)}\n\n`;
+    
+    text += `DOLLAR IMPACT BREAKDOWN\n`;
+    text += `${'-'.repeat(50)}\n`;
+    breakdown.items.forEach(item => {
+        text += `${item.sku.padEnd(15)} ${item.issue.padEnd(15)} ${String(item.variance).padStart(6)} × ${formatCurrency(item.unitCost).padStart(10)} = ${formatCurrency(item.impact).padStart(12)}\n`;
+    });
+    text += `${'-'.repeat(50)}\n`;
+    text += `${'NET TOTAL'.padEnd(48)} ${formatCurrency(totalImpact).padStart(12)}\n`;
+    
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Report copied to clipboard', 'success');
+    } catch (err) {
+        showToast('Failed to copy report', 'error');
+    }
+}
+
+/**
+ * Export reconciliation report as PDF
+ */
+function exportReportToPDF() {
+    const results = State.project.results;
+    if (!results || !results._reconciliation) {
+        showToast('No reconciliation data available', 'error');
+        return;
+    }
+    
+    const recon = results._reconciliation;
+    const totalImpact = calculateTotalDollarImpact(recon);
+    const breakdown = buildDollarBreakdown(recon, State.getSheet('A'));
+    
+    const matched = recon.matched?.length || 0;
+    const variances = recon.variances?.length || 0;
+    const missingInB = recon.missingInB?.length || 0;
+    const missingInA = recon.missingInA?.length || 0;
+    const total = matched + variances + missingInB;
+    const accuracy = total > 0 ? ((matched / total) * 100).toFixed(0) : 0;
+    
+    // Access jsPDF from window (loaded via CDN)
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Colors
+    const primaryColor = [37, 99, 235];    // Blue
+    const dangerColor = [239, 68, 68];     // Red
+    const successColor = [16, 185, 129];   // Green
+    const textColor = [30, 41, 59];        // Dark slate
+    const mutedColor = [100, 116, 139];    // Muted
+    
+    let yPos = 20;
+    
+    // Header
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, 220, 35, 'F');
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(20);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Cycle Count Reconciliation Report', 14, 18);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const today = new Date().toLocaleDateString('en-US', { 
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+    });
+    doc.text(`Generated: ${today}`, 14, 28);
+    
+    yPos = 45;
+    
+    // Executive Summary Box
+    doc.setFillColor(248, 250, 252);
+    doc.roundedRect(14, yPos, 182, 35, 3, 3, 'F');
+    
+    doc.setTextColor(...textColor);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Executive Summary', 20, yPos + 10);
+    
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...mutedColor);
+    
+    let summaryText = `This cycle count reconciled ${total} SKUs with an inventory accuracy of ${accuracy}%. `;
+    if (totalImpact < 0) {
+        summaryText += `The count revealed a net shrinkage of ${formatCurrency(Math.abs(totalImpact))}.`;
+    } else if (totalImpact > 0) {
+        summaryText += `The count revealed a net overage of ${formatCurrency(totalImpact)}.`;
+    } else {
+        summaryText += `The count shows no net dollar impact.`;
+    }
+    
+    const splitSummary = doc.splitTextToSize(summaryText, 170);
+    doc.text(splitSummary, 20, yPos + 20);
+    
+    yPos += 45;
+    
+    // Key Metrics
+    doc.setTextColor(...textColor);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Key Metrics', 14, yPos);
+    yPos += 8;
+    
+    // Metrics boxes
+    const metrics = [
+        { label: 'Perfect Matches', value: matched, color: successColor },
+        { label: 'Variances', value: variances, color: [245, 158, 11] },
+        { label: 'Missing in Count', value: missingInB, color: dangerColor },
+        { label: 'Found (Not in WMS)', value: missingInA, color: primaryColor },
+    ];
+    
+    const boxWidth = 42;
+    const boxSpacing = 4;
+    
+    metrics.forEach((metric, i) => {
+        const xPos = 14 + (i * (boxWidth + boxSpacing));
+        
+        doc.setFillColor(248, 250, 252);
+        doc.roundedRect(xPos, yPos, boxWidth, 25, 2, 2, 'F');
+        
+        doc.setTextColor(...metric.color);
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text(String(metric.value), xPos + boxWidth/2, yPos + 12, { align: 'center' });
+        
+        doc.setTextColor(...mutedColor);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'normal');
+        doc.text(metric.label.toUpperCase(), xPos + boxWidth/2, yPos + 20, { align: 'center' });
+    });
+    
+    yPos += 35;
+    
+    // Net Dollar Impact (large callout)
+    doc.setFillColor(totalImpact >= 0 ? 236 : 254, totalImpact >= 0 ? 253 : 242, totalImpact >= 0 ? 245 : 242);
+    doc.roundedRect(14, yPos, 182, 20, 3, 3, 'F');
+    
+    doc.setTextColor(...(totalImpact >= 0 ? successColor : dangerColor));
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Net Dollar Impact: ${formatCurrency(totalImpact)}`, 105, yPos + 13, { align: 'center' });
+    
+    yPos += 30;
+    
+    // Dollar Impact Table
+    doc.setTextColor(...textColor);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Dollar Impact Breakdown', 14, yPos);
+    yPos += 5;
+    
+    if (breakdown.items.length > 0) {
+        const tableData = breakdown.items.map(item => [
+            item.sku,
+            item.description.length > 25 ? item.description.substring(0, 25) + '...' : item.description,
+            item.issue,
+            (item.variance > 0 ? '+' : '') + item.variance,
+            formatCurrency(item.unitCost),
+            formatCurrency(item.impact)
+        ]);
+        
+        // Add total row
+        tableData.push([
+            { content: 'NET TOTAL', colSpan: 5, styles: { fontStyle: 'bold', fillColor: [241, 245, 249] } },
+            { content: formatCurrency(totalImpact), styles: { fontStyle: 'bold', fillColor: [241, 245, 249], textColor: totalImpact >= 0 ? successColor : dangerColor } }
+        ]);
+        
+        doc.autoTable({
+            startY: yPos,
+            head: [['SKU', 'Description', 'Issue', 'Variance', 'Unit Cost', 'Impact']],
+            body: tableData,
+            theme: 'striped',
+            headStyles: {
+                fillColor: primaryColor,
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                fontSize: 8
+            },
+            bodyStyles: {
+                fontSize: 8,
+                textColor: textColor
+            },
+            columnStyles: {
+                0: { fontStyle: 'bold', cellWidth: 25 },
+                1: { cellWidth: 50 },
+                2: { cellWidth: 30 },
+                3: { halign: 'right', cellWidth: 20 },
+                4: { halign: 'right', cellWidth: 25 },
+                5: { halign: 'right', cellWidth: 25 }
+            },
+            margin: { left: 14, right: 14 },
+            didParseCell: function(data) {
+                // Color variance and impact columns
+                if (data.section === 'body' && data.row.index < breakdown.items.length) {
+                    const item = breakdown.items[data.row.index];
+                    if (data.column.index === 3 || data.column.index === 5) {
+                        if (item.impact < 0) {
+                            data.cell.styles.textColor = dangerColor;
+                        } else if (item.impact > 0) {
+                            data.cell.styles.textColor = successColor;
+                        }
+                    }
+                }
+            }
+        });
+        
+        yPos = doc.lastAutoTable.finalY + 10;
+    }
+    
+    // Items Requiring Investigation
+    if (missingInB > 0 || missingInA > 0) {
+        // Check if we need a new page
+        if (yPos > 230) {
+            doc.addPage();
+            yPos = 20;
+        }
+        
+        doc.setTextColor(...textColor);
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Items Requiring Investigation', 14, yPos);
+        yPos += 8;
+        
+        if (missingInB > 0) {
+            doc.setFillColor(254, 242, 242);
+            doc.roundedRect(14, yPos, 182, 8 + (missingInB * 6), 2, 2, 'F');
+            
+            doc.setTextColor(...dangerColor);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Ghost Inventory (In WMS but not found):', 18, yPos + 6);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...textColor);
+            doc.setFontSize(8);
+            
+            recon.missingInB.forEach((item, i) => {
+                const rowA = item.rowA || {};
+                const desc = rowA.description || 'Unknown';
+                const cost = item.unit_cost || 0;
+                const impact = -Math.abs(item.system_qty * cost);
+                doc.text(`• ${item.key} — ${desc} (${item.system_qty} units, ${formatCurrency(impact)})`, 20, yPos + 12 + (i * 6));
+            });
+            
+            yPos += 12 + (missingInB * 6);
+        }
+        
+        if (missingInA > 0) {
+            doc.setFillColor(254, 249, 195);
+            doc.roundedRect(14, yPos, 182, 8 + (missingInA * 6), 2, 2, 'F');
+            
+            doc.setTextColor([161, 98, 7]);
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'bold');
+            doc.text('Found Inventory (Counted but not in WMS):', 18, yPos + 6);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setTextColor(...textColor);
+            doc.setFontSize(8);
+            
+            recon.missingInA.forEach((item, i) => {
+                const loc = item.rowB?.location || 'Unknown';
+                doc.text(`• ${item.key} — Location: ${loc} (${item.physical_qty} units found)`, 20, yPos + 12 + (i * 6));
+            });
+        }
+    }
+    
+    // Footer on each page
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(...mutedColor);
+        doc.text(`Generated by Ops Data Toolkit | Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
+    }
+    
+    // Save the PDF
+    const timestamp = new Date().toISOString().slice(0, 10);
+    doc.save(`reconciliation-report-${timestamp}.pdf`);
+    
+    showToast('PDF report downloaded', 'success');
 }
 
 // Initialize on DOM ready

@@ -112,6 +112,7 @@
                 <div class="panel-header">
                     <h2>Results</h2>
                     <div class="results-actions">
+                        <button id="viewReport" class="btn-primary" disabled>📊 View Report</button>
                         <button id="copyTSV" class="btn-secondary" disabled>Copy as TSV</button>
                         <button id="showLogic" class="btn-secondary" disabled>Show Logic</button>
                     </div>
@@ -147,11 +148,32 @@
         </div>
     </div>
 
+    <!-- Report Modal -->
+    <div id="reportModal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📊 Reconciliation Report</h3>
+                <button class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body" id="reportContent">
+                <!-- Populated by generateReport -->
+            </div>
+            <div class="modal-footer">
+                <button id="exportPDF" class="btn-primary">📄 Export PDF</button>
+                <button id="copyReport" class="btn-secondary">📋 Copy Report</button>
+                <button class="btn-secondary modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden file input -->
     <input type="file" id="fileInput" accept=".csv,.tsv,.txt" style="display: none;">
 
-    <!-- External dependency -->
+    <!-- External dependencies -->
     <script src="lib/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     
     <!-- App modules -->
     <script type="module" src="js/app.js"></script>

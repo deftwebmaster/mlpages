@@ -715,6 +715,161 @@ button:active:not(:disabled) {
     gap: var(--space-sm);
 }
 
+.modal-large {
+    max-width: 800px;
+    max-height: 85vh;
+}
+
+/* ============================================
+   Report Styles
+   ============================================ */
+.report-section {
+    margin-bottom: var(--space-xl);
+}
+
+.report-section:last-child {
+    margin-bottom: 0;
+}
+
+.report-section h4 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.report-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.report-stat {
+    background: var(--color-bg);
+    padding: var(--space-md);
+    border-radius: var(--border-radius-sm);
+    text-align: center;
+}
+
+.report-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.report-stat-value.positive {
+    color: var(--color-success);
+}
+
+.report-stat-value.negative {
+    color: var(--color-danger);
+}
+
+.report-stat-label {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 4px;
+}
+
+.report-table {
+    width: 100%;
+    font-size: 0.85rem;
+    border-collapse: collapse;
+}
+
+.report-table th,
+.report-table td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.report-table th {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--color-bg);
+}
+
+.report-table td {
+    color: var(--color-text);
+}
+
+.report-table .number {
+    text-align: right;
+    font-family: var(--font-mono);
+}
+
+.report-table .positive {
+    color: var(--color-success);
+}
+
+.report-table .negative {
+    color: var(--color-danger);
+}
+
+.report-table .total-row {
+    font-weight: 600;
+    background: var(--color-bg);
+}
+
+.report-table .total-row td {
+    border-top: 2px solid var(--color-border);
+}
+
+.report-narrative {
+    background: var(--color-bg);
+    padding: var(--space-md);
+    border-radius: var(--border-radius-sm);
+    border-left: 3px solid var(--color-primary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+}
+
+.report-narrative strong {
+    color: var(--color-text);
+}
+
+.report-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.report-list li {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--color-border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-list li:last-child {
+    border-bottom: none;
+}
+
+.report-list .item-name {
+    color: var(--color-text);
+}
+
+.report-list .item-detail {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+}
+
+.report-list .item-value {
+    font-family: var(--font-mono);
+    font-weight: 600;
+}
+
 /* ============================================
    Sample Data Dropdown
    ============================================ */

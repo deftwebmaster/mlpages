@@ -240,28 +240,70 @@ export const SAMPLE_SCENARIOS = {
             name: 'WMS Inventory',
             columns: ['sku', 'description', 'location', 'wms_qty', 'uom', 'unit_cost'],
             data: [
-                { sku: 'WGT-1001', description: 'Industrial Widget Standard', location: 'A-12-01', wms_qty: 144, uom: 'EA', unit_cost: 12.50 },
-                { sku: 'WGT-1002', description: 'Industrial Widget Heavy', location: 'A-12-02', wms_qty: 96, uom: 'EA', unit_cost: 18.75 },
-                { sku: 'BRK-2001', description: 'Mounting Bracket Set', location: 'A-15-01', wms_qty: 288, uom: 'EA', unit_cost: 4.25 },
-                { sku: 'FST-3001', description: 'Fastener Assortment Box', location: 'B-03-01', wms_qty: 48, uom: 'CS', unit_cost: 32.00 },
-                { sku: 'CBL-4001', description: 'Power Cable 6ft', location: 'B-05-02', wms_qty: 500, uom: 'EA', unit_cost: 8.50 },
-                { sku: 'HSG-5001', description: 'Equipment Housing Large', location: 'C-01-01', wms_qty: 24, uom: 'EA', unit_cost: 145.00 },
-                { sku: 'LBL-6001', description: 'Shipping Label Roll', location: 'D-02-01', wms_qty: 36, uom: 'RL', unit_cost: 22.00 },
-                { sku: 'CON-7001', description: 'Electrical Connector Kit', location: 'D-04-03', wms_qty: 72, uom: 'KT', unit_cost: 15.25 },
+                // HIGH VALUE SHRINKAGE - 4 units of $289 item missing = $1,156 loss
+                { sku: 'PWR-5500', description: 'DeWalt 20V MAX XR Drill Kit', location: 'A-01-01', wms_qty: 12, uom: 'EA', unit_cost: 289.00 },
+                
+                // PERFECT MATCHES (7 total)
+                { sku: 'HDW-1100', description: '10-32 Machine Screw 100pk', location: 'A-02-01', wms_qty: 240, uom: 'PK', unit_cost: 8.50 },
+                { sku: 'HDW-1205', description: '1/4-20 Hex Bolt 50pk', location: 'A-02-02', wms_qty: 180, uom: 'PK', unit_cost: 12.25 },
+                { sku: 'SAF-3001', description: 'Safety Glasses Clear', location: 'B-01-01', wms_qty: 144, uom: 'EA', unit_cost: 4.50 },
+                { sku: 'PPE-3300', description: 'Nitrile Gloves Large 100ct', location: 'B-01-02', wms_qty: 50, uom: 'BX', unit_cost: 18.00 },
+                { sku: 'CUT-4100', description: 'Utility Knife Retractable', location: 'A-04-01', wms_qty: 36, uom: 'EA', unit_cost: 7.25 },
+                { sku: 'MSR-4500', description: 'Tape Measure 25ft', location: 'A-04-02', wms_qty: 24, uom: 'EA', unit_cost: 14.00 },
+                { sku: 'LVL-4600', description: 'Torpedo Level 9in', location: 'A-04-03', wms_qty: 30, uom: 'EA', unit_cost: 11.50 },
+                
+                // SMALL NEGATIVE VARIANCE - typical pick error residue
+                { sku: 'ELC-2200', description: 'Cable Tie 8in Black 1000pk', location: 'A-03-01', wms_qty: 85, uom: 'PK', unit_cost: 15.00 },
+                
+                // POSITIVE VARIANCE - found extra, probably return not processed
+                { sku: 'PLM-4400', description: 'PVC Elbow 2in Schedule 40', location: 'C-01-02', wms_qty: 64, uom: 'EA', unit_cost: 3.25 },
+                
+                // CASE vs EACH CONFUSION - system shows 24 EA, they counted 2 CS (24 per case = 48)
+                { sku: 'LUB-6600', description: 'WD-40 Multi-Use 12oz', location: 'B-02-01', wms_qty: 24, uom: 'EA', unit_cost: 6.75 },
+                
+                // GHOST INVENTORY #1 - in system but physically gone, high value
+                { sku: 'MTR-7700', description: 'Digital Multimeter Fluke 117', location: 'A-01-03', wms_qty: 6, uom: 'EA', unit_cost: 249.00 },
+                
+                // GHOST INVENTORY #2 - smaller value but still missing
+                { sku: 'LSR-7800', description: 'Laser Distance Measure 165ft', location: 'A-01-04', wms_qty: 4, uom: 'EA', unit_cost: 129.00 },
+                
+                // LOCATION ERROR - counted in wrong spot, will show as variance
+                { sku: 'TPE-8800', description: 'Electrical Tape Black 10pk', location: 'B-03-01', wms_qty: 96, uom: 'PK', unit_cost: 11.50 },
             ]
         },
         sheetB: {
             name: 'Physical Count',
             columns: ['sku', 'location', 'counted_qty', 'counted_by', 'count_date'],
             data: [
-                { sku: 'WGT-1001', location: 'A-12-01', counted_qty: 132, counted_by: 'J.Smith', count_date: '2024-12-28' },
-                { sku: 'WGT-1002', location: 'A-12-02', counted_qty: 96, counted_by: 'J.Smith', count_date: '2024-12-28' },
-                { sku: 'BRK-2001', location: 'A-15-01', counted_qty: 312, counted_by: 'M.Johnson', count_date: '2024-12-28' },
-                { sku: 'FST-3001', location: 'B-03-01', counted_qty: 48, counted_by: 'M.Johnson', count_date: '2024-12-28' },
-                { sku: 'CBL-4001', location: 'B-05-02', counted_qty: 487, counted_by: 'R.Davis', count_date: '2024-12-28' },
-                { sku: 'HSG-5001', location: 'C-01-01', counted_qty: 24, counted_by: 'R.Davis', count_date: '2024-12-28' },
-                { sku: 'LBL-6001', location: 'D-02-01', counted_qty: 42, counted_by: 'A.Wilson', count_date: '2024-12-28' },
-                { sku: 'PKG-9001', location: 'E-01-01', counted_qty: 18, counted_by: 'A.Wilson', count_date: '2024-12-28' },
+                // HIGH VALUE SHRINKAGE - only found 8 of 12 drills (-$1,156)
+                { sku: 'PWR-5500', location: 'A-01-01', counted_qty: 8, counted_by: 'M.Torres', count_date: '2024-12-28' },
+                
+                // PERFECT MATCHES (7 total)
+                { sku: 'HDW-1100', location: 'A-02-01', counted_qty: 240, counted_by: 'M.Torres', count_date: '2024-12-28' },
+                { sku: 'HDW-1205', location: 'A-02-02', counted_qty: 180, counted_by: 'M.Torres', count_date: '2024-12-28' },
+                { sku: 'SAF-3001', location: 'B-01-01', counted_qty: 144, counted_by: 'J.Chen', count_date: '2024-12-28' },
+                { sku: 'PPE-3300', location: 'B-01-02', counted_qty: 50, counted_by: 'J.Chen', count_date: '2024-12-28' },
+                { sku: 'CUT-4100', location: 'A-04-01', counted_qty: 36, counted_by: 'R.Patel', count_date: '2024-12-28' },
+                { sku: 'MSR-4500', location: 'A-04-02', counted_qty: 24, counted_by: 'R.Patel', count_date: '2024-12-28' },
+                { sku: 'LVL-4600', location: 'A-04-03', counted_qty: 30, counted_by: 'R.Patel', count_date: '2024-12-28' },
+                
+                // SMALL NEGATIVE - 3 packs short from picking errors (-$45)
+                { sku: 'ELC-2200', location: 'A-03-01', counted_qty: 82, counted_by: 'M.Torres', count_date: '2024-12-28' },
+                
+                // POSITIVE VARIANCE - found 8 extra, unprocessed return (+$26)
+                { sku: 'PLM-4400', location: 'C-01-02', counted_qty: 72, counted_by: 'R.Patel', count_date: '2024-12-28' },
+                
+                // CASE vs EACH - counter wrote 48 because they saw 2 cases of 24 (+$162)
+                { sku: 'LUB-6600', location: 'B-02-01', counted_qty: 48, counted_by: 'J.Chen', count_date: '2024-12-28' },
+                
+                // GHOST #1 - MTR-7700 not counted because it wasn't there (-$1,494)
+                // GHOST #2 - LSR-7800 not counted because it wasn't there (-$516)
+                
+                // LOCATION ERROR - tape found but 6 short, maybe in wrong slot (-$69)
+                { sku: 'TPE-8800', location: 'B-03-01', counted_qty: 90, counted_by: 'J.Chen', count_date: '2024-12-28' },
+                
+                // FOUND INVENTORY - this SKU isn't in the WMS at all
+                { sku: 'RET-9900', location: 'D-01-01', counted_qty: 15, counted_by: 'R.Patel', count_date: '2024-12-28' },
             ]
         }
     },
