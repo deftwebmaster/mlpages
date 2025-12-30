@@ -160,6 +160,45 @@
     background-color: rgba(59, 130, 246, 0.15) !important;
 }
 
+/* Highlight rows for drill-down from metrics */
+.row-highlight {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    position: relative;
+}
+
+.row-highlight-error {
+    background-color: rgba(239, 68, 68, 0.25) !important;
+    position: relative;
+    animation: highlight-pulse 1.5s ease-out;
+}
+
+.row-highlight-error td {
+    border-top: 2px solid var(--color-danger) !important;
+    border-bottom: 2px solid var(--color-danger) !important;
+}
+
+.row-highlight-error td:first-child {
+    border-left: 3px solid var(--color-danger) !important;
+}
+
+.row-highlight-warning {
+    background-color: rgba(245, 158, 11, 0.25) !important;
+    position: relative;
+}
+
+.row-highlight-warning td:first-child {
+    border-left: 3px solid var(--color-warning) !important;
+}
+
+@keyframes highlight-pulse {
+    0% {
+        background-color: rgba(239, 68, 68, 0.5);
+    }
+    100% {
+        background-color: rgba(239, 68, 68, 0.25);
+    }
+}
+
 .row-index {
     color: var(--color-text-dim);
     font-size: 0.7rem;

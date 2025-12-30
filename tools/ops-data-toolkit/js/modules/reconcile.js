@@ -208,18 +208,18 @@ export const ReconcileModule = {
         const qtyB = options.qtyColumnB;
         const costCol = options.costColumn;
         
-        // Build maps for fast lookup
+        // Build maps for fast lookup - store index for highlighting
         const mapA = new Map();
         const mapB = new Map();
         
-        sheetA.data.forEach(row => {
+        sheetA.data.forEach((row, index) => {
             const key = String(row[keyCol] || '');
-            mapA.set(key, row);
+            mapA.set(key, { row, index });
         });
         
-        sheetB.data.forEach(row => {
+        sheetB.data.forEach((row, index) => {
             const key = String(row[keyCol] || '');
-            mapB.set(key, row);
+            mapB.set(key, { row, index });
         });
         
         // Results
@@ -242,7 +242,10 @@ export const ReconcileModule = {
         };
         
         // Check all items in A
-        for (const [key, rowA] of mapA) {
+        for (const [key, itemA] of mapA) {
+            const rowA = itemA.row;
+            const indexA = itemA.index;
+            
             if (!mapB.has(key)) {
                 // Missing in B (physical count)
                 missingInB.push({
@@ -253,12 +256,16 @@ export const ReconcileModule = {
                     variance: -this.parseQty(rowA[qtyA]),
                     unit_cost: costCol ? this.parseQty(rowA[costCol]) : null,
                     dollar_impact: null,
-                    rowA
+                    rowA,
+                    indexA,
+                    sourceSheet: 'A'
                 });
                 stats.missing_in_b++;
             } else {
                 // Exists in both - check quantity
-                const rowB = mapB.get(key);
+                const itemB = mapB.get(key);
+                const rowB = itemB.row;
+                const indexB = itemB.index;
                 const systemQty = this.parseQty(rowA[qtyA]);
                 const physicalQty = this.parseQty(rowB[qtyB]);
                 const variance = physicalQty - systemQty;
@@ -274,7 +281,10 @@ export const ReconcileModule = {
                     unit_cost: unitCost,
                     dollar_impact: dollarImpact,
                     rowA,
-                    rowB
+                    rowB,
+                    indexA,
+                    indexB,
+                    sourceSheet: 'both'
                 };
                 
                 if (variance === 0) {
@@ -295,8 +305,10 @@ export const ReconcileModule = {
         }
         
         // Check for items in B but not in A
-        for (const [key, rowB] of mapB) {
+        for (const [key, itemB] of mapB) {
             if (!mapA.has(key)) {
+                const rowB = itemB.row;
+                const indexB = itemB.index;
                 // Missing in A (system)
                 const physicalQty = this.parseQty(rowB[qtyB]);
                 
@@ -308,7 +320,9 @@ export const ReconcileModule = {
                     variance: physicalQty,
                     unit_cost: null,
                     dollar_impact: null,
-                    rowB
+                    rowB,
+                    indexB,
+                    sourceSheet: 'B'
                 });
                 stats.missing_in_a++;
             }

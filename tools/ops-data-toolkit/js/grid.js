@@ -312,9 +312,7 @@ export class DataGrid {
      */
     highlightRows(indices, className = 'row-highlight') {
         // Remove existing highlights
-        this.container.querySelectorAll('tr.row-highlight').forEach(row => {
-            row.classList.remove('row-highlight');
-        });
+        this.clearHighlights();
         
         // Add new highlights
         indices.forEach(idx => {
@@ -323,6 +321,30 @@ export class DataGrid {
                 row.classList.add(className);
             }
         });
+        
+        // Store highlighted indices for reference
+        this.highlightedIndices = indices;
+        this.highlightClass = className;
+    }
+    
+    /**
+     * Clear all row highlights
+     */
+    clearHighlights() {
+        this.container.querySelectorAll('tr.row-highlight, tr.row-highlight-error, tr.row-highlight-warning').forEach(row => {
+            row.classList.remove('row-highlight', 'row-highlight-error', 'row-highlight-warning');
+        });
+        this.highlightedIndices = [];
+    }
+    
+    /**
+     * Scroll to a specific row
+     */
+    scrollToRow(index) {
+        const row = this.container.querySelector(`tr[data-index="${index}"]`);
+        if (row) {
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
     
     /**

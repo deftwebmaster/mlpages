@@ -396,12 +396,16 @@ function onStateChange(project, change) {
     if (sheet && sheet.data) {
         dataGrid.render(sheet.data, sheet.columns);
         populateKeyColumnSelect(sheet.columns);
-        updateSheetBadge(State.project.activeSheet, sheet.data.length);
     } else {
         dataGrid.clear();
         populateKeyColumnSelect([]);
-        updateSheetBadge(State.project.activeSheet, 0);
     }
+    
+    // Update both sheet badges
+    const sheetA = State.getSheet('A');
+    const sheetB = State.getSheet('B');
+    updateSheetBadge('A', sheetA?.data?.length || 0);
+    updateSheetBadge('B', sheetB?.data?.length || 0);
     
     // Update sheet tabs
     updateSheetTabs();
@@ -641,7 +645,7 @@ function renderMetrics(metrics) {
 }
 
 /**
- * Filter results grid by status value
+ * Filter results grid by status value and highlight source rows
  */
 function filterResultsByStatus(statusValue, clickedMetric) {
     const results = State.project.results;
@@ -655,18 +659,19 @@ function filterResultsByStatus(statusValue, clickedMetric) {
         m.classList.remove('metric-active');
     });
     
+    // Clear any existing highlights
+    dataGrid.clearHighlights();
+    
     if (isAlreadyActive) {
-        // Toggle off - show all results
+        // Toggle off - show all results, clear highlights
         resultsGrid.render(results.data, results.columns);
-        showToast('Showing all results', 'info');
+        showToast('Cleared filter', 'info');
     } else {
         // Filter to just this status
         const filtered = results.data.filter(row => {
-            // Check status column if it exists
             if (row.status) {
                 return row.status === statusValue;
             }
-            // For validation errors, check severity
             if (row.severity) {
                 return row.severity === statusValue;
             }
@@ -675,8 +680,75 @@ function filterResultsByStatus(statusValue, clickedMetric) {
         
         clickedMetric.classList.add('metric-active');
         resultsGrid.render(filtered, results.columns);
-        showToast(`Filtered to ${filtered.length} "${statusValue}" rows — click again to clear`, 'info');
+        
+        // Now highlight the source rows in the data grid
+        if (results._reconciliation) {
+            highlightReconciliationRows(statusValue, results._reconciliation);
+        }
+        
+        showToast(`Showing ${filtered.length} "${statusValue}" rows`, 'info');
     }
+}
+
+/**
+ * Highlight rows in data grid based on reconciliation status
+ */
+function highlightReconciliationRows(statusValue, reconciliation) {
+    let items = [];
+    let targetSheet = null;
+    
+    switch (statusValue) {
+        case 'Missing in System':
+            // These exist in B but not A - highlight in Sheet B
+            items = reconciliation.missingInA || [];
+            targetSheet = 'B';
+            break;
+        case 'Missing in Physical':
+            // These exist in A but not B - highlight in Sheet A
+            items = reconciliation.missingInB || [];
+            targetSheet = 'A';
+            break;
+        case 'Variance':
+            // These exist in both - highlight in current sheet
+            items = reconciliation.variances || [];
+            targetSheet = State.project.activeSheet;
+            break;
+        case 'Match':
+            items = reconciliation.matched || [];
+            targetSheet = State.project.activeSheet;
+            break;
+    }
+    
+    if (items.length === 0) return;
+    
+    // Switch to the appropriate sheet if needed
+    if (targetSheet && targetSheet !== State.project.activeSheet) {
+        State.setActiveSheet(targetSheet);
+    }
+    
+    // Get the row indices to highlight
+    const indices = items.map(item => {
+        if (targetSheet === 'A' && item.indexA !== undefined) {
+            return item.indexA;
+        } else if (targetSheet === 'B' && item.indexB !== undefined) {
+            return item.indexB;
+        } else if (item.indexA !== undefined) {
+            return item.indexA;
+        } else if (item.indexB !== undefined) {
+            return item.indexB;
+        }
+        return null;
+    }).filter(i => i !== null);
+    
+    // Highlight the rows
+    setTimeout(() => {
+        dataGrid.highlightRows(indices, 'row-highlight-error');
+        
+        // Scroll to first highlighted row
+        if (indices.length > 0) {
+            dataGrid.scrollToRow(indices[0]);
+        }
+    }, 100);
 }
 
 /**
