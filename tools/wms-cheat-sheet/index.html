@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>WMS Cheat Sheet | Matt Livingston</title>
+  <meta name="description" content="Quick reference for Oracle WMS Cloud and Manhattan WMS transaction codes. IHT codes, reason codes, and warehouse terminology explained.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mattlivingston.com/tools/wms-cheat-sheet/">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="WMS Cheat Sheet | Matt Livingston">
+  <meta property="og:description" content="Quick reference for Oracle WMS Cloud and Manhattan WMS transaction codes.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/wms-cheat-sheet/">
+  
+  <style>
+    :root {
+      --text: #e4e4e7;
+      --text-light: #a1a1aa;
+      --text-lighter: #71717a;
+      --bg: #0f0f10;
+      --card-bg: #18181b;
+      --border: #27272a;
+      --border-light: #3f3f46;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --oracle: #f87171;
+      --oracle-bg: rgba(248, 113, 113, 0.12);
+      --manhattan: #60a5fa;
+      --manhattan-bg: rgba(96, 165, 250, 0.12);
+      --both: #4ade80;
+      --both-bg: rgba(74, 222, 128, 0.12);
+      --term: #a78bfa;
+      --term-bg: rgba(167, 139, 250, 0.12);
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --radius: 8px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-md);
+    }
+
+    /* Header */
+    .page-header {
+      padding: var(--space-lg) 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: var(--space-lg);
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: var(--space-sm);
+      transition: color 0.15s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .page-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: var(--space-xs);
+    }
+
+    .page-header .tagline {
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    /* Stats bar */
+    .stats-bar {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-lg);
+      padding: var(--space-md);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: 0.875rem;
+    }
+
+    .stat-count {
+      font-weight: 600;
+    }
+
+    .stat-label {
+      color: var(--text-light);
+    }
+
+    /* Search and filters */
+    .controls {
+      margin-bottom: var(--space-lg);
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: var(--space-md);
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: var(--space-md);
+      padding-left: 2.75rem;
+      font-size: 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card-bg);
+      color: var(--text);
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-lighter);
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search-box::before {
+      content: "🔍";
+      position: absolute;
+      left: var(--space-md);
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      opacity: 0.5;
+    }
+
+    .filter-row {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      background: var(--card-bg);
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--text-light);
+      color: var(--text);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Results info */
+    .results-info {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-bottom: var(--space-md);
+    }
+
+    /* Code cards */
+    .code-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .code-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-md);
+      transition: box-shadow 0.15s, border-color 0.15s;
+    }
+
+    .code-card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--border);
+    }
+
+    .code-card.hidden {
+      display: none;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+      margin-bottom: var(--space-sm);
+    }
+
+    .code-id {
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .code-name {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-bottom: var(--space-xs);
+    }
+
+    .platform-tag {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      padding: 3px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .platform-tag.oracle {
+      background: var(--oracle-bg);
+      color: var(--oracle);
+    }
+
+    .platform-tag.manhattan {
+      background: var(--manhattan-bg);
+      color: var(--manhattan);
+    }
+
+    .platform-tag.both {
+      background: var(--both-bg);
+      color: var(--both);
+    }
+
+    .platform-tag.term {
+      background: var(--term-bg);
+      color: var(--term);
+    }
+
+    .code-description {
+      font-size: 0.9375rem;
+      color: var(--text-light);
+      line-height: 1.5;
+    }
+
+    .code-category {
+      display: inline-block;
+      margin-top: var(--space-sm);
+      font-size: 0.75rem;
+      color: var(--text-lighter);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .code-tip {
+      margin-top: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(59, 130, 246, 0.1);
+      border-left: 3px solid var(--accent);
+      font-size: 0.875rem;
+      color: var(--accent-hover);
+      border-radius: 0 4px 4px 0;
+    }
+
+    /* Section headers */
+    .section-header {
+      padding: var(--space-md) 0;
+      margin-top: var(--space-lg);
+      margin-bottom: var(--space-sm);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-header h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .section-header:first-of-type {
+      margin-top: 0;
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: var(--space-xl);
+      color: var(--text-light);
+    }
+
+    .empty-state p {
+      margin-bottom: var(--space-md);
+    }
+
+    /* Contribute CTA */
+    .contribute-section {
+      margin-top: var(--space-xl);
+      padding: var(--space-lg);
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(96, 165, 250, 0.05) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+
+    .contribute-section h3 {
+      font-size: 1.125rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .contribute-section p {
+      color: var(--text-light);
+      font-size: 0.9375rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .contribute-btn {
+      display: inline-block;
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--accent);
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: var(--radius);
+      transition: background 0.15s;
+    }
+
+    .contribute-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: var(--space-xl);
+      padding: var(--space-lg) 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .footer-content {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .footer a {
+      color: var(--text-light);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer a:hover {
+      color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .page-header h1 {
+        font-size: 1.5rem;
+      }
+      
+      .stats-bar {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+
+      .code-header {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
+
+      .filter-row {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: var(--space-sm);
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .filter-btn {
+        flex-shrink: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="page-header">
+      <a href="/tools/" class="back-link">← Back to Tools</a>
+      <h1>WMS Cheat Sheet</h1>
+      <p class="tagline">Quick reference for Oracle WMS Cloud and Manhattan WMS codes</p>
+    </header>
+
+    <div class="stats-bar">
+      <div class="stat">
+        <span class="stat-count" id="totalCount">0</span>
+        <span class="stat-label">Total entries</span>
+      </div>
+      <div class="stat">
+        <span class="stat-count" id="oracleCount">0</span>
+        <span class="stat-label">Oracle WMS</span>
+      </div>
+      <div class="stat">
+        <span class="stat-count" id="manhattanCount">0</span>
+        <span class="stat-label">Manhattan</span>
+      </div>
+      <div class="stat">
+        <span class="stat-count" id="termCount">0</span>
+        <span class="stat-label">Terminology</span>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Search codes, names, or descriptions..." autocomplete="off">
+      </div>
+      <div class="filter-row">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="oracle">Oracle WMS</button>
+        <button class="filter-btn" data-filter="manhattan">Manhattan</button>
+        <button class="filter-btn" data-filter="terminology">Terminology</button>
+      </div>
+    </div>
+
+    <div class="results-info" id="resultsInfo"></div>
+
+    <div class="code-list" id="codeList"></div>
+
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <p>No matches found.</p>
+      <p>Try a different search term or filter.</p>
+    </div>
+
+    <section class="contribute-section">
+      <h3>Know a code that's missing?</h3>
+      <p>This glossary grows with community input. If you've encountered a transaction code or term that should be here, let me know.</p>
+      <a href="mailto:matt@mattlivingston.com?subject=WMS%20Glossary%20Suggestion&body=Code%3A%20%0APlatform%3A%20Oracle%20%2F%20Manhattan%20%2F%20Both%0ADescription%3A%20%0ACategory%3A%20%0ATips%20(optional)%3A%20" class="contribute-btn">Suggest an Addition</a>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <span>&copy; 2025 Matt Livingston</span>
+        <span> · </span>
+        <a href="/hire-me/">Work with me</a>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // WMS Glossary Data
+    const glossaryData = [
+      // ============================================
+      // ORACLE WMS CLOUD - IHT CODES
+      // ============================================
+      
+      // Receiving
+      {
+        code: "IHT-1",
+        name: "Container Received / LPN Received",
+        platform: "oracle",
+        category: "Receiving",
+        description: "Triggered when an inbound LPN is received into inventory. Records the receipt of goods against a PO or ASN.",
+        tip: "If receiving against multiple POs in one LPN, the IHT will split by PO number."
+      },
+      {
+        code: "IHT-2",
+        name: "Container Consumed",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Records when an LPN is consumed, typically for transfers to external systems like manufacturing. Requires a valid reason code.",
+        tip: "Use RF Consume LPN transaction. Only works on LPNs in 'Located' status."
+      },
+      {
+        code: "IHT-4",
+        name: "Inventory Adjusted",
+        platform: "oracle",
+        category: "Inventory",
+        description: "General inventory adjustment transaction. Captures quantity changes with reason codes."
+      },
+      {
+        code: "IHT-6",
+        name: "IB Shipment Container Verified - Receipt Variance",
+        platform: "oracle",
+        category: "Receiving",
+        description: "Recorded when inbound shipment verification finds a variance in received quantity versus expected."
+      },
+      {
+        code: "IHT-7",
+        name: "IB Shipment Container Verified - Container Variance",
+        platform: "oracle",
+        category: "Receiving",
+        description: "Recorded when inbound shipment verification finds a variance at the container/LPN level."
+      },
+      
+      // Picking & Packing
+      {
+        code: "IHT-10",
+        name: "Container Packed",
+        platform: "oracle",
+        category: "Packing",
+        description: "Recorded when inventory is packed into an outbound LPN."
+      },
+      {
+        code: "IHT-12",
+        name: "Order Detail Shorted",
+        platform: "oracle",
+        category: "Picking",
+        description: "Triggered when an order line cannot be fully allocated or picked due to inventory shortage.",
+        tip: "Written when 'Cancel Partially Unallocated' flag is set on Wave Template."
+      },
+      {
+        code: "IHT-13",
+        name: "Container Loaded (Outbound)",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Recorded when an outbound LPN is loaded onto a trailer or load."
+      },
+      {
+        code: "IHT-17",
+        name: "Inventory Adjusted Post Verification",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Adjustment made after cycle count or audit verification. Includes reason code capture.",
+        tip: "Enable 'prompt-reason-code' parameter on RF screens to capture reason codes."
+      },
+      
+      // Container Status
+      {
+        code: "IHT-31",
+        name: "OB Container Modified",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Triggered when an outbound LPN is modified, such as renaming or linking to an asset."
+      },
+      {
+        code: "IHT-40",
+        name: "IBLPN Lost",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Recorded when an inbound LPN is marked as lost in the system."
+      },
+      {
+        code: "IHT-48",
+        name: "Shipment Status Change",
+        platform: "oracle",
+        category: "Receiving",
+        description: "Tracks status changes on inbound shipments through the receiving process."
+      },
+      {
+        code: "IHT-51",
+        name: "Inventory Movement",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Records inventory moves between locations. Includes to_location field in output.",
+        tip: "Used for putaway, replenishment, and location transfers."
+      },
+      {
+        code: "IHT-54",
+        name: "Container Packed (Alternate)",
+        platform: "oracle",
+        category: "Packing",
+        description: "Alternate packing transaction code. Used in different packing scenarios than IHT-10.",
+        tip: "IHT-10 and IHT-54 don't overlap on the same OBLPN — they cover different packing flows."
+      },
+      
+      // Assets & Kitting
+      {
+        code: "IHT-57",
+        name: "Asset Received",
+        platform: "oracle",
+        category: "Receiving",
+        description: "Recorded when an asset is received into the facility. Not written if asset is new to system."
+      },
+      {
+        code: "IHT-58",
+        name: "Asset Shipped",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Recorded for each OBLPN associated with an asset when the load is shipped."
+      },
+      {
+        code: "IHT-60",
+        name: "Load Shipped File",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Generated when a load is shipped. Creates the outbound load shipped file for ERP integration."
+      },
+      {
+        code: "IHT-67",
+        name: "Work Order Status Changed",
+        platform: "oracle",
+        category: "Manufacturing",
+        description: "Tracks work order status transitions in manufacturing or kitting operations."
+      },
+      {
+        code: "IHT-70",
+        name: "Kitting Inventory Consumed",
+        platform: "oracle",
+        category: "Manufacturing",
+        description: "Records component inventory consumption during kitting or assembly operations."
+      },
+      
+      // Quality Control
+      {
+        code: "IHT-72",
+        name: "Container Received Subject to QC",
+        platform: "oracle",
+        category: "Quality",
+        description: "Triggered when an LPN is received and flagged for quality check. Status becomes 'Quality Check'.",
+        tip: "Enable 'consider-mark-for-qc-flg' parameter on IBShipmentView UI."
+      },
+      {
+        code: "IHT-73",
+        name: "QC Accepted",
+        platform: "oracle",
+        category: "Quality",
+        description: "Recorded when inventory passes quality inspection and is released."
+      },
+      {
+        code: "IHT-74",
+        name: "QC Rejected",
+        platform: "oracle",
+        category: "Quality",
+        description: "Recorded when inventory fails quality inspection."
+      },
+      
+      // Load & Order Status
+      {
+        code: "IHT-80",
+        name: "Container Delivered",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Updates OBLPN to DELIVERED status. Can be triggered via API when external systems confirm delivery."
+      },
+      {
+        code: "IHT-83",
+        name: "Container Unloaded",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Recorded when a container is unloaded from a trailer or load."
+      },
+      {
+        code: "IHT-84",
+        name: "Load Status Change",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Triggered when an inbound or outbound load status changes. Used by IoT Fleet Monitoring.",
+        tip: "Subscribe to this IHT to track when planned loads arrive and get internal load numbers."
+      },
+      {
+        code: "IHT-85",
+        name: "Order Detail Status Change",
+        platform: "oracle",
+        category: "Orders",
+        description: "Tracks order line status changes (Created → Allocated → Packed → Shipped). Includes back order quantity in ref_value_4.",
+        tip: "Useful for ERP integration to track order fulfillment status."
+      },
+      {
+        code: "IHT-90",
+        name: "Movement Request Detail Shorted",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Recorded when a movement request is cancelled or shorted. Includes Movement Request Line ID in ref_value_6."
+      },
+
+      // ============================================
+      // MANHATTAN WMS - PLACEHOLDER
+      // ============================================
+      {
+        code: "PIX",
+        name: "Perpetual Inventory Transaction",
+        platform: "manhattan",
+        category: "Inventory",
+        description: "Core inventory transaction module in Manhattan. Processes inventory movements and adjustments between WMS and external systems.",
+        tip: "Manhattan uses PIX ASYNC to process inventory transactions from PkMS."
+      },
+      {
+        code: "ASN",
+        name: "Advance Ship Notice",
+        platform: "manhattan",
+        category: "Receiving",
+        description: "Electronic notification of incoming shipment. Contains expected items, quantities, and PO references."
+      },
+
+      // ============================================
+      // COMMON WMS TERMINOLOGY
+      // ============================================
+      {
+        code: "iLPN",
+        name: "Inbound License Plate Number",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Unique identifier for inbound containers/pallets. Tracks inventory from receipt through putaway.",
+        tip: "Also written as IBLPN in Oracle WMS Cloud."
+      },
+      {
+        code: "oLPN",
+        name: "Outbound License Plate Number",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Unique identifier for outbound shipping containers. Created during packing, tracked through shipment.",
+        tip: "Also written as OBLPN in Oracle WMS Cloud."
+      },
+      {
+        code: "RF",
+        name: "Radio Frequency",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Handheld scanning devices used on warehouse floor. RF transactions are menu-driven operations for receiving, picking, packing, etc."
+      },
+      {
+        code: "LTL",
+        name: "Less Than Truckload",
+        platform: "terminology",
+        category: "Shipping",
+        description: "Shipping method where freight doesn't require a full trailer. Multiple shipments share trailer space."
+      },
+      {
+        code: "TL / FTL",
+        name: "Truckload / Full Truckload",
+        platform: "terminology",
+        category: "Shipping",
+        description: "Shipping method using a dedicated full trailer for one shipment."
+      },
+      {
+        code: "UOM",
+        name: "Unit of Measure",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Defines how inventory is counted: Eaches, Cases, Packs, Pallets. Critical for receiving, picking, and reporting accuracy.",
+        tip: "Always verify UOM conversions between systems. Date formats and UOM mismatches are common integration issues."
+      },
+      {
+        code: "SKU",
+        name: "Stock Keeping Unit",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Unique identifier for a specific product variant. Includes item attributes like size, color, configuration."
+      },
+      {
+        code: "Wave",
+        name: "Wave / Wave Planning",
+        platform: "terminology",
+        category: "Picking",
+        description: "Grouping of orders released together for picking. Optimizes pick paths and labor allocation.",
+        tip: "Wave templates control allocation rules, pick methods, and order grouping logic."
+      },
+      {
+        code: "Putaway",
+        name: "Putaway",
+        platform: "terminology",
+        category: "Receiving",
+        description: "Process of moving received inventory from dock to storage location. Can be directed (system-assigned) or user-directed."
+      },
+      {
+        code: "Slotting",
+        name: "Slotting / Slot Optimization",
+        platform: "terminology",
+        category: "Inventory",
+        description: "Strategic placement of SKUs in warehouse locations to optimize pick efficiency. Fast movers near shipping, heavy items at ergonomic heights."
+      },
+      {
+        code: "Cycle Count",
+        name: "Cycle Count",
+        platform: "terminology",
+        category: "Inventory",
+        description: "Ongoing inventory verification process. Counts subset of locations on rotating schedule rather than full physical inventory.",
+        tip: "Typically prioritizes high-value SKUs, fast movers, or locations with recent discrepancies."
+      },
+      {
+        code: "Allocation",
+        name: "Allocation",
+        platform: "terminology",
+        category: "Picking",
+        description: "Process of reserving specific inventory for an order. Reduces available quantity and creates pick tasks."
+      },
+      {
+        code: "Replenishment",
+        name: "Replenishment",
+        platform: "terminology",
+        category: "Inventory",
+        description: "Moving inventory from reserve/bulk storage to forward pick locations when levels drop below threshold."
+      },
+      {
+        code: "Crossdock",
+        name: "Crossdock / Cross-Docking",
+        platform: "terminology",
+        category: "Receiving",
+        description: "Receiving inventory and immediately routing to outbound without putaway to storage. Reduces handling and storage time."
+      },
+      {
+        code: "ASN",
+        name: "Advance Ship Notice",
+        platform: "terminology",
+        category: "Receiving",
+        description: "Electronic document sent by supplier before shipment arrives. Contains expected contents, quantities, PO references."
+      },
+      {
+        code: "BOL",
+        name: "Bill of Lading",
+        platform: "terminology",
+        category: "Shipping",
+        description: "Legal document between shipper and carrier. Details goods being shipped, serves as receipt and contract."
+      },
+      {
+        code: "Pick to Light",
+        name: "Pick to Light / Put to Light",
+        platform: "terminology",
+        category: "Picking",
+        description: "Light-directed picking system. LEDs at locations indicate which SKUs to pick and quantities."
+      },
+      {
+        code: "MHE",
+        name: "Material Handling Equipment",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Warehouse equipment: conveyors, sorters, AS/RS systems, forklifts. WMS integrates with MHE for automated operations."
+      },
+      {
+        code: "AS/RS",
+        name: "Automated Storage and Retrieval System",
+        platform: "terminology",
+        category: "Terminology",
+        description: "Automated systems using cranes or shuttles to store and retrieve inventory. High density, reduced labor."
+      }
+    ];
+
+    // DOM elements
+    const searchInput = document.getElementById('searchInput');
+    const codeList = document.getElementById('codeList');
+    const emptyState = document.getElementById('emptyState');
+    const resultsInfo = document.getElementById('resultsInfo');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    // State
+    let currentFilter = 'all';
+    let searchTerm = '';
+
+    // Initialize
+    function init() {
+      renderCodes();
+      updateStats();
+      
+      // Search handler
+      searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.toLowerCase().trim();
+        renderCodes();
+      });
+
+      // Filter handlers
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderCodes();
+        });
+      });
+    }
+
+    // Update stats
+    function updateStats() {
+      document.getElementById('totalCount').textContent = glossaryData.length;
+      document.getElementById('oracleCount').textContent = glossaryData.filter(d => d.platform === 'oracle').length;
+      document.getElementById('manhattanCount').textContent = glossaryData.filter(d => d.platform === 'manhattan').length;
+      document.getElementById('termCount').textContent = glossaryData.filter(d => d.platform === 'terminology').length;
+    }
+
+    // Filter and search
+    function getFilteredData() {
+      return glossaryData.filter(item => {
+        // Platform filter
+        const platformMatch = currentFilter === 'all' || item.platform === currentFilter;
+        
+        // Search filter
+        const searchMatch = !searchTerm || 
+          item.code.toLowerCase().includes(searchTerm) ||
+          item.name.toLowerCase().includes(searchTerm) ||
+          item.description.toLowerCase().includes(searchTerm) ||
+          item.category.toLowerCase().includes(searchTerm) ||
+          (item.tip && item.tip.toLowerCase().includes(searchTerm));
+        
+        return platformMatch && searchMatch;
+      });
+    }
+
+    // Group by category
+    function groupByCategory(data) {
+      const groups = {};
+      data.forEach(item => {
+        if (!groups[item.category]) {
+          groups[item.category] = [];
+        }
+        groups[item.category].push(item);
+      });
+      return groups;
+    }
+
+    // Get platform label
+    function getPlatformLabel(platform) {
+      switch(platform) {
+        case 'oracle': return 'Oracle WMS';
+        case 'manhattan': return 'Manhattan';
+        case 'both': return 'Both';
+        case 'terminology': return 'Term';
+        default: return platform;
+      }
+    }
+
+    // Render codes
+    function renderCodes() {
+      const filtered = getFilteredData();
+      const grouped = groupByCategory(filtered);
+      
+      // Update results info
+      resultsInfo.textContent = `Showing ${filtered.length} of ${glossaryData.length} entries`;
+      
+      // Show/hide empty state
+      if (filtered.length === 0) {
+        codeList.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      emptyState.style.display = 'none';
+      
+      // Category order
+      const categoryOrder = [
+        'Receiving', 'Putaway', 'Inventory', 'Picking', 'Packing', 
+        'Shipping', 'Quality', 'Orders', 'Manufacturing', 'Terminology'
+      ];
+      
+      // Sort categories
+      const sortedCategories = Object.keys(grouped).sort((a, b) => {
+        const aIndex = categoryOrder.indexOf(a);
+        const bIndex = categoryOrder.indexOf(b);
+        if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      });
+      
+      // Build HTML
+      let html = '';
+      
+      sortedCategories.forEach(category => {
+        html += `<div class="section-header"><h2>${category}</h2></div>`;
+        
+        // Sort items within category by code
+        const items = grouped[category].sort((a, b) => {
+          // Extract numeric part for IHT codes
+          const aNum = parseInt(a.code.replace(/\D/g, '')) || 0;
+          const bNum = parseInt(b.code.replace(/\D/g, '')) || 0;
+          if (aNum && bNum) return aNum - bNum;
+          return a.code.localeCompare(b.code);
+        });
+        
+        items.forEach(item => {
+          html += `
+            <article class="code-card" data-platform="${item.platform}">
+              <div class="code-header">
+                <div>
+                  <div class="code-id">${item.code}</div>
+                  <div class="code-name">${item.name}</div>
+                </div>
+                <span class="platform-tag ${item.platform}">${getPlatformLabel(item.platform)}</span>
+              </div>
+              <p class="code-description">${item.description}</p>
+              ${item.tip ? `<div class="code-tip">💡 ${item.tip}</div>` : ''}
+            </article>
+          `;
+        });
+      });
+      
+      codeList.innerHTML = html;
+    }
+
+    // Initialize on load
+    init();
+  </script>
+</body>
+</html>
