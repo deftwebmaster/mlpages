@@ -1,124 +1,1244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator - Privacy First</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Generator | Free, Private, No Tracking</title>
+  <meta name="description" content="Generate QR codes instantly in your browser. Add custom colors, center icons, and logos. 100% private - no data leaves your device. Free, no signup required.">
+  <meta name="keywords" content="qr code generator, qr maker, free qr code, private qr generator, qr code with logo, custom qr code">
+  <link rel="canonical" href="https://mattlivingston.com/tools/qr-generator/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .site-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .privacy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    /* Main Layout */
+    .generator {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+
+    .input-section,
+    .preview-section {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Input Groups */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .input-group label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    textarea,
+    input[type="number"],
+    select {
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    textarea:focus,
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Options Grid */
+    .options-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    /* Color Picker */
+    .color-picker-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .color-picker-row {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .color-swatch {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .color-swatch:hover {
+      border-color: var(--accent);
+    }
+
+    .color-swatch input[type="color"] {
+      width: 150%;
+      height: 150%;
+      margin: -25%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .color-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.4rem 0.6rem;
+      width: 80px;
+      text-align: center;
+    }
+
+    /* Size Presets */
+    .size-presets {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.25rem;
+    }
+
+    .size-preset {
+      flex: 1;
+      padding: 0.35rem 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .size-preset:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .size-preset.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* Theme Selector */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+    }
+
+    .theme-btn {
+      padding: 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      text-align: center;
+    }
+
+    .theme-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .theme-btn.active {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--accent);
+    }
+
+    .theme-btn .theme-icon {
+      display: block;
+      font-size: 1.1rem;
+      margin-bottom: 0.15rem;
+    }
+
+    /* Icon Section */
+    .icon-tabs {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .icon-tab {
+      flex: 1;
+      padding: 0.4rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .icon-tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.35rem;
+      max-height: 120px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .emoji-option {
+      font-size: 1.4rem;
+      padding: 0.35rem;
+      border: 2px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      background: var(--bg-card);
+    }
+
+    .emoji-option:hover {
+      border-color: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .emoji-option.selected {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .upload-section {
+      display: none;
+    }
+
+    .upload-section.active {
+      display: block;
+    }
+
+    .emoji-section {
+      display: none;
+    }
+
+    .emoji-section.active {
+      display: block;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .file-label {
+      display: block;
+      padding: 0.6rem;
+      background: var(--bg-input);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .file-label:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      border-style: solid;
+    }
+
+    .file-label.has-file {
+      border-color: var(--success);
+      color: var(--success);
+      border-style: solid;
+    }
+
+    .clear-image-btn {
+      margin-top: 0.5rem;
+      padding: 0.4rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      width: 100%;
+      font-family: inherit;
+      display: none;
+    }
+
+    .clear-image-btn.visible {
+      display: block;
+    }
+
+    .clear-image-btn:hover {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Icon Size Slider */
+    .slider-group {
+      margin-top: 0.5rem;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+
+    .slider-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-card);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      background: var(--accent);
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Buttons */
+    .btn-primary {
+      padding: 0.75rem 1.25rem;
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .keyboard-hint {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.35rem;
+    }
+
+    .keyboard-hint kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1rem 0.3rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+    }
+
+    /* Preview Section */
+    .preview-container {
+      background: var(--bg-input);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview-container.has-qr {
+      border-style: solid;
+      border-color: var(--accent);
+    }
+
+    #qr-canvas {
+      display: none;
+      max-width: 100%;
+      height: auto;
+    }
+
+    #qr-canvas.visible {
+      display: block;
+    }
+
+    .placeholder {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 2rem;
+    }
+
+    .placeholder-icon {
+      font-size: 3rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.3;
+    }
+
+    .placeholder p {
+      font-size: 0.85rem;
+    }
+
+    /* Download Buttons */
+    .download-buttons {
+      display: none;
+      gap: 0.5rem;
+    }
+
+    .download-buttons.visible {
+      display: flex;
+    }
+
+    .btn-download {
+      flex: 1;
+      padding: 0.6rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-download:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .btn-download.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .btn-download.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .footer-credit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-credit a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-credit a:hover {
+      color: var(--accent);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      z-index: 100;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .generator {
+        grid-template-columns: 1fr;
+      }
+
+      .preview-section {
+        order: -1;
+      }
+
+      .preview-container {
+        min-height: 250px;
+      }
+
+      .theme-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .options-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>QR Code Generator</h1>
-            <p class="subtitle">Privacy-first • Client-side only • No data leaves your device</p>
-        </header>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <a href="/tools/" class="back-link">← All Tools</a>
+      <h1 class="site-title">QR Code Generator</h1>
+      <p class="tagline">
+        <span class="privacy-badge">🔒 Private</span>
+        All processing happens in your browser — no data leaves your device
+      </p>
+    </header>
 
-        <main class="generator">
-            <div class="input-section">
-                <div class="input-group">
-                    <label for="qr-text">Content</label>
-                    <textarea 
-                        id="qr-text" 
-                        placeholder="Enter URL, text, or anything you want to encode..."
-                        rows="3"
-                    ></textarea>
-                </div>
+    <!-- Generator -->
+    <main class="generator">
+      <!-- Input Section -->
+      <div class="input-section">
+        <div class="input-group">
+          <label for="qr-text">Content</label>
+          <textarea id="qr-text" placeholder="Enter URL, text, WiFi credentials, or anything to encode..."></textarea>
+        </div>
 
-                <div class="options-grid">
-                    <div class="input-group">
-                        <label for="error-level">Error Correction</label>
-                        <select id="error-level">
-                            <option value="L">Low (7%)</option>
-                            <option value="M">Medium (15%)</option>
-                            <option value="Q">Quartile (25%)</option>
-                            <option value="H" selected>High (30% - best for logos)</option>
-                        </select>
-                    </div>
+        <div class="options-row">
+          <div class="input-group">
+            <label for="error-level">Error Correction</label>
+            <select id="error-level">
+              <option value="L">Low (7%)</option>
+              <option value="M">Medium (15%)</option>
+              <option value="Q">Quartile (25%)</option>
+              <option value="H" selected>High (30%)</option>
+            </select>
+          </div>
 
-                    <div class="input-group">
-                        <label for="qr-size">Size (px)</label>
-                        <input type="number" id="qr-size" value="400" min="200" max="1000" step="50">
-                    </div>
-                </div>
-
-                <div class="input-group">
-                    <label for="qr-color">QR Code Color</label>
-                    <input type="color" id="qr-color" value="#000000">
-                </div>
-
-                <div class="input-group">
-                    <label for="bg-color">Background Color</label>
-                    <input type="color" id="bg-color" value="#ffffff">
-                </div>
-
-                <div class="input-group">
-                    <label>Theme</label>
-                    <select id="theme-select">
-                        <option value="custom">Custom</option>
-                        <option value="christmas">🎄 Christmas</option>
-                        <option value="winter">❄️ Winter</option>
-                        <option value="newyear">🎉 New Year</option>
-                        <option value="valentine">💝 Valentine's Day</option>
-                        <option value="halloween">🎃 Halloween</option>
-                        <option value="minimal">⚫ Minimal Black</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label>Center Icon</label>
-                    <div class="icon-type-toggle">
-                        <button type="button" id="emoji-tab" class="icon-tab active">Emoji</button>
-                        <button type="button" id="upload-tab" class="icon-tab">Upload</button>
-                    </div>
-                    
-                    <div id="emoji-picker-section" class="icon-section">
-                        <div class="emoji-grid" id="emoji-grid"></div>
-                    </div>
-                    
-                    <div id="upload-section" class="icon-section" style="display: none;">
-                        <div class="center-image-controls">
-                            <input type="file" id="center-image" accept="image/*" class="file-input">
-                            <label for="center-image" class="file-label">Upload Image</label>
-                            <button id="clear-image" class="btn-secondary" style="display: none;">Clear</button>
-                        </div>
-                    </div>
-
-                    <div class="input-group" style="margin-top: 0.5rem;">
-                        <label for="image-size">Icon Size (%)</label>
-                        <input type="range" id="image-size" min="10" max="35" value="30" step="1">
-                        <span id="image-size-value">30%</span>
-                    </div>
-                </div>
-
-                <button id="generate-btn" class="btn-primary">Generate QR Code</button>
+          <div class="input-group">
+            <label for="qr-size">Size (px)</label>
+            <input type="number" id="qr-size" value="400" min="200" max="1000" step="50">
+            <div class="size-presets">
+              <button class="size-preset" data-size="256">Small</button>
+              <button class="size-preset active" data-size="400">Medium</button>
+              <button class="size-preset" data-size="600">Large</button>
             </div>
+          </div>
+        </div>
 
-            <div class="preview-section">
-                <div class="canvas-container">
-                    <canvas id="qr-canvas"></canvas>
-                    <div id="placeholder" class="placeholder">
-                        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="3" y="14" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                        </svg>
-                        <p>Your QR code will appear here</p>
-                    </div>
-                </div>
-                <button id="download-btn" class="btn-primary" style="display: none;">Download PNG</button>
+        <div class="options-row">
+          <div class="color-picker-group">
+            <label>QR Color</label>
+            <div class="color-picker-row">
+              <div class="color-swatch">
+                <input type="color" id="qr-color" value="#000000">
+              </div>
+              <input type="text" class="color-value" id="qr-color-value" value="#000000" maxlength="7">
             </div>
-        </main>
+          </div>
 
-        <footer>
-            <p>
-                <strong>Privacy Notice:</strong> All processing happens in your browser. 
-                No data is sent to any server. No analytics. No tracking.
-            </p>
-        </footer>
-    </div>
+          <div class="color-picker-group">
+            <label>Background</label>
+            <div class="color-picker-row">
+              <div class="color-swatch">
+                <input type="color" id="bg-color" value="#ffffff">
+              </div>
+              <input type="text" class="color-value" id="bg-color-value" value="#ffffff" maxlength="7">
+            </div>
+          </div>
+        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="app.js"></script>
+        <div class="input-group">
+          <label>Theme Presets</label>
+          <div class="theme-grid">
+            <button class="theme-btn active" data-theme="custom">
+              <span class="theme-icon">🎨</span>
+              Custom
+            </button>
+            <button class="theme-btn" data-theme="minimal">
+              <span class="theme-icon">⚫</span>
+              Minimal
+            </button>
+            <button class="theme-btn" data-theme="christmas">
+              <span class="theme-icon">🎄</span>
+              Xmas
+            </button>
+            <button class="theme-btn" data-theme="halloween">
+              <span class="theme-icon">🎃</span>
+              Spooky
+            </button>
+            <button class="theme-btn" data-theme="valentine">
+              <span class="theme-icon">💝</span>
+              Love
+            </button>
+            <button class="theme-btn" data-theme="newyear">
+              <span class="theme-icon">🎉</span>
+              Party
+            </button>
+            <button class="theme-btn" data-theme="winter">
+              <span class="theme-icon">❄️</span>
+              Winter
+            </button>
+            <button class="theme-btn" data-theme="nature">
+              <span class="theme-icon">🌿</span>
+              Nature
+            </button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Center Icon (optional)</label>
+          <div class="icon-tabs">
+            <button class="icon-tab active" id="emoji-tab">Emoji</button>
+            <button class="icon-tab" id="upload-tab">Upload Image</button>
+          </div>
+          
+          <div class="emoji-section active" id="emoji-section">
+            <div class="emoji-grid" id="emoji-grid"></div>
+          </div>
+          
+          <div class="upload-section" id="upload-section">
+            <input type="file" id="center-image" accept="image/*" class="file-input">
+            <label for="center-image" class="file-label" id="file-label">
+              📁 Click to upload logo or image
+            </label>
+            <button class="clear-image-btn" id="clear-image">✕ Remove Image</button>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-header">
+              <label>Icon Size</label>
+              <span class="slider-value" id="size-value">30%</span>
+            </div>
+            <input type="range" id="image-size" min="15" max="35" value="30">
+          </div>
+        </div>
+
+        <button id="generate-btn" class="btn-primary">Generate QR Code</button>
+        <div class="keyboard-hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd> to generate</div>
+      </div>
+
+      <!-- Preview Section -->
+      <div class="preview-section">
+        <div class="preview-container" id="preview-container">
+          <canvas id="qr-canvas"></canvas>
+          <div class="placeholder" id="placeholder">
+            <div class="placeholder-icon">⬚</div>
+            <p>Your QR code will appear here</p>
+          </div>
+        </div>
+        
+        <div class="download-buttons" id="download-buttons">
+          <button class="btn-download primary" id="download-btn">⬇ Download PNG</button>
+          <button class="btn-download" id="copy-btn">📋 Copy</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-links">
+        <a href="/tools/">← All Tools</a>
+      </div>
+      <p class="footer-credit">
+        Built by <a href="https://mattlivingston.com">Matt Livingston</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // ============================================
+    // QR Code Generator
+    // ============================================
+    class QRGenerator {
+      constructor() {
+        this.canvas = document.getElementById('qr-canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.centerImage = null;
+        this.selectedEmoji = null;
+        
+        this.themes = {
+          custom: {
+            qrColor: '#000000',
+            bgColor: '#ffffff',
+            emojis: ['😀', '🎨', '🌈', '⭐', '💎', '🔥', '💡', '🎯', '🚀', '🌟', '✨', '💫']
+          },
+          minimal: {
+            qrColor: '#000000',
+            bgColor: '#ffffff',
+            emojis: ['⚫', '⚪', '🔲', '🔳', '◾', '◽', '▪️', '▫️', '⬛', '⬜', '🖤', '🤍']
+          },
+          christmas: {
+            qrColor: '#c41e3a',
+            bgColor: '#ffffff',
+            emojis: ['🎄', '🎅', '⛄', '🎁', '🔔', '⭐', '❄️', '🤶', '🦌', '🕯️', '🧦', '🎀']
+          },
+          halloween: {
+            qrColor: '#f97316',
+            bgColor: '#1c1917',
+            emojis: ['🎃', '👻', '🦇', '🕷️', '🕸️', '💀', '🧙', '🧛', '🧟', '🍬', '🍭', '🌙']
+          },
+          valentine: {
+            qrColor: '#ec4899',
+            bgColor: '#fef2f2',
+            emojis: ['💝', '💖', '💕', '💗', '💓', '💞', '💘', '❤️', '🌹', '💐', '🍫', '💌']
+          },
+          newyear: {
+            qrColor: '#fbbf24',
+            bgColor: '#1e1b4b',
+            emojis: ['🎉', '🎊', '🥂', '🍾', '🎆', '🎇', '✨', '🌟', '🎈', '🎀', '🪩', '💫']
+          },
+          winter: {
+            qrColor: '#0ea5e9',
+            bgColor: '#f0f9ff',
+            emojis: ['❄️', '⛄', '🌨️', '☃️', '🧊', '🎿', '⛷️', '🏔️', '🧣', '🧤', '☕', '🍫']
+          },
+          nature: {
+            qrColor: '#16a34a',
+            bgColor: '#f0fdf4',
+            emojis: ['🌿', '🌱', '🌳', '🌲', '🍀', '🌸', '🌺', '🌻', '🦋', '🐝', '🌍', '♻️']
+          }
+        };
+        
+        this.init();
+      }
+
+      init() {
+        this.cacheElements();
+        this.attachEventListeners();
+        this.loadTheme('custom');
+      }
+
+      cacheElements() {
+        this.els = {
+          textInput: document.getElementById('qr-text'),
+          errorLevel: document.getElementById('error-level'),
+          qrSize: document.getElementById('qr-size'),
+          qrColor: document.getElementById('qr-color'),
+          qrColorValue: document.getElementById('qr-color-value'),
+          bgColor: document.getElementById('bg-color'),
+          bgColorValue: document.getElementById('bg-color-value'),
+          emojiTab: document.getElementById('emoji-tab'),
+          uploadTab: document.getElementById('upload-tab'),
+          emojiSection: document.getElementById('emoji-section'),
+          uploadSection: document.getElementById('upload-section'),
+          emojiGrid: document.getElementById('emoji-grid'),
+          centerImageInput: document.getElementById('center-image'),
+          fileLabel: document.getElementById('file-label'),
+          clearImageBtn: document.getElementById('clear-image'),
+          imageSizeSlider: document.getElementById('image-size'),
+          sizeValue: document.getElementById('size-value'),
+          generateBtn: document.getElementById('generate-btn'),
+          downloadBtn: document.getElementById('download-btn'),
+          copyBtn: document.getElementById('copy-btn'),
+          downloadButtons: document.getElementById('download-buttons'),
+          placeholder: document.getElementById('placeholder'),
+          previewContainer: document.getElementById('preview-container')
+        };
+      }
+
+      attachEventListeners() {
+        // Generate
+        this.els.generateBtn.addEventListener('click', () => this.generate());
+        this.els.downloadBtn.addEventListener('click', () => this.download());
+        this.els.copyBtn.addEventListener('click', () => this.copyToClipboard());
+        
+        // Keyboard shortcut
+        this.els.textInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && e.ctrlKey) {
+            e.preventDefault();
+            this.generate();
+          }
+        });
+
+        // Color pickers sync with text inputs
+        this.els.qrColor.addEventListener('input', (e) => {
+          this.els.qrColorValue.value = e.target.value;
+          this.setActiveTheme(null);
+        });
+        this.els.bgColor.addEventListener('input', (e) => {
+          this.els.bgColorValue.value = e.target.value;
+          this.setActiveTheme(null);
+        });
+        this.els.qrColorValue.addEventListener('change', (e) => {
+          if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+            this.els.qrColor.value = e.target.value;
+          }
+        });
+        this.els.bgColorValue.addEventListener('change', (e) => {
+          if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) {
+            this.els.bgColor.value = e.target.value;
+          }
+        });
+
+        // Size presets
+        document.querySelectorAll('.size-preset').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.size-preset').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            this.els.qrSize.value = e.target.dataset.size;
+          });
+        });
+
+        // Theme buttons
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const theme = e.target.closest('.theme-btn').dataset.theme;
+            this.loadTheme(theme);
+            this.setActiveTheme(theme);
+          });
+        });
+
+        // Icon tabs
+        this.els.emojiTab.addEventListener('click', () => this.switchIconTab('emoji'));
+        this.els.uploadTab.addEventListener('click', () => this.switchIconTab('upload'));
+
+        // Image upload
+        this.els.centerImageInput.addEventListener('change', (e) => this.loadImage(e));
+        this.els.clearImageBtn.addEventListener('click', () => this.clearImage());
+
+        // Icon size slider
+        this.els.imageSizeSlider.addEventListener('input', (e) => {
+          this.els.sizeValue.textContent = `${e.target.value}%`;
+        });
+      }
+
+      setActiveTheme(theme) {
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.theme === theme);
+        });
+      }
+
+      loadTheme(themeName) {
+        const theme = this.themes[themeName];
+        if (!theme) return;
+
+        this.els.qrColor.value = theme.qrColor;
+        this.els.qrColorValue.value = theme.qrColor;
+        this.els.bgColor.value = theme.bgColor;
+        this.els.bgColorValue.value = theme.bgColor;
+
+        // Load emojis
+        this.els.emojiGrid.innerHTML = '';
+        theme.emojis.forEach(emoji => {
+          const btn = document.createElement('div');
+          btn.className = 'emoji-option';
+          btn.textContent = emoji;
+          btn.addEventListener('click', () => this.selectEmoji(emoji, btn));
+          this.els.emojiGrid.appendChild(btn);
+        });
+
+        this.selectedEmoji = null;
+      }
+
+      selectEmoji(emoji, element) {
+        this.els.emojiGrid.querySelectorAll('.emoji-option').forEach(el => {
+          el.classList.remove('selected');
+        });
+        
+        if (this.selectedEmoji === emoji) {
+          this.selectedEmoji = null;
+        } else {
+          element.classList.add('selected');
+          this.selectedEmoji = emoji;
+          this.centerImage = null;
+          this.els.centerImageInput.value = '';
+          this.els.fileLabel.textContent = '📁 Click to upload logo or image';
+          this.els.fileLabel.classList.remove('has-file');
+          this.els.clearImageBtn.classList.remove('visible');
+        }
+      }
+
+      switchIconTab(tab) {
+        if (tab === 'emoji') {
+          this.els.emojiTab.classList.add('active');
+          this.els.uploadTab.classList.remove('active');
+          this.els.emojiSection.classList.add('active');
+          this.els.uploadSection.classList.remove('active');
+        } else {
+          this.els.emojiTab.classList.remove('active');
+          this.els.uploadTab.classList.add('active');
+          this.els.emojiSection.classList.remove('active');
+          this.els.uploadSection.classList.add('active');
+          
+          this.selectedEmoji = null;
+          this.els.emojiGrid.querySelectorAll('.emoji-option').forEach(el => {
+            el.classList.remove('selected');
+          });
+        }
+      }
+
+      loadImage(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            this.centerImage = img;
+            this.els.fileLabel.textContent = `✓ ${file.name}`;
+            this.els.fileLabel.classList.add('has-file');
+            this.els.clearImageBtn.classList.add('visible');
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      clearImage() {
+        this.centerImage = null;
+        this.els.centerImageInput.value = '';
+        this.els.fileLabel.textContent = '📁 Click to upload logo or image';
+        this.els.fileLabel.classList.remove('has-file');
+        this.els.clearImageBtn.classList.remove('visible');
+      }
+
+      generate() {
+        const text = this.els.textInput.value.trim();
+        if (!text) {
+          this.showToast('Please enter content to encode');
+          return;
+        }
+
+        try {
+          const size = parseInt(this.els.qrSize.value);
+          const qrColor = this.els.qrColor.value;
+          const bgColor = this.els.bgColor.value;
+          const errorLevel = this.els.errorLevel.value;
+
+          const tempDiv = document.createElement('div');
+          new QRCode(tempDiv, {
+            text: text,
+            width: size,
+            height: size,
+            colorDark: qrColor,
+            colorLight: bgColor,
+            correctLevel: QRCode.CorrectLevel[errorLevel]
+          });
+
+          setTimeout(() => {
+            const qrImg = tempDiv.querySelector('img');
+            if (qrImg && qrImg.complete) {
+              this.renderToCanvas(qrImg, size);
+            } else if (qrImg) {
+              qrImg.onload = () => this.renderToCanvas(qrImg, size);
+            }
+          }, 100);
+
+        } catch (error) {
+          console.error('QR generation failed:', error);
+          this.showToast('Failed to generate QR code');
+        }
+      }
+
+      renderToCanvas(qrImg, size) {
+        this.canvas.width = size;
+        this.canvas.height = size;
+        this.ctx.drawImage(qrImg, 0, 0, size, size);
+
+        if (this.centerImage) {
+          this.drawCenterImage(size);
+        } else if (this.selectedEmoji) {
+          this.drawCenterEmoji(size);
+        }
+
+        this.canvas.classList.add('visible');
+        this.els.placeholder.style.display = 'none';
+        this.els.downloadButtons.classList.add('visible');
+        this.els.previewContainer.classList.add('has-qr');
+      }
+
+      drawCenterImage(canvasSize) {
+        const percent = parseInt(this.els.imageSizeSlider.value);
+        const imgSize = (canvasSize * percent) / 100;
+        const x = (canvasSize - imgSize) / 2;
+        const y = (canvasSize - imgSize) / 2;
+
+        this.ctx.save();
+        this.ctx.beginPath();
+        this.ctx.arc(canvasSize / 2, canvasSize / 2, imgSize / 2, 0, Math.PI * 2);
+        this.ctx.closePath();
+        this.ctx.clip();
+
+        this.ctx.fillStyle = 'white';
+        this.ctx.fill();
+        this.ctx.drawImage(this.centerImage, x, y, imgSize, imgSize);
+        this.ctx.restore();
+
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 4;
+        this.ctx.beginPath();
+        this.ctx.arc(canvasSize / 2, canvasSize / 2, imgSize / 2, 0, Math.PI * 2);
+        this.ctx.stroke();
+      }
+
+      drawCenterEmoji(canvasSize) {
+        const percent = parseInt(this.els.imageSizeSlider.value);
+        const circleSize = (canvasSize * percent) / 100;
+        const radius = circleSize / 2;
+
+        this.ctx.fillStyle = 'white';
+        this.ctx.beginPath();
+        this.ctx.arc(canvasSize / 2, canvasSize / 2, radius, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        const fontSize = circleSize * 0.75;
+        this.ctx.font = `${fontSize}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.textBaseline = 'middle';
+        this.ctx.fillText(this.selectedEmoji, canvasSize / 2, canvasSize / 2);
+
+        this.ctx.strokeStyle = 'white';
+        this.ctx.lineWidth = 3;
+        this.ctx.beginPath();
+        this.ctx.arc(canvasSize / 2, canvasSize / 2, radius, 0, Math.PI * 2);
+        this.ctx.stroke();
+      }
+
+      download() {
+        const link = document.createElement('a');
+        link.download = `qrcode-${Date.now()}.png`;
+        link.href = this.canvas.toDataURL('image/png');
+        link.click();
+        this.showToast('QR code downloaded!', 'success');
+      }
+
+      async copyToClipboard() {
+        try {
+          const blob = await new Promise(resolve => this.canvas.toBlob(resolve, 'image/png'));
+          await navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob })
+          ]);
+          this.showToast('Copied to clipboard!', 'success');
+        } catch (err) {
+          // Fallback: copy data URL
+          try {
+            await navigator.clipboard.writeText(this.canvas.toDataURL('image/png'));
+            this.showToast('Copied as data URL', 'success');
+          } catch (e) {
+            this.showToast('Failed to copy');
+          }
+        }
+      }
+
+      showToast(message, type = '') {
+        const existing = document.querySelector('.toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => new QRGenerator());
+  </script>
 </body>
 </html>
