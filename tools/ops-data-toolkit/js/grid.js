@@ -62,7 +62,7 @@ export class DataGrid {
                         <div class="task-card-icon">⚖️</div>
                         <div class="task-card-content">
                             <h3>Reconcile Cycle Count</h3>
-                            <p>Compare physical count vs system, find variances</p>
+                            <p>Compare physical count vs system inventory</p>
                         </div>
                         <span class="task-card-badge">Most Popular</span>
                     </button>
@@ -71,7 +71,7 @@ export class DataGrid {
                         <div class="task-card-icon">👯</div>
                         <div class="task-card-content">
                             <h3>Find Duplicates</h3>
-                            <p>Detect duplicate SKUs before they cause conflicts</p>
+                            <p>Detect duplicate SKUs in your data</p>
                         </div>
                     </button>
                     
@@ -79,7 +79,7 @@ export class DataGrid {
                         <div class="task-card-icon">✓</div>
                         <div class="task-card-content">
                             <h3>Validate Data</h3>
-                            <p>Check required fields before WMS import</p>
+                            <p>Check required fields before import</p>
                         </div>
                     </button>
                 </div>
