@@ -108,6 +108,17 @@ input, select {
     gap: 2px;
 }
 
+.header-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo {
+    height: 32px;
+    width: auto;
+}
+
 .app-header h1 {
     font-size: 1.15rem;
     font-weight: 600;
@@ -526,7 +537,7 @@ button:active:not(:disabled) {
     cursor: pointer;
     text-align: left;
     transition: all 0.2s ease;
-    width: 270px;
+    width: 290px;
     min-height: 90px;
     position: relative;
 }
@@ -557,7 +568,6 @@ button:active:not(:disabled) {
 .task-card-content {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
 }
 
 .task-card-content h3 {
