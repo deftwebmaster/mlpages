@@ -21,6 +21,16 @@ import { LookupModule } from './modules/lookup.js';
 let dataGrid = null;
 let resultsGrid = null;
 
+// Track active filter/highlight state for persistence
+let activeFilterState = {
+    metrics: new Set(),      // Currently active metric filters
+    highlightIndices: [],    // Row indices to highlight
+    highlightClass: '',      // CSS class for highlights
+    targetSheet: null,       // Which sheet the highlights apply to
+    filteredData: null,      // Currently filtered results data
+    filteredColumns: null    // Columns for filtered data
+};
+
 // Module registry
 const modules = {
     cleaning: CleaningModule,
@@ -256,6 +266,16 @@ function clearAllFiltersAndHighlights() {
         m.classList.remove('metric-active');
     });
     
+    // Reset filter state
+    activeFilterState = {
+        metrics: new Set(),
+        highlightIndices: [],
+        highlightClass: '',
+        targetSheet: null,
+        filteredData: null,
+        filteredColumns: null
+    };
+    
     // Restore full results if we have them
     const results = State.project.results;
     if (results?.data) {
@@ -418,10 +438,15 @@ async function handleCopyTSV() {
         return;
     }
     
-    const success = await exportToClipboard(results.data, results.columns);
+    // Use filtered data if a filter is active, otherwise use all results
+    const dataToExport = activeFilterState.filteredData || results.data;
+    const columnsToExport = activeFilterState.filteredColumns || results.columns;
+    
+    const success = await exportToClipboard(dataToExport, columnsToExport);
     
     if (success) {
-        showToast('Copied to clipboard - ready to paste into Excel', 'success');
+        const filterNote = activeFilterState.filteredData ? ' (filtered)' : '';
+        showToast(`Copied ${dataToExport.length} rows to clipboard${filterNote}`, 'success');
     } else {
         showToast('Failed to copy to clipboard', 'error');
     }
@@ -448,6 +473,14 @@ function onStateChange(project, change) {
     if (sheet && sheet.data) {
         dataGrid.render(sheet.data, sheet.columns);
         populateKeyColumnSelect(sheet.columns);
+        
+        // Re-apply highlights if they belong to this sheet
+        if (activeFilterState.targetSheet === project.activeSheet && 
+            activeFilterState.highlightIndices.length > 0) {
+            setTimeout(() => {
+                dataGrid.highlightRows(activeFilterState.highlightIndices, activeFilterState.highlightClass);
+            }, 50);
+        }
     } else {
         dataGrid.clear();
         populateKeyColumnSelect([]);
@@ -696,70 +729,177 @@ function renderMetrics(metrics) {
     
     strip.innerHTML = html;
     
-    // Attach click handlers for filterable metrics
+    // Attach click handlers for filterable metrics (with shift support)
     strip.querySelectorAll('.metric-filterable').forEach(metric => {
-        metric.addEventListener('click', () => {
+        metric.addEventListener('click', (e) => {
             const filterValue = metric.dataset.filter;
-            filterResultsByStatus(filterValue, metric);
+            filterResultsByStatus(filterValue, metric, e.shiftKey);
         });
     });
 }
 
 /**
  * Filter results grid by status value and highlight source rows
+ * @param {string} statusValue - The status to filter by
+ * @param {HTMLElement} clickedMetric - The clicked metric element
+ * @param {boolean} isShiftClick - Whether shift was held (multi-select)
  */
-function filterResultsByStatus(statusValue, clickedMetric) {
+function filterResultsByStatus(statusValue, clickedMetric, isShiftClick = false) {
     const results = State.project.results;
     if (!results || !results.data) return;
     
     const strip = document.getElementById('metricsStrip');
     const isAlreadyActive = clickedMetric.classList.contains('metric-active');
     
-    // Clear all active states
-    strip.querySelectorAll('.metric-filterable').forEach(m => {
-        m.classList.remove('metric-active');
-    });
+    if (isShiftClick && !isAlreadyActive) {
+        // Multi-select mode: add to existing selection
+        activeFilterState.metrics.add(statusValue);
+        clickedMetric.classList.add('metric-active');
+    } else if (isAlreadyActive) {
+        // Toggle off this metric
+        activeFilterState.metrics.delete(statusValue);
+        clickedMetric.classList.remove('metric-active');
+    } else {
+        // Single select: clear others and select this one
+        strip.querySelectorAll('.metric-filterable').forEach(m => {
+            m.classList.remove('metric-active');
+        });
+        activeFilterState.metrics.clear();
+        activeFilterState.metrics.add(statusValue);
+        clickedMetric.classList.add('metric-active');
+    }
     
     // Clear any existing highlights
     dataGrid.clearHighlights();
     hideFilterBanner();
     
-    if (isAlreadyActive) {
-        // Toggle off - show all results, clear highlights
+    // If no metrics selected, show all results
+    if (activeFilterState.metrics.size === 0) {
+        activeFilterState.highlightIndices = [];
+        activeFilterState.highlightClass = '';
+        activeFilterState.targetSheet = null;
+        activeFilterState.filteredData = null;
+        activeFilterState.filteredColumns = null;
         resultsGrid.render(results.data, results.columns);
+        return;
+    }
+    
+    // Filter to selected statuses
+    const selectedStatuses = activeFilterState.metrics;
+    const filtered = results.data.filter(row => {
+        if (row.status) {
+            return selectedStatuses.has(row.status);
+        }
+        if (row.severity) {
+            return selectedStatuses.has(row.severity);
+        }
+        return false;
+    });
+    
+    // Store filtered data for export
+    activeFilterState.filteredData = filtered;
+    activeFilterState.filteredColumns = results.columns;
+    
+    // Show filtered results or empty state
+    if (filtered.length === 0) {
+        resultsGrid.renderFilteredEmpty();
     } else {
-        // Filter to just this status
-        const filtered = results.data.filter(row => {
-            if (row.status) {
-                return row.status === statusValue;
-            }
-            if (row.severity) {
-                return row.severity === statusValue;
-            }
-            return false;
-        });
+        resultsGrid.render(filtered, results.columns);
+    }
+    
+    // Collect all highlight indices from all selected metrics
+    let allIndices = [];
+    let highlightClass = 'row-highlight-warning';
+    let targetSheet = State.project.activeSheet;
+    
+    // Now highlight the source rows in the data grid based on module type
+    if (results._reconciliation) {
+        const recon = results._reconciliation;
         
-        clickedMetric.classList.add('metric-active');
-        
-        // Show filtered results or empty state
-        if (filtered.length === 0) {
-            resultsGrid.renderFilteredEmpty();
-        } else {
-            resultsGrid.render(filtered, results.columns);
+        for (const status of selectedStatuses) {
+            const { indices, sheet, cssClass } = getReconciliationHighlightInfo(status, recon);
+            allIndices = allIndices.concat(indices);
+            if (cssClass === 'row-highlight-error') highlightClass = cssClass;
+            if (sheet) targetSheet = sheet;
         }
         
-        // Now highlight the source rows in the data grid based on module type
-        if (results._reconciliation) {
-            highlightReconciliationRows(statusValue, results._reconciliation);
-            showFilterBanner(statusValue, filtered, results._reconciliation);
-        } else if (results._duplicateData) {
-            highlightDuplicateRows(statusValue, results._duplicateData);
-            showDuplicateBanner(statusValue, results._duplicateData);
-        } else if (results._validationData) {
-            highlightValidationRows(statusValue, results._validationData);
-            showValidationBanner(statusValue, results._validationData);
+        // Show banner for first/primary status
+        const primaryStatus = [...selectedStatuses][0];
+        showFilterBanner(primaryStatus, filtered, recon);
+        
+    } else if (results._duplicateData) {
+        if (selectedStatuses.has('duplicate')) {
+            allIndices = results._duplicateData.duplicateIndices || [];
+            highlightClass = 'row-highlight-warning';
+            showDuplicateBanner('duplicate', results._duplicateData);
+        }
+        
+    } else if (results._validationData) {
+        if (selectedStatuses.has('error')) {
+            allIndices = results._validationData.allErrorIndices || [];
+            highlightClass = 'row-highlight-error';
+            showValidationBanner('error', results._validationData);
         }
     }
+    
+    // Store state for persistence across sheet switches
+    activeFilterState.highlightIndices = allIndices;
+    activeFilterState.highlightClass = highlightClass;
+    activeFilterState.targetSheet = targetSheet;
+    
+    // Switch sheet if needed and apply highlights
+    if (targetSheet !== State.project.activeSheet) {
+        State.setActiveSheet(targetSheet);
+    } else if (allIndices.length > 0) {
+        setTimeout(() => {
+            dataGrid.highlightRows(allIndices, highlightClass);
+            if (allIndices.length > 0) {
+                dataGrid.scrollToRow(allIndices[0]);
+            }
+        }, 50);
+    }
+}
+
+/**
+ * Get highlight info for reconciliation status
+ */
+function getReconciliationHighlightInfo(statusValue, reconciliation) {
+    let items = [];
+    let targetSheet = null;
+    let highlightClass = 'row-highlight-warning';
+    
+    switch (statusValue) {
+        case 'Missing in System':
+            items = reconciliation.missingInA || [];
+            targetSheet = 'B';
+            highlightClass = 'row-highlight-error';
+            break;
+        case 'Missing in Physical':
+            items = reconciliation.missingInB || [];
+            targetSheet = 'A';
+            highlightClass = 'row-highlight-error';
+            break;
+        case 'Variance':
+            items = reconciliation.variances || [];
+            targetSheet = State.project.activeSheet;
+            highlightClass = 'row-highlight-warning';
+            break;
+        case 'Match':
+            items = reconciliation.matched || [];
+            targetSheet = State.project.activeSheet;
+            highlightClass = 'row-highlight';
+            break;
+    }
+    
+    const indices = items.map(item => {
+        if (targetSheet === 'A' && item.indexA !== undefined) return item.indexA;
+        if (targetSheet === 'B' && item.indexB !== undefined) return item.indexB;
+        if (item.indexA !== undefined) return item.indexA;
+        if (item.indexB !== undefined) return item.indexB;
+        return null;
+    }).filter(i => i !== null);
+    
+    return { indices, sheet: targetSheet, cssClass: highlightClass };
 }
 
 /**
