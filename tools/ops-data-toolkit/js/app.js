@@ -59,6 +59,9 @@ function init() {
         dataGrid.scrollToRow(rowIndex);
     });
     
+    // Hide View Report button initially (only shown for reconcile results)
+    document.getElementById('viewReport').style.display = 'none';
+    
     // Set up event listeners
     setupEventListeners();
     
@@ -635,7 +638,9 @@ function switchModule(moduleId) {
     document.getElementById('metricsStrip').innerHTML = '';
     document.getElementById('copyTSV').disabled = true;
     document.getElementById('showLogic').disabled = true;
-    document.getElementById('viewReport').disabled = true;
+    
+    // Hide View Report button (only shown for reconcile module results)
+    document.getElementById('viewReport').style.display = 'none';
     
     // Render module controls in results panel
     const resultsPanel = document.querySelector('.results-panel');
@@ -679,8 +684,14 @@ function updateResults(results) {
     document.getElementById('copyTSV').disabled = false;
     document.getElementById('showLogic').disabled = !results.explanation;
     
-    // Enable report button only for reconciliation results
-    document.getElementById('viewReport').disabled = !results._reconciliation;
+    // Show/hide report button - only visible for reconciliation results
+    const viewReportBtn = document.getElementById('viewReport');
+    if (results._reconciliation) {
+        viewReportBtn.style.display = '';
+        viewReportBtn.disabled = false;
+    } else {
+        viewReportBtn.style.display = 'none';
+    }
 }
 
 /**
