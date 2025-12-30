@@ -205,6 +205,21 @@ function setupEventListeners() {
     });
     document.querySelector('.modal-overlay')?.addEventListener('click', hideLogicModal);
     
+    // Filter banner close button
+    document.getElementById('clearFilterBanner')?.addEventListener('click', () => {
+        hideFilterBanner();
+        dataGrid.clearHighlights();
+        // Clear active metric state
+        document.querySelectorAll('.metric-filterable').forEach(m => {
+            m.classList.remove('metric-active');
+        });
+        // Restore full results
+        const results = State.project.results;
+        if (results?.data) {
+            resultsGrid.render(results.data, results.columns);
+        }
+    });
+    
     // Listen for loadSample events from dynamically rendered grid empty state
     window.addEventListener('loadSample', (e) => {
         handleLoadSample(e.detail);
@@ -661,11 +676,11 @@ function filterResultsByStatus(statusValue, clickedMetric) {
     
     // Clear any existing highlights
     dataGrid.clearHighlights();
+    hideFilterBanner();
     
     if (isAlreadyActive) {
         // Toggle off - show all results, clear highlights
         resultsGrid.render(results.data, results.columns);
-        showToast('Cleared filter', 'info');
     } else {
         // Filter to just this status
         const filtered = results.data.filter(row => {
@@ -684,10 +699,112 @@ function filterResultsByStatus(statusValue, clickedMetric) {
         // Now highlight the source rows in the data grid
         if (results._reconciliation) {
             highlightReconciliationRows(statusValue, results._reconciliation);
+            showFilterBanner(statusValue, filtered, results._reconciliation);
         }
-        
-        showToast(`Showing ${filtered.length} "${statusValue}" rows`, 'info');
     }
+}
+
+/**
+ * Get natural language explanation for a status
+ */
+function getStatusExplanation(statusValue, items, reconciliation) {
+    const count = items.length;
+    
+    switch (statusValue) {
+        case 'Missing in System':
+            const missingAKeys = items.map(i => i.key).join(', ');
+            return {
+                icon: '🔍',
+                title: `${count} item${count > 1 ? 's' : ''} found in physical count but missing from WMS`,
+                description: `${missingAKeys} ${count > 1 ? 'were' : 'was'} counted in the warehouse but ${count > 1 ? "don't" : "doesn't"} exist in your system inventory. This could mean unreceived goods, a receiving error, or items that were never scanned in.`,
+                type: 'error'
+            };
+        
+        case 'Missing in Physical':
+            const missingBKeys = items.map(i => i.key).join(', ');
+            return {
+                icon: '👻',
+                title: `${count} item${count > 1 ? 's' : ''} in WMS but not found during physical count`,
+                description: `${missingBKeys} ${count > 1 ? 'show' : 'shows'} inventory in the system but ${count > 1 ? 'were' : 'was'}n't found during the count. This could indicate shrinkage, theft, damage, or the item was missed during counting.`,
+                type: 'error'
+            };
+        
+        case 'Variance':
+            const totalVariance = items.reduce((sum, i) => sum + Math.abs(i.variance || 0), 0);
+            const overages = items.filter(i => (i.variance || 0) > 0).length;
+            const shortages = items.filter(i => (i.variance || 0) < 0).length;
+            return {
+                icon: '⚖️',
+                title: `${count} item${count > 1 ? 's' : ''} with quantity differences between system and count`,
+                description: `Found ${shortages} shortage${shortages !== 1 ? 's' : ''} (system shows more than counted) and ${overages} overage${overages !== 1 ? 's' : ''} (counted more than system shows). Total variance: ${totalVariance} units.`,
+                type: 'warning'
+            };
+        
+        case 'Match':
+            return {
+                icon: '✅',
+                title: `${count} item${count > 1 ? 's' : ''} match perfectly`,
+                description: `These items have identical quantities in both the system and physical count. No action needed.`,
+                type: 'info'
+            };
+        
+        default:
+            return {
+                icon: '📋',
+                title: `${count} item${count > 1 ? 's' : ''} selected`,
+                description: `Showing filtered results.`,
+                type: 'info'
+            };
+    }
+}
+
+/**
+ * Show the filter explanation banner
+ */
+function showFilterBanner(statusValue, filtered, reconciliation) {
+    const banner = document.getElementById('filterBanner');
+    const title = document.getElementById('filterBannerTitle');
+    const desc = document.getElementById('filterBannerDesc');
+    const icon = banner.querySelector('.filter-banner-icon');
+    
+    // Get items from reconciliation data
+    let items = [];
+    switch (statusValue) {
+        case 'Missing in System':
+            items = reconciliation.missingInA || [];
+            break;
+        case 'Missing in Physical':
+            items = reconciliation.missingInB || [];
+            break;
+        case 'Variance':
+            items = reconciliation.variances || [];
+            break;
+        case 'Match':
+            items = reconciliation.matched || [];
+            break;
+    }
+    
+    const explanation = getStatusExplanation(statusValue, items, reconciliation);
+    
+    icon.textContent = explanation.icon;
+    title.textContent = explanation.title;
+    desc.textContent = explanation.description;
+    
+    // Set banner type
+    banner.classList.remove('warning', 'info');
+    if (explanation.type !== 'error') {
+        banner.classList.add(explanation.type);
+    }
+    
+    banner.classList.remove('hidden');
+}
+
+/**
+ * Hide the filter explanation banner
+ */
+function hideFilterBanner() {
+    const banner = document.getElementById('filterBanner');
+    banner.classList.add('hidden');
 }
 
 /**
@@ -740,9 +857,17 @@ function highlightReconciliationRows(statusValue, reconciliation) {
         return null;
     }).filter(i => i !== null);
     
+    // Determine highlight class based on status
+    let highlightClass = 'row-highlight-error';
+    if (statusValue === 'Match') {
+        highlightClass = 'row-highlight';
+    } else if (statusValue === 'Variance') {
+        highlightClass = 'row-highlight-warning';
+    }
+    
     // Highlight the rows
     setTimeout(() => {
-        dataGrid.highlightRows(indices, 'row-highlight-error');
+        dataGrid.highlightRows(indices, highlightClass);
         
         // Scroll to first highlighted row
         if (indices.length > 0) {

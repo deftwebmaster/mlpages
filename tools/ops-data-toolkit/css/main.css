@@ -547,6 +547,91 @@ button:active:not(:disabled) {
 }
 
 /* ============================================
+   Filter Explanation Banner
+   ============================================ */
+.filter-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.08) 100%);
+    border-left: 4px solid var(--color-danger);
+    border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+    animation: banner-slide-in 0.3s ease-out;
+}
+
+.filter-banner.hidden {
+    display: none;
+}
+
+.filter-banner.warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(245, 158, 11, 0.08) 100%);
+    border-left-color: var(--color-warning);
+    border-bottom-color: rgba(245, 158, 11, 0.3);
+}
+
+.filter-banner.info {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.08) 100%);
+    border-left-color: var(--color-primary);
+    border-bottom-color: rgba(59, 130, 246, 0.3);
+}
+
+.filter-banner-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.filter-banner-icon {
+    font-size: 1.25rem;
+}
+
+.filter-banner-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.filter-banner-text strong {
+    font-size: 0.875rem;
+    color: var(--color-text);
+}
+
+.filter-banner-text span {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+}
+
+.filter-banner-close {
+    padding: var(--space-xs) var(--space-sm);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.filter-banner-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-text);
+}
+
+@keyframes banner-slide-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
    Modal
    ============================================ */
 .modal {
