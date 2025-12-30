@@ -62,7 +62,7 @@ export class DataGrid {
                         <div class="task-card-icon">⚖️</div>
                         <div class="task-card-content">
                             <h3>Reconcile Cycle Count</h3>
-                            <p>Compare physical count vs system inventory</p>
+                            <p>Compare physical vs system inv.</p>
                         </div>
                         <span class="task-card-badge">Most Popular</span>
                     </button>
