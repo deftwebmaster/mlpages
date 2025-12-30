@@ -536,6 +536,46 @@ button:active:not(:disabled) {
     .task-cards {
         flex-direction: column;
         align-items: center;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-md);
+    }
+    
+    .task-card {
+        width: 100%;
+        max-width: 320px;
+        min-height: auto;
+        padding: var(--space-md);
+    }
+    
+    .task-card-icon {
+        font-size: 1.25rem;
+    }
+    
+    .task-card-content h3 {
+        font-size: 0.8rem;
+    }
+    
+    .task-card-content p {
+        font-size: 0.7rem;
+        line-height: 1.3;
+    }
+    
+    .task-card-badge {
+        font-size: 0.5rem;
+        padding: 3px 8px;
+        top: -8px;
+    }
+    
+    .empty-hero {
+        margin-bottom: var(--space-md);
+    }
+    
+    .empty-hero h2 {
+        font-size: 1.2rem;
+    }
+    
+    .empty-subtitle {
+        font-size: 0.85rem;
     }
 }
 
