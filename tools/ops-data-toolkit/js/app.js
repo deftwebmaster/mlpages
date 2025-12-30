@@ -666,7 +666,12 @@ function renderMetrics(metrics) {
         'duplicate_keys': 'duplicate'
     };
     
-    const html = Object.entries(metrics).map(([key, value]) => {
+    // Skip metrics that are objects (like errors_by_severity)
+    const displayableMetrics = Object.entries(metrics).filter(([key, value]) => {
+        return typeof value !== 'object' || value === null;
+    });
+    
+    const html = displayableMetrics.map(([key, value]) => {
         let valueClass = '';
         const isFilterable = filterableMetrics[key] && value > 0;
         
