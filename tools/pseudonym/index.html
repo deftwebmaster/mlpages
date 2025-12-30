@@ -3,7 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pseudonym Generator</title>
+  <title>Pen Name Generator & Fake Identity Creator | Free Online Tool</title>
+  <meta name="description" content="Generate realistic pen names, online aliases, and fake identities for privacy. Perfect for authors, testing, and protecting your real identity online. Free, no signup.">
+  <meta name="keywords" content="pen name generator, pseudonym generator, fake name generator, alias generator, fake identity, author name, pen name ideas">
+  <link rel="canonical" href="https://mattlivingston.com/tools/pseudonym/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -12,60 +18,71 @@
     }
 
     :root {
-      --primary: #6366f1;
-      --primary-dark: #4f46e5;
-      --secondary: #ec4899;
-      --background: #0f172a;
-      --surface: #1e293b;
-      --surface-light: #334155;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-input: #0f172a;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.3);
       --success: #10b981;
       --danger: #ef4444;
-      --border: #334155;
-      
-      --gradient-primary: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
-      --gradient-surface: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      
-      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.2);
-      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.3);
+      --warning: #f59e0b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #475569;
+      --radius: 12px;
+      --radius-sm: 8px;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: var(--background);
-      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       line-height: 1.6;
       min-height: 100vh;
       padding: 2rem 1rem;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
     /* Header */
     header {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
 
-    header h1 {
-      font-size: 3rem;
+    .back-link {
+      display: inline-block;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .site-title {
+      font-size: 1.75rem;
       font-weight: 700;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .site-title span {
+      color: var(--accent);
     }
 
     .tagline {
-      color: var(--text-muted);
-      font-size: 1.1rem;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
     }
 
     /* Controls */
@@ -74,23 +91,23 @@
       gap: 1rem;
       flex-wrap: wrap;
       align-items: flex-end;
-      background: var(--surface);
-      padding: 1.5rem;
-      border-radius: 1rem;
-      margin-bottom: 2rem;
-      box-shadow: var(--shadow-lg);
+      background: var(--bg-secondary);
+      padding: 1.25rem;
+      border-radius: var(--radius);
+      margin-bottom: 1.5rem;
+      border: 1px solid var(--border);
     }
 
     .control-group {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0.4rem;
       flex: 1;
-      min-width: 150px;
+      min-width: 130px;
     }
 
     .control-group label {
-      font-size: 0.875rem;
+      font-size: 0.75rem;
       font-weight: 500;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -98,113 +115,128 @@
     }
 
     select {
-      padding: 0.75rem 1rem;
-      background: var(--surface-light);
+      padding: 0.6rem 0.75rem;
+      background: var(--bg-input);
       border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      color: var(--text);
-      font-size: 1rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      font-family: inherit;
       cursor: pointer;
       transition: all 0.2s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
     }
 
     select:hover {
-      border-color: var(--primary);
+      border-color: var(--accent);
     }
 
     select:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* Use Case Hint */
+    .use-case-hint {
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .use-case-hint .hint-icon {
+      font-size: 1rem;
+    }
+
+    .use-case-hint strong {
+      color: var(--text-secondary);
     }
 
     /* Buttons */
-    button {
-      padding: 0.75rem 1.5rem;
+    .btn-primary {
+      padding: 0.6rem 1.25rem;
+      background: var(--accent);
       border: none;
-      border-radius: 0.5rem;
-      font-size: 1rem;
+      border-radius: var(--radius-sm);
+      color: white;
+      font-size: 0.9rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
+      font-family: inherit;
       white-space: nowrap;
     }
 
-    .btn-primary {
-      background: var(--gradient-primary);
-      color: white;
-      box-shadow: var(--shadow-md);
-    }
-
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
     .btn-secondary {
-      background: var(--surface-light);
-      color: var(--text);
+      padding: 0.6rem 1rem;
+      background: var(--bg-card);
       border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      white-space: nowrap;
     }
 
     .btn-secondary:hover {
-      background: var(--surface);
-      border-color: var(--primary);
+      background: var(--bg-input);
+      border-color: var(--accent);
+      color: var(--text-primary);
     }
 
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-      width: 100%;
-      margin-top: 1rem;
-    }
-
-    .btn-danger:hover {
-      opacity: 0.9;
-    }
-
-    .btn-close {
-      background: transparent;
+    .keyboard-hint {
+      font-size: 0.7rem;
       color: var(--text-muted);
-      font-size: 2rem;
-      padding: 0;
-      width: 2.5rem;
-      height: 2.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
+      margin-left: 0.5rem;
     }
 
-    .btn-close:hover {
-      color: var(--text);
-      background: var(--surface-light);
+    .keyboard-hint kbd {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.1rem 0.3rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
     }
 
-    /* Results */
+    /* Results Grid */
     .results {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
     }
 
     .result-card {
-      background: var(--surface);
+      background: var(--bg-secondary);
       border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
-      transition: all 0.3s;
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: all 0.2s;
       animation: slideIn 0.3s ease-out;
     }
 
     @keyframes slideIn {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(10px);
       }
       to {
         opacity: 1;
@@ -213,44 +245,40 @@
     }
 
     .result-card:hover {
-      border-color: var(--primary);
-      box-shadow: var(--shadow-xl);
-      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px var(--accent-glow);
     }
 
     .card-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
-
-    .card-actions {
-      display: flex;
-      gap: 0.5rem;
+      justify-content: flex-end;
+      margin-bottom: 0.5rem;
     }
 
     .icon-btn {
-      background: var(--surface-light);
+      background: var(--bg-card);
+      border: none;
       color: var(--text-muted);
-      padding: 0.5rem;
-      width: 2.5rem;
-      height: 2.5rem;
+      padding: 0.4rem;
+      width: 2rem;
+      height: 2rem;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1rem;
+      cursor: pointer;
       transition: all 0.2s;
     }
 
     .icon-btn:hover {
-      color: var(--primary);
-      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
     }
 
     .icon-btn.favorited {
-      color: var(--secondary);
-      background: rgba(236, 72, 153, 0.1);
+      color: var(--warning);
+      background: rgba(245, 158, 11, 0.1);
     }
 
     .name-section {
@@ -258,38 +286,46 @@
     }
 
     .name-display {
-      font-size: 1.5rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      color: var(--text);
+      color: var(--text-primary);
       margin-bottom: 0.5rem;
       word-break: break-word;
     }
 
     .name-parts {
       display: flex;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+      gap: 0.4rem;
+      flex-wrap: wrap;
     }
 
     .name-part-btn {
-      background: var(--surface-light);
+      background: var(--bg-card);
+      border: none;
       color: var(--text-muted);
-      padding: 0.4rem 0.8rem;
-      font-size: 0.75rem;
-      border-radius: 0.25rem;
+      padding: 0.3rem 0.6rem;
+      font-size: 0.7rem;
+      border-radius: 4px;
+      cursor: pointer;
       transition: all 0.2s;
+      font-family: inherit;
     }
 
     .name-part-btn:hover {
-      color: var(--primary);
-      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .info-section {
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
     }
 
     .info-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
+      padding: 0.5rem 0;
       border-bottom: 1px solid var(--border);
     }
 
@@ -297,48 +333,141 @@
       border-bottom: none;
     }
 
+    .info-row.stacked {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
     .info-label {
-      font-size: 0.875rem;
+      font-size: 0.7rem;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
     .info-value {
-      font-size: 1rem;
-      color: var(--text);
+      font-size: 0.9rem;
+      color: var(--text-primary);
       font-weight: 500;
+    }
+
+    .info-value.small {
+      font-size: 0.8rem;
+    }
+
+    .info-actions {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
     }
 
     .copy-btn {
       background: transparent;
+      border: none;
       color: var(--text-muted);
-      padding: 0.25rem 0.5rem;
-      font-size: 0.875rem;
+      padding: 0.2rem 0.4rem;
+      font-size: 0.75rem;
+      cursor: pointer;
       transition: all 0.2s;
+      font-family: inherit;
+      border-radius: 4px;
     }
 
     .copy-btn:hover {
-      color: var(--primary);
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
     }
 
     .copy-btn.copied {
       color: var(--success);
     }
 
+    .copy-all-btn {
+      width: 100%;
+      margin-top: 0.75rem;
+      padding: 0.5rem;
+      background: var(--bg-card);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .copy-all-btn:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      border-style: solid;
+    }
+
+    .copy-all-btn.copied {
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    /* Username Suggestions */
+    .username-section {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .username-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+
+    .username-suggestions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .username-chip {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+      background: var(--bg-card);
+      border-radius: 4px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .username-chip:hover {
+      color: var(--accent);
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .username-chip.copied {
+      color: var(--success);
+    }
+
     /* Favorites Panel */
+    .favorites-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
     .favorites-panel {
       position: fixed;
       top: 0;
       right: 0;
       width: 100%;
-      max-width: 500px;
+      max-width: 420px;
       height: 100vh;
-      background: var(--surface);
-      box-shadow: var(--shadow-xl);
-      padding: 2rem;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border);
+      padding: 1.5rem;
       overflow-y: auto;
-      transition: transform 0.3s;
+      transition: transform 0.3s ease;
       z-index: 1000;
     }
 
@@ -350,39 +479,77 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
 
     .favorites-header h2 {
+      font-size: 1.25rem;
+      color: var(--text-primary);
+    }
+
+    .btn-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
       font-size: 1.5rem;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .btn-close:hover {
+      color: var(--text-primary);
     }
 
     .favorites-list {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .favorite-item {
-      background: var(--surface-light);
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 0.5rem;
+      border-radius: var(--radius-sm);
       padding: 1rem;
     }
 
     .favorite-item .name-display {
-      font-size: 1.25rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .favorite-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
     }
 
     .favorite-actions {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
       margin-top: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+      border: none;
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s;
+    }
+
+    .btn-danger:hover {
+      opacity: 0.9;
     }
 
     .empty-state {
@@ -392,30 +559,101 @@
     }
 
     .empty-state-icon {
-      font-size: 3rem;
+      font-size: 2.5rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.5;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
       margin-bottom: 1rem;
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .footer-credit {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-credit a {
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .footer-credit a:hover {
+      color: var(--accent);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      z-index: 1001;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
       }
-      
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .site-title {
+        font-size: 1.4rem;
+      }
+
       .controls {
         flex-direction: column;
       }
-      
+
       .control-group {
         width: 100%;
       }
-      
+
       .results {
         grid-template-columns: 1fr;
       }
-      
+
       .favorites-panel {
         max-width: 100%;
+      }
+
+      .keyboard-hint {
+        display: none;
       }
     }
   </style>
@@ -424,8 +662,9 @@
   <div class="container">
     <!-- Header -->
     <header>
-      <h1>Pseudonym Generator</h1>
-      <p class="tagline">Create believable identities for any purpose</p>
+      <a href="/tools/" class="back-link">← All Tools</a>
+      <h1 class="site-title">Pen Name Generator <span>&</span> Fake Identity Creator</h1>
+      <p class="tagline">Create believable pseudonyms for writing, testing, or privacy protection.</p>
     </header>
 
     <!-- Controls -->
@@ -435,7 +674,7 @@
         <select id="mode">
           <option value="pen">Pen Name</option>
           <option value="alias">Online Alias</option>
-          <option value="spam">Privacy/Spam</option>
+          <option value="spam">Privacy / Form Fill</option>
         </select>
       </div>
 
@@ -443,7 +682,7 @@
         <label for="culture">Culture</label>
         <select id="culture">
           <option value="western">Western</option>
-          <option value="mexican">Mexican</option>
+          <option value="mexican">Hispanic / Mexican</option>
         </select>
       </div>
 
@@ -456,26 +695,56 @@
         </select>
       </div>
 
-      <button id="generate-btn" class="btn-primary">Generate Names</button>
-      <button id="toggle-favorites" class="btn-secondary">View Favorites (<span id="favorites-count">0</span>)</button>
+      <div class="control-group">
+        <label for="middleInitial">Middle Initial</label>
+        <select id="middleInitial">
+          <option value="none">None</option>
+          <option value="initial">Include Initial</option>
+        </select>
+      </div>
+
+      <div class="favorites-toggle">
+        <button id="generate-btn" class="btn-primary">Generate</button>
+        <span class="keyboard-hint">or <kbd>Space</kbd></span>
+      </div>
+      
+      <button id="toggle-favorites" class="btn-secondary">★ Favorites (<span id="favorites-count">0</span>)</button>
+    </div>
+
+    <!-- Use Case Hint -->
+    <div class="use-case-hint" id="useCaseHint">
+      <span class="hint-icon">✍️</span>
+      <span><strong>Pen Name:</strong> Professional pseudonyms for authors, artists, and creators.</span>
     </div>
 
     <!-- Results Container -->
     <div id="results" class="results"></div>
 
-    <!-- Favorites Panel (Hidden by default) -->
+    <!-- Favorites Panel -->
     <div id="favorites-panel" class="favorites-panel hidden">
       <div class="favorites-header">
-        <h2>Saved Favorites</h2>
+        <h2>★ Saved Favorites</h2>
         <button id="close-favorites" class="btn-close">×</button>
       </div>
       <div id="favorites-list" class="favorites-list"></div>
       <button id="clear-favorites" class="btn-danger">Clear All Favorites</button>
     </div>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-links">
+        <a href="/tools/">← All Tools</a>
+      </div>
+      <p class="footer-credit">
+        Built by <a href="https://mattlivingston.com">Matt Livingston</a>
+      </p>
+    </footer>
   </div>
 
   <script>
+    // ============================================
     // Data: Western Names
+    // ============================================
     const WESTERN_NAMES = {
       male: [
         'James', 'Michael', 'Robert', 'John', 'David',
@@ -523,7 +792,9 @@
       ]
     };
 
+    // ============================================
     // Data: Mexican Names
+    // ============================================
     const MEXICAN_NAMES = {
       male: [
         'Miguel', 'José', 'Carlos', 'Luis', 'Francisco',
@@ -535,10 +806,7 @@
         'Héctor', 'Víctor', 'Rodrigo', 'Mauricio', 'Jaime',
         'Rubén', 'Pablo', 'Gustavo', 'Julio', 'César',
         'Gabriel', 'Marco', 'Martín', 'Alfredo', 'Hugo',
-        'Ignacio', 'Salvador', 'Felipe', 'Ernesto', 'Guillermo',
-        'José Luis', 'Juan Carlos', 'Miguel Ángel', 'José Antonio',
-        'Luis Alberto', 'Carlos Alberto', 'José Manuel', 'Juan José',
-        'José María', 'Francisco Javier'
+        'Ignacio', 'Salvador', 'Felipe', 'Ernesto', 'Guillermo'
       ],
       
       female: [
@@ -551,10 +819,7 @@
         'Cristina', 'Lucía', 'Paola', 'Fernanda', 'Valeria',
         'Victoria', 'Cecilia', 'Natalia', 'Susana', 'Gloria',
         'Angélica', 'Norma', 'Alicia', 'Esther', 'Irma',
-        'Eva', 'Catalina', 'Josefina', 'Dolores', 'Raquel',
-        'María Elena', 'María José', 'Ana María', 'Rosa María',
-        'María Guadalupe', 'María Isabel', 'Ana Luisa', 'María Carmen',
-        'María Teresa', 'María Fernanda'
+        'Eva', 'Catalina', 'Josefina', 'Dolores', 'Raquel'
       ],
       
       last: [
@@ -567,22 +832,20 @@
         'Ramos', 'Silva', 'Castro', 'Rojas', 'Delgado',
         'Guerrero', 'Núñez', 'Estrada', 'Méndez', 'Salazar',
         'Campos', 'Contreras', 'Navarro', 'Fernández', 'Valdez',
-        'Cortés', 'Maldonado', 'Ríos', 'Mejía', 'Domínguez',
-        'Cabrera', 'León', 'Carrillo', 'Chávez', 'Sandoval',
-        'Espinoza', 'Ibarra', 'Pacheco', 'Figueroa', 'Acosta'
+        'Cortés', 'Maldonado', 'Ríos', 'Mejía', 'Domínguez'
       ]
     };
 
+    // ============================================
     // Data: US Addresses
+    // ============================================
     const US_ADDRESS_DATA = {
       streetNames: [
         'Main Street', 'Oak Avenue', 'Maple Drive', 'Park Place', 'Washington Street',
         'Cedar Lane', 'Elm Street', 'Pine Road', 'Sunset Boulevard', 'Lake View Drive',
         'Forest Avenue', 'Hill Street', 'River Road', 'Spring Street', 'Church Street',
         'Center Street', 'Mill Road', 'Grove Avenue', 'Ridge Road', 'Valley Drive',
-        'Birch Lane', 'Willow Way', 'Cherry Street', 'Meadow Lane', 'Summit Avenue',
-        'Franklin Street', 'Lincoln Avenue', 'Jefferson Drive', 'Madison Street', 'Monroe Road',
-        'Chestnut Street', 'Walnut Avenue', 'Sycamore Drive', 'Hickory Lane', 'Poplar Street'
+        'Birch Lane', 'Willow Way', 'Cherry Street', 'Meadow Lane', 'Summit Avenue'
       ],
       
       cities: [
@@ -600,32 +863,41 @@
         { city: 'Dallas', state: 'TX', zip: '75201' },
         { city: 'Houston', state: 'TX', zip: '77001' },
         { city: 'Miami', state: 'FL', zip: '33101' },
-        { city: 'Philadelphia', state: 'PA', zip: '19101' },
-        { city: 'Minneapolis', state: 'MN', zip: '55401' },
-        { city: 'Detroit', state: 'MI', zip: '48201' },
-        { city: 'Tampa', state: 'FL', zip: '33601' },
-        { city: 'Sacramento', state: 'CA', zip: '94203' },
-        { city: 'Las Vegas', state: 'NV', zip: '89101' },
-        { city: 'Cleveland', state: 'OH', zip: '44101' },
-        { city: 'Kansas City', state: 'MO', zip: '64101' },
-        { city: 'Columbus', state: 'OH', zip: '43201' },
-        { city: 'Indianapolis', state: 'IN', zip: '46201' },
-        { city: 'San Antonio', state: 'TX', zip: '78201' },
-        { city: 'Raleigh', state: 'NC', zip: '27601' },
-        { city: 'Milwaukee', state: 'WI', zip: '53201' },
-        { city: 'Baltimore', state: 'MD', zip: '21201' },
-        { city: 'Albuquerque', state: 'NM', zip: '87101' },
-        { city: 'Tucson', state: 'AZ', zip: '85701' }
+        { city: 'Philadelphia', state: 'PA', zip: '19101' }
       ]
     };
 
-    // Generator: Names
+    // ============================================
+    // Use Case Hints
+    // ============================================
+    const USE_CASE_HINTS = {
+      pen: {
+        icon: '✍️',
+        text: '<strong>Pen Name:</strong> Professional pseudonyms for authors, artists, and creators.'
+      },
+      alias: {
+        icon: '🎭',
+        text: '<strong>Online Alias:</strong> Usernames and handles for social media, gaming, and forums.'
+      },
+      spam: {
+        icon: '🛡️',
+        text: '<strong>Privacy Mode:</strong> Fake identities for form fills, signups, and protecting your real info.'
+      }
+    };
+
+    // ============================================
+    // Generators
+    // ============================================
     const NameGenerator = {
       _random(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
       },
       
-      generate(culture = 'western', gender = 'random') {
+      _randomInitial() {
+        return String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      },
+      
+      generate(culture = 'western', gender = 'random', includeMiddle = false) {
         const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
         const actualGender = gender === 'random' 
           ? (Math.random() < 0.5 ? 'male' : 'female')
@@ -633,53 +905,72 @@
         
         const firstName = this._random(namePool[actualGender]);
         const lastName = this._random(namePool.last);
+        const middleInitial = includeMiddle ? this._randomInitial() + '.' : null;
+        
+        const fullName = middleInitial 
+          ? `${firstName} ${middleInitial} ${lastName}`
+          : `${firstName} ${lastName}`;
         
         return {
           firstName,
+          middleInitial,
           lastName,
-          fullName: `${firstName} ${lastName}`
+          fullName
         };
       },
       
-      regenerateFirstName(lastName, culture = 'western', gender = 'random') {
+      regenerateFirstName(lastName, middleInitial, culture = 'western', gender = 'random') {
         const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
         const actualGender = gender === 'random' 
           ? (Math.random() < 0.5 ? 'male' : 'female')
           : gender;
         
         const firstName = this._random(namePool[actualGender]);
+        const fullName = middleInitial 
+          ? `${firstName} ${middleInitial} ${lastName}`
+          : `${firstName} ${lastName}`;
         
-        return {
-          firstName,
-          lastName,
-          fullName: `${firstName} ${lastName}`
-        };
+        return { firstName, middleInitial, lastName, fullName };
       },
       
-      regenerateLastName(firstName, culture = 'western') {
+      regenerateLastName(firstName, middleInitial, culture = 'western') {
         const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
         const lastName = this._random(namePool.last);
+        const fullName = middleInitial 
+          ? `${firstName} ${middleInitial} ${lastName}`
+          : `${firstName} ${lastName}`;
         
-        return {
-          firstName,
-          lastName,
-          fullName: `${firstName} ${lastName}`
-        };
+        return { firstName, middleInitial, lastName, fullName };
       }
     };
 
-    // Generator: Address
+    const UsernameGenerator = {
+      generate(firstName, lastName) {
+        const first = firstName.toLowerCase().replace(/[^a-z]/g, '');
+        const last = lastName.toLowerCase().replace(/[^a-z]/g, '');
+        const num = Math.floor(Math.random() * 99) + 1;
+        const year = Math.floor(Math.random() * 30) + 1985;
+        
+        return [
+          `${first}${last}`,
+          `${first}_${last}`,
+          `${first}.${last}`,
+          `${first}${num}`,
+          `${first[0]}${last}`,
+          `${first}${last.slice(0, 3)}`,
+          `${first}_${year}`,
+          `the_${first}`
+        ].slice(0, 5);
+      }
+    };
+
     const AddressGenerator = {
       _random(arr) {
         return arr[Math.floor(Math.random() * arr.length)];
       },
       
-      _generateHouseNumber() {
-        return Math.floor(Math.random() * 9900) + 100;
-      },
-      
       generate() {
-        const houseNumber = this._generateHouseNumber();
+        const houseNumber = Math.floor(Math.random() * 9900) + 100;
         const streetName = this._random(US_ADDRESS_DATA.streetNames);
         const location = this._random(US_ADDRESS_DATA.cities);
         
@@ -696,42 +987,42 @@
       }
     };
 
-    // Generator: Date
     const DateGenerator = {
       generate() {
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentMonth = today.getMonth();
-        const currentDay = today.getDate();
-        
+        const currentYear = new Date().getFullYear();
         const age = Math.floor(Math.random() * (65 - 18 + 1)) + 18;
         const birthYear = currentYear - age;
         const birthMonth = Math.floor(Math.random() * 12);
         const daysInMonth = new Date(birthYear, birthMonth + 1, 0).getDate();
         const birthDay = Math.floor(Math.random() * daysInMonth) + 1;
         
-        const dateObj = new Date(birthYear, birthMonth, birthDay);
         const month = String(birthMonth + 1).padStart(2, '0');
         const day = String(birthDay).padStart(2, '0');
         const date = `${month}/${day}/${birthYear}`;
         
-        return {
-          date,
-          age,
-          dateObj
-        };
+        return { date, age };
       }
     };
 
+    // ============================================
     // UI Module
+    // ============================================
     const UI = {
+      updateUseCaseHint(mode) {
+        const hint = USE_CASE_HINTS[mode];
+        document.getElementById('useCaseHint').innerHTML = `
+          <span class="hint-icon">${hint.icon}</span>
+          <span>${hint.text}</span>
+        `;
+      },
+      
       renderResults(identities, mode) {
-        const resultsContainer = document.getElementById('results');
-        resultsContainer.innerHTML = '';
+        const container = document.getElementById('results');
+        container.innerHTML = '';
         
         identities.forEach((identity, index) => {
           const card = this.createResultCard(identity, mode, index);
-          resultsContainer.appendChild(card);
+          container.appendChild(card);
         });
       },
       
@@ -742,28 +1033,26 @@
         
         const isFavorited = App.isFavorited(identity);
         
-        let cardHTML = `
+        let html = `
           <div class="card-header">
-            <div class="card-actions">
-              <button class="icon-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-index="${index}">
-                ${isFavorited ? '★' : '☆'}
-              </button>
-            </div>
+            <button class="icon-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-index="${index}">
+              ${isFavorited ? '★' : '☆'}
+            </button>
           </div>
           
           <div class="name-section">
             <div class="name-display">${identity.name.fullName}</div>
             <div class="name-parts">
-              <button class="name-part-btn regen-first" data-index="${index}">↻ First</button>
-              <button class="name-part-btn regen-last" data-index="${index}">↻ Last</button>
-              <button class="name-part-btn regen-full" data-index="${index}">↻ Full</button>
+              <button class="name-part-btn regen-first">↻ First</button>
+              <button class="name-part-btn regen-last">↻ Last</button>
+              <button class="name-part-btn regen-full">↻ All</button>
             </div>
           </div>
           
           <div class="info-section">
             <div class="info-row">
-              <span class="info-label">Name</span>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="info-label">Full Name</span>
+              <div class="info-actions">
                 <span class="info-value">${identity.name.fullName}</span>
                 <button class="copy-btn" data-copy="${identity.name.fullName}">Copy</button>
               </div>
@@ -771,39 +1060,70 @@
         `;
         
         if (mode === 'spam' && identity.birthdate && identity.address) {
-          cardHTML += `
+          html += `
             <div class="info-row">
-              <span class="info-label">DOB (Age)</span>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <span class="info-value">${identity.birthdate.date} (${identity.birthdate.age})</span>
+              <span class="info-label">DOB (Age ${identity.birthdate.age})</span>
+              <div class="info-actions">
+                <span class="info-value">${identity.birthdate.date}</span>
                 <button class="copy-btn" data-copy="${identity.birthdate.date}">Copy</button>
               </div>
             </div>
-            <div class="info-row" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+            <div class="info-row stacked">
               <span class="info-label">Address</span>
-              <div style="display: flex; gap: 0.5rem; align-items: flex-start; width: 100%;">
-                <span class="info-value" style="font-size: 0.875rem; flex: 1;">${identity.address.fullAddress}</span>
-                <button class="copy-btn" data-copy="${identity.address.fullAddress}" style="flex-shrink: 0;">Copy</button>
+              <div class="info-actions" style="width: 100%; justify-content: space-between;">
+                <span class="info-value small">${identity.address.fullAddress}</span>
+                <button class="copy-btn" data-copy="${identity.address.fullAddress}">Copy</button>
+              </div>
+            </div>
+            <button class="copy-all-btn" data-copyall="${identity.name.fullName}\n${identity.birthdate.date}\n${identity.address.fullAddress}">
+              📋 Copy All (Name + DOB + Address)
+            </button>
+          `;
+        }
+        
+        if (mode === 'alias') {
+          const usernames = UsernameGenerator.generate(identity.name.firstName, identity.name.lastName);
+          html += `
+            <div class="username-section">
+              <div class="username-label">Username Ideas</div>
+              <div class="username-suggestions">
+                ${usernames.map(u => `<span class="username-chip" data-copy="${u}">${u}</span>`).join('')}
               </div>
             </div>
           `;
         }
         
-        cardHTML += `</div>`;
-        card.innerHTML = cardHTML;
+        html += '</div>';
+        card.innerHTML = html;
         
         this.attachCardListeners(card, identity, index);
         return card;
       },
       
       attachCardListeners(card, identity, index) {
+        // Copy buttons
         card.querySelectorAll('.copy-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
-            const text = e.target.dataset.copy;
-            this.copyToClipboard(text, e.target);
+            this.copyToClipboard(e.target.dataset.copy, e.target);
           });
         });
         
+        // Username chips
+        card.querySelectorAll('.username-chip').forEach(chip => {
+          chip.addEventListener('click', (e) => {
+            this.copyToClipboard(e.target.dataset.copy, e.target);
+          });
+        });
+        
+        // Copy all button
+        const copyAllBtn = card.querySelector('.copy-all-btn');
+        if (copyAllBtn) {
+          copyAllBtn.addEventListener('click', (e) => {
+            this.copyToClipboard(e.target.dataset.copyall, e.target);
+          });
+        }
+        
+        // Favorite button
         const favBtn = card.querySelector('.favorite-btn');
         favBtn.addEventListener('click', () => {
           App.toggleFavorite(identity);
@@ -812,101 +1132,86 @@
           this.updateFavoritesCount();
         });
         
-        card.querySelector('.regen-first').addEventListener('click', () => {
-          App.regenerateFirstName(index);
-        });
-        
-        card.querySelector('.regen-last').addEventListener('click', () => {
-          App.regenerateLastName(index);
-        });
-        
-        card.querySelector('.regen-full').addEventListener('click', () => {
-          App.regenerateFull(index);
-        });
+        // Regenerate buttons
+        card.querySelector('.regen-first').addEventListener('click', () => App.regenerateFirstName(index));
+        card.querySelector('.regen-last').addEventListener('click', () => App.regenerateLastName(index));
+        card.querySelector('.regen-full').addEventListener('click', () => App.regenerateFull(index));
       },
       
       async copyToClipboard(text, button) {
         try {
           await navigator.clipboard.writeText(text);
-          const originalText = button.textContent;
-          button.textContent = 'Copied!';
+          const original = button.textContent;
+          button.textContent = '✓ Copied';
           button.classList.add('copied');
           
           setTimeout(() => {
-            button.textContent = originalText;
+            button.textContent = original;
             button.classList.remove('copied');
-          }, 2000);
+          }, 1500);
         } catch (err) {
-          console.error('Failed to copy:', err);
-          button.textContent = 'Failed';
-          setTimeout(() => {
-            button.textContent = 'Copy';
-          }, 2000);
+          showToast('Failed to copy');
         }
       },
       
       updateFavoritesCount() {
-        const count = App.getFavoritesCount();
-        document.getElementById('favorites-count').textContent = count;
+        document.getElementById('favorites-count').textContent = App.state.favorites.length;
       },
       
       renderFavorites() {
-        const favorites = App.getFavorites();
-        const favoritesListContainer = document.getElementById('favorites-list');
+        const favorites = App.state.favorites;
+        const container = document.getElementById('favorites-list');
         
         if (favorites.length === 0) {
-          favoritesListContainer.innerHTML = `
+          container.innerHTML = `
             <div class="empty-state">
-              <div class="empty-state-icon">★</div>
+              <div class="empty-state-icon">☆</div>
               <p>No favorites yet</p>
-              <p style="font-size: 0.875rem; margin-top: 0.5rem;">Click the star on any generated name to save it</p>
+              <p style="font-size: 0.8rem; margin-top: 0.5rem;">Click the star on any generated name to save it</p>
             </div>
           `;
           return;
         }
         
-        favoritesListContainer.innerHTML = '';
+        container.innerHTML = '';
         
         favorites.forEach((identity, index) => {
           const item = document.createElement('div');
           item.className = 'favorite-item';
           
-          let itemHTML = `<div class="name-display">${identity.name.fullName}</div>`;
+          let html = `<div class="name-display">${identity.name.fullName}</div>`;
           
           if (identity.birthdate) {
-            itemHTML += `<div style="color: var(--text-muted); font-size: 0.875rem; margin-bottom: 0.25rem;">DOB: ${identity.birthdate.date} (${identity.birthdate.age})</div>`;
+            html += `<div class="favorite-meta">DOB: ${identity.birthdate.date} (Age ${identity.birthdate.age})</div>`;
           }
           
           if (identity.address) {
-            itemHTML += `<div style="color: var(--text-muted); font-size: 0.875rem;">${identity.address.fullAddress}</div>`;
+            html += `<div class="favorite-meta">${identity.address.fullAddress}</div>`;
           }
           
-          itemHTML += `
+          html += `
             <div class="favorite-actions">
-              <button class="copy-btn" data-copy="${identity.name.fullName}">Copy Name</button>
-              ${identity.birthdate ? `<button class="copy-btn" data-copy="${identity.birthdate.date}">Copy DOB</button>` : ''}
-              ${identity.address ? `<button class="copy-btn" data-copy="${identity.address.fullAddress}">Copy Address</button>` : ''}
+              <button class="btn-secondary copy-btn" data-copy="${identity.name.fullName}">Copy Name</button>
+              ${identity.birthdate ? `<button class="btn-secondary copy-btn" data-copy="${identity.birthdate.date}">Copy DOB</button>` : ''}
               <button class="icon-btn" data-remove="${index}">🗑️</button>
             </div>
           `;
           
-          item.innerHTML = itemHTML;
+          item.innerHTML = html;
           
           item.querySelectorAll('.copy-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-              const text = e.target.dataset.copy;
-              this.copyToClipboard(text, e.target);
+              this.copyToClipboard(e.target.dataset.copy, e.target);
             });
           });
           
-          item.querySelector('[data-remove]').addEventListener('click', (e) => {
-            const idx = parseInt(e.target.dataset.remove);
-            App.removeFavorite(idx);
+          item.querySelector('[data-remove]').addEventListener('click', () => {
+            App.removeFavorite(index);
             this.renderFavorites();
             this.updateFavoritesCount();
           });
           
-          favoritesListContainer.appendChild(item);
+          container.appendChild(item);
         });
       },
       
@@ -920,12 +1225,15 @@
       }
     };
 
+    // ============================================
     // App Module
+    // ============================================
     const App = {
       state: {
         mode: 'pen',
         culture: 'western',
         gender: 'random',
+        middleInitial: 'none',
         currentResults: [],
         favorites: []
       },
@@ -940,6 +1248,7 @@
       attachEventListeners() {
         document.getElementById('mode').addEventListener('change', (e) => {
           this.state.mode = e.target.value;
+          UI.updateUseCaseHint(e.target.value);
         });
         
         document.getElementById('culture').addEventListener('change', (e) => {
@@ -950,35 +1259,41 @@
           this.state.gender = e.target.value;
         });
         
-        document.getElementById('generate-btn').addEventListener('click', () => {
-          this.generate();
+        document.getElementById('middleInitial').addEventListener('change', (e) => {
+          this.state.middleInitial = e.target.value;
         });
         
-        document.getElementById('toggle-favorites').addEventListener('click', () => {
-          UI.toggleFavoritesPanel();
-        });
-        
-        document.getElementById('close-favorites').addEventListener('click', () => {
-          UI.toggleFavoritesPanel();
-        });
+        document.getElementById('generate-btn').addEventListener('click', () => this.generate());
+        document.getElementById('toggle-favorites').addEventListener('click', () => UI.toggleFavoritesPanel());
+        document.getElementById('close-favorites').addEventListener('click', () => UI.toggleFavoritesPanel());
         
         document.getElementById('clear-favorites').addEventListener('click', () => {
-          if (confirm('Are you sure you want to clear all favorites?')) {
-            this.clearFavorites();
+          if (confirm('Clear all favorites?')) {
+            this.state.favorites = [];
+            this.saveFavorites();
             UI.renderFavorites();
             UI.updateFavoritesCount();
+          }
+        });
+        
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
+          if (e.code === 'Space') {
+            e.preventDefault();
+            this.generate();
           }
         });
       },
       
       generate() {
-        const { mode, culture, gender } = this.state;
-        const batchSize = 6;
+        const { mode, culture, gender, middleInitial } = this.state;
+        const includeMiddle = middleInitial === 'initial';
         const identities = [];
         
-        for (let i = 0; i < batchSize; i++) {
+        for (let i = 0; i < 6; i++) {
           const identity = {
-            name: NameGenerator.generate(culture, gender),
+            name: NameGenerator.generate(culture, gender, includeMiddle),
             mode,
             culture,
             gender
@@ -998,32 +1313,31 @@
       
       regenerateFirstName(index) {
         const identity = this.state.currentResults[index];
-        const newName = NameGenerator.regenerateFirstName(
+        identity.name = NameGenerator.regenerateFirstName(
           identity.name.lastName,
+          identity.name.middleInitial,
           identity.culture,
           identity.gender
         );
-        
-        identity.name = newName;
         UI.renderResults(this.state.currentResults, this.state.mode);
       },
       
       regenerateLastName(index) {
         const identity = this.state.currentResults[index];
-        const newName = NameGenerator.regenerateLastName(
+        identity.name = NameGenerator.regenerateLastName(
           identity.name.firstName,
+          identity.name.middleInitial,
           identity.culture
         );
-        
-        identity.name = newName;
         UI.renderResults(this.state.currentResults, this.state.mode);
       },
       
       regenerateFull(index) {
-        const { mode, culture, gender } = this.state;
+        const { mode, culture, gender, middleInitial } = this.state;
+        const includeMiddle = middleInitial === 'initial';
         
         const identity = {
-          name: NameGenerator.generate(culture, gender),
+          name: NameGenerator.generate(culture, gender, includeMiddle),
           mode,
           culture,
           gender
@@ -1041,16 +1355,14 @@
       isFavorited(identity) {
         return this.state.favorites.some(fav => 
           fav.name.fullName === identity.name.fullName &&
-          fav.birthdate?.date === identity.birthdate?.date &&
-          fav.address?.fullAddress === identity.address?.fullAddress
+          fav.birthdate?.date === identity.birthdate?.date
         );
       },
       
       toggleFavorite(identity) {
         const index = this.state.favorites.findIndex(fav => 
           fav.name.fullName === identity.name.fullName &&
-          fav.birthdate?.date === identity.birthdate?.date &&
-          fav.address?.fullAddress === identity.address?.fullAddress
+          fav.birthdate?.date === identity.birthdate?.date
         );
         
         if (index >= 0) {
@@ -1065,19 +1377,6 @@
       removeFavorite(index) {
         this.state.favorites.splice(index, 1);
         this.saveFavorites();
-      },
-      
-      clearFavorites() {
-        this.state.favorites = [];
-        this.saveFavorites();
-      },
-      
-      getFavorites() {
-        return this.state.favorites;
-      },
-      
-      getFavoritesCount() {
-        return this.state.favorites.length;
       },
       
       saveFavorites() {
@@ -1095,18 +1394,27 @@
             this.state.favorites = JSON.parse(stored);
           }
         } catch (err) {
-          console.error('Failed to load favorites:', err);
           this.state.favorites = [];
         }
       }
     };
 
-    // Initialize
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => App.init());
-    } else {
-      App.init();
+    // ============================================
+    // Utility
+    // ============================================
+    function showToast(message) {
+      const existing = document.querySelector('.toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
     }
+
+    // Initialize
+    App.init();
   </script>
 </body>
 </html>
