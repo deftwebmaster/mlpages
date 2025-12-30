@@ -36,14 +36,16 @@
     /* Privacy badge */
     .privacy-badge {
       position: absolute;
-      top: 0.75rem;
-      right: 0.75rem;
-      background: rgba(139, 92, 246, 0.15);
-      color: #a78bfa;
-      font-size: 0.7rem;
+      top: -1px;
+      right: var(--space-md);
+      background: rgba(139, 92, 246, 0.9);
+      color: white;
+      font-size: 0.6875rem;
       font-weight: 600;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 4px 10px;
+      border-radius: 0 0 6px 6px;
     }
   </style>
 </head>
@@ -239,7 +241,7 @@
       </article>
 
       <article class="tool-card" data-category="dev" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
-        <div class="privacy-badge">🔒 Privacy-Focused</div>
+        <div class="privacy-badge">🔒 Private</div>
         <h3>Browser Fingerprint Viewer</h3>
         <span class="tag tag-dev">Dev Tools</span>
         <p>See what websites can learn about your browser without cookies. Displays canvas fingerprint, WebGL info, and other tracking vectors.</p>
@@ -251,7 +253,7 @@
       </article>
 
       <article class="tool-card" data-category="personal" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
-        <div class="privacy-badge">🔒 Privacy-Focused</div>
+        <div class="privacy-badge">🔒 Private</div>
         <h3>Pseudonym Generator</h3>
         <span class="tag tag-personal">Personal Ops</span>
         <p>Creates consistent fake identities for testing or privacy. Generates names, addresses, and other persona details locally.</p>
