@@ -4,6 +4,7 @@
  */
 
 const STORAGE_KEY = 'ops_toolkit_project';
+const COLUMN_MAPPINGS_KEY = 'ops_toolkit_column_mappings';
 const VERSION = '1.0';
 
 /**
@@ -84,6 +85,125 @@ function migrateVersion(project) {
     
     console.log('Migration not needed, using current version');
     return project;
+}
+
+// ============================================
+// Column Mapping Memory
+// ============================================
+
+/**
+ * Save column mappings for a module
+ * @param {string} moduleId - The module identifier (e.g., 'reconcile', 'validation')
+ * @param {object} mappings - Object mapping column names to their roles
+ */
+export function saveColumnMappings(moduleId, mappings) {
+    try {
+        const allMappings = getColumnMappings();
+        allMappings[moduleId] = {
+            ...allMappings[moduleId],
+            ...mappings,
+            lastUsed: new Date().toISOString()
+        };
+        localStorage.setItem(COLUMN_MAPPINGS_KEY, JSON.stringify(allMappings));
+        return true;
+    } catch (error) {
+        console.error('Failed to save column mappings:', error);
+        return false;
+    }
+}
+
+/**
+ * Get all saved column mappings
+ */
+export function getColumnMappings() {
+    try {
+        const saved = localStorage.getItem(COLUMN_MAPPINGS_KEY);
+        return saved ? JSON.parse(saved) : {};
+    } catch (error) {
+        console.error('Failed to load column mappings:', error);
+        return {};
+    }
+}
+
+/**
+ * Get column mappings for a specific module
+ * @param {string} moduleId - The module identifier
+ */
+export function getModuleMappings(moduleId) {
+    const allMappings = getColumnMappings();
+    return allMappings[moduleId] || {};
+}
+
+/**
+ * Auto-detect column mappings based on saved preferences
+ * @param {string} moduleId - The module identifier
+ * @param {string[]} availableColumns - Columns available in the current dataset
+ * @param {object} roleDefinitions - Object defining the roles to map (e.g., {key: 'Key Column', qtyA: 'Quantity A'})
+ * @returns {object} - Object with role keys mapped to column names, plus metadata
+ */
+export function autoMapColumns(moduleId, availableColumns, roleDefinitions) {
+    const savedMappings = getModuleMappings(moduleId);
+    const result = {
+        mappings: {},
+        autoMapped: [],
+        unmapped: []
+    };
+    
+    // Normalize column names for comparison (lowercase, no spaces/underscores)
+    const normalizeCol = (col) => col.toLowerCase().replace(/[_\s-]/g, '');
+    const normalizedAvailable = availableColumns.map(col => ({
+        original: col,
+        normalized: normalizeCol(col)
+    }));
+    
+    for (const [role, label] of Object.entries(roleDefinitions)) {
+        // Check if we have a saved mapping for this role
+        const savedColName = savedMappings[role];
+        
+        if (savedColName) {
+            // Try exact match first
+            const exactMatch = availableColumns.find(col => col === savedColName);
+            if (exactMatch) {
+                result.mappings[role] = exactMatch;
+                result.autoMapped.push({ role, column: exactMatch, label });
+                continue;
+            }
+            
+            // Try normalized match
+            const normalizedSaved = normalizeCol(savedColName);
+            const normalizedMatch = normalizedAvailable.find(c => c.normalized === normalizedSaved);
+            if (normalizedMatch) {
+                result.mappings[role] = normalizedMatch.original;
+                result.autoMapped.push({ role, column: normalizedMatch.original, label });
+                continue;
+            }
+        }
+        
+        // No saved mapping or no match found
+        result.unmapped.push({ role, label });
+    }
+    
+    return result;
+}
+
+/**
+ * Clear column mappings for a module or all modules
+ * @param {string} [moduleId] - Optional module ID. If omitted, clears all mappings.
+ */
+export function clearColumnMappings(moduleId) {
+    try {
+        if (moduleId) {
+            const allMappings = getColumnMappings();
+            delete allMappings[moduleId];
+            localStorage.setItem(COLUMN_MAPPINGS_KEY, JSON.stringify(allMappings));
+        } else {
+            localStorage.removeItem(COLUMN_MAPPINGS_KEY);
+        }
+        return true;
+    } catch (error) {
+        console.error('Failed to clear column mappings:', error);
+        return false;
+    }
 }
 
 /**

@@ -7,10 +7,14 @@
 import State from '../state.js';
 import { exportData } from '../export.js';
 import { generateSample, generateCountSample } from '../parser.js';
+import { saveColumnMappings, autoMapColumns } from '../storage.js';
 
 export const ReconcileModule = {
     name: 'Reconcile',
     description: 'Compare system inventory vs physical counts',
+    
+    // Track if we showed the auto-map toast this session
+    _autoMapNotified: false,
     
     /**
      * Render module controls
@@ -62,6 +66,9 @@ export const ReconcileModule = {
         // Find common columns for key selection
         const commonColumns = sheetA.columns.filter(col => sheetB.columns.includes(col));
         
+        // Auto-map columns based on saved preferences
+        const autoMapped = this.getAutoMappedColumns(sheetA.columns, sheetB.columns, commonColumns);
+        
         container.innerHTML = `
             <div class="module-controls">
                 <h3>Reconciliation Setup</h3>
@@ -72,7 +79,7 @@ export const ReconcileModule = {
                         <label>Key Column (must exist in both sheets)</label>
                         <select id="reconKeyColumn" class="select-input">
                             ${commonColumns.length > 0 ? commonColumns.map(col => `
-                                <option value="${col}" ${col === 'sku' ? 'selected' : ''}>
+                                <option value="${col}" ${col === autoMapped.key ? 'selected' : ''}>
                                     ${col.replace(/_/g, ' ').toUpperCase()}
                                 </option>
                             `).join('') : '<option value="">No common columns found</option>'}
@@ -87,7 +94,7 @@ export const ReconcileModule = {
                         <label>Sheet A Quantity Column</label>
                         <select id="reconQtyA" class="select-input">
                             ${sheetA.columns.map(col => `
-                                <option value="${col}" ${col.toLowerCase().includes('qty') ? 'selected' : ''}>
+                                <option value="${col}" ${col === autoMapped.qtyA ? 'selected' : ''}>
                                     ${col.replace(/_/g, ' ').toUpperCase()}
                                 </option>
                             `).join('')}
@@ -98,7 +105,7 @@ export const ReconcileModule = {
                         <label>Sheet B Quantity Column</label>
                         <select id="reconQtyB" class="select-input">
                             ${sheetB.columns.map(col => `
-                                <option value="${col}" ${col.toLowerCase().includes('qty') || col.toLowerCase().includes('physical') ? 'selected' : ''}>
+                                <option value="${col}" ${col === autoMapped.qtyB ? 'selected' : ''}>
                                     ${col.replace(/_/g, ' ').toUpperCase()}
                                 </option>
                             `).join('')}
@@ -114,7 +121,7 @@ export const ReconcileModule = {
                         <select id="reconCost" class="select-input">
                             <option value="">- None -</option>
                             ${sheetA.columns.map(col => `
-                                <option value="${col}" ${col.toLowerCase().includes('cost') || col.toLowerCase().includes('price') ? 'selected' : ''}>
+                                <option value="${col}" ${col === autoMapped.cost ? 'selected' : ''}>
                                     ${col.replace(/_/g, ' ').toUpperCase()}
                                 </option>
                             `).join('')}
@@ -137,6 +144,14 @@ export const ReconcileModule = {
             </div>
         `;
         
+        // Show auto-map notification if columns were mapped
+        if (autoMapped.count > 0 && !this._autoMapNotified) {
+            this._autoMapNotified = true;
+            setTimeout(() => {
+                this.showAutoMapToast(autoMapped.count);
+            }, 300);
+        }
+        
         // Attach event listeners
         document.getElementById('runReconcile').addEventListener('click', () => {
             this.execute();
@@ -149,6 +164,76 @@ export const ReconcileModule = {
         document.getElementById('exportAdjustments')?.addEventListener('click', () => {
             this.exportAdjustments();
         });
+    },
+    
+    /**
+     * Get auto-mapped columns based on saved preferences
+     */
+    getAutoMappedColumns(columnsA, columnsB, commonColumns) {
+        const roleDefinitions = {
+            key: 'Key Column',
+            qtyA: 'Sheet A Quantity',
+            qtyB: 'Sheet B Quantity',
+            cost: 'Unit Cost'
+        };
+        
+        // Combine all available columns for mapping
+        const allColumns = [...new Set([...columnsA, ...columnsB])];
+        
+        const result = autoMapColumns('reconcile', allColumns, roleDefinitions);
+        
+        // Build the return object with fallbacks
+        const mapped = {
+            key: result.mappings.key || this.findBestMatch(commonColumns, ['sku', 'id', 'key', 'item', 'product']),
+            qtyA: result.mappings.qtyA || this.findBestMatch(columnsA, ['qty', 'quantity', 'on_hand', 'system']),
+            qtyB: result.mappings.qtyB || this.findBestMatch(columnsB, ['qty', 'quantity', 'physical', 'counted', 'count']),
+            cost: result.mappings.cost || this.findBestMatch(columnsA, ['cost', 'price', 'unit_cost']),
+            count: result.autoMapped.length
+        };
+        
+        return mapped;
+    },
+    
+    /**
+     * Find best matching column from a list of candidates
+     */
+    findBestMatch(columns, keywords) {
+        for (const keyword of keywords) {
+            const match = columns.find(col => col.toLowerCase().includes(keyword));
+            if (match) return match;
+        }
+        return columns[0] || null;
+    },
+    
+    /**
+     * Show toast notification for auto-mapped columns
+     */
+    showAutoMapToast(count) {
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-info';
+        toast.innerHTML = `
+            <span>✨ Auto-mapped ${count} column${count > 1 ? 's' : ''} from your previous settings</span>
+        `;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            z-index: 10000;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     },
     
     /**
@@ -183,6 +268,14 @@ export const ReconcileModule = {
         }
         
         const result = this.reconcile(sheetA, sheetB, options);
+        
+        // Save column mappings for next time
+        saveColumnMappings('reconcile', {
+            key: options.keyColumn,
+            qtyA: options.qtyColumnA,
+            qtyB: options.qtyColumnB,
+            cost: options.costColumn
+        });
         
         // Enable export buttons
         document.getElementById('exportVariances').disabled = false;
