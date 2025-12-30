@@ -1327,17 +1327,22 @@ function exportReportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Colors
+    // Colors as RGB arrays
     const primaryColor = [37, 99, 235];    // Blue
     const dangerColor = [239, 68, 68];     // Red
     const successColor = [16, 185, 129];   // Green
     const textColor = [30, 41, 59];        // Dark slate
     const mutedColor = [100, 116, 139];    // Muted
+    const warningColor = [245, 158, 11];   // Amber
+    
+    // Helper functions to set colors (jsPDF needs separate r,g,b args)
+    const setTextRGB = (rgb) => doc.setTextColor(rgb[0], rgb[1], rgb[2]);
+    const setFillRGB = (rgb) => doc.setFillColor(rgb[0], rgb[1], rgb[2]);
     
     let yPos = 20;
     
     // Header
-    doc.setFillColor(...primaryColor);
+    setFillRGB(primaryColor);
     doc.rect(0, 0, 220, 35, 'F');
     
     doc.setTextColor(255, 255, 255);
@@ -1358,14 +1363,14 @@ function exportReportToPDF() {
     doc.setFillColor(248, 250, 252);
     doc.roundedRect(14, yPos, 182, 35, 3, 3, 'F');
     
-    doc.setTextColor(...textColor);
+    setTextRGB(textColor);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Executive Summary', 20, yPos + 10);
     
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
-    doc.setTextColor(...mutedColor);
+    setTextRGB(mutedColor);
     
     let summaryText = `This cycle count reconciled ${total} SKUs with an inventory accuracy of ${accuracy}%. `;
     if (totalImpact < 0) {
@@ -1382,7 +1387,7 @@ function exportReportToPDF() {
     yPos += 45;
     
     // Key Metrics
-    doc.setTextColor(...textColor);
+    setTextRGB(textColor);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Key Metrics', 14, yPos);
@@ -1405,12 +1410,12 @@ function exportReportToPDF() {
         doc.setFillColor(248, 250, 252);
         doc.roundedRect(xPos, yPos, boxWidth, 25, 2, 2, 'F');
         
-        doc.setTextColor(...metric.color);
+        setTextRGB(metric.color);
         doc.setFontSize(18);
         doc.setFont('helvetica', 'bold');
         doc.text(String(metric.value), xPos + boxWidth/2, yPos + 12, { align: 'center' });
         
-        doc.setTextColor(...mutedColor);
+        setTextRGB(mutedColor);
         doc.setFontSize(7);
         doc.setFont('helvetica', 'normal');
         doc.text(metric.label.toUpperCase(), xPos + boxWidth/2, yPos + 20, { align: 'center' });
@@ -1422,7 +1427,7 @@ function exportReportToPDF() {
     doc.setFillColor(totalImpact >= 0 ? 236 : 254, totalImpact >= 0 ? 253 : 242, totalImpact >= 0 ? 245 : 242);
     doc.roundedRect(14, yPos, 182, 20, 3, 3, 'F');
     
-    doc.setTextColor(...(totalImpact >= 0 ? successColor : dangerColor));
+    setTextRGB(totalImpact >= 0 ? successColor : dangerColor);
     doc.setFontSize(14);
     doc.setFont('helvetica', 'bold');
     doc.text(`Net Dollar Impact: ${formatCurrency(totalImpact)}`, 105, yPos + 13, { align: 'center' });
@@ -1430,7 +1435,7 @@ function exportReportToPDF() {
     yPos += 30;
     
     // Dollar Impact Table
-    doc.setTextColor(...textColor);
+    setTextRGB(textColor);
     doc.setFontSize(12);
     doc.setFont('helvetica', 'bold');
     doc.text('Dollar Impact Breakdown', 14, yPos);
@@ -1454,7 +1459,7 @@ function exportReportToPDF() {
         
         doc.autoTable({
             startY: yPos,
-            head: [['SKU', 'Description', 'Issue', 'Variance', 'Unit Cost', 'Impact']],
+            head: [['SKU', 'Description', 'Issue', 'Var', 'Unit $', 'Impact']],
             body: tableData,
             theme: 'striped',
             headStyles: {
@@ -1468,14 +1473,15 @@ function exportReportToPDF() {
                 textColor: textColor
             },
             columnStyles: {
-                0: { fontStyle: 'bold', cellWidth: 25 },
-                1: { cellWidth: 50 },
-                2: { cellWidth: 30 },
-                3: { halign: 'right', cellWidth: 20 },
-                4: { halign: 'right', cellWidth: 25 },
-                5: { halign: 'right', cellWidth: 25 }
+                0: { fontStyle: 'bold', cellWidth: 22 },
+                1: { cellWidth: 'auto' },
+                2: { cellWidth: 28 },
+                3: { halign: 'right', cellWidth: 16 },
+                4: { halign: 'right', cellWidth: 22 },
+                5: { halign: 'right', cellWidth: 24 }
             },
             margin: { left: 14, right: 14 },
+            tableWidth: 'auto',
             didParseCell: function(data) {
                 // Color variance and impact columns
                 if (data.section === 'body' && data.row.index < breakdown.items.length) {
@@ -1502,7 +1508,7 @@ function exportReportToPDF() {
             yPos = 20;
         }
         
-        doc.setTextColor(...textColor);
+        setTextRGB(textColor);
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.text('Items Requiring Investigation', 14, yPos);
@@ -1512,13 +1518,13 @@ function exportReportToPDF() {
             doc.setFillColor(254, 242, 242);
             doc.roundedRect(14, yPos, 182, 8 + (missingInB * 6), 2, 2, 'F');
             
-            doc.setTextColor(...dangerColor);
+            setTextRGB(dangerColor);
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
             doc.text('Ghost Inventory (In WMS but not found):', 18, yPos + 6);
             
             doc.setFont('helvetica', 'normal');
-            doc.setTextColor(...textColor);
+            setTextRGB(textColor);
             doc.setFontSize(8);
             
             recon.missingInB.forEach((item, i) => {
@@ -1536,13 +1542,13 @@ function exportReportToPDF() {
             doc.setFillColor(254, 249, 195);
             doc.roundedRect(14, yPos, 182, 8 + (missingInA * 6), 2, 2, 'F');
             
-            doc.setTextColor([161, 98, 7]);
+            doc.setTextColor(161, 98, 7);
             doc.setFontSize(9);
             doc.setFont('helvetica', 'bold');
             doc.text('Found Inventory (Counted but not in WMS):', 18, yPos + 6);
             
             doc.setFont('helvetica', 'normal');
-            doc.setTextColor(...textColor);
+            setTextRGB(textColor);
             doc.setFontSize(8);
             
             recon.missingInA.forEach((item, i) => {
@@ -1557,7 +1563,7 @@ function exportReportToPDF() {
     for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFontSize(8);
-        doc.setTextColor(...mutedColor);
+        setTextRGB(mutedColor);
         doc.text(`Generated by Ops Data Toolkit | Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
     }
     
