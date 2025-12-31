@@ -3,338 +3,514 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matt Livingston</title>
-  <meta name="description" content="Web Developer, Entrepreneur, Writer. Crafting lean, elegant tools and content systems.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <title>Matt Livingston | Web Developer & Tool Builder</title>
+  <meta name="description" content="Crafting lean, elegant web tools and content systems. Warehouse operations expertise meets practical software development.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mattlivingston.com/">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Matt Livingston | Web Developer & Tool Builder">
+  <meta property="og:description" content="Crafting lean, elegant web tools and content systems. Warehouse operations expertise meets practical software development.">
+  <meta property="og:url" content="https://mattlivingston.com/">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Matt Livingston | Web Developer & Tool Builder">
+  <meta name="twitter:description" content="Crafting lean, elegant web tools and content systems. Warehouse operations expertise meets practical software development.">
+  
   <style>
+    :root {
+      --text: #e4e4e7;
+      --text-light: #a1a1aa;
+      --text-lighter: #71717a;
+      --bg: #09090b;
+      --bg-subtle: #0f0f12;
+      --card-bg: #18181b;
+      --border: #27272a;
+      --accent: #3b82f6;
+      --accent-hover: #60a5fa;
+      --accent-subtle: rgba(59, 130, 246, 0.1);
+      --gradient-start: #3b82f6;
+      --gradient-end: #8b5cf6;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    :root {
-      --bg-primary: #0d0d0d;
-      --bg-secondary: #1a1a1a;
-      --accent: #3b82f6;
-      --accent-secondary: #10b981;
-      --text-primary: #ffffff;
-      --text-secondary: #cccccc;
-      --text-muted: #555555;
-      --glow-accent: rgba(59, 130, 246, 0.4);
-      --glow-secondary: rgba(16, 185, 129, 0.3);
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
-      background: radial-gradient(circle at top left, var(--bg-primary), var(--bg-secondary));
-      color: var(--text-primary);
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Ambient background effects */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: 
-        radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-      animation: drift 20s ease-in-out infinite;
-    }
-
-    @keyframes drift {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      33% { transform: translate(2%, 1%) rotate(1deg); }
-      66% { transform: translate(-1%, 2%) rotate(-1deg); }
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
     }
 
     .container {
-      max-width: 700px;
-      width: 100%;
-      position: relative;
-      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
     }
 
-    /* Profile picture */
-    .profile-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 2rem;
+    /* Hero Section */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 0;
     }
 
-    .profile-pic {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      object-fit: scale-down;
-      background: var(--bg-secondary);
-      border: 3px solid #666;
-      position: relative;
-      z-index: 2;
-      transition: all 0.4s ease;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    }
-
-    .profile-wrapper::before {
-      content: '';
-      position: absolute;
-      top: -4px;
-      left: -4px;
-      right: -4px;
-      bottom: -4px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-      z-index: 1;
-      opacity: 0.5;
-      transition: all 0.4s ease;
-    }
-
-    .profile-wrapper::after {
-      content: '';
-      position: absolute;
-      top: -8px;
-      left: -8px;
-      right: -8px;
-      bottom: -8px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-      z-index: 0;
-      opacity: 0;
-      filter: blur(20px);
-      transition: all 0.4s ease;
-    }
-
-    .profile-wrapper:hover::after {
-      opacity: 0.5;
-    }
-
-    .profile-wrapper:hover .profile-pic {
-      transform: scale(1.02);
-    }
-
-    /* Name */
-    h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 2.75rem;
+    .logo {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
       font-weight: 700;
-      letter-spacing: 2px;
-      margin-bottom: 0.75rem;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 50%, var(--text-primary) 100%);
-      background-size: 200% auto;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      animation: shimmer 8s ease-in-out infinite;
-      text-shadow: 0 0 40px var(--glow-accent);
-    }
-
-    @keyframes shimmer {
-      0%, 100% { background-position: 0% center; }
-      50% { background-position: 100% center; }
-    }
-
-    /* Roles */
-    .roles {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
+      color: white;
       margin-bottom: 2rem;
-      letter-spacing: 0.5px;
+      animation: fadeInUp 0.6s ease-out;
     }
 
-    .roles .separator {
-      display: inline-block;
-      margin: 0 0.75rem;
-      color: var(--text-muted);
-      opacity: 0.5;
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
     }
 
-    .role {
-      display: inline-block;
-      transition: color 0.3s ease;
+    .hero .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.6s ease-out 0.2s both;
     }
 
-    .role:hover {
+    .hero .description {
+      font-size: 1.125rem;
+      color: var(--text-light);
+      max-width: 540px;
+      margin-bottom: 2rem;
+      line-height: 1.7;
+      animation: fadeInUp 0.6s ease-out 0.3s both;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.6s ease-out 0.4s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--text-lighter);
+      background: var(--card-bg);
+    }
+
+    /* Credibility Bar */
+    .credibility {
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+    }
+
+    .credibility-inner {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cred-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9375rem;
+      color: var(--text-light);
+    }
+
+    .cred-item strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .cred-dot {
+      display: none;
+    }
+
+    @media (min-width: 600px) {
+      .cred-dot {
+        display: inline;
+        color: var(--text-lighter);
+      }
+    }
+
+    /* Featured Tools */
+    .featured {
+      padding: 5rem 0;
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-header p {
+      color: var(--text-light);
+    }
+
+    .tools-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .tools-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .tool-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tool-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .tool-card h3 {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .tool-card p {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      line-height: 1.5;
+      flex-grow: 1;
+    }
+
+    .tool-card .tool-link {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .tool-card:hover .tool-link {
+      color: var(--accent-hover);
+    }
+
+    .all-tools-link {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    .all-tools-link a {
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      transition: color 0.2s;
+    }
+
+    .all-tools-link a:hover {
       color: var(--accent);
     }
 
-    /* About */
+    /* What I Do */
     .about {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      color: var(--text-secondary);
-      max-width: 560px;
-      margin: 0 auto 2.5rem;
+      padding: 5rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    /* CTA Button */
-    .cta-wrapper {
-      margin-top: 1rem;
+    .about-content {
+      max-width: 600px;
     }
 
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
-      color: white;
-      text-decoration: none;
+    .about-content h2 {
+      font-size: 1.5rem;
       font-weight: 600;
-      font-size: 1rem;
-      border-radius: 50px;
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
+      margin-bottom: 1.5rem;
     }
 
-    .cta-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transition: left 0.5s ease;
+    .about-content p {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+      line-height: 1.7;
     }
 
-    .cta-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 40px var(--glow-accent);
+    .about-content p:last-of-type {
+      margin-bottom: 0;
     }
 
-    .cta-btn:hover::before {
-      left: 100%;
+    /* Availability CTA */
+    .availability {
+      padding: 4rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    .cta-btn svg {
-      width: 20px;
-      height: 20px;
-      transition: transform 0.3s ease;
+    .availability-card {
+      background: var(--accent-subtle);
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
     }
 
-    .cta-btn:hover svg {
-      transform: translateX(4px);
+    .availability-card p {
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+      font-size: 1.0625rem;
+    }
+
+    .availability-card .location {
+      color: var(--text-lighter);
+      font-size: 0.875rem;
+      margin-top: 1rem;
+      margin-bottom: 0;
     }
 
     /* Footer */
-    footer {
-      position: absolute;
-      bottom: 1.5rem;
-      left: 0;
-      right: 0;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      z-index: 1;
+    .footer {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
     }
 
-    /* Responsive */
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-copy {
+      font-size: 0.875rem;
+      color: var(--text-lighter);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-lighter);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile adjustments */
     @media (max-width: 600px) {
-      body {
-        padding: 1.5rem;
+      .hero {
+        min-height: auto;
+        padding: 3rem 0;
       }
 
-      h1 {
-        font-size: 2rem;
-        letter-spacing: 1px;
+      .credibility-inner {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
       }
 
-      .profile-pic {
-        width: 140px;
-        height: 140px;
+      .featured, .about, .availability {
+        padding: 3rem 0;
       }
 
-      .roles {
-        font-size: 1rem;
+      .tool-card {
+        padding: 1.25rem;
       }
 
-      .roles .separator {
-        margin: 0 0.5rem;
+      .footer-inner {
+        flex-direction: column;
+        text-align: center;
       }
-
-      .about {
-        font-size: 0.95rem;
-      }
-
-      .cta-btn {
-        padding: 0.875rem 1.75rem;
-        font-size: 0.95rem;
-      }
-    }
-
-    /* Subtle scan line effect (optional flair) */
-    .scanlines {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.03) 2px,
-        rgba(0, 0, 0, 0.03) 4px
-      );
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.4;
     }
   </style>
 </head>
 <body>
-  <div class="scanlines"></div>
-  
-  <div class="container">
-    <div class="profile-wrapper">
-      <img src="profile.png" alt="Matt Livingston" class="profile-pic">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="logo">ML</div>
+      <h1>Matt Livingston</h1>
+      <p class="subtitle">Web Developer & Tool Builder</p>
+      <p class="description">
+        I build practical tools that solve real problems — warehouse operations, 
+        web utilities, and systems that actually get used.
+      </p>
+      <div class="cta-group">
+        <a href="/tools/" class="btn btn-primary">Explore Tools</a>
+        <a href="/hire-me/" class="btn btn-secondary">Work With Me</a>
+      </div>
     </div>
-    
-    <h1>Matt Livingston</h1>
-    
-    <div class="roles">
-      <span class="role">Web Developer</span>
-      <span class="separator">•</span>
-      <span class="role">Operations Tech</span>
+  </section>
+
+  <!-- Credibility Bar -->
+  <section class="credibility">
+    <div class="container">
+      <div class="credibility-inner">
+        <div class="cred-item"><strong>18</strong> Tools Built</div>
+        <span class="cred-dot">·</span>
+        <div class="cred-item"><strong>5+</strong> Years Warehouse Ops</div>
+        <span class="cred-dot">·</span>
+        <div class="cred-item"><strong>Oracle & Manhattan</strong> WMS</div>
+      </div>
     </div>
-    
-    <p class="about">
-      Crafting lean, elegant tools and content systems. Building for leverage, legacy, and freedom — one sharp line of code and one sharper idea at a time.
-    </p>
-    
-    <div class="cta-wrapper">
-      <a href="/tools/" class="cta-btn">
-        <span>Explore My Tools</span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      </a>
+  </section>
+
+  <!-- Featured Tools -->
+  <section class="featured">
+    <div class="container">
+      <div class="section-header">
+        <h2>Featured Tools</h2>
+        <p>Browser-first. No accounts. No tracking.</p>
+      </div>
+      <div class="tools-grid">
+        <a href="/tools/ops-data-toolkit/" class="tool-card">
+          <h3>Ops Data Toolkit</h3>
+          <p>6-module data analysis suite for warehouse operations. Reconciliation, validation, lookups, and more.</p>
+          <span class="tool-link">Open tool →</span>
+        </a>
+        <a href="/tools/pallet-calculator/" class="tool-card">
+          <h3>Pallet Load Calculator</h3>
+          <p>Visual palletization planning with 3D preview. Calculate cube utilization and weight limits.</p>
+          <span class="tool-link">Open tool →</span>
+        </a>
+        <a href="/tools/launch-kit/" class="tool-card">
+          <h3>Website Launch Kit</h3>
+          <p>Everything you need before go-live. Meta tags, robots.txt, sitemap, security headers, and a 24-item checklist.</p>
+          <span class="tool-link">Open tool →</span>
+        </a>
+      </div>
+      <div class="all-tools-link">
+        <a href="/tools/">View all 18 tools →</a>
+      </div>
     </div>
-  </div>
-  
-  <footer>
-    © <span id="year"></span> Matt Livingston
+  </section>
+
+  <!-- What I Do -->
+  <section class="about">
+    <div class="container">
+      <div class="about-content">
+        <h2>What I Build</h2>
+        <p>
+          Tools that survive contact with reality. Browser-first utilities for warehouse 
+          operations, web development, and everyday problem-solving. No accounts, no 
+          tracking, no bloat — just things that work.
+        </p>
+        <p>
+          I've spent 5+ years in warehouse operations working with Oracle and Manhattan 
+          WMS systems. Now I build the tools I wish I'd had.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Availability -->
+  <section class="availability">
+    <div class="container">
+      <div class="availability-card">
+        <p>
+          Interested in working together? I'm open to opportunities in operations 
+          technology, web development, and roles that bridge the two.
+        </p>
+        <a href="/hire-me/" class="btn btn-primary">Get In Touch</a>
+        <p class="location">Based in Dallas-Fort Worth</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">© 2025 Matt Livingston</span>
+        <div class="footer-links">
+          <a href="mailto:matt@mattlivingston.com">Email</a>
+          <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
   </footer>
-  
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+
 </body>
 </html>
