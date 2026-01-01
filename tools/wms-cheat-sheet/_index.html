@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>WMS Cheat Sheet | Matt Livingston</title>
-  <meta name="description" content="Quick reference and decoder for Oracle WMS Cloud transaction codes. Look up IHT codes, reason codes, and warehouse terminology instantly.">
+  <meta name="description" content="Quick reference for Oracle WMS Cloud and Manhattan WMS transaction codes. IHT codes, reason codes, and warehouse terminology explained.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mattlivingston.com/tools/wms-cheat-sheet/">
   
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="WMS Cheat Sheet | Matt Livingston">
-  <meta property="og:description" content="Quick reference and decoder for Oracle WMS Cloud transaction codes.">
+  <meta property="og:description" content="Quick reference for Oracle WMS Cloud and Manhattan WMS transaction codes.">
   <meta property="og:url" content="https://mattlivingston.com/tools/wms-cheat-sheet/">
   
   <style>
@@ -26,10 +26,12 @@
       --border-light: #3f3f46;
       --accent: #3b82f6;
       --accent-hover: #60a5fa;
-      --success: #4ade80;
-      --success-bg: rgba(74, 222, 128, 0.12);
       --oracle: #f87171;
       --oracle-bg: rgba(248, 113, 113, 0.12);
+      --manhattan: #60a5fa;
+      --manhattan-bg: rgba(96, 165, 250, 0.12);
+      --both: #4ade80;
+      --both-bg: rgba(74, 222, 128, 0.12);
       --term: #a78bfa;
       --term-bg: rgba(167, 139, 250, 0.12);
       --space-xs: 0.25rem;
@@ -92,132 +94,6 @@
     .page-header .tagline {
       color: var(--text-light);
       font-size: 1rem;
-    }
-
-    /* Decoder Tool */
-    .decoder-section {
-      margin-bottom: var(--space-xl);
-      padding: var(--space-lg);
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-    }
-
-    .decoder-section h2 {
-      font-size: 1.125rem;
-      font-weight: 600;
-      margin-bottom: var(--space-xs);
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .decoder-section > p {
-      color: var(--text-light);
-      font-size: 0.875rem;
-      margin-bottom: var(--space-md);
-    }
-
-    .decoder-input-row {
-      display: flex;
-      gap: var(--space-sm);
-      margin-bottom: var(--space-md);
-    }
-
-    .decoder-input {
-      flex: 1;
-      padding: var(--space-md);
-      font-size: 1rem;
-      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg);
-      color: var(--text);
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .decoder-input::placeholder {
-      color: var(--text-lighter);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
-
-    .decoder-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
-    }
-
-    .decoder-btn {
-      padding: var(--space-md) var(--space-lg);
-      font-size: 0.9375rem;
-      font-weight: 500;
-      border: none;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      cursor: pointer;
-      transition: background 0.15s;
-      white-space: nowrap;
-    }
-
-    .decoder-btn:hover {
-      background: var(--accent-hover);
-    }
-
-    .decoder-results {
-      display: none;
-    }
-
-    .decoder-results.active {
-      display: block;
-    }
-
-    .decoder-result-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--space-md);
-      margin-bottom: var(--space-sm);
-    }
-
-    .decoder-result-card:last-child {
-      margin-bottom: 0;
-    }
-
-    .decoder-result-card.not-found {
-      border-color: var(--oracle);
-      background: var(--oracle-bg);
-    }
-
-    .decoder-result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: var(--space-md);
-      margin-bottom: var(--space-sm);
-    }
-
-    .decoder-result-code {
-      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
-      font-size: 1rem;
-      font-weight: 600;
-    }
-
-    .decoder-result-name {
-      font-size: 0.9375rem;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .decoder-result-desc {
-      font-size: 0.875rem;
-      color: var(--text-light);
-    }
-
-    .decoder-no-input {
-      color: var(--text-lighter);
-      font-size: 0.875rem;
-      font-style: italic;
     }
 
     /* Stats bar */
@@ -338,12 +214,11 @@
       border-radius: var(--radius);
       padding: var(--space-md);
       transition: box-shadow 0.15s, border-color 0.15s;
-      position: relative;
     }
 
     .code-card:hover {
       box-shadow: var(--shadow);
-      border-color: var(--border-light);
+      border-color: var(--border);
     }
 
     .code-card.hidden {
@@ -371,40 +246,6 @@
       margin-bottom: var(--space-xs);
     }
 
-    .code-header-right {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-    }
-
-    .copy-btn {
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: transparent;
-      color: var(--text-lighter);
-      cursor: pointer;
-      transition: all 0.15s;
-      opacity: 0;
-    }
-
-    .code-card:hover .copy-btn {
-      opacity: 1;
-    }
-
-    .copy-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .copy-btn.copied {
-      border-color: var(--success);
-      color: var(--success);
-      background: var(--success-bg);
-    }
-
     .platform-tag {
       font-size: 0.6875rem;
       font-weight: 600;
@@ -420,7 +261,17 @@
       color: var(--oracle);
     }
 
-    .platform-tag.terminology {
+    .platform-tag.manhattan {
+      background: var(--manhattan-bg);
+      color: var(--manhattan);
+    }
+
+    .platform-tag.both {
+      background: var(--both-bg);
+      color: var(--both);
+    }
+
+    .platform-tag.term {
       background: var(--term-bg);
       color: var(--term);
     }
@@ -429,6 +280,15 @@
       font-size: 0.9375rem;
       color: var(--text-light);
       line-height: 1.5;
+    }
+
+    .code-category {
+      display: inline-block;
+      margin-top: var(--space-sm);
+      font-size: 0.75rem;
+      color: var(--text-lighter);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .code-tip {
@@ -545,14 +405,6 @@
         gap: var(--space-sm);
       }
 
-      .code-header-right {
-        align-self: flex-start;
-      }
-
-      .copy-btn {
-        opacity: 1;
-      }
-
       .filter-row {
         overflow-x: auto;
         flex-wrap: nowrap;
@@ -563,14 +415,6 @@
       .filter-btn {
         flex-shrink: 0;
       }
-
-      .decoder-input-row {
-        flex-direction: column;
-      }
-
-      .decoder-btn {
-        width: 100%;
-      }
     }
   </style>
 </head>
@@ -579,19 +423,8 @@
     <header class="page-header">
       <a href="/tools/" class="back-link">← Back to Tools</a>
       <h1>WMS Cheat Sheet</h1>
-      <p class="tagline">Decode transaction codes and look up warehouse terminology</p>
+      <p class="tagline">Quick reference for Oracle WMS Cloud and Manhattan WMS codes</p>
     </header>
-
-    <!-- Decoder Tool -->
-    <section class="decoder-section">
-      <h2>🔍 Code Decoder</h2>
-      <p>Paste one or more codes (comma or space separated) to instantly look them up.</p>
-      <div class="decoder-input-row">
-        <input type="text" class="decoder-input" id="decoderInput" placeholder="e.g. IHT-51, IHT-1, LPN" autocomplete="off">
-        <button class="decoder-btn" id="decoderBtn">Decode</button>
-      </div>
-      <div class="decoder-results" id="decoderResults"></div>
-    </section>
 
     <div class="stats-bar">
       <div class="stat">
@@ -601,6 +434,10 @@
       <div class="stat">
         <span class="stat-count" id="oracleCount">0</span>
         <span class="stat-label">Oracle WMS</span>
+      </div>
+      <div class="stat">
+        <span class="stat-count" id="manhattanCount">0</span>
+        <span class="stat-label">Manhattan</span>
       </div>
       <div class="stat">
         <span class="stat-count" id="termCount">0</span>
@@ -615,6 +452,7 @@
       <div class="filter-row">
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="oracle">Oracle WMS</button>
+        <button class="filter-btn" data-filter="manhattan">Manhattan</button>
         <button class="filter-btn" data-filter="terminology">Terminology</button>
       </div>
     </div>
@@ -630,13 +468,13 @@
 
     <section class="contribute-section">
       <h3>Know a code that's missing?</h3>
-      <p>This cheat sheet grows with community input. If you've encountered a transaction code or term that should be here, let me know.</p>
-      <a href="mailto:matt@mattlivingston.com?subject=WMS%20Cheat%20Sheet%20Suggestion&body=Code%3A%20%0APlatform%3A%20Oracle%20%2F%20General%0ADescription%3A%20%0ACategory%3A%20%0ATips%20(optional)%3A%20" class="contribute-btn">Suggest an Addition</a>
+      <p>This glossary grows with community input. If you've encountered a transaction code or term that should be here, let me know.</p>
+      <a href="mailto:matt@mattlivingston.com?subject=WMS%20Glossary%20Suggestion&body=Code%3A%20%0APlatform%3A%20Oracle%20%2F%20Manhattan%20%2F%20Both%0ADescription%3A%20%0ACategory%3A%20%0ATips%20(optional)%3A%20" class="contribute-btn">Suggest an Addition</a>
     </section>
 
     <footer class="footer">
       <div class="footer-content">
-        <span>© 2025 Matt Livingston</span>
+        <span>&copy; 2025 Matt Livingston</span>
         <span> · </span>
         <a href="/hire-me/">Work with me</a>
       </div>
@@ -861,22 +699,27 @@
       },
 
       // ============================================
-      // COMMON WMS TERMINOLOGY
+      // MANHATTAN WMS - PLACEHOLDER
       // ============================================
       {
         code: "PIX",
         name: "Perpetual Inventory Transaction",
-        platform: "terminology",
+        platform: "manhattan",
         category: "Inventory",
-        description: "Core inventory transaction type used in WMS systems. Processes inventory movements and adjustments between WMS and external systems."
+        description: "Core inventory transaction module in Manhattan. Processes inventory movements and adjustments between WMS and external systems.",
+        tip: "Manhattan uses PIX ASYNC to process inventory transactions from PkMS."
       },
       {
         code: "ASN",
         name: "Advance Ship Notice",
-        platform: "terminology",
+        platform: "manhattan",
         category: "Receiving",
-        description: "Electronic document sent by supplier before shipment arrives. Contains expected contents, quantities, PO references."
+        description: "Electronic notification of incoming shipment. Contains expected items, quantities, and PO references."
       },
+
+      // ============================================
+      // COMMON WMS TERMINOLOGY
+      // ============================================
       {
         code: "iLPN",
         name: "Inbound License Plate Number",
@@ -894,13 +737,6 @@
         tip: "Also written as OBLPN in Oracle WMS Cloud."
       },
       {
-        code: "LPN",
-        name: "License Plate Number",
-        platform: "terminology",
-        category: "Terminology",
-        description: "Unique barcode identifier for a container, pallet, or carton. The fundamental tracking unit in most WMS systems."
-      },
-      {
         code: "RF",
         name: "Radio Frequency",
         platform: "terminology",
@@ -915,18 +751,11 @@
         description: "Shipping method where freight doesn't require a full trailer. Multiple shipments share trailer space."
       },
       {
-        code: "TL",
+        code: "TL / FTL",
         name: "Truckload / Full Truckload",
         platform: "terminology",
         category: "Shipping",
         description: "Shipping method using a dedicated full trailer for one shipment."
-      },
-      {
-        code: "FTL",
-        name: "Full Truckload",
-        platform: "terminology",
-        category: "Shipping",
-        description: "Shipping method using a dedicated full trailer for one shipment. Same as TL."
       },
       {
         code: "UOM",
@@ -995,6 +824,13 @@
         description: "Receiving inventory and immediately routing to outbound without putaway to storage. Reduces handling and storage time."
       },
       {
+        code: "ASN",
+        name: "Advance Ship Notice",
+        platform: "terminology",
+        category: "Receiving",
+        description: "Electronic document sent by supplier before shipment arrives. Contains expected contents, quantities, PO references."
+      },
+      {
         code: "BOL",
         name: "Bill of Lading",
         platform: "terminology",
@@ -1021,28 +857,6 @@
         platform: "terminology",
         category: "Terminology",
         description: "Automated systems using cranes or shuttles to store and retrieve inventory. High density, reduced labor."
-      },
-      {
-        code: "WMS",
-        name: "Warehouse Management System",
-        platform: "terminology",
-        category: "Terminology",
-        description: "Software that controls and optimizes warehouse operations including receiving, putaway, picking, packing, and shipping."
-      },
-      {
-        code: "ERP",
-        name: "Enterprise Resource Planning",
-        platform: "terminology",
-        category: "Terminology",
-        description: "Business software that integrates core processes like finance, HR, manufacturing, and supply chain. WMS typically integrates with ERP for order and inventory sync."
-      },
-      {
-        code: "EDI",
-        name: "Electronic Data Interchange",
-        platform: "terminology",
-        category: "Terminology",
-        description: "Standardized format for exchanging business documents electronically. Common in supply chain for POs, ASNs, invoices.",
-        tip: "X12 is the North American EDI standard. EDIFACT is used internationally."
       }
     ];
 
@@ -1052,9 +866,6 @@
     const emptyState = document.getElementById('emptyState');
     const resultsInfo = document.getElementById('resultsInfo');
     const filterBtns = document.querySelectorAll('.filter-btn');
-    const decoderInput = document.getElementById('decoderInput');
-    const decoderBtn = document.getElementById('decoderBtn');
-    const decoderResults = document.getElementById('decoderResults');
 
     // State
     let currentFilter = 'all';
@@ -1080,73 +891,13 @@
           renderCodes();
         });
       });
-
-      // Decoder handlers
-      decoderBtn.addEventListener('click', decodeInput);
-      decoderInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') decodeInput();
-      });
-    }
-
-    // Decoder function
-    function decodeInput() {
-      const input = decoderInput.value.trim();
-      
-      if (!input) {
-        decoderResults.classList.remove('active');
-        return;
-      }
-
-      // Parse input - split by comma, space, or newline
-      const codes = input.split(/[\s,]+/).filter(c => c.length > 0);
-      
-      let html = '';
-      
-      codes.forEach(code => {
-        const normalized = code.toUpperCase().replace(/\s+/g, '');
-        
-        // Find matching entry
-        const match = glossaryData.find(item => {
-          const itemCode = item.code.toUpperCase().replace(/[\s\-\/]+/g, '');
-          const searchCode = normalized.replace(/[\s\-\/]+/g, '');
-          return itemCode === searchCode || 
-                 itemCode.includes(searchCode) || 
-                 searchCode.includes(itemCode) ||
-                 item.code.toUpperCase() === normalized;
-        });
-
-        if (match) {
-          html += `
-            <div class="decoder-result-card">
-              <div class="decoder-result-header">
-                <div>
-                  <div class="decoder-result-code">${match.code}</div>
-                  <div class="decoder-result-name">${match.name}</div>
-                </div>
-                <span class="platform-tag ${match.platform}">${match.platform === 'oracle' ? 'Oracle WMS' : 'Term'}</span>
-              </div>
-              <p class="decoder-result-desc">${match.description}</p>
-              ${match.tip ? `<div class="code-tip">💡 ${match.tip}</div>` : ''}
-            </div>
-          `;
-        } else {
-          html += `
-            <div class="decoder-result-card not-found">
-              <div class="decoder-result-code">${code}</div>
-              <p class="decoder-result-desc">Code not found. <a href="mailto:matt@mattlivingston.com?subject=WMS%20Code%20Request%3A%20${encodeURIComponent(code)}&body=I%20looked%20up%20${encodeURIComponent(code)}%20but%20it%20wasn't%20in%20the%20cheat%20sheet.">Suggest adding it?</a></p>
-            </div>
-          `;
-        }
-      });
-
-      decoderResults.innerHTML = html;
-      decoderResults.classList.add('active');
     }
 
     // Update stats
     function updateStats() {
       document.getElementById('totalCount').textContent = glossaryData.length;
       document.getElementById('oracleCount').textContent = glossaryData.filter(d => d.platform === 'oracle').length;
+      document.getElementById('manhattanCount').textContent = glossaryData.filter(d => d.platform === 'manhattan').length;
       document.getElementById('termCount').textContent = glossaryData.filter(d => d.platform === 'terminology').length;
     }
 
@@ -1184,21 +935,11 @@
     function getPlatformLabel(platform) {
       switch(platform) {
         case 'oracle': return 'Oracle WMS';
+        case 'manhattan': return 'Manhattan';
+        case 'both': return 'Both';
         case 'terminology': return 'Term';
         default: return platform;
       }
-    }
-
-    // Copy to clipboard
-    function copyCode(code, btn) {
-      navigator.clipboard.writeText(code).then(() => {
-        btn.textContent = 'Copied!';
-        btn.classList.add('copied');
-        setTimeout(() => {
-          btn.textContent = 'Copy';
-          btn.classList.remove('copied');
-        }, 1500);
-      });
     }
 
     // Render codes
@@ -1250,7 +991,6 @@
         });
         
         items.forEach(item => {
-          const escapedCode = item.code.replace(/'/g, "\\'");
           html += `
             <article class="code-card" data-platform="${item.platform}">
               <div class="code-header">
@@ -1258,10 +998,7 @@
                   <div class="code-id">${item.code}</div>
                   <div class="code-name">${item.name}</div>
                 </div>
-                <div class="code-header-right">
-                  <button class="copy-btn" onclick="copyCode('${escapedCode}', this)">Copy</button>
-                  <span class="platform-tag ${item.platform}">${getPlatformLabel(item.platform)}</span>
-                </div>
+                <span class="platform-tag ${item.platform}">${getPlatformLabel(item.platform)}</span>
               </div>
               <p class="code-description">${item.description}</p>
               ${item.tip ? `<div class="code-tip">💡 ${item.tip}</div>` : ''}
