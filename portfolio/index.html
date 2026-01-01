@@ -8,304 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <style>
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-:root {
-    --bg-primary: #0f172a;
-    --bg-surface: #1e293b;
-    --bg-elevated: #334155;
-    --text-primary: #f1f5f9;
-    --text-muted: #94a3b8;
-    --text-dim: #64748b;
-    --accent: #3b82f6;
-    --accent-glow: rgba(59, 130, 246, 0.3);
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
-}
-
-html {
-    font-size: 16px;
-}
-
-body {
-    font-family: var(--font-sans);
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    line-height: 1.6;
-    min-height: 100vh;
-}
-
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2rem 1.5rem;
-}
-
-/* Header */
-.header {
-    margin-bottom: 3rem;
-}
-
-.back-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color 0.2s ease;
-}
-
-.back-link:hover {
-    color: var(--accent);
-}
-
-/* Hero */
-.hero {
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid var(--bg-elevated);
-}
-
-.hero-title {
-    font-size: clamp(2rem, 5vw, 2.5rem);
-    font-weight: 600;
-    line-height: 1.1;
-    margin-bottom: 0.75rem;
-}
-
-.hero-description {
-    font-size: 1.125rem;
-    color: var(--text-muted);
-    max-width: 600px;
-}
-
-/* Section Titles */
-.section-title {
-    font-size: 1rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-dim);
-    margin-bottom: 1.5rem;
-    margin-top: 3rem;
-}
-
-/* Portfolio Grid */
-.portfolio-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.portfolio-card {
-    background: var(--bg-surface);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-}
-
-.portfolio-card:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
-    transform: translateY(-2px);
-}
-
-.portfolio-thumbnail {
-    width: 100%;
-    aspect-ratio: 16 / 10;
-    background: var(--bg-elevated);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.portfolio-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.portfolio-content {
-    padding: 1.25rem;
-}
-
-.portfolio-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-    flex-wrap: wrap;
-}
-
-.portfolio-header h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-}
-
-.portfolio-role {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    color: var(--accent);
-    background: rgba(59, 130, 246, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    white-space: nowrap;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
-
-.portfolio-description {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    margin-bottom: 1rem;
-}
-
-.portfolio-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-}
-
-.tech-tag {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--text-primary);
-    background: var(--bg-primary);
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--bg-elevated);
-}
-
-/* Capability Cards */
-.capability-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-}
-
-.capability-card {
-    background: var(--bg-surface);
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid var(--bg-elevated);
-    transition: border-color 0.2s ease;
-}
-
-.capability-card:hover {
-    border-color: var(--text-dim);
-}
-
-.capability-card .portfolio-thumbnail {
-    aspect-ratio: 16 / 9;
-}
-
-.capability-card .portfolio-content {
-    text-align: center;
-}
-
-.capability-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-}
-
-.capability-card p {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-}
-
-/* CTA Section */
-.cta {
-    background: var(--bg-surface);
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    margin-bottom: 4rem;
-}
-
-.cta .section-title {
-    margin-bottom: 1rem;
-    margin-top: 0;
-}
-
-.cta-text {
-    color: var(--text-muted);
-    margin-bottom: 1.5rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.cta-button {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: 1rem;
-    color: var(--text-primary);
-    background: var(--bg-elevated);
-    padding: 0.875rem 1.5rem;
-    border-radius: 6px;
-    text-decoration: none;
-    border: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.cta-button:hover {
-    border-color: var(--accent);
-    box-shadow: 0 0 20px var(--accent-glow);
-}
-
-/* Footer */
-.footer {
-    text-align: center;
-    padding-top: 2rem;
-    border-top: 1px solid var(--bg-elevated);
-}
-
-.footer p {
-    font-size: 0.875rem;
-    color: var(--text-dim);
-}
-
-/* Mobile Adjustments */
-@media (max-width: 600px) {
-    .container {
-        padding: 1.5rem 1rem;
-    }
-
-    .hero {
-        margin-bottom: 2rem;
-    }
-
-    .hero-description {
-        font-size: 1rem;
-    }
-
-    .portfolio-grid,
-    .capability-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .portfolio-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .cta {
-        padding: 1.5rem;
-    }
-}
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -317,9 +20,99 @@ body {
             <section class="hero">
                 <h1 class="hero-title">Portfolio</h1>
                 <p class="hero-description">
-                    Websites and web apps I've built. Real projects, real results.
+                    What I build and what I've built. Real projects, real results.
                 </p>
             </section>
+
+            <!-- SERVICES / WHAT I BUILD -->
+            <h2 class="section-title">What I Build</h2>
+            
+            <section class="services-grid">
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="ecommerce-store.png" alt="Ecommerce Store">
+                    </div>
+                    <div class="service-content">
+                        <h3>Ecommerce Stores</h3>
+                        <p>Online shops that load fast and convert. Product catalogs, cart systems, checkout flows, and payment integration.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="wordpress-blog.png" alt="WordPress Blog">
+                    </div>
+                    <div class="service-content">
+                        <h3>WordPress Blogs</h3>
+                        <p>Content-first sites built for readability and SEO. Custom themes, clean admin experience, built to grow.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="landing-page.png" alt="Landing Page">
+                    </div>
+                    <div class="service-content">
+                        <h3>Landing Pages</h3>
+                        <p>Single-page sites that get to the point. Product launches, lead capture, event pages—focused and fast.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="mobile-web-app.png" alt="Mobile Web App">
+                    </div>
+                    <div class="service-content">
+                        <h3>Mobile Web Apps</h3>
+                        <p>Browser-based apps that work on any device. Responsive, touch-friendly, no app store required.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="product-review-site.png" alt="Product Review Site">
+                    </div>
+                    <div class="service-content">
+                        <h3>Review & Affiliate Sites</h3>
+                        <p>Product comparison sites, review platforms, and affiliate content hubs. Built for trust and conversions.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="ops-dashboard.png" alt="Operations Dashboard">
+                    </div>
+                    <div class="service-content">
+                        <h3>Operations Dashboards</h3>
+                        <p>Data-driven dashboards for warehouse ops, inventory tracking, and operational visibility.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="microblog.png" alt="Microblog">
+                    </div>
+                    <div class="service-content">
+                        <h3>Microblogs</h3>
+                        <p>Focused, niche content sites that punch above their weight. Built for clarity and impact.</p>
+                    </div>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-thumbnail">
+                        <img src="photography.png" alt="Photography Portfolio">
+                    </div>
+                    <div class="service-content">
+                        <h3>Photography Portfolios</h3>
+                        <p>Clean, image-focused portfolio sites for freelance photographers and small studios.</p>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- PROJECTS / WHAT I'VE BUILT -->
+            <h2 class="section-title">Projects I've Built</h2>
 
             <section class="portfolio-grid">
 
@@ -338,7 +131,6 @@ body {
                         </p>
                         <div class="portfolio-tech">
                             <span class="tech-tag">JavaScript</span>
-                            <span class="tech-tag">JSON</span>
                             <span class="tech-tag">PHP</span>
                             <span class="tech-tag">MySQL</span>
                         </div>
@@ -403,7 +195,6 @@ body {
                         <div class="portfolio-tech">
                             <span class="tech-tag">PHP</span>
                             <span class="tech-tag">MySQL</span>
-                            <span class="tech-tag">PostgreSQL</span>
                             <span class="tech-tag">Hugo</span>
                             <span class="tech-tag">Python</span>
                         </div>
@@ -620,46 +411,6 @@ body {
                             <span class="tech-tag">Python</span>
                             <span class="tech-tag">JavaScript</span>
                         </div>
-                    </div>
-                </article>
-
-            </section>
-
-            <!-- Capability Section -->
-            <h2 class="section-title">Also Specialize In</h2>
-            
-            <section class="capability-grid">
-
-                <!-- Microblogs -->
-                <article class="capability-card">
-                    <div class="portfolio-thumbnail">
-                        <img src="microblog.png" alt="Microblog example">
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Microblogs</h3>
-                        <p>Focused, niche content sites that punch above their weight. Built for clarity and impact.</p>
-                    </div>
-                </article>
-
-                <!-- Ops Dashboards -->
-                <article class="capability-card">
-                    <div class="portfolio-thumbnail">
-                        <img src="ops-dashboard.png" alt="Ops dashboard example">
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Operations Dashboards</h3>
-                        <p>Data-driven dashboards for warehouse ops, inventory tracking, and operational visibility.</p>
-                    </div>
-                </article>
-
-                <!-- Photography Portfolios -->
-                <article class="capability-card">
-                    <div class="portfolio-thumbnail">
-                        <img src="photography.png" alt="Photography portfolio example">
-                    </div>
-                    <div class="portfolio-content">
-                        <h3>Photography Portfolios</h3>
-                        <p>Clean, image-focused portfolio sites for freelance photographers and small studios.</p>
                     </div>
                 </article>
 
