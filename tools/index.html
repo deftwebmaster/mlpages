@@ -4,32 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Tools & Projects | Matt Livingston</title>
-  <meta name="description" content="Browser-first tools built from warehouse & logistics reality. Barcode validation, inventory analysis, data cleanup, and practical utilities by Matt Livingston.">
+  <title>Tools | Matt Livingston</title>
+  <meta name="description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat. Built by Matt Livingston.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mattlivingston.com/tools/">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Tools & Projects | Matt Livingston">
-  <meta property="og:description" content="Browser-first tools built from warehouse & logistics reality. Practical utilities and systems-minded work.">
+  <meta property="og:title" content="Tools | Matt Livingston">
+  <meta property="og:description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat.">
   <meta property="og:url" content="https://mattlivingston.com/tools/">
-  <!-- <meta property="og:image" content="https://mattlivingston.com/assets/og-tools.png"> -->
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tools & Projects | Matt Livingston">
-  <meta name="twitter:description" content="Browser-first tools built from warehouse & logistics reality. Practical utilities and systems-minded work.">
-  <!-- <meta name="twitter:image" content="https://mattlivingston.com/assets/og-tools.png"> -->
+  <meta name="twitter:title" content="Tools | Matt Livingston">
+  <meta name="twitter:description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat.">
 
   <link rel="stylesheet" href="../css/style.css">
   <style>
-    /* New category tag colors */
+    /* Category tag colors */
     .tag-dev {
       background-color: rgba(59, 130, 246, 0.15);
       color: #3b82f6;
     }
-    .tag-personal {
+    .tag-data {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+    }
+    .tag-utilities {
       background-color: rgba(16, 185, 129, 0.15);
       color: #10b981;
     }
@@ -52,54 +54,27 @@
 <body>
   <div class="container">
     <header class="page-header">
-      <h1>Matt Livingston</h1>
-      <p class="tagline">Tools that survive contact with reality</p>
-      <p class="trust-signal">🔒 All tools run locally — no data leaves your browser</p>
+      <h1>Tools</h1>
+      <p class="tagline">Tools that solve real problems</p>
     </header>
 
     <!-- Why Section (compact) -->
     <section class="why-section">
-      <p>Your data never leaves your browser. These tools are lightweight, private, and built from real-world ops experience — no accounts, no tracking, no nonsense.</p>
+      <p>Lightweight, private, and built to work. No accounts, no tracking, no data leaves your browser.</p>
     </section>
 
     <!-- Filter Bar -->
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="warehouse">Warehouse</button>
       <button class="filter-btn" data-filter="dev">Dev Tools</button>
-      <button class="filter-btn" data-filter="personal">Personal Ops</button>
+      <button class="filter-btn" data-filter="data">Data & Ops</button>
+      <button class="filter-btn" data-filter="utilities">Utilities</button>
     </div>
 
     <div class="tools-grid" id="toolsGrid">
       
-      <!-- TIER 1: Featured - Flagship tools -->
+      <!-- FEATURED -->
       
-      <article class="tool-card featured" data-category="warehouse" data-title="Ops Data Toolkit" data-tags="csv,reconciliation,validation,duplicates,sumif,countif,lookup,cleaning,excel">
-        <div class="featured-badge">Featured</div>
-        <h3>Ops Data Toolkit</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Professional data analysis for warehouse operations. 6 modules: reconciliation, validation, duplicates, SUMIF/COUNTIF, lookup, and data cleaning. Handles 10k+ rows with Excel-compatible exports.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">ES6</span>
-          <span class="tech-badge">PapaParse</span>
-          <span class="tech-badge">6 Modules</span>
-        </div>
-        <a href="/tools/ops-data-toolkit/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card featured" data-category="warehouse" data-title="Pallet Load Calculator" data-tags="pallet,palletization,cube,weight,stacking,3d,visualization,warehouse,logistics">
-        <div class="featured-badge">Featured</div>
-        <h3>Pallet Load Calculator</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Visual palletization planning with 3D preview. Calculate optimal box stacking, cube utilization, and weight limits. Supports multiple pallet sizes and constraint-based optimization.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Three.js</span>
-          <span class="tech-badge">3D Visualization</span>
-          <span class="tech-badge">PDF Export</span>
-        </div>
-        <a href="/tools/pallet-calculator/" class="button button-small">Open tool →</a>
-      </article>
-
       <article class="tool-card featured" data-category="dev" data-title="Website Launch Kit" data-tags="meta,robots,sitemap,htaccess,security,headers,privacy,legal,launch,checklist,seo">
         <div class="featured-badge">Featured</div>
         <h3>Website Launch Kit</h3>
@@ -113,42 +88,21 @@
         <a href="/tools/launch-kit/" class="button button-small">Open tool →</a>
       </article>
 
-      <!-- TIER 2: High utility, unique, well-polished -->
-
-      <article class="tool-card" data-category="warehouse" data-title="ZPL Label Designer" data-tags="zpl,zebra,label,barcode,thermal,printer,shipping,warehouse">
-        <h3>ZPL Label Designer</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Visual drag-and-drop label builder for Zebra printers. Add text, barcodes, QR codes, and shapes. Live ZPL code generation with import/export.</p>
+      <article class="tool-card featured" data-category="data" data-title="Ops Data Toolkit" data-tags="csv,reconciliation,validation,duplicates,sumif,countif,lookup,cleaning,excel">
+        <div class="featured-badge">Featured</div>
+        <h3>Ops Data Toolkit</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Professional data analysis suite. 6 modules: reconciliation, validation, duplicates, SUMIF/COUNTIF, lookup, and data cleaning. Handles 10k+ rows with Excel-compatible exports.</p>
         <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Canvas API</span>
+          <span class="tech-badge">ES6</span>
+          <span class="tech-badge">PapaParse</span>
+          <span class="tech-badge">6 Modules</span>
         </div>
-        <a href="/tools/zpl-designer/" class="button button-small">Open tool →</a>
+        <a href="/tools/ops-data-toolkit/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="warehouse" data-title="EDI Document Viewer" data-tags="edi,x12,850,856,810,820,997,purchase order,asn,invoice,parser">
-        <h3>EDI Document Viewer</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Parse and understand X12 EDI documents instantly. Supports 850 (PO), 856 (ASN), 810 (Invoice), 820 (Payment), and 997 (Acknowledgment).</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">5 Doc Types</span>
-        </div>
-        <a href="/tools/edi-viewer/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="warehouse" data-title="WMS Cheat Sheet" data-tags="wms,oracle,manhattan,iht,transaction,codes,glossary,reference,terminology">
-        <h3>WMS Cheat Sheet</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Searchable reference for Oracle WMS Cloud IHT codes, Manhattan WMS transactions, and common warehouse terminology. Know what every code means.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">45+ Entries</span>
-        </div>
-        <a href="/tools/wms-cheat-sheet/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="dev" data-title="JSON CSV Converter" data-tags="json,csv,convert,data,export,import,flatten,nested">
+      <article class="tool-card featured" data-category="dev" data-title="JSON CSV Converter" data-tags="json,csv,convert,data,export,import,flatten,nested">
+        <div class="featured-badge">Featured</div>
         <h3>JSON ↔ CSV Converter</h3>
         <span class="tag tag-dev">Dev Tools</span>
         <p>Convert between JSON and CSV instantly. Handles nested objects with dot notation flattening, arrays, type inference, and large files.</p>
@@ -157,6 +111,19 @@
           <span class="tech-badge">Zero Dependencies</span>
         </div>
         <a href="/tools/json-csv/" class="button button-small">Open tool →</a>
+      </article>
+
+      <!-- DEV TOOLS -->
+
+      <article class="tool-card" data-category="dev" data-title="ZPL Label Designer" data-tags="zpl,zebra,label,barcode,thermal,printer,shipping,warehouse">
+        <h3>ZPL Label Designer</h3>
+        <span class="tag tag-dev">Dev Tools</span>
+        <p>Visual drag-and-drop label builder for Zebra printers. Add text, barcodes, QR codes, and shapes. Live ZPL code generation with import/export.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Canvas API</span>
+        </div>
+        <a href="/tools/zpl-designer/" class="button button-small">Open tool →</a>
       </article>
 
       <article class="tool-card" data-category="dev" data-title="Encode & Hash" data-tags="base64,url,encode,decode,hash,md5,sha256,sha1,sha512,checksum">
@@ -170,30 +137,6 @@
         <a href="/tools/encode-hash/" class="button button-small">Open tool →</a>
       </article>
 
-      <!-- TIER 3: Solid utility, regularly useful -->
-
-      <article class="tool-card" data-category="warehouse" data-title="Barcode Validator" data-tags="upc,ean,check digit,scanning,wms">
-        <h3>Barcode Validator</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Validates UPC-A, UPC-E, EAN-13, and EAN-8 barcodes with check digit verification. Catches scanning errors before they hit your WMS.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Zero Dependencies</span>
-        </div>
-        <a href="/tools/barcode-validator/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="warehouse" data-title="Labor Cost Calculator" data-tags="labor,cost,cpu,productivity,uph,efficiency,warehouse,operations">
-        <h3>Labor Cost per Unit Calculator</h3>
-        <span class="tag tag-warehouse">Warehouse</span>
-        <p>Break down labor costs by operation. Calculate cost per unit across receiving, picking, packing, and shipping. Compare periods and export reports.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Comparison Mode</span>
-        </div>
-        <a href="/tools/labor-cost/" class="button button-small">Open tool →</a>
-      </article>
-
       <article class="tool-card" data-category="dev" data-title="Favicon Generator" data-tags="favicon,ico,png,apple-touch-icon,pwa,manifest,icons">
         <h3>Favicon Generator</h3>
         <span class="tag tag-dev">Dev Tools</span>
@@ -205,45 +148,10 @@
         <a href="/tools/favicon/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="personal" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
-        <h3>FinanceSmart Calculator Suite</h3>
-        <span class="tag tag-personal">Personal Ops</span>
-        <p>Collection of financial calculators: compound interest, loan amortization, savings goals, and debt payoff planning.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">4-in-1 Suite</span>
-        </div>
-        <a href="/tools/finance/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="personal" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
-        <h3>Smart Tip Calculator</h3>
-        <span class="tag tag-personal">Personal Ops</span>
-        <p>Itemized bill splitting with alcohol adjustments, service quality sliders, and Venmo/Cash App payment link generator. Works offline.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">PWA-Ready</span>
-        </div>
-        <a href="/tools/tip-calculator/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="personal" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
-        <h3>Time Zone Overlap Finder</h3>
-        <span class="tag tag-personal">Personal Ops</span>
-        <p>Find overlapping work hours across time zones. Useful for scheduling meetings with distributed teams.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Dynamic UI</span>
-        </div>
-        <a href="/tools/timezone/" class="button button-small">Open tool →</a>
-      </article>
-
-      <!-- TIER 4: Lighter utility, fun, niche -->
-
       <article class="tool-card" data-category="dev" data-title="QR Code Generator" data-tags="qr,privacy,url,text,contact,vcard">
         <h3>QR Code Generator</h3>
         <span class="tag tag-dev">Dev Tools</span>
-        <p>Privacy-first QR code creation. Generates codes locally in your browser—no data sent to servers. Supports URLs, text, and contact cards.</p>
+        <p>Privacy-first QR code creation. Generates codes locally—no data sent to servers. Supports URLs, text, and contact cards.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
           <span class="tech-badge">QRCode.js</span>
@@ -263,10 +171,103 @@
         <a href="/tools/fingerprint/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="personal" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
+      <!-- DATA & OPS -->
+
+      <article class="tool-card" data-category="data" data-title="Pallet Load Calculator" data-tags="pallet,palletization,cube,weight,stacking,3d,visualization,warehouse,logistics">
+        <h3>Pallet Load Calculator</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Visual palletization planning with 3D preview. Calculate optimal box stacking, cube utilization, and weight limits. Supports multiple pallet sizes.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Three.js</span>
+          <span class="tech-badge">3D Visualization</span>
+          <span class="tech-badge">PDF Export</span>
+        </div>
+        <a href="/tools/pallet-calculator/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="data" data-title="EDI Document Viewer" data-tags="edi,x12,850,856,810,820,997,purchase order,asn,invoice,parser">
+        <h3>EDI Document Viewer</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Parse and understand X12 EDI documents instantly. Supports 850 (PO), 856 (ASN), 810 (Invoice), 820 (Payment), and 997 (Acknowledgment).</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">5 Doc Types</span>
+        </div>
+        <a href="/tools/edi-viewer/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="data" data-title="WMS Cheat Sheet" data-tags="wms,oracle,manhattan,iht,transaction,codes,glossary,reference,terminology">
+        <h3>WMS Cheat Sheet</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Searchable reference for Oracle WMS Cloud IHT codes, Manhattan WMS transactions, and common warehouse terminology. Know what every code means.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">45+ Entries</span>
+        </div>
+        <a href="/tools/wms-cheat-sheet/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="data" data-title="Barcode Validator" data-tags="upc,ean,check digit,scanning,wms">
+        <h3>Barcode Validator</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Validates UPC-A, UPC-E, EAN-13, and EAN-8 barcodes with check digit verification. Catches scanning errors before they cause problems.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Zero Dependencies</span>
+        </div>
+        <a href="/tools/barcode-validator/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="data" data-title="Labor Cost Calculator" data-tags="labor,cost,cpu,productivity,uph,efficiency,warehouse,operations">
+        <h3>Labor Cost per Unit Calculator</h3>
+        <span class="tag tag-data">Data & Ops</span>
+        <p>Break down labor costs by operation. Calculate cost per unit across receiving, picking, packing, and shipping. Compare periods and export reports.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Comparison Mode</span>
+        </div>
+        <a href="/tools/labor-cost/" class="button button-small">Open tool →</a>
+      </article>
+
+      <!-- UTILITIES -->
+
+      <article class="tool-card" data-category="utilities" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
+        <h3>FinanceSmart Calculator Suite</h3>
+        <span class="tag tag-utilities">Utilities</span>
+        <p>Collection of financial calculators: compound interest, loan amortization, savings goals, and debt payoff planning.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">4-in-1 Suite</span>
+        </div>
+        <a href="/tools/finance/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="utilities" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
+        <h3>Smart Tip Calculator</h3>
+        <span class="tag tag-utilities">Utilities</span>
+        <p>Itemized bill splitting with alcohol adjustments, service quality sliders, and Venmo/Cash App payment link generator. Works offline.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">PWA-Ready</span>
+        </div>
+        <a href="/tools/tip-calculator/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="utilities" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
+        <h3>Time Zone Overlap Finder</h3>
+        <span class="tag tag-utilities">Utilities</span>
+        <p>Find overlapping work hours across time zones. Useful for scheduling meetings with distributed teams.</p>
+        <div class="tech-badges">
+          <span class="tech-badge">Vanilla JS</span>
+          <span class="tech-badge">Dynamic UI</span>
+        </div>
+        <a href="/tools/timezone/" class="button button-small">Open tool →</a>
+      </article>
+
+      <article class="tool-card" data-category="utilities" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
         <div class="privacy-badge">🔒 Private</div>
         <h3>Pseudonym Generator</h3>
-        <span class="tag tag-personal">Personal Ops</span>
+        <span class="tag tag-utilities">Utilities</span>
         <p>Creates consistent fake identities for testing or privacy. Generates names, addresses, and other persona details locally.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -275,9 +276,9 @@
         <a href="/tools/pseudonym/" class="button button-small">Open tool →</a>
       </article>
 
-      <article class="tool-card" data-category="personal" data-title="Random Number Generator" data-tags="random,number,generator,picker,decision,food,tournament,dice,coin,rng,shuffle,sampling">
-        <h3>Random Number Generator & Decision Helper</h3>
-        <span class="tag tag-personal">Personal Ops</span>
+      <article class="tool-card" data-category="utilities" data-title="Random Number Generator" data-tags="random,number,generator,picker,decision,food,tournament,dice,coin,rng,shuffle,sampling">
+        <h3>Random Number Generator</h3>
+        <span class="tag tag-utilities">Utilities</span>
         <p>Generate random numbers, pick from lists, and run tournament brackets. Great for QA sampling, team assignments, raffles, and breaking ties.</p>
         <div class="tech-badges">
           <span class="tech-badge">Vanilla JS</span>
@@ -322,4 +323,4 @@
     })();
   </script>
 </body>
-</html> 
+</html>
