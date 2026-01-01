@@ -8,7 +8,304 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg-primary: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-elevated: #334155;
+    --text-primary: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-dim: #64748b;
+    --accent: #3b82f6;
+    --accent-glow: rgba(59, 130, 246, 0.3);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Header */
+.header {
+    margin-bottom: 3rem;
+}
+
+.back-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--accent);
+}
+
+/* Hero */
+.hero {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--bg-elevated);
+}
+
+.hero-title {
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+}
+
+.hero-description {
+    font-size: 1.125rem;
+    color: var(--text-muted);
+    max-width: 600px;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    margin-top: 3rem;
+}
+
+/* Portfolio Grid */
+.portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.portfolio-card {
+    background: var(--bg-surface);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.portfolio-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+    transform: translateY(-2px);
+}
+
+.portfolio-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.portfolio-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.portfolio-content {
+    padding: 1.25rem;
+}
+
+.portfolio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.portfolio-header h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.portfolio-role {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    color: var(--accent);
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.portfolio-description {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+}
+
+.portfolio-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+}
+
+.tech-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--bg-elevated);
+}
+
+/* Capability Cards */
+.capability-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+}
+
+.capability-card {
+    background: var(--bg-surface);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--bg-elevated);
+    transition: border-color 0.2s ease;
+}
+
+.capability-card:hover {
+    border-color: var(--text-dim);
+}
+
+.capability-card .portfolio-thumbnail {
+    aspect-ratio: 16 / 9;
+}
+
+.capability-card .portfolio-content {
+    text-align: center;
+}
+
+.capability-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.capability-card p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* CTA Section */
+.cta {
+    background: var(--bg-surface);
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.cta .section-title {
+    margin-bottom: 1rem;
+    margin-top: 0;
+}
+
+.cta-text {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-button {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+    padding: 0.875rem 1.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-button:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid var(--bg-elevated);
+}
+
+.footer p {
+    font-size: 0.875rem;
+    color: var(--text-dim);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 600px) {
+    .container {
+        padding: 1.5rem 1rem;
+    }
+
+    .hero {
+        margin-bottom: 2rem;
+    }
+
+    .hero-description {
+        font-size: 1rem;
+    }
+
+    .portfolio-grid,
+    .capability-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .cta {
+        padding: 1.5rem;
+    }
+}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -20,15 +317,38 @@
             <section class="hero">
                 <h1 class="hero-title">Portfolio</h1>
                 <p class="hero-description">
-                    Websites and projects I've built. Real work, real clients.
+                    Websites and web apps I've built. Real projects, real results.
                 </p>
             </section>
 
             <section class="portfolio-grid">
 
+                <!-- 1. PostRecon (dark) -->
                 <article class="portfolio-card">
                     <div class="portfolio-thumbnail">
-                        <img src="dollhouse.png" alt="Tiny World of Whimsy website">
+                        <img src="postrecon.png" alt="PostRecon">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>PostRecon</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Keyword research tool with a twist. OSINT-inspired approach to competitive analysis and content discovery.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">JSON</span>
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 2. Tiny World of Whimsy (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="whimsy.png" alt="Tiny World of Whimsy">
                     </div>
                     <div class="portfolio-content">
                         <div class="portfolio-header">
@@ -43,67 +363,303 @@
                             <span class="tech-tag">MySQL</span>
                             <span class="tech-tag">JavaScript</span>
                         </div>
-                        <a href="https://tinyworldofwhimsy.com/" class="portfolio-link" target="_blank" rel="noopener">Visit site →</a>
                     </div>
                 </article>
 
+                <!-- 3. Dark Recovery (dark) -->
                 <article class="portfolio-card">
                     <div class="portfolio-thumbnail">
-                        <img src="microblog.png" alt="Quiet Career Strategy website">
+                        <img src="darkrecovery.png" alt="Dark Recovery">
                     </div>
                     <div class="portfolio-content">
                         <div class="portfolio-header">
-                            <h3>Quiet Career Strategy</h3>
+                            <h3>Dark Recovery</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Recovery and wellness platform focused on personal growth, self-improvement, and rebuilding from difficult times.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">WordPress</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 4. OpalTrail (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="opaltrail.png" alt="OpalTrail">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>OpalTrail</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Productivity and planning platform for goal tracking, habit building, and personal project management.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">Hugo</span>
+                            <span class="tech-tag">Python</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 5. BrainBlendz (dark) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="brainblendz.png" alt="BrainBlendz">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>BrainBlendz</h3>
                             <span class="portfolio-role">Built from scratch</span>
                         </div>
                         <p class="portfolio-description">
-                            A microblog on quiet career growth. Anti-LinkedIn energy—substance over performance.
+                            Nootropic and biohacking resource site. Supplement guides, stack recommendations, and cognitive optimization.
                         </p>
                         <div class="portfolio-tech">
-                            <span class="tech-tag">Vanilla JS</span>
-                            <span class="tech-tag">HTML/CSS</span>
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Hugo</span>
                         </div>
-                        <a href="https://sites.livm.net/career/" class="portfolio-link" target="_blank" rel="noopener">Visit site →</a>
                     </div>
                 </article>
 
+                <!-- 6. MomNiche (light) -->
                 <article class="portfolio-card">
                     <div class="portfolio-thumbnail">
-                        <img src="ops-dashboard.png" alt="Ops Dashboard website">
+                        <img src="momniche.png" alt="MomNiche">
                     </div>
                     <div class="portfolio-content">
                         <div class="portfolio-header">
-                            <h3>Ops Dashboard</h3>
+                            <h3>MomNiche</h3>
                             <span class="portfolio-role">Builder</span>
                         </div>
                         <p class="portfolio-description">
-                            Consultancy site focused on warehouse ops, inventory accuracy, and automation readiness.
+                            Parenting and lifestyle blog for moms. Family tips, product reviews, and community-driven content.
                         </p>
                         <div class="portfolio-tech">
-                            <span class="tech-tag">HTML/CSS</span>
-                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">WordPress</span>
                         </div>
-                        <a href="https://sites.livm.net/baseload/" class="portfolio-link" target="_blank" rel="noopener">Visit site →</a>
                     </div>
                 </article>
 
+                <!-- 7. PeekBehind (dark) -->
                 <article class="portfolio-card">
                     <div class="portfolio-thumbnail">
-                        <img src="photography.png" alt="Evelyn Moore Photography website">
+                        <img src="peekbehind.png" alt="PeekBehind">
                     </div>
                     <div class="portfolio-content">
                         <div class="portfolio-header">
-                            <h3>Evelyn Moore Photography</h3>
+                            <h3>PeekBehind</h3>
                             <span class="portfolio-role">Builder</span>
                         </div>
                         <p class="portfolio-description">
-                            Portfolio site for a freelance wedding photographer. Clean, image-focused, fast-loading.
+                            Behind-the-scenes content platform. Reveals the secrets, processes, and hidden stories behind interesting topics.
                         </p>
                         <div class="portfolio-tech">
-                            <span class="tech-tag">HTML/CSS</span>
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">WordPress</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 8. TickJoy (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="tickjoy.png" alt="TickJoy">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>TickJoy</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Task management and productivity app. Simple, satisfying to-do lists with a focus on the joy of checking things off.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
                             <span class="tech-tag">JavaScript</span>
                         </div>
-                        <a href="https://sites.livm.net/photography/" class="portfolio-link" target="_blank" rel="noopener">Visit site →</a>
+                    </div>
+                </article>
+
+                <!-- 9. TadaTips (dark) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="tadatips.png" alt="TadaTips">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>TadaTips</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Magic tricks and illusion tips. Tutorials, technique breakdowns, and performance advice for aspiring magicians.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">WordPress</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 10. ThinkTankz (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="thinktankz.png" alt="ThinkTankz">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>ThinkTankz</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Brainstorming and collaboration platform. Idea generation tools, mind mapping, and team ideation workflows.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">MySQL</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 11. SharpStacks (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="sharpstacks.png" alt="SharpStacks">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>SharpStacks</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Supplement stack builder and reference. Curated nootropic combinations for focus, energy, and cognitive performance.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 12. Stratify (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="stratify.png" alt="Stratify">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>Stratify</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Strategic planning and roadmap tool. Visual project planning, milestone tracking, and goal decomposition.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 13. PlaceboEffect.net (light) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="placeboeffect.png" alt="PlaceboEffect.net">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>PlaceboEffect.net</h3>
+                            <span class="portfolio-role">Builder</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Health and wellness information site. Evidence-based supplement reviews and wellness myth-busting.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- 14. Matt Street (light/warm) -->
+                <article class="portfolio-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="mattst.png" alt="Matt Street">
+                    </div>
+                    <div class="portfolio-content">
+                        <div class="portfolio-header">
+                            <h3>Matt Street</h3>
+                            <span class="portfolio-role">Creator</span>
+                        </div>
+                        <p class="portfolio-description">
+                            Personal brand and creator hub. Content platform showcasing projects, tools, and creative work.
+                        </p>
+                        <div class="portfolio-tech">
+                            <span class="tech-tag">PHP</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </article>
+
+            </section>
+
+            <!-- Capability Section -->
+            <h2 class="section-title">Also Specialize In</h2>
+            
+            <section class="capability-grid">
+
+                <!-- Microblogs -->
+                <article class="capability-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="microblog.png" alt="Microblog example">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Microblogs</h3>
+                        <p>Focused, niche content sites that punch above their weight. Built for clarity and impact.</p>
+                    </div>
+                </article>
+
+                <!-- Ops Dashboards -->
+                <article class="capability-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="ops-dashboard.png" alt="Ops dashboard example">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Operations Dashboards</h3>
+                        <p>Data-driven dashboards for warehouse ops, inventory tracking, and operational visibility.</p>
+                    </div>
+                </article>
+
+                <!-- Photography Portfolios -->
+                <article class="capability-card">
+                    <div class="portfolio-thumbnail">
+                        <img src="photography.png" alt="Photography portfolio example">
+                    </div>
+                    <div class="portfolio-content">
+                        <h3>Photography Portfolios</h3>
+                        <p>Clean, image-focused portfolio sites for freelance photographers and small studios.</p>
                     </div>
                 </article>
 
