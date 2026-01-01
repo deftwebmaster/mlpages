@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://mattlivingston.com/blog/sitemap.xml
