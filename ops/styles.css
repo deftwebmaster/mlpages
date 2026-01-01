@@ -37,26 +37,10 @@ body {
     padding: 2rem 1.5rem;
 }
 
-/* Header */
-.header {
-    margin-bottom: 3rem;
-}
-
-.back-link {
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color 0.2s ease;
-}
-
-.back-link:hover {
-    color: var(--accent);
-}
-
 /* Hero */
 .hero {
-    margin-bottom: 4rem;
-    padding-bottom: 3rem;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
     border-bottom: 1px solid var(--bg-elevated);
 }
 
@@ -70,7 +54,7 @@ body {
 }
 
 .hero-title {
-    font-size: clamp(2rem, 5vw, 3rem);
+    font-size: clamp(2rem, 5vw, 2.75rem);
     font-weight: 600;
     line-height: 1.1;
     margin-bottom: 0.5rem;
@@ -83,63 +67,90 @@ body {
 }
 
 .hero-description {
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     color: var(--text-muted);
     max-width: 600px;
 }
 
+/* Highlights */
+.highlights {
+    margin-bottom: 3rem;
+}
+
+.highlight-grid {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.highlight-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.highlight-number {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.highlight-label {
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
 /* Section Titles */
 .section-title {
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-dim);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .section-intro {
     color: var(--text-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9375rem;
 }
 
 /* Value Prop Section */
 .value-prop {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .value-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .value-card {
     background: var(--bg-surface);
     border-radius: 8px;
-    padding: 1.5rem;
-}
-
-.value-icon {
-    font-size: 1.5rem;
-    display: block;
-    margin-bottom: 0.75rem;
+    padding: 1.25rem;
 }
 
 .value-card h3 {
-    font-size: 1rem;
+    font-size: 0.9375rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
 
 .value-card p {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
+    line-height: 1.5;
 }
 
 /* Proof Section */
 .proof {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .tool-grid {
@@ -147,11 +158,33 @@ body {
     gap: 1rem;
 }
 
+/* Featured tool cards with images */
+.tool-card.tool-featured {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.25rem;
+    align-items: start;
+}
+
+.tool-thumbnail {
+    aspect-ratio: 16 / 10;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-elevated);
+}
+
+.tool-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Regular tool cards (no image) */
 .tool-card {
     display: block;
     background: var(--bg-surface);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     text-decoration: none;
     color: inherit;
     border: 1px solid transparent;
@@ -163,39 +196,48 @@ body {
     box-shadow: 0 0 20px var(--accent-glow);
 }
 
+.tool-content {
+    display: flex;
+    flex-direction: column;
+}
+
 .tool-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 1rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
     flex-wrap: wrap;
 }
 
 .tool-header h3 {
-    font-size: 1.125rem;
+    font-size: 1.0625rem;
     font-weight: 600;
 }
 
 .tool-badge {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--accent);
     background: rgba(59, 130, 246, 0.1);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
 }
 
 .tool-description {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
 }
 
 .tool-relevance {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-dim);
+    line-height: 1.5;
 }
 
 .tool-relevance strong {
@@ -218,11 +260,12 @@ body {
 
 /* Background Section */
 .background {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .background-content {
     color: var(--text-muted);
+    font-size: 0.9375rem;
 }
 
 .background-content p {
@@ -239,11 +282,11 @@ body {
     border-radius: 8px;
     padding: 2rem;
     text-align: center;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
 }
 
 .cta .section-title {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .cta-text {
@@ -252,6 +295,7 @@ body {
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
+    font-size: 0.9375rem;
 }
 
 .cta-button {
@@ -291,16 +335,32 @@ body {
     }
 
     .hero {
-        margin-bottom: 3rem;
-        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
     }
 
     .hero-description {
         font-size: 1rem;
     }
 
+    .highlight-grid {
+        gap: 1.5rem;
+    }
+
+    .highlight-number {
+        font-size: 1.75rem;
+    }
+
     .value-grid {
         grid-template-columns: 1fr;
+    }
+
+    .tool-card.tool-featured {
+        grid-template-columns: 1fr;
+    }
+
+    .tool-thumbnail {
+        max-width: 280px;
     }
 
     .tool-header {
