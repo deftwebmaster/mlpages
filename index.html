@@ -1052,6 +1052,8 @@
   <script>
     // Header scroll effect
     const header = document.getElementById('header');
+    const navToggle = document.getElementById('navToggle');
+    const nav = document.getElementById('nav');
     let lastScroll = 0;
     
     window.addEventListener('scroll', () => {
@@ -1063,13 +1065,16 @@
         header.classList.remove('scrolled');
       }
       
+      // Close mobile nav on scroll
+      if (nav.classList.contains('open')) {
+        navToggle.classList.remove('open');
+        nav.classList.remove('open');
+      }
+      
       lastScroll = currentScroll;
     });
     
     // Mobile nav toggle
-    const navToggle = document.getElementById('navToggle');
-    const nav = document.getElementById('nav');
-    
     navToggle.addEventListener('click', () => {
       navToggle.classList.toggle('open');
       nav.classList.toggle('open');
