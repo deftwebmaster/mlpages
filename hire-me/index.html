@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- * lone wolf, open range | Matt Livingston -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +9,389 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-hover: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #fafafa;
+            --color-text-secondary: #a3a3a3;
+            --color-text-muted: #737373;
+            --color-accent: #3b82f6;
+            --color-accent-hover: #60a5fa;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--color-text);
+            background: var(--color-bg);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 3rem;
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-text);
+            transition: color 0.15s ease;
+        }
+
+        .logo:hover {
+            color: var(--color-accent);
+        }
+
+        .back-link {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            transition: color 0.15s ease;
+        }
+
+        .back-link:hover {
+            color: var(--color-text);
+        }
+
+        /* Main */
+        .main {
+            padding-bottom: 4rem;
+        }
+
+        /* Hero */
+        .hero {
+            margin-bottom: 3rem;
+        }
+
+        .hero-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--color-text-secondary);
+            max-width: 600px;
+        }
+
+        /* Highlights */
+        .highlights {
+            margin-bottom: 4rem;
+        }
+
+        .highlight-grid {
+            display: flex;
+            gap: 3rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .highlight-number {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-text);
+            line-height: 1.2;
+        }
+
+        .highlight-label {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Approach */
+        .approach {
+            margin-bottom: 4rem;
+        }
+
+        .approach-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .approach-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .approach-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .approach-card p {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+        }
+
+        /* What I Build - Services */
+        .services {
+            margin-bottom: 4rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .service-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--color-border);
+            transform: translateY(-2px);
+        }
+
+        .service-thumbnail {
+            aspect-ratio: 16 / 10;
+            overflow: hidden;
+            background: var(--color-bg);
+        }
+
+        .service-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.9;
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .service-card:hover .service-thumbnail img {
+            opacity: 1;
+            transform: scale(1.02);
+        }
+
+        .service-content {
+            padding: 1.25rem;
+        }
+
+        .service-content h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-content p {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Tools Link */
+        .tools-link {
+            margin-bottom: 4rem;
+        }
+
+        .tools-card {
+            display: block;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .tools-card:hover {
+            border-color: var(--color-accent);
+        }
+
+        .tools-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .tools-card p {
+            font-size: 0.875rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.75rem;
+        }
+
+        .tools-card-link {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-accent);
+        }
+
+        /* Stack */
+        .stack {
+            margin-bottom: 4rem;
+        }
+
+        .tech-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            font-size: 0.8125rem;
+            font-weight: 500;
+            padding: 0.375rem 0.75rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            color: var(--color-text-secondary);
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+        }
+
+        .cta-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-text {
+            color: var(--color-text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            padding: 0.875rem 1.5rem;
+            background: var(--color-accent);
+            color: #fff;
+            border-radius: 6px;
+            transition: background 0.15s ease;
+        }
+
+        .cta-button:hover {
+            background: var(--color-accent-hover);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 2rem 0;
+            border-top: 1px solid var(--color-border);
+            margin-top: 2rem;
+        }
+
+        .footer p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .highlight-grid {
+                gap: 2rem;
+            }
+
+            .approach-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .highlight-grid {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .highlight-number {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <header class="header">
+            <div class="header-inner">
+                <a href="/" class="logo">&lt;ML /&gt;</a>
+                <a href="/" class="back-link">← Home</a>
+            </div>
+        </header>
+
         <main class="main">
             <section class="hero">
                 <p class="hero-label">Available for Projects</p>
@@ -24,10 +404,6 @@
 
             <section class="highlights">
                 <div class="highlight-grid">
-                    <div class="highlight-item">
-                        <span class="highlight-number">17+</span>
-                        <span class="highlight-label">Sites Built</span>
-                    </div>
                     <div class="highlight-item">
                         <span class="highlight-number">18</span>
                         <span class="highlight-label">Tools Live</span>
@@ -57,26 +433,89 @@
                 </div>
             </section>
 
-            <section class="work-links">
-                <a href="/portfolio/" class="work-card work-primary">
-                    <div class="work-preview">
-                        <img src="/portfolio/ecommerce-store.png" alt="Ecommerce Store">
-                        <img src="/portfolio/wordpress-blog.png" alt="WordPress Blog">
-                        <img src="/portfolio/landing-page.png" alt="Landing Page">
-                    </div>
-                    <div class="work-content">
-                        <h3>See What I Build</h3>
-                        <p>Ecommerce, blogs, landing pages, dashboards, web apps—17 projects and counting.</p>
-                        <span class="work-link">View Portfolio →</span>
-                    </div>
-                </a>
+            <section class="services">
+                <h2 class="section-title">What I Build</h2>
+                <div class="services-grid">
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="ecommerce-store.png" alt="Ecommerce Store">
+                        </div>
+                        <div class="service-content">
+                            <h3>Ecommerce Stores</h3>
+                            <p>Online shops that load fast and convert. Product catalogs, cart systems, checkout flows, and payment integration.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="wordpress-blog.png" alt="WordPress Blog">
+                        </div>
+                        <div class="service-content">
+                            <h3>WordPress Blogs</h3>
+                            <p>Content-first sites built for readability and SEO. Custom themes, clean admin experience, built to grow.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="landing-page.png" alt="Landing Page">
+                        </div>
+                        <div class="service-content">
+                            <h3>Landing Pages</h3>
+                            <p>Single-page sites that get to the point. Product launches, lead capture, event pages—focused and fast.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="mobile-web-app.png" alt="Mobile Web App">
+                        </div>
+                        <div class="service-content">
+                            <h3>Mobile Web Apps</h3>
+                            <p>Browser-based apps that work on any device. Responsive, touch-friendly, no app store required.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="product-review-site.png" alt="Product Review Site">
+                        </div>
+                        <div class="service-content">
+                            <h3>Review & Affiliate Sites</h3>
+                            <p>Product comparison sites, review platforms, and affiliate content hubs. Built for trust and conversions.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="ops-dashboard.png" alt="Operations Dashboard">
+                        </div>
+                        <div class="service-content">
+                            <h3>Operations Dashboards</h3>
+                            <p>Data-driven dashboards for warehouse ops, inventory tracking, and operational visibility.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="microblog.png" alt="Microblog">
+                        </div>
+                        <div class="service-content">
+                            <h3>Microblogs</h3>
+                            <p>Focused, niche content sites that punch above their weight. Built for clarity and impact.</p>
+                        </div>
+                    </article>
+                    <article class="service-card">
+                        <div class="service-thumbnail">
+                            <img src="photography.png" alt="Photography Portfolio">
+                        </div>
+                        <div class="service-content">
+                            <h3>Photography Portfolios</h3>
+                            <p>Clean, image-focused portfolio sites for freelance photographers and small studios.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
 
-                <a href="/tools/" class="work-card work-secondary">
-                    <div class="work-content">
-                        <h3>Explore My Tools</h3>
-                        <p>18 browser-first utilities I've built—dev tools, data analysis, calculators, and more.</p>
-                        <span class="work-link-subtle">Browse Tools →</span>
-                    </div>
+            <section class="tools-link">
+                <a href="/tools/" class="tools-card">
+                    <h3>Explore My Tools</h3>
+                    <p>18 browser-first utilities I've built—dev tools, data analysis, calculators, and more.</p>
+                    <span class="tools-card-link">Browse Tools →</span>
                 </a>
             </section>
 
@@ -86,10 +525,11 @@
                     <span class="tech-tag">JavaScript</span>
                     <span class="tech-tag">PHP</span>
                     <span class="tech-tag">MySQL</span>
-                    <span class="tech-tag">HTML/CSS</span>
+                    <span class="tech-tag">CSS</span>
                     <span class="tech-tag">Python</span>
                     <span class="tech-tag">WordPress</span>
                     <span class="tech-tag">Hugo</span>
+                    <span class="tech-tag">11ty</span>
                     <span class="tech-tag">Three.js</span>
                 </div>
             </section>
