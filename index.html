@@ -759,72 +759,47 @@
       color: var(--color-accent);
     }
     
-    /* Mobile Nav */
-    .nav-toggle {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: var(--space-xs);
-    }
-    
-    .nav-toggle span {
-      display: block;
-      width: 24px;
-      height: 2px;
-      background: var(--color-text);
-      margin: 5px 0;
-      transition: transform var(--duration-fast) var(--ease-out),
-                  opacity var(--duration-fast) var(--ease-out);
-    }
-    
+    /* Mobile: Floating Hire Me button */
     @media (max-width: 768px) {
-      .nav-toggle {
-        display: block;
-        z-index: 101;
-      }
-      
       .nav {
+        display: none;
+      }
+      
+      .nav-toggle {
+        display: none;
+      }
+      
+      .mobile-cta {
+        display: flex;
         position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        width: 280px;
-        background: var(--color-surface);
-        flex-direction: column;
-        padding: calc(var(--header-height) + var(--space-lg)) var(--space-lg) var(--space-lg);
-        gap: var(--space-md);
-        transform: translateX(100%);
-        transition: transform var(--duration-normal) var(--ease-out);
-        border-left: 1px solid var(--color-border);
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+        bottom: var(--space-md);
+        right: var(--space-md);
+        background: var(--color-accent);
+        color: #FFFFFF;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.875rem 1.25rem;
+        border-radius: 100px;
+        box-shadow: 0 4px 20px rgba(30, 64, 175, 0.3);
+        z-index: 100;
+        transition: transform var(--duration-fast) var(--ease-out),
+                    box-shadow var(--duration-fast) var(--ease-out);
       }
       
-      @media (prefers-color-scheme: dark) {
-        .nav {
-          background: #1C1C20;
-          box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
-        }
+      .mobile-cta:active {
+        transform: scale(0.96);
       }
-      
-      .nav.open {
-        transform: translateX(0);
+    }
+    
+    @media (max-width: 768px) and (prefers-color-scheme: dark) {
+      .mobile-cta {
+        box-shadow: 0 4px 20px rgba(96, 165, 250, 0.25);
       }
-      
-      .nav-link {
-        font-size: 1.1rem;
-      }
-      
-      .nav-toggle.open span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 5px);
-      }
-      
-      .nav-toggle.open span:nth-child(2) {
-        opacity: 0;
-      }
-      
-      .nav-toggle.open span:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -5px);
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-cta {
+        display: none;
       }
     }
   </style>
@@ -835,12 +810,6 @@
     <div class="container header-inner">
       <a href="/" class="logo"><span class="logo-tag">&lt;ML /&gt;</span></a>
       
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      
       <nav class="nav" id="nav">
         <a href="/tools/" class="nav-link">Tools</a>
         <a href="#work" class="nav-link">Work</a>
@@ -849,6 +818,9 @@
       </nav>
     </div>
   </header>
+  
+  <!-- Mobile floating CTA -->
+  <a href="https://www.deftwebmaster.com/" target="_blank" rel="noopener" class="mobile-cta">Hire Me</a>
   
   <!-- Hero -->
   <section class="hero">
@@ -1052,40 +1024,13 @@
   <script>
     // Header scroll effect
     const header = document.getElementById('header');
-    const navToggle = document.getElementById('navToggle');
-    const nav = document.getElementById('nav');
-    let lastScroll = 0;
     
     window.addEventListener('scroll', () => {
-      const currentScroll = window.scrollY;
-      
-      if (currentScroll > 50) {
+      if (window.scrollY > 50) {
         header.classList.add('scrolled');
       } else {
         header.classList.remove('scrolled');
       }
-      
-      // Close mobile nav on scroll
-      if (nav.classList.contains('open')) {
-        navToggle.classList.remove('open');
-        nav.classList.remove('open');
-      }
-      
-      lastScroll = currentScroll;
-    });
-    
-    // Mobile nav toggle
-    navToggle.addEventListener('click', () => {
-      navToggle.classList.toggle('open');
-      nav.classList.toggle('open');
-    });
-    
-    // Close nav on link click
-    nav.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navToggle.classList.remove('open');
-        nav.classList.remove('open');
-      });
     });
     
     // Smooth scroll for anchor links
