@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete glossary for Chronicles of Marrek Locke - comprehensive guide to the universe, factions, technology, and locations.">
+    <meta name="author" content="Matt Livingston">
+    <title>Lexicon | Chronicles of Marrek Locke</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           PATTERN BREACH - LEXICON PAGE
+           ======================================== */
+        
+        :root {
+            --void-black: #0a0c10;
+            --grid-blue: #1a8cff;
+            --grid-blue-dark: #0066cc;
+            --chaos-orange: #ff6b35;
+            --chaos-amber: #ffb347;
+            --collision-white: #e8f4ff;
+            
+            --text-primary: #e0e8f0;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            
+            --surface-dark: #0d1018;
+            --surface-panel: #141820;
+            --border-subtle: rgba(26, 140, 255, 0.15);
+            
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--void-black);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 100px 20px 60px;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, rgba(26, 140, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(26, 140, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            transform: translate(-50%, -50%);
+            background: 
+                radial-gradient(ellipse at 30% 50%, rgba(26, 140, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(255, 107, 53, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 800px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+            text-decoration: none;
+            margin-bottom: 40px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 0.2s forwards;
+        }
+        
+        .back-link:hover {
+            color: var(--text-primary);
+            transform: translateX(-5px);
+        }
+        
+        .back-link svg {
+            transition: transform 0.3s ease;
+        }
+        
+        .back-link:hover svg {
+            transform: translateX(-3px);
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--grid-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease-out 0.3s forwards;
+        }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease-out 0.5s forwards;
+        }
+        
+        /* ==================== NAVIGATION ==================== */
+        .lexicon-nav {
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .nav-link {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 10px 16px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--grid-blue);
+            border-color: var(--border-subtle);
+        }
+        
+        .nav-link.active {
+            color: var(--grid-blue);
+            border-color: var(--grid-blue);
+            background: rgba(26, 140, 255, 0.1);
+        }
+        
+        /* ==================== MAIN CONTENT ==================== */
+        .lexicon-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 20px 100px;
+        }
+        
+        /* ==================== CATEGORY SECTIONS ==================== */
+        .category {
+            margin-bottom: 80px;
+        }
+        
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 32px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(26, 140, 255, 0.1);
+            border: 1px solid var(--grid-blue);
+            border-radius: 4px;
+            font-size: 1.5rem;
+        }
+        
+        .category-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--text-primary);
+        }
+        
+        /* ==================== ENTRY CARDS ==================== */
+        .entry {
+            background: var(--surface-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .entry:hover {
+            border-color: rgba(26, 140, 255, 0.4);
+        }
+        
+        .entry-header {
+            padding: 20px 24px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+        
+        .entry-header:hover {
+            background: rgba(26, 140, 255, 0.05);
+        }
+        
+        .entry-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+        }
+        
+        .entry-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        .entry-toggle {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--grid-blue);
+            transition: transform 0.3s ease;
+        }
+        
+        .entry.open .entry-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .entry-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+        
+        .entry.open .entry-body {
+            max-height: 2000px;
+        }
+        
+        .entry-content {
+            padding: 0 24px 24px;
+            border-top: 1px solid var(--border-subtle);
+        }
+        
+        .entry-content p {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-top: 20px;
+        }
+        
+        .entry-content p:first-child {
+            margin-top: 20px;
+        }
+        
+        .entry-field {
+            margin-top: 16px;
+        }
+        
+        .field-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+            margin-bottom: 6px;
+        }
+        
+        .field-value {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        /* ==================== MARREK'S CODE SPECIAL ==================== */
+        .code-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 16px;
+        }
+        
+        .code-list li {
+            display: flex;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        .code-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .code-number {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--chaos-orange);
+            min-width: 24px;
+        }
+        
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--void-black);
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--grid-blue);
+        }
+        
+        .footer-copy {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .footer-copy a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-copy a:hover {
+            color: var(--grid-blue);
+        }
+        
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 80px 20px 40px;
+                min-height: 40vh;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .lexicon-nav {
+                padding: 16px;
+            }
+            
+            .nav-link {
+                font-size: 0.65rem;
+                padding: 8px 12px;
+            }
+            
+            .lexicon-content {
+                padding: 40px 16px 80px;
+            }
+            
+            .category-header {
+                gap: 16px;
+            }
+            
+            .category-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .category-title {
+                font-size: 1.2rem;
+            }
+            
+            .entry-header {
+                padding: 16px 20px;
+            }
+            
+            .entry-content {
+                padding: 0 20px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+                letter-spacing: 0.1em;
+            }
+            
+            .nav-container {
+                gap: 4px;
+            }
+            
+            .nav-link {
+                font-size: 0.6rem;
+                padding: 6px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <a href="index.html" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Return to Main
+        </a>
+        <h1 class="hero-title">LEXICON</h1>
+        <p class="hero-subtitle">Comprehensive guide to the universe, factions, technology, and locations.</p>
+    </div>
+</section>
+
+<!-- Sticky Navigation -->
+<nav class="lexicon-nav">
+    <div class="nav-container">
+        <a href="#political" class="nav-link active">Political</a>
+        <a href="#technology" class="nav-link">Technology</a>
+        <a href="#locations" class="nav-link">Locations</a>
+        <a href="#concepts" class="nav-link">Concepts</a>
+    </div>
+</nav>
+
+<!-- Main Lexicon Content -->
+<main class="lexicon-content">
+
+    <!-- POLITICAL ENTITIES -->
+    <section id="political" class="category">
+        <div class="category-header">
+            <div class="category-icon">▣</div>
+            <h2 class="category-title">POLITICAL ENTITIES</h2>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE COMPACT</div>
+                    <div class="entry-subtitle">The Compact of Sovereign Systems</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Form</div>
+                        <div class="field-value">Federal republic with centralized military/intelligence authority and decentralized local governance.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Structure</div>
+                        <div class="field-value">Hundreds of member worlds maintain significant autonomy over internal affairs while contributing to Compact military and intelligence budgets. Local security/police forces remain locally controlled. Executive Council (rotating representatives from member worlds) sets policy direction.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Central Authority Controls</div>
+                        <div class="field-value">Compact Navy (military fleet, system defense), Strategic Intelligence Directorate (SID), jump gate network, inter-system commerce regulation, citizenship standards.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Reach</div>
+                        <div class="field-value">Strong presence and high citizen trust in Core/Inner Colonies. Weak presence and broken promises in Frontier. Effectively absent in Fringe.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Legitimacy Crisis</div>
+                        <div class="field-value">Growing disconnect between Compact ideals and actions. Prioritizes Core economic interests over peripheral welfare. Intelligence apparatus manipulated for political and corporate ends.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">STRATEGIC INTELLIGENCE DIRECTORATE</div>
+                    <div class="entry-subtitle">SID</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Public Identity</div>
+                        <div class="field-value">Respected, professional intelligence agency conducting strategic analysis, counter-terrorism, threat assessment, and intelligence coordination with Compact Navy. Headquarters on Capital World.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Public Perception</div>
+                        <div class="field-value">Most citizens trust SID as guardian of Compact stability.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Reality</div>
+                        <div class="field-value">Majority of SID does conduct legitimate intelligence work. But underneath the respectable facade lies The Veiled Section—a shadow black-ops division conducting deniable operations.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE VEILED SECTION</div>
+                    <div class="entry-subtitle">Section</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Nature</div>
+                        <div class="field-value">Black-ops division within SID conducting operations the Compact cannot officially acknowledge. Does not officially exist—no budget line, no organizational chart, no public acknowledgment.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Operations</div>
+                        <div class="field-value">Political assassinations (reformers, activists, inconvenient leaders), corporate enforcement (eliminating obstacles to megacorp interests), regime change in frontier systems, sabotage, propaganda, destabilization, "stability maintenance" as cover for power protection.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Structure</div>
+                        <div class="field-value">200-500 field operatives galaxy-wide working in compartmentalized cells (3-5 operatives). Plausible deniability: if caught, operatives are disavowed.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Command</div>
+                        <div class="field-value">Controlled by the Oversight Trinode—three long-tenured civil strategists with no accountability. Unelected, no term limits, names unknown even to most operatives.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Marrek's Connection</div>
+                        <div class="field-value">Former Section field operative for several years until he discovered a mission was fabricated and refused to execute. Section sent hit team after him; he escaped and became fugitive.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">CORPORATE POWERS</div>
+                    <div class="entry-subtitle">Mega-corporations</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Nature</div>
+                        <div class="field-value">Mega-corporations functioning as pseudo-governments in frontier regions where Compact presence is minimal.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Major Players</div>
+                        <div class="field-value">Vadric Consolidated (Reflex fuel extraction/distribution), Helion Industrial Combine (heavy manufacturing, military contracts), Verdant Biomed Syndicate (pharmaceuticals, medical monopolies).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Control Methods</div>
+                        <div class="field-value">Ownership of critical infrastructure, employment as leverage (company towns, debt bondage, corporate scrip), private security forces, economic monopolies, legal manipulation (corporate courts).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Frontier Reality</div>
+                        <div class="field-value">Corporations often ARE the government. Workers live in corporate housing, paid in corporate scrip. Dissent punished through termination (eviction, blacklisting, starvation).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">CRIMINAL SYNDICATES</div>
+                    <div class="entry-subtitle">Organized Crime Networks</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Nature</div>
+                        <div class="field-value">Organized crime networks filling power vacuums in outer regions. Some centuries old with institutional structures.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Major Syndicates</div>
+                        <div class="field-value">Serrik Syndicate (controls Varyn Spire black market hub; oldest and most "respectable"), The Carrion Fleet (pirate armada; nomadic; pure predation), Shadow Broker Collectives (information merchants; blackmail specialists).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Activities</div>
+                        <div class="field-value">Black market trade (contraband, weapons, restricted tech), protection rackets, smuggling facilitation, enforcement through violence, money laundering, information brokering.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Relationship to Independents</div>
+                        <div class="field-value">Sometimes adversaries (extortion, theft, violence). Sometimes necessary partners (only source of supplies, information, protection). Unpredictable—loyalty follows profit.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECHNOLOGY -->
+    <section id="technology" class="category">
+        <div class="category-header">
+            <div class="category-icon">⬡</div>
+            <h2 class="category-title">TECHNOLOGY</h2>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">JUMP GATES</div>
+                    <div class="entry-subtitle">Interstellar Transit Network</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Technology</div>
+                        <div class="field-value">Massive installations creating artificial wormholes between fixed points in space.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Function</div>
+                        <div class="field-value">Ships dock at gate station and queue for transit. Gate generates stable wormhole tunnel to corresponding paired gate. Near-instantaneous subjective transfer (seconds from travelers' perspective). Exit at destination system's gate.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Advantages</div>
+                        <div class="field-value">Speed (transit time in seconds regardless of distance), safety (99.9999% success rate), affordability (standardized costs), accessibility (any ship can use them), high capacity.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Disadvantages</div>
+                        <div class="field-value">Fixed routes only (can't improvise), heavily monitored (every transit logged with biometric verification, full cargo scans, ship ID, transaction records), choke points (control gate = control trade), no anonymity.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Security</div>
+                        <div class="field-value">Customs enforcement at both ends. Random deep inspections. Warrant checks. Contraband sensors. Fugitives cannot use gates without elite false credentials.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">SHIP-BASED FTL DRIVES</div>
+                    <div class="entry-subtitle">Independent Hyperspace Capability</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Technology</div>
+                        <div class="field-value">Independent hyperspace jump capability mounted on starships; allows travel without gate infrastructure.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Drive Mechanics</div>
+                        <div class="field-value">Navcomp calculates route → Reflex fuel injected → ship generates hyperspace field → translation into hyperspace → transit (no subjective time) → emergence at calculated coordinates. Cooldown required before next jump (drives overheat).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Range</div>
+                        <div class="field-value">Military drives: 50-100 light-years. Commercial: 20-40 light-years. Aging/modified: 10-30 light-years (variable).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Advantages</div>
+                        <div class="field-value">Independence (travel anywhere), anonymity (no gate logs), tactical flexibility (escape routes, hidden rendezvous), access to systems without gates.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Disadvantages</div>
+                        <div class="field-value">Fuel cost (economically prohibitive), risk (failure = death), maintenance intensive, vulnerable to drive damage.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">REFLEX</div>
+                    <div class="entry-subtitle">FTL Fuel</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Nature</div>
+                        <div class="field-value">Rare, energy-dense exotic matter; unstable in normal space. Essential for ship-based FTL drives.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Sources</div>
+                        <div class="field-value">Mined from specific stellar phenomena (neutron star accretion disks, exotic nebulae). Can be synthesized in particle accelerators (hideously expensive, energy-intensive). Reclaimed from decommissioned drives (dangerous, low yield).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Cost Structure</div>
+                        <div class="field-value">Military and megacorps have abundant supply. Independent captains: single jump can cost month's profit. Black market: 200-500% markup; quality varies.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Strategic Importance</div>
+                        <div class="field-value">Control fuel = control movement = control power. Vadric Consolidated dominant Outer Rim supplier. Refueling stations are strategic choke points.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">SURVEILLANCE TECHNOLOGY</div>
+                    <div class="entry-subtitle">Compact Monitoring Systems</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Biometric Systems</div>
+                        <div class="field-value">Ubiquitous in Core/Inner Colonies. DNA, retinal scan, fingerprint, facial recognition, gait analysis, voice print. Integrated databases with billions of citizen records. Used for gate transit, official transactions, secure facility access.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Financial Tracking</div>
+                        <div class="field-value">Digital credits transaction logs automatically generated. SID has warrant-less access to financial records. Can track purchases, identify patterns, freeze accounts remotely.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Communications Monitoring</div>
+                        <div class="field-value">Standard comms subject to Compact surveillance. End-to-end quantum encryption illegal in Compact space without permit (never granted to civilians). SID capabilities: real-time intercept, retroactive analysis, algorithmic pattern detection.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Counter-Surveillance</div>
+                        <div class="field-value">False identities (expensive, require maintenance), data scrubbers (erase records; high-risk), physical anonymity (Outer Rim's lack of infrastructure), operational security (minimize digital footprint).</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATIONS -->
+    <section id="locations" class="category">
+        <div class="category-header">
+            <div class="category-icon">◈</div>
+            <h2 class="category-title">LOCATIONS</h2>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE CORE SYSTEMS</div>
+                    <div class="entry-subtitle">Galactic Economic Center</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Character</div>
+                        <div class="field-value">Wealthy, cosmopolitan, heavily monitored. Post-scarcity for basic needs (food, shelter, healthcare, education). Extreme wealth concentration at top.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Infrastructure</div>
+                        <div class="field-value">Dense jump gate network; near-instantaneous transit between systems. Financial exchanges, corporate headquarters, luxury goods, information trade.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Surveillance</div>
+                        <div class="field-value">Omnipresent. Biometric databases, transaction logs, communications monitoring. Nearly impossible to operate without leaving comprehensive data trail.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Law</div>
+                        <div class="field-value">Strict weapons regulation (above knife-level heavily restricted). End-to-end encryption illegal.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Population</div>
+                        <div class="field-value">Trillions across dozens of interconnected systems.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE CAPITAL WORLD</div>
+                    <div class="entry-subtitle">Compact Seat of Government</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Location</div>
+                        <div class="field-value">Inner rim—strategically positioned between Core wealth and frontier territories (NOT at galactic center).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Character</div>
+                        <div class="field-value">Seat of Compact government; military and intelligence headquarters. Compact Executive Council, legislative bodies, Strategic Intelligence Directorate headquarters.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Security</div>
+                        <div class="field-value">Maximum; constant surveillance, elite military presence, restricted airspace.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Architecture</div>
+                        <div class="field-value">Imposing governmental complexes, fortified intelligence facilities (including Section's underground operations), ceremonial spaces designed to project authority.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE INNER COLONIES</div>
+                    <div class="entry-subtitle">Developed Compact Worlds</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Location</div>
+                        <div class="field-value">Developed worlds within Compact jurisdiction, one or two jump-gate hops from Capital or Core.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Character</div>
+                        <div class="field-value">Stable, lawful, integrated into Compact systems. Rule of law functions; institutions trusted. Surveillance normalized; citizens accept monitoring as cost of security and prosperity.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Economy</div>
+                        <div class="field-value">Manufacturing, agriculture, services, education. Stable middle-class populations. Social mobility possible.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Quality of Life</div>
+                        <div class="field-value">High; access to medical care, education, employment. Billions per world; dozens of major colonies.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE FRONTIER / OUTER RIM</div>
+                    <div class="entry-subtitle">Edge of Compact Authority</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Location</div>
+                        <div class="field-value">Where Compact presence thins to skeleton patrols and occasional shows of force.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Character</div>
+                        <div class="field-value">Lawless, desperate, or fiercely autonomous depending on local governance. Corporate pseudo-states, criminal syndicates, local warlords, independent settlements.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Infrastructure</div>
+                        <div class="field-value">Sparse or poorly maintained jump gates; ship-based FTL dominates. Refueling stations become strategic choke points.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Culture</div>
+                        <div class="field-value">Compact distant and distrusted; self-reliance essential; trust earned through action.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Reality</div>
+                        <div class="field-value">Compact promises aid but rarely delivers. Corporations extract wealth without reinvestment. Syndicates fill power vacuums.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE FRINGE / DEEP FRONTIER</div>
+                    <div class="entry-subtitle">Beyond Compact Authority</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Location</div>
+                        <div class="field-value">Beyond nominal Compact authority; multi-week journey from nearest Compact outpost.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Character</div>
+                        <div class="field-value">Independent colonies, pirate havens, forgotten outposts, failed settlements. Fierce independence or desperate poverty.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Infrastructure</div>
+                        <div class="field-value">No jump gates; dangerous, older ship-based FTL only. Navigation hazards common.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Law</div>
+                        <div class="field-value">None unless locally enforced. Survival of fittest or strongest community bonds.</div>
+                    </div>
+                    <p><em>Here, the Compact's reach ends. The void begins.</em></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">HAVENREACH STATION</div>
+                    <div class="entry-subtitle">Independent Orbital / Smuggler's Haven</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Location</div>
+                        <div class="field-value">Outer Rim; strategic position between multiple systems; accessible via multiple jump routes.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Governance</div>
+                        <div class="field-value">Coalition of retired smugglers and traders. Council of Docksmasters maintains order.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Rules</div>
+                        <div class="field-value">Absolute Rule—no violence within docking ring (violators ejected into space). No questions policy (don't ask cargo contents, passenger identities). No inspections. Sanctuary tradition (fugitives safe while docked).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Marrek's Use</div>
+                        <div class="field-value">Refueling, intelligence gathering, cargo fencing, crew rest, neutral meeting ground.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Threat from Vadric</div>
+                        <div class="field-value">Corporate influence creeping in. Bribing Docksmasters, buying up fuel stores, securing exclusive contracts. Goal: turn neutral ground into Vadric asset.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">VARYN SPIRE</div>
+                    <div class="entry-subtitle">Syndicate Stronghold / Black Market Hub</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <div class="entry-field">
+                        <div class="field-label">Type</div>
+                        <div class="field-value">Massive orbital platform; strategically positioned on major smuggling routes.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Governance</div>
+                        <div class="field-value">Serrik Syndicate (oldest, most "respectable" criminal organization). Council of senior syndicate members. Strict internal code enforced ruthlessly. Neutral ground for all criminal factions.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Rules</div>
+                        <div class="field-value">Honor code: word is bond; betrayal = death. Business first; personal grudges settled elsewhere. No violence within Spire unless authorized. Reputation economy.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Infrastructure</div>
+                        <div class="field-value">Docking for hundreds of ships. Black market bazaar (anything for sale). Information brokers, forgers and ID specialists (including Glasswright), weapon dealers (military-grade), medical facilities (illegal procedures), luxury accommodations.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Risks</div>
+                        <div class="field-value">Serrik leaders see Marrek as valuable commodity; could sell him to highest bidder. Must maintain reputation; any weakness exploited.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KEY CONCEPTS -->
+    <section id="concepts" class="category">
+        <div class="category-header">
+            <div class="category-icon">◐</div>
+            <h2 class="category-title">KEY CONCEPTS</h2>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">THE LEASH</div>
+                    <div class="entry-subtitle">Section Control Mechanisms</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <p>Multi-layered system the Veiled Section uses to control operatives. Not technological mind-control—psychological design and practical dependency.</p>
+                    <div class="entry-field">
+                        <div class="field-label">1. Psychological Conditioning</div>
+                        <div class="field-value">Compartmentalization (operatives see individual missions, not systemic pattern), moral framing ("necessary evils"), identity binding ("only we are willing"), isolation (Section becomes family), gradual escalation (minor compromises build to major ones).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">2. Infrastructure Dependency</div>
+                        <div class="field-value">Section provides identity systems, medical care, mission intel, financial access. Without Section, operatives become nobody instantly—no identity, no money, no access.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">3. Information Leverage</div>
+                        <div class="field-value">Section maintains detailed dossiers on own operatives. Personal secrets, family vulnerabilities, past crimes (including Section missions). Deployed when operative shows signs of wavering.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">4. Tracking Systems</div>
+                        <div class="field-value">Multi-layered: biometric travel logs, communication monitoring, financial tracking, behavioral analysis AI, physical trackers (possibly bio-implants). Most operatives don't recognize how monitored they are.</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">5. Social Control</div>
+                        <div class="field-value">Peer pressure (operatives bond; leaving means abandoning comrades), honor culture (leaving is betrayal), limited outside contact, constant operational tempo (prevents reflection).</div>
+                    </div>
+                    <div class="entry-field">
+                        <div class="field-label">Marrek's Escape</div>
+                        <div class="field-value">Required severing/overcoming all five layers using Saren's authentication overrides, creating new false identity via Glasswright, exploiting blind ports, and vanishing within six-hour window.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="entry">
+            <div class="entry-header" onclick="this.parentElement.classList.toggle('open')">
+                <div>
+                    <div class="entry-title">MARREK'S CODE</div>
+                    <div class="entry-subtitle">Personal Principles</div>
+                </div>
+                <div class="entry-toggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="entry-body">
+                <div class="entry-content">
+                    <p>Marrek Locke's moral framework, developed across the trilogy:</p>
+                    <ul class="code-list">
+                        <li><span class="code-number">1.</span> Freedom is the baseline of dignity. He will not be owned—and hates seeing others controlled.</li>
+                        <li><span class="code-number">2.</span> Loyalty is a choice, not an obligation. He doesn't demand it. He gives it rarely. But when given, it's absolute.</li>
+                        <li><span class="code-number">3.</span> Violence is a tool, not a solution. He avoids unnecessary harm. But he will end a threat without hesitation.</li>
+                        <li><span class="code-number">4.</span> Precision over chaos. Every decision is intentional. Every move has purpose.</li>
+                        <li><span class="code-number">5.</span> Protect the innocent, when possible. He won't sacrifice everything for a stranger—but he also won't turn away when he can make the difference.</li>
+                        <li><span class="code-number">6.</span> Never lie when the truth will cut deeper. And never truthfully commit to something he won't honor.</li>
+                        <li><span class="code-number">7.</span> Walk away from power that requires obedience. He serves causes, not rulers.</li>
+                        <li><span class="code-number">8.</span> Always have a contingency. Plans within plans. Exits for every room.</li>
+                        <li><span class="code-number">9.</span> Secrets are currency—and responsibility. He guards both wisely.</li>
+                        <li><span class="code-number">10.</span> Don't betray yourself. His code is personal. Not negotiable. Not for sale.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-content">
+        <div class="footer-logo">CHRONICLES OF MARREK LOCKE</div>
+        <div class="footer-links">
+            <a href="index.html">Home</a>
+            <a href="mailto:chronicles@fastmail.com">Contact</a>
+        </div>
+        <p class="footer-copy">© 2026 <a href="https://MattLivingston.com">Matt Livingston</a>. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Simple JS for navigation highlighting -->
+<script>
+    // Smooth scroll navigation highlighting
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.category');
+    
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop - 150;
+            if (scrollY >= sectionTop) {
+                current = section.getAttribute('id');
+            }
+        });
+        
+        navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current) {
+                link.classList.add('active');
+            }
+        });
+    });
+</script>
+
+<!-- * lone wolf, quiet teeth | Matt Livingston -->
+
+</body>
+</html>

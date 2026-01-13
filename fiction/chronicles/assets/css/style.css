@@ -1,0 +1,1207 @@
+/* ========================================
+   CHRONICLES OF MARREK LOCKE - CUSTOM CSS
+   ======================================== */
+
+/* ==================== ROOT VARIABLES ==================== */
+:root {
+  /* Background Colors */
+  --bg-primary: #0a0e14;
+  --bg-surface: #1a1f2e;
+  --bg-light: #252b3a;
+  --border: #2a3444;
+  
+  /* Text Colors */
+  --text-primary: #e0e6ed;
+  --text-secondary: #a0aab8;
+  --text-accent: #6b8caf;
+  --text-muted: #7a8290;
+  
+  /* Accent Colors */
+  --accent-intelligence: #4a90e2;
+  --accent-noir: #d4a574;
+  --accent-void: #8b7ba8;
+  
+  /* Status Colors */
+  --status-available: #5fb878;
+  --status-progress: #f39c12;
+  --status-locked: #555d6b;
+  --status-hostile: #e74c3c;
+  --status-unknown: #95a5a6;
+  
+  /* Book-Specific Colors */
+  --book-1-accent: var(--accent-intelligence);
+  --book-2-accent: var(--accent-noir);
+  --book-3-accent: var(--accent-void);
+  
+  /* Typography */
+  --font-header: 'Rajdhani', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
+  
+  /* Spacing */
+  --section-padding: 80px 0;
+  --section-padding-mobile: 50px 0;
+  
+  /* Transitions */
+  --transition-standard: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ==================== GLOBAL STYLES ==================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-header);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+a {
+  color: var(--text-accent);
+  text-decoration: none;
+  transition: var(--transition-standard);
+}
+
+a:hover {
+  color: var(--accent-intelligence);
+}
+
+strong {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+em {
+  font-style: italic;
+  color: var(--text-accent);
+}
+
+/* ==================== SECTIONS ==================== */
+.section-dark {
+  background-color: var(--bg-primary);
+  padding: var(--section-padding);
+}
+
+.section-light {
+  background-color: var(--bg-surface);
+  padding: var(--section-padding);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent-intelligence), transparent);
+  margin: 1.5rem auto 0;
+}
+
+.section-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  font-weight: 300;
+}
+
+/* ==================== HERO SECTION ==================== */
+.hero-section {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #151a28 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 100px 20px;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(74, 144, 226, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139, 123, 168, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out;
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-intelligence) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-tagline {
+  font-size: 1.5rem;
+  font-style: italic;
+  color: var(--text-accent);
+  margin-bottom: 1rem;
+  font-weight: 300;
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* Hero Glossary Page Variant */
+.hero-glossary {
+  min-height: 50vh;
+  padding: 80px 20px;
+}
+
+.hero-glossary .hero-title {
+  font-size: 3rem;
+}
+
+/* ==================== PREMISE SECTION ==================== */
+.premise-text {
+  font-size: 1.3rem;
+  line-height: 1.8;
+  color: var(--text-primary);
+  text-align: center;
+  font-weight: 300;
+}
+
+/* ==================== BOOK CARDS ==================== */
+.book-card {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: var(--transition-standard);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.book-card .card-header {
+  background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-primary) 100%);
+  border-bottom: 2px solid var(--border);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.book-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.book-label {
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.book-card .card-body {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.book-hook {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+  flex-grow: 1;
+}
+
+.book-card .card-footer {
+  background-color: transparent;
+  border-top: 1px solid var(--border);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Book-Specific Accent Colors */
+.book-1 .card-header {
+  border-bottom-color: var(--book-1-accent);
+}
+
+.book-1:hover {
+  border-color: var(--book-1-accent);
+  box-shadow: 0 10px 30px rgba(74, 144, 226, 0.2);
+}
+
+.book-2 .card-header {
+  border-bottom-color: var(--book-2-accent);
+}
+
+.book-2:hover {
+  border-color: var(--book-2-accent);
+  box-shadow: 0 10px 30px rgba(212, 165, 116, 0.2);
+}
+
+.book-3 .card-header {
+  border-bottom-color: var(--book-3-accent);
+}
+
+.book-3:hover {
+  border-color: var(--book-3-accent);
+  box-shadow: 0 10px 30px rgba(139, 123, 168, 0.2);
+}
+
+/* ==================== BOOK PROGRESS TRACKER ==================== */
+.book-progress {
+  margin-top: auto;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.status-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.status-badge.available {
+  background-color: rgba(95, 184, 120, 0.2);
+  color: var(--status-available);
+  border: 1px solid var(--status-available);
+}
+
+.status-badge.in-progress {
+  background-color: rgba(243, 156, 18, 0.2);
+  color: var(--status-progress);
+  border: 1px solid var(--status-progress);
+}
+
+.status-badge.planned {
+  background-color: rgba(85, 93, 107, 0.2);
+  color: var(--status-locked);
+  border: 1px solid var(--status-locked);
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.progress {
+  height: 8px;
+  background-color: rgba(42, 52, 68, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--accent-noir), var(--accent-intelligence));
+  transition: width 0.6s ease;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+  font-family: var(--font-header);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  transition: var(--transition-standard);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent-intelligence), var(--accent-void));
+  color: var(--text-primary);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.3);
+  color: var(--text-primary);
+}
+
+.btn-primary:disabled {
+  background: var(--status-locked);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-outline-primary {
+  background: transparent;
+  border: 2px solid var(--accent-intelligence);
+  color: var(--accent-intelligence);
+}
+
+.btn-outline-primary:hover:not(:disabled) {
+  background: var(--accent-intelligence);
+  color: var(--text-primary);
+}
+
+.btn-outline-primary:disabled {
+  border-color: var(--status-locked);
+  color: var(--status-locked);
+  cursor: not-allowed;
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent-noir), var(--accent-intelligence));
+  color: var(--text-primary);
+}
+
+.btn-accent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 165, 116, 0.3);
+  color: var(--text-primary);
+}
+
+.btn-download {
+  font-size: 0.95rem;
+}
+
+/* ==================== ABOUT MARREK SECTION ==================== */
+.about-content {
+  text-align: center;
+}
+
+.about-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.trait-list {
+  list-style: none;
+  text-align: left;
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.trait-list li {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.trait-list i {
+  color: var(--accent-intelligence);
+  font-size: 1.2rem;
+  margin-top: 0.2rem;
+  flex-shrink: 0;
+}
+
+/* ==================== CHARACTER DOSSIER CARDS ==================== */
+.character-card {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: var(--transition-standard);
+  text-align: center;
+  height: 100%;
+}
+
+.character-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--accent-intelligence);
+  box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
+}
+
+.character-header {
+  margin-bottom: 1rem;
+}
+
+.character-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.character-designation {
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.character-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+.status-indicator.active {
+  background-color: var(--status-available);
+  box-shadow: 0 0 8px var(--status-available);
+}
+
+.status-indicator.unknown {
+  background-color: var(--status-unknown);
+  box-shadow: 0 0 8px var(--status-unknown);
+}
+
+.status-indicator.hostile {
+  background-color: var(--status-hostile);
+  box-shadow: 0 0 8px var(--status-hostile);
+}
+
+/* ==================== MODALS (CHARACTER DOSSIERS) ==================== */
+.modal-content {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--accent-intelligence);
+  border-radius: 8px;
+  color: var(--text-primary);
+}
+
+.modal-header {
+  background: linear-gradient(135deg, var(--bg-primary), var(--bg-surface));
+  border-bottom: 2px solid var(--accent-intelligence);
+  padding: 1.5rem;
+}
+
+.modal-title {
+  font-family: var(--font-header);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 2rem;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+}
+
+.modal-body p {
+  margin-bottom: 1rem;
+}
+
+.dossier-field {
+  display: flex;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.field-label {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-intelligence);
+  font-size: 0.85rem;
+  min-width: 140px;
+}
+
+.field-value {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.dossier-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 1.5rem 0;
+}
+
+.dossier-conclusion {
+  font-style: italic;
+  color: var(--text-accent);
+  border-left: 3px solid var(--accent-intelligence);
+  padding-left: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn-close {
+  filter: invert(1);
+  opacity: 0.7;
+}
+
+.btn-close:hover {
+  opacity: 1;
+}
+
+/* Crew Modal Specific */
+.crew-intro {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-accent);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.crew-member {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.crew-member:last-child {
+  border-bottom: none;
+}
+
+.crew-name {
+  font-family: var(--font-header);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-intelligence);
+  margin-bottom: 0.25rem;
+}
+
+.crew-role {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+}
+
+/* ==================== INFOGRAPHIC & PLACEHOLDER IMAGES ==================== */
+.infographic-container,
+.map-container {
+  text-align: center;
+  margin: 2rem 0;
+}
+
+.placeholder-image {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background-color: var(--bg-light);
+  padding: 2rem;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ==================== ACCORDION (GLOSSARY / KEY SYSTEMS) ==================== */
+.accordion {
+  --bs-accordion-bg: var(--bg-light);
+  --bs-accordion-border-color: var(--border);
+  --bs-accordion-btn-color: var(--text-primary);
+  --bs-accordion-btn-bg: var(--bg-light);
+  --bs-accordion-btn-focus-border-color: var(--accent-intelligence);
+  --bs-accordion-btn-focus-box-shadow: 0 0 0 0.25rem rgba(74, 144, 226, 0.25);
+  --bs-accordion-body-padding-x: 1.5rem;
+  --bs-accordion-body-padding-y: 1.5rem;
+  --bs-accordion-active-color: var(--accent-intelligence);
+  --bs-accordion-active-bg: var(--bg-surface);
+}
+
+.accordion-item {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border);
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  font-family: var(--font-header);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+  color: var(--accent-intelligence);
+  background-color: var(--bg-surface);
+  box-shadow: none;
+}
+
+.accordion-button::after {
+  filter: invert(1);
+}
+
+.accordion-body {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+
+.accordion-body strong {
+  color: var(--accent-intelligence);
+}
+
+/* Glossary Category Titles */
+.glossary-category-title {
+  font-family: var(--font-header);
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-intelligence);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+/* ==================== TIMELINE ==================== */
+.timeline {
+  position: relative;
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--accent-intelligence), var(--accent-noir), var(--accent-void));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 4rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.timeline-item:nth-child(odd) {
+  flex-direction: row;
+}
+
+.timeline-item:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.timeline-marker {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid;
+  background-color: var(--bg-primary);
+  flex-shrink: 0;
+  z-index: 2;
+  position: relative;
+  box-shadow: 0 0 20px;
+}
+
+.book-1-marker {
+  border-color: var(--book-1-accent);
+  box-shadow: 0 0 20px var(--book-1-accent);
+}
+
+.book-2-marker {
+  border-color: var(--book-2-accent);
+  box-shadow: 0 0 20px var(--book-2-accent);
+}
+
+.book-3-marker {
+  border-color: var(--book-3-accent);
+  box-shadow: 0 0 20px var(--book-3-accent);
+}
+
+.timeline-content {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 1;
+  transition: var(--transition-standard);
+}
+
+.timeline-content:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.timeline-item:nth-child(even) .timeline-content:hover {
+  transform: translateX(-5px);
+}
+
+.timeline-title {
+  font-family: var(--font-header);
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.timeline-label {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.timeline-description {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+/* ==================== SHIP PROFILE ==================== */
+.ship-stats {
+  background-color: var(--bg-light);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 2rem;
+}
+
+.stats-title {
+  font-family: var(--font-header);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-intelligence);
+  margin-bottom: 1.5rem;
+}
+
+.stat-list {
+  list-style: none;
+  padding: 0;
+}
+
+.stat-list li {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+
+.stat-list strong {
+  color: var(--text-accent);
+  font-weight: 600;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+.ship-quote {
+  font-style: italic;
+  color: var(--text-accent);
+  border-left: 3px solid var(--accent-intelligence);
+  padding-left: 1rem;
+  margin-top: 2rem;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* ==================== READING INFO SECTION ==================== */
+.reading-content h4 {
+  font-family: var(--font-header);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-intelligence);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.reading-content h4:first-child {
+  margin-top: 0;
+}
+
+.reading-content p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+.availability-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.5rem;
+}
+
+.availability-list li {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.availability-list i {
+  font-size: 1.2rem;
+}
+
+/* ==================== AUTHOR NOTE SECTION ==================== */
+.author-content p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.author-signature {
+  font-style: italic;
+  color: var(--text-accent);
+  text-align: right;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+}
+
+/* ==================== FOOTER ==================== */
+.site-footer {
+  background-color: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  padding: 3rem 0 2rem;
+  text-align: center;
+}
+
+.footer-text,
+.footer-contact,
+.footer-credit {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.footer-contact a {
+  color: var(--accent-intelligence);
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  text-decoration: underline;
+}
+
+/* ==================== BACK LINK (GLOSSARY PAGE) ==================== */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-header);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent-intelligence);
+  text-decoration: none;
+  transition: var(--transition-standard);
+  font-size: 0.95rem;
+}
+
+.back-link:hover {
+  color: var(--text-primary);
+  transform: translateX(-5px);
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Fade-in on scroll (applied via JS) */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+/* Tablets and smaller */
+@media (max-width: 991px) {
+  .hero-title {
+    font-size: 3rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1.2rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .timeline::before {
+    left: 30px;
+  }
+  
+  .timeline-item {
+    flex-direction: row !important;
+    padding-left: 60px;
+  }
+  
+  .timeline-item:nth-child(even) {
+    flex-direction: row !important;
+  }
+  
+  .timeline-marker {
+    position: absolute;
+    left: 16px;
+  }
+  
+  .timeline-content:hover,
+  .timeline-item:nth-child(even) .timeline-content:hover {
+    transform: translateY(-5px);
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 767px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-tagline {
+    font-size: 1.1rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .section-dark,
+  .section-light {
+    padding: var(--section-padding-mobile);
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .section-subtitle {
+    font-size: 1rem;
+  }
+  
+  .premise-text {
+    font-size: 1.1rem;
+  }
+  
+  .book-title {
+    font-size: 1.2rem;
+  }
+  
+  .btn {
+    padding: 0.65rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .progress-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .trait-list {
+    margin: 1.5rem 0;
+  }
+  
+  .modal-body {
+    padding: 1.5rem;
+  }
+  
+  .ship-stats {
+    padding: 1.5rem;
+  }
+  
+  .glossary-category-title {
+    font-size: 1.3rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 575px) {
+  .hero-title {
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+  }
+  
+  .book-card .card-body,
+  .book-card .card-header,
+  .book-card .card-footer {
+    padding: 1rem;
+  }
+  
+  .character-card {
+    padding: 1rem;
+  }
+  
+  .timeline-item {
+    padding-left: 50px;
+  }
+  
+  .dossier-field {
+    flex-direction: column;
+  }
+  
+  .field-label {
+    min-width: auto;
+  }
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.text-intelligence {
+  color: var(--accent-intelligence);
+}
+
+.text-noir {
+  color: var(--accent-noir);
+}
+
+.text-void {
+  color: var(--accent-void);
+}
+
+.border-intelligence {
+  border-color: var(--accent-intelligence) !important;
+}
+
+.border-noir {
+  border-color: var(--accent-noir) !important;
+}
+
+.border-void {
+  border-color: var(--accent-void) !important;
+}
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  .hero-section,
+  .site-footer,
+  .btn,
+  .back-link {
+    display: none;
+  }
+  
+  body {
+    background-color: white;
+    color: black;
+  }
+  
+  .section-dark,
+  .section-light {
+    background-color: white;
+  }
+  
+  .book-card,
+  .character-card,
+  .accordion-item {
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+}

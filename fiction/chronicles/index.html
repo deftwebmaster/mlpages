@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pattern Breach - Chronicles of Marrek Locke Book One. A science fiction thriller about an intelligence operative who discovers his targets are innocent and must become the one thing his agency fears most.">
+    <meta name="author" content="Matt Livingston">
+    <title>Pattern Breach | Chronicles of Marrek Locke</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           PATTERN BREACH - HOMEPAGE
+           ======================================== */
+        
+        :root {
+            /* Core palette from cover */
+            --void-black: #0a0c10;
+            --grid-blue: #1a8cff;
+            --grid-blue-dark: #0066cc;
+            --chaos-orange: #ff6b35;
+            --chaos-amber: #ffb347;
+            --collision-white: #e8f4ff;
+            
+            /* Text hierarchy */
+            --text-primary: #e0e8f0;
+            --text-secondary: #8899aa;
+            --text-muted: #556677;
+            
+            /* Surfaces */
+            --surface-dark: #0d1018;
+            --surface-panel: #141820;
+            --border-subtle: rgba(26, 140, 255, 0.15);
+            
+            /* Typography */
+            --font-display: 'Orbitron', sans-serif;
+            --font-body: 'Outfit', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--void-black);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        /* ==================== HERO SECTION ==================== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 60px 20px;
+            overflow: hidden;
+        }
+        
+        /* Animated grid background */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(90deg, rgba(26, 140, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(rgba(26, 140, 255, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridShift 20s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes gridShift {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(60px); }
+        }
+        
+        /* Radial glow effects */
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            transform: translate(-50%, -50%);
+            background: 
+                radial-gradient(ellipse at 30% 50%, rgba(26, 140, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 60%, rgba(255, 107, 53, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        /* Series label */
+        .series-label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+            opacity: 0;
+            animation: fadeSlideDown 0.8s ease-out 0.2s forwards;
+        }
+        
+        @keyframes fadeSlideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Book cover container */
+        .cover-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            opacity: 0;
+            animation: coverReveal 1.2s ease-out 0.4s forwards;
+        }
+        
+        @keyframes coverReveal {
+            from { 
+                opacity: 0; 
+                transform: scale(0.9);
+                filter: blur(10px);
+            }
+            to { 
+                opacity: 1; 
+                transform: scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        .cover-container::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(135deg, var(--grid-blue) 0%, var(--chaos-orange) 100%);
+            opacity: 0.15;
+            filter: blur(40px);
+            z-index: -1;
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.25; transform: scale(1.05); }
+        }
+        
+        .cover-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 
+                0 0 0 1px rgba(26, 140, 255, 0.2),
+                0 25px 80px -20px rgba(0, 0, 0, 0.8),
+                0 0 100px -30px rgba(26, 140, 255, 0.3);
+        }
+        
+        /* Hero text */
+        .hero-text {
+            text-align: center;
+            max-width: 700px;
+        }
+        
+        .hero-tagline {
+            font-family: var(--font-body);
+            font-size: 1.4rem;
+            font-weight: 300;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease-out 0.8s forwards;
+            line-height: 1.6;
+        }
+        
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeSlideUp 0.8s ease-out 1s forwards;
+        }
+        
+        /* Buttons */
+        .btn {
+            font-family: var(--font-display);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 16px 32px;
+            border-radius: 2px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--grid-blue) 0%, var(--grid-blue-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(26, 140, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(26, 140, 255, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+        }
+        
+        .btn-secondary:hover {
+            border-color: var(--grid-blue);
+            background: rgba(26, 140, 255, 0.05);
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out 1.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 0.5; }
+        }
+        
+        .scroll-indicator span {
+            display: block;
+            width: 24px;
+            height: 40px;
+            border: 2px solid var(--border-subtle);
+            border-radius: 12px;
+            position: relative;
+        }
+        
+        .scroll-indicator span::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            width: 4px;
+            height: 8px;
+            background: var(--grid-blue);
+            border-radius: 2px;
+            transform: translateX(-50%);
+            animation: scrollPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 0.3; transform: translateX(-50%) translateY(10px); }
+        }
+        
+        /* ==================== SECTIONS BASE ==================== */
+        section {
+            padding: 100px 20px;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+        }
+        
+        /* ==================== PREMISE SECTION ==================== */
+        .premise {
+            background: linear-gradient(180deg, var(--void-black) 0%, var(--surface-dark) 100%);
+        }
+        
+        .premise-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .premise-text {
+            font-size: 1.35rem;
+            font-weight: 300;
+            line-height: 1.9;
+            color: var(--text-secondary);
+        }
+        
+        .premise-text strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .premise-quote {
+            margin-top: 40px;
+            padding: 30px 40px;
+            border-left: 3px solid var(--chaos-orange);
+            background: rgba(255, 107, 53, 0.03);
+            text-align: left;
+        }
+        
+        .premise-quote p {
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--chaos-amber);
+            margin: 0;
+        }
+        
+        /* ==================== BOOK 1 FEATURE ==================== */
+        .book-feature {
+            background: var(--surface-dark);
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .book-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .book-visual {
+            position: relative;
+        }
+        
+        .book-cover-small {
+            width: 100%;
+            max-width: 380px;
+            border-radius: 4px;
+            box-shadow: 
+                0 20px 60px -15px rgba(0, 0, 0, 0.6),
+                0 0 80px -20px rgba(26, 140, 255, 0.2);
+        }
+        
+        .book-details h3 {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .book-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+            margin-bottom: 24px;
+        }
+        
+        .book-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+        
+        .book-meta {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 32px;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .meta-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        
+        .meta-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .status-available {
+            color: #4ade80;
+        }
+        
+        /* ==================== TRILOGY SECTION ==================== */
+        .trilogy {
+            background: var(--void-black);
+        }
+        
+        .trilogy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .trilogy-card {
+            background: var(--surface-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .trilogy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--grid-blue), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .trilogy-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--grid-blue);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .trilogy-card:hover::before {
+            opacity: 1;
+        }
+        
+        .trilogy-card.book-2::before {
+            background: linear-gradient(90deg, var(--chaos-amber), transparent);
+        }
+        
+        .trilogy-card.book-2:hover {
+            border-color: var(--chaos-amber);
+        }
+        
+        .trilogy-card.book-3::before {
+            background: linear-gradient(90deg, #a78bfa, transparent);
+        }
+        
+        .trilogy-card.book-3:hover {
+            border-color: #a78bfa;
+        }
+        
+        .trilogy-number {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--surface-dark);
+            -webkit-text-stroke: 1px var(--border-subtle);
+            margin-bottom: 16px;
+        }
+        
+        .trilogy-card.active .trilogy-number {
+            color: var(--grid-blue);
+            -webkit-text-stroke: none;
+        }
+        
+        .trilogy-title {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .trilogy-arc {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+        
+        .trilogy-hook {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .trilogy-status {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 8px 12px;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        
+        .status-current {
+            background: rgba(26, 140, 255, 0.15);
+            color: var(--grid-blue);
+            border: 1px solid var(--grid-blue);
+        }
+        
+        .status-upcoming {
+            background: rgba(255, 179, 71, 0.1);
+            color: var(--chaos-amber);
+            border: 1px solid rgba(255, 179, 71, 0.3);
+        }
+        
+        .status-planned {
+            background: rgba(167, 139, 250, 0.1);
+            color: #a78bfa;
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        /* ==================== CHARACTERS SECTION ==================== */
+        .characters {
+            background: linear-gradient(180deg, var(--surface-dark) 0%, var(--void-black) 100%);
+        }
+        
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+        
+        .character-card {
+            background: var(--surface-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .character-card:hover {
+            border-color: var(--grid-blue);
+            transform: translateY(-2px);
+        }
+        
+        .character-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .character-role {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--grid-blue);
+        }
+        
+        .character-threat {
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            letter-spacing: 0.1em;
+            padding: 4px 8px;
+            border-radius: 2px;
+        }
+        
+        .threat-protagonist {
+            background: rgba(26, 140, 255, 0.15);
+            color: var(--grid-blue);
+        }
+        
+        .threat-ally {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+        
+        .threat-antagonist {
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--chaos-orange);
+        }
+        
+        .character-bio {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        /* ==================== WORLD SECTION ==================== */
+        .world {
+            background: var(--void-black);
+            border-top: 1px solid var(--border-subtle);
+        }
+        
+        .world-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        
+        .world-card {
+            background: var(--surface-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 4px;
+            padding: 28px;
+            transition: all 0.3s ease;
+        }
+        
+        .world-card:hover {
+            border-color: var(--grid-blue);
+        }
+        
+        .world-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .world-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+        
+        .world-desc {
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        /* ==================== AUTHOR SECTION ==================== */
+        .author {
+            background: linear-gradient(180deg, var(--surface-dark) 0%, var(--void-black) 100%);
+        }
+        
+        .author-content {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .author-text {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+        }
+        
+        .author-signature {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-style: italic;
+        }
+        
+        /* ==================== FOOTER ==================== */
+        footer {
+            background: var(--void-black);
+            border-top: 1px solid var(--border-subtle);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        
+        .footer-links a {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--grid-blue);
+        }
+        
+        .footer-copy {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        
+        .footer-copy a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-copy a:hover {
+            color: var(--grid-blue);
+        }
+        
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .book-grid {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                text-align: center;
+            }
+            
+            .book-visual {
+                order: -1;
+            }
+            
+            .book-cover-small {
+                margin: 0 auto;
+            }
+            
+            .book-meta {
+                justify-content: center;
+            }
+            
+            .trilogy-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+            
+            .world-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px 80px;
+            }
+            
+            .cover-container {
+                max-width: 320px;
+            }
+            
+            .hero-tagline {
+                font-size: 1.15rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .premise-text {
+                font-size: 1.15rem;
+            }
+            
+            .character-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            section {
+                padding: 70px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .series-label {
+                font-size: 0.75rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .book-meta {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <span class="series-label">Chronicles of Marrek Locke // Book One</span>
+        
+        <div class="cover-container">
+            <img src="assets/images/pattern-breach-cover.png" alt="Pattern Breach - Book Cover" class="cover-image">
+        </div>
+        
+        <div class="hero-text">
+            <p class="hero-tagline">A weapon learns to choose. A pattern learns to break.</p>
+            <div class="hero-cta">
+                <a href="#book-feature" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12l7 7 7-7"/>
+                    </svg>
+                    Read Chapter One
+                </a>
+                <a href="lexicon.html" class="btn btn-secondary">Explore the Universe</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="scroll-indicator">
+        <span></span>
+    </div>
+</section>
+
+<!-- Premise Section -->
+<section class="premise">
+    <div class="container">
+        <div class="premise-content">
+            <p class="premise-text">
+                <strong>Marrek Locke</strong> was a weapon for a shadow intelligence bureau—until 
+                the system he served betrayed him. When he discovers his assassination targets are 
+                innocent civilians eliminated to serve corporate interests, he makes a choice that 
+                transforms him from asset to enemy. Now, hunted across the Outer Rim, he must forge 
+                a new identity in the void between law and chaos.
+            </p>
+            <div class="premise-quote">
+                <p>"You're a weapon. But weapons can choose not to fire."</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Book 1 Feature Section -->
+<section class="book-feature" id="book-feature">
+    <div class="container">
+        <div class="book-grid">
+            <div class="book-visual">
+                <img src="assets/images/pattern-breach-cover.png" alt="Pattern Breach Cover" class="book-cover-small">
+            </div>
+            <div class="book-details">
+                <h3>PATTERN BREACH</h3>
+                <div class="book-subtitle">The Operative</div>
+                <p class="book-description">
+                    A deep-cover intelligence operative discovers his assassination mission targets an 
+                    innocent man—and that the pattern of fabricated threats goes much deeper than one 
+                    mission. When he refuses to kill, his own agency sends a kill team after him. To 
+                    survive, he must vanish into the outer systems—becoming the one thing the 
+                    intelligence world fears most: a ghost who knows their secrets.
+                </p>
+                <div class="book-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Status</span>
+                        <span class="meta-value status-available">Chapter 1 Available</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Format</span>
+                        <span class="meta-value">Free to Read</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Length</span>
+                        <span class="meta-value">Novella</span>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                    </svg>
+                    Download Chapter 1
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Trilogy Section -->
+<section class="trilogy">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">The Complete Arc</span>
+            <h2 class="section-title">THREE BOOKS. ONE EVOLUTION.</h2>
+        </div>
+        
+        <div class="trilogy-grid">
+            <div class="trilogy-card active">
+                <div class="trilogy-number">01</div>
+                <h3 class="trilogy-title">PATTERN BREACH</h3>
+                <div class="trilogy-arc">The Operative</div>
+                <p class="trilogy-hook">
+                    When Marrek discovers Section's targets are innocent, he makes 
+                    a choice that transforms him from asset to enemy. The ghost begins.
+                </p>
+                <span class="trilogy-status status-current">Now Available</span>
+            </div>
+            
+            <div class="trilogy-card book-2">
+                <div class="trilogy-number">02</div>
+                <h3 class="trilogy-title">ECHOES OF A ROGUE</h3>
+                <div class="trilogy-arc">The Reinvention</div>
+                <p class="trilogy-hook">
+                    Operating as a freelance smuggler, Marrek learns that Saren—the 
+                    handler who saved his life—is alive and trapped. Some debts demand payment.
+                </p>
+                <span class="trilogy-status status-upcoming">In Development</span>
+            </div>
+            
+            <div class="trilogy-card book-3">
+                <div class="trilogy-number">03</div>
+                <h3 class="trilogy-title">THE LONG SHADOW</h3>
+                <div class="trilogy-arc">The Legend</div>
+                <p class="trilogy-hook">
+                    A corporate warlord threatens to consolidate the Outer Rim under 
+                    authoritarian control. The ghost becomes something more.
+                </p>
+                <span class="trilogy-status status-planned">Planned</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Characters Section -->
+<section class="characters">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Intelligence Dossiers</span>
+            <h2 class="section-title">KEY PERSONNEL</h2>
+        </div>
+        
+        <div class="character-grid">
+            <div class="character-card">
+                <div class="character-header">
+                    <div>
+                        <div class="character-name">MARREK LOCKE</div>
+                        <div class="character-role">Former Section Operative</div>
+                    </div>
+                    <span class="character-threat threat-protagonist">Protagonist</span>
+                </div>
+                <p class="character-bio">
+                    A weapon who learned to think. Trained to trust patterns over people, 
+                    Marrek's greatest asset is his ability to read situations before they 
+                    fully develop. His greatest liability: taking responsibility for people 
+                    who didn't ask.
+                </p>
+            </div>
+            
+            <div class="character-card">
+                <div class="character-header">
+                    <div>
+                        <div class="character-name">SAREN DOLE</div>
+                        <div class="character-role">Former Handler</div>
+                    </div>
+                    <span class="character-threat threat-ally">Ally</span>
+                </div>
+                <p class="character-bio">
+                    The handler who treated operatives as people capable of moral reasoning. 
+                    When Marrek was targeted for elimination, Saren made the choice that cost 
+                    them everything. Now trapped in a suicide posting with no extraction protocols.
+                </p>
+            </div>
+            
+            <div class="character-card">
+                <div class="character-header">
+                    <div>
+                        <div class="character-name">THANE VADRIC</div>
+                        <div class="character-role">Corporate Consolidator</div>
+                    </div>
+                    <span class="character-threat threat-antagonist">Threat Level: Extreme</span>
+                </div>
+                <p class="character-bio">
+                    A true believer with fanatical conviction. He sees corporate consolidation 
+                    as the only path to survival in the Outer Rim—and has lost the ability to 
+                    distinguish between saving people and controlling them.
+                </p>
+            </div>
+            
+            <div class="character-card">
+                <div class="character-header">
+                    <div>
+                        <div class="character-name">THE CREW</div>
+                        <div class="character-role">The Calculated Risk</div>
+                    </div>
+                    <span class="character-threat threat-ally">Crew</span>
+                </div>
+                <p class="character-bio">
+                    Not employees—chosen family bound by shared survival. Tessa (pilot), 
+                    Jalen (engineer), Aria (medic), and Kaed (wildcard). Each saved or backed 
+                    by Marrek at personal cost. They follow him because he gives what the 
+                    galaxy withholds: agency, dignity, purpose.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- World Section -->
+<section class="world">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">Universe Framework</span>
+            <h2 class="section-title">THE COMPACT</h2>
+        </div>
+        
+        <div class="world-grid">
+            <div class="world-card">
+                <span class="world-icon">◈</span>
+                <h3 class="world-title">THE CORE</h3>
+                <p class="world-desc">
+                    Wealthy, cosmopolitan, heavily monitored. Post-scarcity for basic needs 
+                    masks extreme wealth concentration. Most citizens believe the system works.
+                </p>
+            </div>
+            
+            <div class="world-card">
+                <span class="world-icon">◇</span>
+                <h3 class="world-title">THE OUTER RIM</h3>
+                <p class="world-desc">
+                    Where Compact presence thins to skeleton patrols. Corporate pseudo-states, 
+                    criminal syndicates, and fierce independence fill the power vacuum.
+                </p>
+            </div>
+            
+            <div class="world-card">
+                <span class="world-icon">○</span>
+                <h3 class="world-title">THE FRINGE</h3>
+                <p class="world-desc">
+                    Beyond nominal authority. Multi-week journeys from civilization. Here, 
+                    the Compact's reach ends and the void begins.
+                </p>
+            </div>
+            
+            <div class="world-card">
+                <span class="world-icon">▣</span>
+                <h3 class="world-title">SECTION</h3>
+                <p class="world-desc">
+                    The Veiled Section doesn't officially exist. Black-ops division conducting 
+                    deniable operations. Controlled by the Oversight Trinode—three shadows 
+                    who answer to no one.
+                </p>
+            </div>
+            
+            <div class="world-card">
+                <span class="world-icon">⬡</span>
+                <h3 class="world-title">JUMP GATES</h3>
+                <p class="world-desc">
+                    Massive orbital structures enabling near-instantaneous travel. Every 
+                    transit logged, every identity verified. The surveillance network disguised 
+                    as infrastructure.
+                </p>
+            </div>
+            
+            <div class="world-card">
+                <span class="world-icon">◐</span>
+                <h3 class="world-title">THE CALCULATED RISK</h3>
+                <p class="world-desc">
+                    Modified courier-class vessel. Military-grade stealth systems shouldn't 
+                    exist on civilian hulls. Neither should the man who flies her.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Author Section -->
+<section class="author">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label">From the Author</span>
+            <h2 class="section-title">A NOTE ON THE WORK</h2>
+        </div>
+        
+        <div class="author-content">
+            <p class="author-text">
+                This series grew from a love of strategic fiction—stories where characters 
+                win through thinking, not just firepower. Timothy Zahn's work taught me that 
+                competence is compelling, that moral complexity beats simple heroism, and that 
+                the most interesting weapons are the ones that learn to choose.
+            </p>
+            <p class="author-text">
+                Marrek Locke is a character built from questions: What happens when a tool 
+                develops judgment? When patterns break? When the system's most effective 
+                weapon decides the system is wrong?
+            </p>
+            <p class="author-signature">— Matt Livingston</p>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">CHRONICLES OF MARREK LOCKE</div>
+            <div class="footer-links">
+                <a href="lexicon.html">Lexicon</a>
+                <a href="mailto:chronicles@fastmail.com">Contact</a>
+            </div>
+            <p class="footer-copy">© 2026 <a href="https://MattLivingston.com">Matt Livingston</a>. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- * lone wolf, own tools | Matt Livingston -->
+
+</body>
+</html>
