@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FADE — Flow-State Writer</title>
+    <!-- * lone wolf, quiet teeth | Matt Livingston -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --fade-opacity: 0.2;
+            --active-opacity: 1;
+            --bg-color: #fafafa;
+            --text-color: #1a1a1a;
+            --fade-color: #c0c0c0;
+            --cursor-color: #1a1a1a;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: var(--bg-color);
+            min-height: 100vh;
+            padding: 80px 20px 200px;
+            line-height: 1.8;
+            font-size: 20px;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .paragraph {
+            margin-bottom: 1.5em;
+            transition: opacity 0.4s ease-out, color 0.4s ease-out;
+            opacity: var(--fade-opacity);
+            color: var(--fade-color);
+        }
+
+        .paragraph.active {
+            opacity: var(--active-opacity);
+            color: var(--text-color);
+        }
+
+        .editor {
+            outline: none;
+            min-height: 1.8em;
+            caret-color: var(--cursor-color);
+        }
+
+        .editor:empty::before {
+            content: '';
+        }
+
+        /* Subtle save indicator */
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: #999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: system-ui, sans-serif;
+        }
+
+        .save-indicator.visible {
+            opacity: 1;
+        }
+
+        /* Word count - unobtrusive */
+        .word-count {
+            position: fixed;
+            bottom: 40px;
+            left: 20px;
+            font-size: 12px;
+            color: #bbb;
+            font-family: system-ui, sans-serif;
+        }
+
+        /* Export button - minimal */
+        .export-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            font-family: system-ui, sans-serif;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .export-btn:hover {
+            border-color: #999;
+            color: #666;
+        }
+
+        /* Clear button */
+        .clear-btn {
+            position: fixed;
+            top: 20px;
+            right: 100px;
+            background: none;
+            border: 1px solid #ddd;
+            padding: 8px 16px;
+            font-size: 12px;
+            color: #999;
+            cursor: pointer;
+            font-family: system-ui, sans-serif;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .clear-btn:hover {
+            border-color: #c66;
+            color: #c66;
+        }
+
+        /* First-time hint */
+        .hint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ccc;
+            font-size: 16px;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            font-family: system-ui, sans-serif;
+        }
+
+        .hint.hidden {
+            opacity: 0;
+        }
+
+        /* Selection styling */
+        ::selection {
+            background: #e0e0e0;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: #bbb;
+            font-family: system-ui, sans-serif;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #999;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: #666;
+            text-decoration: underline;
+        }
+
+        .footer .separator {
+            margin: 0 8px;
+            color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="hint" id="hint">Just write. Press Enter to move forward.</div>
+    
+    <button class="clear-btn" id="clearBtn">Clear</button>
+    <button class="export-btn" id="exportBtn">Export</button>
+    
+    <div class="container" id="container">
+        <!-- Paragraphs will be created here -->
+    </div>
+    
+    <div class="word-count" id="wordCount">0 words</div>
+    <div class="save-indicator" id="saveIndicator">Saved</div>
+    
+    <footer class="footer">
+        <span>Made by <a href="https://mattlivingston.com" target="_blank" rel="noopener">Matt Livingston</a></span>
+        <span class="separator">·</span>
+        <span>Your writing stays in your browser. Nothing is sent anywhere.</span>
+    </footer>
+
+    <script>
+        const container = document.getElementById('container');
+        const hint = document.getElementById('hint');
+        const saveIndicator = document.getElementById('saveIndicator');
+        const wordCountEl = document.getElementById('wordCount');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        const STORAGE_KEY = 'fade_draft';
+        let saveTimeout = null;
+
+        // Create a new paragraph element
+        function createParagraph(text = '', isActive = true) {
+            const p = document.createElement('div');
+            p.className = 'paragraph' + (isActive ? ' active' : '');
+            p.contentEditable = isActive;
+            p.classList.add('editor');
+            p.textContent = text;
+            
+            if (isActive) {
+                p.addEventListener('keydown', handleKeydown);
+                p.addEventListener('input', handleInput);
+            }
+            
+            return p;
+        }
+
+        // Handle Enter key - create new paragraph, fade current
+        function handleKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                
+                const currentParagraph = e.target;
+                const text = currentParagraph.textContent.trim();
+                
+                // Only create new paragraph if current has content
+                if (text.length > 0) {
+                    // Fade current paragraph
+                    currentParagraph.classList.remove('active');
+                    currentParagraph.contentEditable = false;
+                    currentParagraph.removeEventListener('keydown', handleKeydown);
+                    currentParagraph.removeEventListener('input', handleInput);
+                    
+                    // Create new active paragraph
+                    const newParagraph = createParagraph('', true);
+                    container.appendChild(newParagraph);
+                    newParagraph.focus();
+                    
+                    // Save state
+                    saveState();
+                    
+                    // Scroll to new paragraph
+                    newParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        }
+
+        // Handle input - auto-save and update word count
+        function handleInput() {
+            hideHint();
+            debouncedSave();
+            updateWordCount();
+        }
+
+        // Hide the initial hint
+        function hideHint() {
+            hint.classList.add('hidden');
+        }
+
+        // Debounced save to localStorage
+        function debouncedSave() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(saveState, 1000);
+        }
+
+        // Save current state to localStorage
+        function saveState() {
+            const paragraphs = container.querySelectorAll('.paragraph');
+            const data = {
+                paragraphs: Array.from(paragraphs).map(p => ({
+                    text: p.textContent,
+                    active: p.classList.contains('active')
+                })),
+                timestamp: Date.now()
+            };
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            showSaveIndicator();
+        }
+
+        // Show save indicator briefly
+        function showSaveIndicator() {
+            saveIndicator.classList.add('visible');
+            setTimeout(() => {
+                saveIndicator.classList.remove('visible');
+            }, 1500);
+        }
+
+        // Load state from localStorage
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    
+                    if (data.paragraphs && data.paragraphs.length > 0) {
+                        hideHint();
+                        
+                        data.paragraphs.forEach((p, index) => {
+                            const isLast = index === data.paragraphs.length - 1;
+                            const paragraph = createParagraph(p.text, isLast);
+                            container.appendChild(paragraph);
+                        });
+                        
+                        // Focus the last (active) paragraph
+                        const activeParagraph = container.querySelector('.paragraph.active');
+                        if (activeParagraph) {
+                            activeParagraph.focus();
+                            // Move cursor to end
+                            const range = document.createRange();
+                            const sel = window.getSelection();
+                            range.selectNodeContents(activeParagraph);
+                            range.collapse(false);
+                            sel.removeAllRanges();
+                            sel.addRange(range);
+                        }
+                        
+                        updateWordCount();
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Failed to load saved state:', e);
+                }
+            }
+            
+            // No saved state - create initial paragraph
+            initializeEmpty();
+        }
+
+        // Initialize with empty paragraph
+        function initializeEmpty() {
+            const firstParagraph = createParagraph('', true);
+            container.appendChild(firstParagraph);
+            firstParagraph.focus();
+        }
+
+        // Update word count
+        function updateWordCount() {
+            const paragraphs = container.querySelectorAll('.paragraph');
+            let totalWords = 0;
+            
+            paragraphs.forEach(p => {
+                const text = p.textContent.trim();
+                if (text) {
+                    totalWords += text.split(/\s+/).filter(w => w.length > 0).length;
+                }
+            });
+            
+            wordCountEl.textContent = totalWords + (totalWords === 1 ? ' word' : ' words');
+        }
+
+        // Export as plain text
+        function exportText() {
+            const paragraphs = container.querySelectorAll('.paragraph');
+            const text = Array.from(paragraphs)
+                .map(p => p.textContent.trim())
+                .filter(t => t.length > 0)
+                .join('\n\n');
+            
+            if (text.length === 0) {
+                alert('Nothing to export yet. Start writing!');
+                return;
+            }
+            
+            // Create download
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'draft-' + new Date().toISOString().slice(0, 10) + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Clear all content
+        function clearContent() {
+            if (confirm('Clear everything? This cannot be undone.')) {
+                localStorage.removeItem(STORAGE_KEY);
+                container.innerHTML = '';
+                hint.classList.remove('hidden');
+                initializeEmpty();
+                updateWordCount();
+            }
+        }
+
+        // Click anywhere to focus active paragraph
+        document.body.addEventListener('click', (e) => {
+            if (e.target === document.body || e.target === container) {
+                const activeParagraph = container.querySelector('.paragraph.active');
+                if (activeParagraph) {
+                    activeParagraph.focus();
+                }
+            }
+        });
+
+        // Event listeners
+        exportBtn.addEventListener('click', exportText);
+        clearBtn.addEventListener('click', clearContent);
+
+        // Initialize
+        loadState();
+    </script>
+</body>
+</html>
