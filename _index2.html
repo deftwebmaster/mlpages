@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- * lone wolf, own tools | Matt Livingston -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Matt Livingston — I build tools that solve real problems</title>
+  <meta name="description" content="Builder, web developer, and operations specialist. Browser-based tools, informational products, and systems that actually work.">
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com">
+  <meta property="og:title" content="Matt Livingston — I build tools that solve real problems">
+  <meta property="og:description" content="Builder, web developer, and operations specialist. Browser-based tools, informational products, and systems that actually work.">
+  <meta property="og:image" content="https://mattlivingston.com/card.png">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Matt Livingston — I build tools that solve real problems">
+  <meta name="twitter:description" content="Builder, web developer, and operations specialist. Browser-based tools, informational products, and systems that actually work.">
+  <meta name="twitter:image" content="https://mattlivingston.com/card.png">
+  
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Neutral base with confident blues */
+      --color-bg: #FAFAF9;
+      --color-bg-alt: #F5F5F4;
+      --color-surface: #FFFFFF;
+      --color-text: #1C1917;
+      --color-text-secondary: #57534E;
+      --color-text-muted: #A8A29E;
+      --color-accent: #1E40AF;
+      --color-accent-hover: #1E3A8A;
+      --color-accent-subtle: #DBEAFE;
+      --color-border: #E7E5E4;
+      --color-border-hover: #D6D3D1;
+      
+      /* Typography */
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', -apple-system, sans-serif;
+      
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2.5rem;
+      --space-xl: 4rem;
+      --space-2xl: 6rem;
+      
+      /* Layout */
+      --max-width: 1200px;
+      --header-height: 80px;
+      
+      /* Transitions */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --duration-fast: 150ms;
+      --duration-normal: 300ms;
+      --duration-slow: 500ms;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-bg: #09090B;
+        --color-bg-alt: #18181B;
+        --color-surface: #1C1C20;
+        --color-text: #FAFAFA;
+        --color-text-secondary: #A1A1AA;
+        --color-text-muted: #71717A;
+        --color-accent: #60A5FA;
+        --color-accent-hover: #93C5FD;
+        --color-accent-subtle: #1E3A8A;
+        --color-border: #27272A;
+        --color-border-hover: #3F3F46;
+      }
+    }
+    
+    /* Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    body {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+    
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    
+    /* Layout */
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+    
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--header-height);
+      background: var(--color-bg);
+      border-bottom: 1px solid transparent;
+      z-index: 100;
+      transition: border-color var(--duration-normal) var(--ease-out),
+                  background var(--duration-normal) var(--ease-out);
+    }
+    
+    .header.scrolled {
+      border-color: var(--color-border);
+      background: rgba(250, 250, 249, 0.95);
+      backdrop-filter: blur(12px);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .header.scrolled {
+        background: rgba(9, 9, 11, 0.95);
+      }
+    }
+    
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: -0.01em;
+    }
+    
+    .logo-tag {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: -0.02em;
+      transition: color var(--duration-fast) var(--ease-out);
+    }
+    
+    .logo:hover .logo-tag {
+      color: var(--color-accent);
+    }
+    
+    .nav {
+      display: flex;
+      gap: var(--space-lg);
+    }
+    
+    .nav-link {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      transition: color var(--duration-fast) var(--ease-out);
+    }
+    
+    .nav-link:hover {
+      color: var(--color-text);
+    }
+    
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: var(--header-height);
+    }
+    
+    .hero-content {
+      max-width: 800px;
+    }
+    
+    .hero-greeting {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s var(--ease-out) 0.1s forwards;
+    }
+    
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-md);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s var(--ease-out) 0.2s forwards;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s var(--ease-out) 0.3s forwards;
+    }
+    
+    .hero-cta {
+      margin-top: var(--space-lg);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s var(--ease-out) 0.4s forwards;
+    }
+    
+    .scroll-indicator {
+      position: absolute;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+      opacity: 0;
+      animation: fadeIn 0.6s var(--ease-out) 0.8s forwards;
+    }
+    
+    .scroll-indicator::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    /* Section */
+    .section {
+      padding: var(--space-2xl) 0;
+    }
+    
+    .section-header {
+      margin-bottom: var(--space-xl);
+    }
+    
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+    }
+    
+    /* Featured Card - Tools */
+    .featured-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color var(--duration-normal) var(--ease-out),
+                  box-shadow var(--duration-normal) var(--ease-out);
+    }
+    
+    .featured-card:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .featured-card:hover {
+        box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.4);
+      }
+    }
+    
+    .featured-card-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 400px;
+    }
+    
+    @media (max-width: 768px) {
+      .featured-card-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .featured-card-content {
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .featured-card-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--color-accent);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .featured-card-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .featured-card-description {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+    }
+    
+    .featured-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-weight: 500;
+      color: var(--color-accent);
+      transition: gap var(--duration-fast) var(--ease-out);
+    }
+    
+    .featured-card-link:hover {
+      gap: var(--space-sm);
+    }
+    
+    .featured-card-link svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .featured-card-preview {
+      background: var(--color-bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .featured-card-preview::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-accent-subtle) 0%, transparent 60%);
+      opacity: 0.5;
+    }
+    
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-xs);
+      padding: var(--space-md);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .preview-item {
+      width: 60px;
+      height: 60px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: transform var(--duration-fast) var(--ease-out),
+                  box-shadow var(--duration-fast) var(--ease-out);
+    }
+    
+    .featured-card:hover .preview-item {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .featured-card:hover .preview-item:nth-child(1) { transition-delay: 0ms; }
+    .featured-card:hover .preview-item:nth-child(2) { transition-delay: 30ms; }
+    .featured-card:hover .preview-item:nth-child(3) { transition-delay: 60ms; }
+    .featured-card:hover .preview-item:nth-child(4) { transition-delay: 90ms; }
+    .featured-card:hover .preview-item:nth-child(5) { transition-delay: 120ms; }
+    .featured-card:hover .preview-item:nth-child(6) { transition-delay: 150ms; }
+    
+    /* Project Grid */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    
+    @media (max-width: 900px) {
+      .project-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .project-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: var(--space-md);
+      transition: border-color var(--duration-normal) var(--ease-out),
+                  transform var(--duration-normal) var(--ease-out),
+                  box-shadow var(--duration-normal) var(--ease-out);
+    }
+    
+    .project-card:hover {
+      border-color: var(--color-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .project-card:hover {
+        box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.4);
+      }
+    }
+    
+    .project-card-preview {
+      height: 140px;
+      background: var(--color-bg-alt);
+      border-radius: 8px;
+      margin-bottom: var(--space-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .project-card-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--duration-slow) var(--ease-out);
+    }
+    
+    .project-card:hover .project-card-preview img {
+      transform: scale(1.05);
+    }
+    
+    .project-card-icon {
+      font-size: 2.5rem;
+      opacity: 0.8;
+    }
+    
+    .project-card-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .project-card-description {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .project-card-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .project-card-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      padding: 0.25rem 0.5rem;
+      background: var(--color-bg-alt);
+      border-radius: 4px;
+      color: var(--color-text-secondary);
+    }
+    
+    .project-card-arrow {
+      color: var(--color-text-muted);
+      transition: color var(--duration-fast) var(--ease-out),
+                  transform var(--duration-fast) var(--ease-out);
+    }
+    
+    .project-card:hover .project-card-arrow {
+      color: var(--color-accent);
+      transform: translateX(4px);
+    }
+    
+    /* Writing Section */
+    .writing-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+    
+    @media (max-width: 600px) {
+      .writing-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .writing-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      transition: border-color var(--duration-normal) var(--ease-out),
+                  box-shadow var(--duration-normal) var(--ease-out);
+    }
+    
+    .writing-card:hover {
+      border-color: var(--color-border-hover);
+      box-shadow: 0 8px 16px -8px rgba(0, 0, 0, 0.08);
+    }
+    
+    .writing-card-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--color-bg-alt);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.25rem;
+    }
+    
+    .writing-card-content {
+      flex: 1;
+    }
+    
+    .writing-card-name {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .writing-card-description {
+      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+    }
+    
+    /* Hire Section */
+    .hire-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-md);
+    }
+    
+    @media (max-width: 700px) {
+      .hire-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .hire-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      padding: var(--space-lg);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      transition: border-color var(--duration-normal) var(--ease-out),
+                  box-shadow var(--duration-normal) var(--ease-out),
+                  transform var(--duration-normal) var(--ease-out);
+    }
+    
+    .hire-card:hover {
+      border-color: var(--color-accent);
+      box-shadow: 0 12px 24px -12px rgba(30, 64, 175, 0.15);
+      transform: translateY(-2px);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      .hire-card:hover {
+        box-shadow: 0 12px 24px -12px rgba(96, 165, 250, 0.2);
+      }
+    }
+    
+    .hire-card-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--color-accent-subtle);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    
+    .hire-card-content {
+      flex: 1;
+    }
+    
+    .hire-card-title {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .hire-card-description {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .hire-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--color-accent);
+      transition: gap var(--duration-fast) var(--ease-out);
+    }
+    
+    .hire-card:hover .hire-card-link {
+      gap: 0.6rem;
+    }
+    
+    .hire-note {
+      margin-top: var(--space-md);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    
+    /* Ops Section */
+    .ops-section {
+      background: var(--color-bg-alt);
+      border-radius: 16px;
+      padding: var(--space-xl);
+    }
+    
+    .ops-content {
+      max-width: 600px;
+    }
+    
+    .ops-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      margin-bottom: var(--space-sm);
+    }
+    
+    .ops-description {
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-md);
+    }
+    
+    .ops-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-weight: 500;
+      color: var(--color-accent);
+      transition: gap var(--duration-fast) var(--ease-out);
+    }
+    
+    .ops-link:hover {
+      gap: var(--space-sm);
+    }
+    
+    /* Footer */
+    .footer {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-2xl);
+    }
+    
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    @media (max-width: 600px) {
+      .footer-inner {
+        flex-direction: column;
+        gap: var(--space-sm);
+        text-align: center;
+      }
+    }
+    
+    .footer-text {
+      color: var(--color-text-muted);
+      font-size: 0.9rem;
+    }
+    
+    .footer-email {
+      font-weight: 500;
+      color: var(--color-text-secondary);
+      transition: color var(--duration-fast) var(--ease-out);
+    }
+    
+    .footer-email:hover {
+      color: var(--color-accent);
+    }
+    
+    /* Mobile: Floating Hire Me button */
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+      
+      .nav-toggle {
+        display: none;
+      }
+      
+      .mobile-cta {
+        display: flex;
+        position: fixed;
+        bottom: var(--space-md);
+        right: var(--space-md);
+        background: var(--color-accent);
+        color: #FFFFFF;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.875rem 1.25rem;
+        border-radius: 100px;
+        box-shadow: 0 4px 20px rgba(30, 64, 175, 0.3);
+        z-index: 100;
+        transition: transform var(--duration-fast) var(--ease-out),
+                    box-shadow var(--duration-fast) var(--ease-out);
+      }
+      
+      .mobile-cta:active {
+        transform: scale(0.96);
+      }
+    }
+    
+    @media (max-width: 768px) and (prefers-color-scheme: dark) {
+      .mobile-cta {
+        box-shadow: 0 4px 20px rgba(96, 165, 250, 0.25);
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-cta {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo"><span class="logo-tag">&lt;ML /&gt;</span></a>
+      
+      <nav class="nav" id="nav">
+        <a href="/tools/" class="nav-link">Tools</a>
+        <a href="#work" class="nav-link">Work</a>
+        <a href="#writing" class="nav-link">Writing</a>
+        <a href="https://www.deftwebmaster.com/" target="_blank" rel="noopener" class="nav-link">Hire Me</a>
+      </nav>
+    </div>
+  </header>
+  
+  <!-- Mobile floating CTA -->
+  <a href="https://www.deftwebmaster.com/" target="_blank" rel="noopener" class="mobile-cta">Hire Me</a>
+  
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+        <p class="hero-greeting">Hello, I'm Matt Livingston</p>
+        <h1 class="hero-title">I build tools that solve real problems.</h1>
+        <p class="hero-subtitle">Browser-based utilities, informational products, and systems designed for people who think clearly and ship often.</p>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+    </div>
+  </section>
+  
+  <!-- Work Section -->
+  <section class="section" id="work">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Featured Work</p>
+        <h2 class="section-title">Things I've built</h2>
+      </div>
+      
+      <!-- Featured: Tools -->
+      <a href="/tools/" class="featured-card">
+        <div class="featured-card-inner">
+          <div class="featured-card-content">
+            <p class="featured-card-label">Browser Tools</p>
+            <h3 class="featured-card-title">The Toolkit</h3>
+            <p class="featured-card-description">A collection of browser-based utilities I've built—calculators, converters, generators, and operational tools. No installs, no accounts, no tracking. Just tools that work.</p>
+            <span class="featured-card-link">
+              Explore the tools
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 8h10M9 4l4 4-4 4"/>
+              </svg>
+            </span>
+          </div>
+          <div class="featured-card-preview">
+            <div class="preview-grid">
+              <div class="preview-item">⚡</div>
+              <div class="preview-item">📊</div>
+              <div class="preview-item">🔧</div>
+              <div class="preview-item">📐</div>
+              <div class="preview-item">🎯</div>
+              <div class="preview-item">📦</div>
+            </div>
+          </div>
+        </div>
+      </a>
+      
+      <!-- External Projects Grid -->
+      <div class="project-grid">
+        <!-- CinderKit -->
+        <a href="https://projectcinder.com" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-preview">
+            <span class="project-card-icon">🔥</span>
+          </div>
+          <h3 class="project-card-name">CinderKit</h3>
+          <p class="project-card-description">Landing page starter kit. No npm, no build step—just ship.</p>
+          <div class="project-card-meta">
+            <span class="project-card-tag">Open Source</span>
+            <svg class="project-card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </div>
+        </a>
+        
+        <!-- SharpStacks -->
+        <a href="https://sharpstacks.com" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-preview">
+            <span class="project-card-icon">💊</span>
+          </div>
+          <h3 class="project-card-name">SharpStacks</h3>
+          <p class="project-card-description">Curated supplement stacks for miscalibrated systems.</p>
+          <div class="project-card-meta">
+            <span class="project-card-tag">Reference</span>
+            <svg class="project-card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </div>
+        </a>
+        
+        <!-- PostRecon -->
+        <a href="https://postrecon.com" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-preview">
+            <span class="project-card-icon">🎯</span>
+          </div>
+          <h3 class="project-card-name">PostRecon</h3>
+          <p class="project-card-description">Keyword research for writers. Scout your topic before you write.</p>
+          <div class="project-card-meta">
+            <span class="project-card-tag">Tool</span>
+            <svg class="project-card-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Writing Section -->
+  <section class="section" id="writing">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Writing</p>
+        <h2 class="section-title">Ideas & frameworks</h2>
+      </div>
+      
+      <div class="writing-grid">
+        <!-- coldchart -->
+        <a href="https://coldchart.com" target="_blank" rel="noopener" class="writing-card">
+          <div class="writing-card-icon">❄️</div>
+          <div class="writing-card-content">
+            <h3 class="writing-card-name">coldchart</h3>
+            <p class="writing-card-description">Autonomy-preserving systems. Frameworks that expect rebellion, not compliance.</p>
+          </div>
+        </a>
+        
+        <!-- Writing page -->
+        <a href="/writing/" class="writing-card">
+          <div class="writing-card-icon">✍️</div>
+          <div class="writing-card-content">
+            <h3 class="writing-card-name">Essays & Articles</h3>
+            <p class="writing-card-description">Thoughts on systems, tools, and building things that last.</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Hire Section -->
+  <section class="section" id="hire">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-label">Work With Me</p>
+        <h2 class="section-title">Let's build something</h2>
+      </div>
+      
+      <div class="hire-grid">
+        <!-- Website Development -->
+        <a href="https://www.deftwebmaster.com/" target="_blank" rel="noopener" class="hire-card">
+          <div class="hire-card-icon">🌐</div>
+          <div class="hire-card-content">
+            <h3 class="hire-card-title">Website Development</h3>
+            <p class="hire-card-description">Landing pages, business sites, portfolios—clean, fast, and built to convert.</p>
+            <span class="hire-card-link">
+              deftwebmaster.com
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12L12 4M12 4H5M12 4v7"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+        
+        <!-- Tools Development -->
+        <a href="/hire-me/" class="hire-card">
+          <div class="hire-card-icon">⚙️</div>
+          <div class="hire-card-content">
+            <h3 class="hire-card-title">Tools & Systems</h3>
+            <p class="hire-card-description">Browser-based utilities, internal tools, workflow automation—things that solve real problems.</p>
+            <span class="hire-card-link">
+              Learn more
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 8h10M9 4l4 4-4 4"/>
+              </svg>
+            </span>
+          </div>
+        </a>
+      </div>
+      
+      <p class="hire-note">Wherever you land, I can build it. These are just starting points.</p>
+    </div>
+  </section>
+  
+  <!-- Ops Section -->
+  <section class="section">
+    <div class="container">
+      <div class="ops-section">
+        <div class="ops-content">
+          <h2 class="ops-title">Operations Background</h2>
+          <p class="ops-description">Before I built software tools, I built operational systems—inventory control, warehouse management, process optimization. That foundation shapes how I think about every problem.</p>
+          <a href="/ops/" class="ops-link">
+            View my operations experience
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <p class="footer-text">© 2025 Matt Livingston</p>
+      <a href="mailto:matt@mattlivingston.com" class="footer-email">matt@mattlivingston.com</a>
+    </div>
+  </footer>
+  
+  <script>
+    // Header scroll effect
+    const header = document.getElementById('header');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', (e) => {
+        const href = anchor.getAttribute('href');
+        if (href === '#') return;
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
