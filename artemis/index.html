@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARTEMIS II — INTEGRITY MISSION TRACKER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #04060f; --deep: #080d1a; --panel: #0b1220; --border: #1a2540;
+    --accent: #00d4ff; --accent2: #ff6b35; --accent3: #7fff7f;
+    --moon: #c8b89a; --text: #b8cce0; --dim: #4a6080; --warn: #ffcc00;
+    --glow: rgba(0,212,255,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--void); color:var(--text); font-family:'Share Tech Mono',monospace; min-height:100vh; overflow-x:hidden; position:relative; }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,.6) 0%,transparent 100%),
+      radial-gradient(1px 1px at 20% 60%,rgba(255,255,255,.4) 0%,transparent 100%),
+      radial-gradient(1px 1px at 35% 25%,rgba(255,255,255,.7) 0%,transparent 100%),
+      radial-gradient(1px 1px at 50% 80%,rgba(255,255,255,.3) 0%,transparent 100%),
+      radial-gradient(1px 1px at 65% 10%,rgba(255,255,255,.5) 0%,transparent 100%),
+      radial-gradient(1px 1px at 75% 45%,rgba(255,255,255,.6) 0%,transparent 100%),
+      radial-gradient(1px 1px at 85% 70%,rgba(255,255,255,.4) 0%,transparent 100%),
+      radial-gradient(1px 1px at 92% 30%,rgba(255,255,255,.5) 0%,transparent 100%),
+      radial-gradient(1px 1px at  5% 90%,rgba(255,255,255,.3) 0%,transparent 100%),
+      radial-gradient(1px 1px at 45% 50%,rgba(255,255,255,.4) 0%,transparent 100%),
+      radial-gradient(2px 2px at 15% 40%,rgba(200,184,154,.3) 0%,transparent 100%),
+      radial-gradient(2px 2px at 80% 85%,rgba(200,184,154,.2) 0%,transparent 100%),
+      radial-gradient(1px 1px at 58% 35%,rgba(255,255,255,.5) 0%,transparent 100%),
+      radial-gradient(1px 1px at 28% 75%,rgba(255,255,255,.4) 0%,transparent 100%),
+      radial-gradient(1px 1px at 70% 20%,rgba(255,255,255,.6) 0%,transparent 100%),
+      radial-gradient(1px 1px at 40% 90%,rgba(255,255,255,.3) 0%,transparent 100%),
+      radial-gradient(1px 1px at 90% 55%,rgba(255,255,255,.5) 0%,transparent 100%),
+      radial-gradient(1px 1px at  3% 50%,rgba(255,255,255,.4) 0%,transparent 100%),
+      radial-gradient(1px 1px at 55% 65%,rgba(255,255,255,.3) 0%,transparent 100%),
+      radial-gradient(1px 1px at 22%  8%,rgba(255,255,255,.6) 0%,transparent 100%);
+    animation:twinkle 8s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { 0%{opacity:.7} 100%{opacity:1} }
+
+  .container { max-width:1100px; margin:0 auto; padding:20px; position:relative; z-index:1; }
+
+  header { text-align:center; padding:40px 0 28px; }
+  .mission-badge {
+    display:inline-block; background:var(--accent2); color:var(--void);
+    font-family:'Orbitron',monospace; font-size:11px; font-weight:700;
+    letter-spacing:3px; padding:5px 14px; margin-bottom:16px;
+    animation:pulse-badge 2s ease-in-out infinite;
+  }
+  @keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:.7} }
+  h1 { font-family:'Orbitron',monospace; font-size:clamp(28px,6vw,56px); font-weight:900; color:#fff; letter-spacing:6px; text-shadow:0 0 40px rgba(0,212,255,.5),0 0 80px rgba(0,212,255,.2); line-height:1.1; }
+  h1 span { color:var(--accent); }
+  .subtitle { font-size:13px; color:var(--dim); letter-spacing:4px; margin-top:10px; text-transform:uppercase; }
+  .craft-name { font-family:'Orbitron',monospace; font-size:11px; color:var(--moon); letter-spacing:3px; margin-top:8px; }
+
+  .met-bar { background:var(--panel); border:1px solid var(--border); border-top:2px solid var(--accent); padding:20px; text-align:center; margin:22px 0; position:relative; overflow:hidden; }
+  .met-bar::before { content:''; position:absolute; top:0; left:-100%; width:60%; height:1px; background:linear-gradient(90deg,transparent,var(--accent),transparent); animation:scan 4s linear infinite; }
+  @keyframes scan { to{left:200%} }
+  .met-label { font-size:11px; color:var(--dim); letter-spacing:3px; margin-bottom:8px; }
+  .met-display { font-family:'Orbitron',monospace; font-size:clamp(22px,5vw,40px); font-weight:700; color:var(--accent3); letter-spacing:4px; text-shadow:0 0 20px rgba(127,255,127,.4); }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:14px 0; }
+  .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:14px 0; }
+  .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:14px 0; }
+  @media(max-width:700px)  { .grid-2,.grid-3,.grid-4 { grid-template-columns:1fr; } }
+  @media(min-width:701px) and (max-width:900px) { .grid-3,.grid-4 { grid-template-columns:1fr 1fr; } }
+
+  .card { background:var(--panel); border:1px solid var(--border); padding:18px; position:relative; }
+  .card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--accent); }
+  .card.c-orange::before { background:var(--accent2); }
+  .card.c-green::before  { background:var(--accent3); }
+  .card.c-moon::before   { background:var(--moon); }
+  .card.c-warn::before   { background:var(--warn); }
+  .card.c-dim::before    { background:var(--dim); }
+
+  .c-label { font-size:10px; color:var(--dim); letter-spacing:3px; margin-bottom:8px; text-transform:uppercase; }
+  .c-val   { font-family:'Orbitron',monospace; font-size:15px; font-weight:700; color:#fff; line-height:1.3; }
+  .c-val.v-accent { color:var(--accent); }
+  .c-val.v-orange { color:var(--accent2); }
+  .c-val.v-green  { color:var(--accent3); }
+  .c-val.v-moon   { color:var(--moon); }
+  .c-val.v-warn   { color:var(--warn); }
+  .c-sub { font-size:10px; color:var(--dim); margin-top:5px; line-height:1.5; }
+
+  .section-label { font-family:'Orbitron',monospace; font-size:11px; font-weight:700; color:var(--dim); letter-spacing:4px; text-transform:uppercase; margin:22px 0 4px; padding-left:2px; }
+
+  /* SPACE WEATHER */
+  .sw-section { background:var(--panel); border:1px solid var(--border); border-top:2px solid var(--warn); padding:22px; margin:14px 0; position:relative; overflow:hidden; }
+  .sw-section::before { content:''; position:absolute; top:0; left:-100%; width:40%; height:1px; background:linear-gradient(90deg,transparent,var(--warn),transparent); animation:scan 7s linear infinite; }
+  .sw-title { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--warn); letter-spacing:3px; margin-bottom:16px; }
+  .sw-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .sw-card { border:1px solid var(--border); padding:14px; position:relative; }
+  .sw-card::before { content:''; position:absolute; top:0; left:0; width:2px; height:100%; background:var(--warn); }
+  .sw-val  { font-family:'Orbitron',monospace; font-size:20px; font-weight:700; color:var(--warn); }
+  .sw-unit { font-size:10px; color:var(--dim); margin-top:3px; }
+  .kp-bar  { height:5px; background:var(--border); margin-top:8px; }
+  .kp-fill { height:100%; background:linear-gradient(90deg,var(--accent3),var(--warn),#ff4444); transition:width .6s; }
+
+  /* INSIGHT */
+  .insight { background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--accent); padding:20px; margin:14px 0; }
+  .insight-label { font-size:10px; color:var(--accent); letter-spacing:3px; margin-bottom:10px; }
+  .insight-text  { font-size:13px; color:var(--text); line-height:1.75; font-family:'Space Mono',monospace; }
+  .insight-text em { color:var(--accent); font-style:normal; }
+
+  /* PROGRESS */
+  .prog-section { background:var(--panel); border:1px solid var(--border); padding:22px; margin:14px 0; }
+  .prog-header  { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+  .prog-title   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--accent); letter-spacing:3px; }
+  .prog-pct     { font-family:'Orbitron',monospace; font-size:20px; font-weight:700; color:#fff; }
+  .prog-track   { width:100%; height:8px; background:var(--border); position:relative; margin-bottom:10px; }
+  .prog-fill    { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent3)); transition:width 1s ease; position:relative; }
+  .prog-fill::after { content:'▲'; position:absolute; right:-4px; top:-16px; font-size:10px; color:#fff; animation:blink 1s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .prog-labels  { display:flex; justify-content:space-between; font-size:10px; color:var(--dim); }
+
+  /* TRAJECTORY */
+  .traj-section { background:var(--panel); border:1px solid var(--border); padding:22px; margin:14px 0; overflow:hidden; }
+  .traj-title   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--accent); letter-spacing:3px; margin-bottom:16px; }
+
+  /* TIMELINE */
+  .tl-section { background:var(--panel); border:1px solid var(--border); padding:22px; margin:14px 0; }
+  .tl-title   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--accent); letter-spacing:3px; margin-bottom:16px; }
+  .ms { display:grid; grid-template-columns:100px 20px 1fr; gap:12px; align-items:start; margin-bottom:14px; }
+  .ms-date { font-size:10px; color:var(--dim); text-align:right; padding-top:3px; }
+  .ms-dot-col { width:20px; display:flex; flex-direction:column; align-items:center; }
+  .dot { width:10px; height:10px; border-radius:50%; border:2px solid var(--dim); background:var(--void); margin-top:3px; flex-shrink:0; }
+  .dot.complete { background:var(--accent3); border-color:var(--accent3); box-shadow:0 0 8px rgba(127,255,127,.5); }
+  .dot.active   { background:var(--accent2); border-color:var(--accent2); animation:pd 1.5s ease-in-out infinite; }
+  .dot.upcoming { opacity:.4; }
+  @keyframes pd { 0%,100%{box-shadow:0 0 12px rgba(255,107,53,.7)} 50%{box-shadow:0 0 22px rgba(255,107,53,1)} }
+  .dot-line { width:1px; flex:1; background:var(--border); min-height:12px; }
+  .ms-name { font-family:'Space Mono',monospace; font-size:12px; font-weight:700; color:#fff; line-height:1.3; }
+  .ms-name.complete { color:var(--accent3); }
+  .ms-name.active   { color:var(--accent2); }
+  .ms-name.upcoming { color:var(--dim); }
+  .ms-desc { font-size:10px; color:var(--dim); margin-top:3px; line-height:1.5; }
+
+  /* RECORDS */
+  .rec-section { background:var(--panel); border:1px solid var(--border); border-left:3px solid var(--warn); padding:22px; margin:14px 0; }
+  .rec-title   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--warn); letter-spacing:3px; margin-bottom:14px; }
+  .rec-row     { display:flex; justify-content:space-between; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--border); gap:14px; }
+  .rec-row:last-child { border-bottom:none; }
+  .rec-name    { font-size:11px; color:var(--text); flex:1; }
+  .rec-val     { font-family:'Orbitron',monospace; font-size:11px; color:var(--warn); font-weight:700; text-align:right; white-space:nowrap; }
+
+  /* CREW */
+  .crew-section { background:var(--panel); border:1px solid var(--border); padding:22px; margin:14px 0; }
+  .crew-title   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--accent); letter-spacing:3px; margin-bottom:16px; }
+  .crew-grid    { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; }
+  .crew-card    { border:1px solid var(--border); padding:16px; position:relative; overflow:hidden; }
+  .crew-card::after { content:''; position:absolute; top:0; right:0; width:40px; height:40px; background:radial-gradient(circle at top right,var(--glow),transparent); }
+  .crew-role   { font-size:9px; color:var(--accent2); letter-spacing:3px; margin-bottom:6px; }
+  .crew-name   { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .crew-agency { font-size:10px; color:var(--accent); letter-spacing:2px; margin-bottom:8px; }
+  .crew-note   { font-size:10px; color:var(--dim); line-height:1.5; font-style:italic; }
+
+  footer { text-align:center; padding:28px 0 40px; font-size:10px; color:var(--dim); letter-spacing:2px; border-top:1px solid var(--border); margin-top:20px; }
+  footer a { color:var(--accent); text-decoration:none; }
+  .utc-bar { font-size:10px; color:var(--dim); text-align:center; margin-bottom:6px; }
+  #live-time { font-family:'Orbitron',monospace; font-size:11px; color:var(--accent); }
+
+  .fade-in { opacity:0; transform:translateY(14px); animation:fi .55s ease forwards; }
+  @keyframes fi { to{opacity:1;transform:none} }
+  .fade-in:nth-child(1)  { animation-delay:.06s } .fade-in:nth-child(2)  { animation-delay:.12s }
+  .fade-in:nth-child(3)  { animation-delay:.18s } .fade-in:nth-child(4)  { animation-delay:.24s }
+  .fade-in:nth-child(5)  { animation-delay:.30s } .fade-in:nth-child(6)  { animation-delay:.36s }
+  .fade-in:nth-child(7)  { animation-delay:.42s } .fade-in:nth-child(8)  { animation-delay:.48s }
+  .fade-in:nth-child(9)  { animation-delay:.54s } .fade-in:nth-child(10) { animation-delay:.60s }
+  .fade-in:nth-child(11) { animation-delay:.66s } .fade-in:nth-child(12) { animation-delay:.72s }
+  .fade-in:nth-child(13) { animation-delay:.78s } .fade-in:nth-child(14) { animation-delay:.84s }
+  .fade-in:nth-child(15) { animation-delay:.90s }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header class="fade-in">
+    <div class="mission-badge">● MISSION ACTIVE</div>
+    <h1>ARTEMIS <span>II</span></h1>
+    <div class="subtitle">First Crewed Lunar Flyby in 53 Years</div>
+    <div class="craft-name">ORION "INTEGRITY" · SLS BLOCK 1 · FREE-RETURN TRAJECTORY</div>
+  </header>
+
+  <div class="utc-bar fade-in">CURRENT UTC: <span id="live-time">--</span></div>
+
+  <div class="met-bar fade-in">
+    <div class="met-label">MISSION ELAPSED TIME (MET)</div>
+    <div class="met-display" id="met">T+ 00:00:00:00</div>
+    <div style="font-size:10px;color:var(--dim);margin-top:6px;letter-spacing:2px">DAYS : HRS : MIN : SEC</div>
+  </div>
+
+  <!-- Phase + Next -->
+  <div class="grid-2 fade-in">
+    <div class="card">
+      <div class="c-label">Mission Phase</div>
+      <div class="c-val v-accent" id="phase">—</div>
+      <div class="c-sub" id="phase-sub">—</div>
+    </div>
+    <div class="card c-orange">
+      <div class="c-label">Time to Next Milestone</div>
+      <div class="c-val v-orange" id="next-cd">—</div>
+      <div class="c-sub" id="next-name">—</div>
+    </div>
+  </div>
+
+  <!-- Core telemetry -->
+  <div class="section-label fade-in">◈ ESTIMATED TELEMETRY</div>
+  <div class="grid-4 fade-in">
+    <div class="card c-green">
+      <div class="c-label">Distance · Earth</div>
+      <div class="c-val v-green" id="dist-earth">—</div>
+      <div class="c-sub">Statute miles (est.)</div>
+    </div>
+    <div class="card c-moon">
+      <div class="c-label">Distance · Moon</div>
+      <div class="c-val v-moon" id="dist-moon">—</div>
+      <div class="c-sub">Statute miles (est.)</div>
+    </div>
+    <div class="card">
+      <div class="c-label">Velocity</div>
+      <div class="c-val v-accent" id="velocity">—</div>
+      <div class="c-sub">mph (phase est.)</div>
+    </div>
+    <div class="card c-orange">
+      <div class="c-label">Comms Delay</div>
+      <div class="c-val v-orange" id="comms">—</div>
+      <div class="c-sub">Light-travel · one-way</div>
+    </div>
+  </div>
+
+  <!-- Derived physics -->
+  <div class="grid-3 fade-in">
+    <div class="card c-dim">
+      <div class="c-label">Earth — Angular Size from Orion</div>
+      <div class="c-val" id="earth-angle">—</div>
+      <div class="c-sub">Moon from Earth's surface ≈ 0.53°</div>
+    </div>
+    <div class="card c-moon">
+      <div class="c-label">Moon — Angular Size from Orion</div>
+      <div class="c-val v-moon" id="moon-angle">—</div>
+      <div class="c-sub">Grows dramatically near flyby</div>
+    </div>
+    <div class="card c-moon">
+      <div class="c-label">Splashdown</div>
+      <div class="c-val v-moon">APR 10, 2026</div>
+      <div class="c-sub">~20:06 EDT · Pacific, off San Diego</div>
+    </div>
+  </div>
+
+  <!-- Crew perspective -->
+  <div class="insight fade-in">
+    <div class="insight-label">◈ CREW PERSPECTIVE — WHAT THEY'RE SEEING NOW</div>
+    <div class="insight-text" id="crew-view">Loading…</div>
+  </div>
+
+  <!-- Mission vitals -->
+  <div class="section-label fade-in">◈ MISSION VITALS</div>
+  <div class="grid-4 fade-in">
+    <div class="card">
+      <div class="c-label">Flight Day</div>
+      <div class="c-val v-accent" id="flight-day">—</div>
+      <div class="c-sub">of ~10 mission days</div>
+    </div>
+    <div class="card">
+      <div class="c-label">Crew Status</div>
+      <div class="c-val" id="crew-status" style="font-size:12px">—</div>
+      <div class="c-sub" id="crew-activity">MET-based schedule</div>
+    </div>
+    <div class="card c-warn">
+      <div class="c-label">Van Allen Belts</div>
+      <div class="c-val v-warn">CLEARED</div>
+      <div class="c-sub">Passed ~3h post-launch</div>
+    </div>
+    <div class="card c-dim">
+      <div class="c-label">Radiation Zone</div>
+      <div class="c-val" id="rad-zone" style="font-size:11px">—</div>
+      <div class="c-sub">GCR = galactic cosmic rays</div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="prog-section fade-in">
+    <div class="prog-header">
+      <div class="prog-title">MISSION PROGRESS</div>
+      <div class="prog-pct" id="pct">0%</div>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill" id="prog-bar" style="width:0%"></div>
+    </div>
+    <div class="prog-labels">
+      <span>LAUNCH · APR 1</span>
+      <span>LUNAR FLYBY · APR 6–7</span>
+      <span>SPLASHDOWN · APR 10</span>
+    </div>
+  </div>
+
+  <!-- Trajectory -->
+  <div class="traj-section fade-in">
+    <div class="traj-title">TRAJECTORY VISUALIZATION · FREE-RETURN PATH</div>
+    <canvas id="traj" style="width:100%;display:block;height:200px"></canvas>
+  </div>
+
+  <!-- Space weather (LIVE) -->
+  <div class="sw-section fade-in">
+    <div class="sw-title">⚡ SPACE WEATHER — LIVE · NOAA SWPC</div>
+    <div class="sw-grid">
+      <div class="sw-card">
+        <div class="c-label">Solar Wind Speed</div>
+        <div class="sw-val" id="sw-speed">—</div>
+        <div class="sw-unit">km/s · DSCOVR/ACE</div>
+      </div>
+      <div class="sw-card">
+        <div class="c-label">Particle Density</div>
+        <div class="sw-val" id="sw-density">—</div>
+        <div class="sw-unit">protons/cm³</div>
+      </div>
+      <div class="sw-card">
+        <div class="c-label">Bz (Magnetic Field)</div>
+        <div class="sw-val" id="sw-bz">—</div>
+        <div class="sw-unit">nT · south = storm risk</div>
+      </div>
+      <div class="sw-card">
+        <div class="c-label">Kp Index</div>
+        <div class="sw-val" id="sw-kp">—</div>
+        <div class="sw-unit">0–9 geomagnetic scale</div>
+        <div class="kp-bar"><div class="kp-fill" id="kp-fill" style="width:0%"></div></div>
+      </div>
+      <div class="sw-card">
+        <div class="c-label">G-Storm Scale</div>
+        <div class="sw-val" id="sw-g">—</div>
+        <div class="sw-unit">G0 quiet → G5 extreme</div>
+      </div>
+      <div class="sw-card">
+        <div class="c-label">S-Radiation Scale</div>
+        <div class="sw-val" id="sw-s">—</div>
+        <div class="sw-unit">Solar proton event level</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--dim);margin-top:12px;line-height:1.6">
+      ▸ Space weather determines real-time radiation dose for the crew beyond the magnetosphere. Data refreshed every 5 min from <a href="https://services.swpc.noaa.gov" target="_blank" style="color:var(--accent)">services.swpc.noaa.gov</a><br>
+      Last fetched: <span id="sw-time">waiting…</span>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="tl-section fade-in">
+    <div class="tl-title">MISSION MILESTONES</div>
+    <div id="timeline"></div>
+  </div>
+
+  <!-- Records -->
+  <div class="rec-section fade-in">
+    <div class="rec-title">⚡ RECORDS & FIRSTS</div>
+    <div class="rec-row">
+      <span class="rec-name">Max Distance (Free-Return Trajectory Record)</span>
+      <span class="rec-val">~252,021 mi</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">Previous Free-Return Record — Apollo 13 (1970)</span>
+      <span class="rec-val">248,655 mi</span>
+    </div>
+    <div class="rec-row" style="opacity:.5">
+      <span class="rec-name" style="font-style:italic">Note: Apollo lunar orbital missions flew farther. This record is specific to free-return trajectories with no lunar orbit insertion.</span>
+      <span class="rec-val">—</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">Fastest Crewed Atmospheric Reentry</span>
+      <span class="rec-val">~25,000 mph</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">First Woman Beyond Low Earth Orbit</span>
+      <span class="rec-val">Christina Koch</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">First Person of Color Beyond Low Earth Orbit</span>
+      <span class="rec-val">Victor Glover</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">First Canadian & First Non-US Citizen in Deep Space</span>
+      <span class="rec-val">Jeremy Hansen</span>
+    </div>
+    <div class="rec-row">
+      <span class="rec-name">First Crewed Deep Space Flight Since</span>
+      <span class="rec-val">Apollo 17 · Dec 1972</span>
+    </div>
+  </div>
+
+  <!-- Crew -->
+  <div class="crew-section fade-in">
+    <div class="crew-title">CREW — ORION INTEGRITY</div>
+    <div class="crew-grid">
+      <div class="crew-card">
+        <div class="crew-role">COMMANDER</div>
+        <div class="crew-name">REID WISEMAN</div>
+        <div class="crew-agency">NASA</div>
+        <div class="crew-note">Oldest person to travel beyond LEO on this mission. ISS Expedition 41 veteran.</div>
+      </div>
+      <div class="crew-card">
+        <div class="crew-role">PILOT</div>
+        <div class="crew-name">VICTOR GLOVER</div>
+        <div class="crew-agency">NASA · USN</div>
+        <div class="crew-note">First person of color beyond LEO. SpaceX Crew-1 veteran and US Navy test pilot.</div>
+      </div>
+      <div class="crew-card">
+        <div class="crew-role">MISSION SPECIALIST</div>
+        <div class="crew-name">CHRISTINA KOCH</div>
+        <div class="crew-agency">NASA</div>
+        <div class="crew-note">First woman beyond LEO. Record: longest single spaceflight by a woman — 328 days.</div>
+      </div>
+      <div class="crew-card">
+        <div class="crew-role">MISSION SPECIALIST</div>
+        <div class="crew-name">JEREMY HANSEN</div>
+        <div class="crew-agency">CSA · CANADA</div>
+        <div class="crew-note">First Canadian and first non-US citizen in deep space. Former CF-18 fighter pilot.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="fade-in">
+    <div>ESTIMATED TELEMETRY · SPACE WEATHER LIVE VIA NOAA SWPC · NOT AFFILIATED WITH NASA</div>
+    <div style="margin-top:8px">
+      <a href="https://www.nasa.gov/mission/artemis-ii/" target="_blank">nasa.gov/artemis-ii</a> &nbsp;·&nbsp;
+      <a href="https://blogs.nasa.gov/artemis/" target="_blank">Artemis Blog</a> &nbsp;·&nbsp;
+      <a href="https://www.nasa.gov/trackartemis" target="_blank">AROW Official Tracker</a>
+    </div>
+    <!-- * lone wolf, quiet teeth | Matt Livingston -->
+  </footer>
+
+</div>
+
+<script>
+// ─── CONSTANTS ───────────────────────────────────────────────────────────────
+const LAUNCH     = new Date('2026-04-01T22:35:12Z');
+const SPLASHDOWN = new Date('2026-04-11T00:06:00Z');
+const MISSION_MS = SPLASHDOWN - LAUNCH;
+
+const EARTH_R_MI = 3959;
+const MOON_R_MI  = 1080;
+const MOON_D_MI  = 238855;
+
+const MILESTONES = [
+  { key:'launch',    name:'LAUNCH',
+    date:new Date('2026-04-01T22:35:12Z'),
+    desc:'Liftoff from LC-39B, Kennedy Space Center at 6:35 PM EDT. SLS / Orion Integrity clears the tower.' },
+  { key:'perigee',   name:'PERIGEE RAISE BURN',
+    date:new Date('2026-04-02T11:06:00Z'),
+    desc:'43-second engine burn raises the lowest orbital point and refines the trajectory for translunar departure.' },
+  { key:'tli',       name:'TRANS-LUNAR INJECTION (TLI)',
+    date:new Date('2026-04-02T23:49:00Z'),
+    desc:'5m 55s burn places Orion on free-return trajectory. Humans leave Earth orbit for the first time since Apollo 17, 1972.' },
+  { key:'prox',      name:'PROXIMITY OPS DEMO',
+    date:new Date('2026-04-03T02:00:00Z'),
+    desc:'Crew manually maneuvers Orion around the ICPS upper stage, validating docking techniques for future missions.' },
+  { key:'record',    name:'FREE-RETURN DISTANCE RECORD',
+    date:new Date('2026-04-06T17:45:00Z'),
+    desc:"Orion surpasses Apollo 13's 248,655 mi free-return record. New mark ~252,021 mi. (Apollo orbital missions flew farther.)" },
+  { key:'flyby',     name:'LUNAR FLYBY — CLOSEST APPROACH',
+    date:new Date('2026-04-07T00:00:00Z'),
+    desc:'~4,100 miles beyond the lunar far side. Crew sees Earth and Moon simultaneously. Planned comms blackout during far-side pass.' },
+  { key:'return',    name:'TRANS-EARTH CRUISE BEGINS',
+    date:new Date('2026-04-07T08:00:00Z'),
+    desc:"Moon's gravity slings Orion onto return trajectory. Three correction burns refine path back to Earth." },
+  { key:'sep',       name:'SERVICE MODULE SEPARATION',
+    date:new Date('2026-04-10T23:30:00Z'),
+    desc:'Crew module separates from European Service Module. Heat shield faces forward for atmospheric entry.' },
+  { key:'splashdown',name:'SPLASHDOWN',
+    date:new Date('2026-04-11T00:06:00Z'),
+    desc:'Pacific Ocean off San Diego. First crewed lunar return since Apollo 17, December 1972.' },
+];
+
+const TLI_MS   = MILESTONES[2].date - LAUNCH;
+const FLYBY_MS = MILESTONES[5].date - LAUNCH;
+const RET_MS   = MILESTONES[6].date - LAUNCH;
+
+// ─── UTILS ──────────────────────────────────────────────────────────────────
+const pad = (n,w=2) => String(Math.floor(n)).padStart(w,'0');
+
+function fmtMET(ms) {
+  if(ms<0) { const a=-ms,s=Math.floor(a/1000); return `T- ${pad(Math.floor(s/86400))}:${pad(Math.floor(s/3600)%24)}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`; }
+  const s=Math.floor(ms/1000);
+  return `T+ ${pad(Math.floor(s/86400),2)}:${pad(Math.floor(s/3600)%24)}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`;
+}
+function fmtCountdown(ms) {
+  if(ms<=0) return 'ARRIVED';
+  const s=Math.floor(ms/1000), d=Math.floor(s/86400), h=Math.floor(s/3600)%24, m=Math.floor(s/60)%60, sec=s%60;
+  if(d>0)  return `${d}d ${pad(h)}h ${pad(m)}m`;
+  if(h>0)  return `${pad(h)}h ${pad(m)}m ${pad(sec)}s`;
+  return `${pad(m)}m ${pad(sec)}s`;
+}
+
+// ─── TRAJECTORY MODEL ────────────────────────────────────────────────────────
+function distEarth(met) {
+  if(met<=0) return 0;
+  if(met<TLI_MS) return 200 + (met/TLI_MS)*900;
+  const MAX=252021;
+  if(met<FLYBY_MS) {
+    const t=(met-TLI_MS)/(FLYBY_MS-TLI_MS);
+    return 1000+(MAX-1000)*Math.pow(t,0.82);
+  }
+  if(met<RET_MS) {
+    const t=(met-FLYBY_MS)/(RET_MS-FLYBY_MS);
+    return MAX-(MAX-(MOON_D_MI+4100))*t;
+  }
+  const t=Math.min(1,(met-RET_MS)/(MISSION_MS-RET_MS));
+  return Math.max(0,(MOON_D_MI+4100)*Math.pow(1-t,0.7));
+}
+function distMoon(de) {
+  if(de<5000) return MOON_D_MI;
+  return Math.max(100, Math.abs(MOON_D_MI-de));
+}
+function velocity(met) {
+  if(met<=0) return 0;
+  if(met<TLI_MS) return 17500;
+  if(met<FLYBY_MS) { const t=(met-TLI_MS)/(FLYBY_MS-TLI_MS); return 24500-19500*Math.pow(t,0.6); }
+  if(met<RET_MS)   { const t=(met-FLYBY_MS)/(RET_MS-FLYBY_MS); return 5000+3000*t; }
+  const t=Math.min(1,(met-RET_MS)/(MISSION_MS-RET_MS));
+  return 8000+17000*Math.pow(t,1.3);
+}
+function angDeg(rMi, dMi) { return dMi<=0?0 : 2*Math.atan(rMi/dMi)*(180/Math.PI); }
+
+// ─── PHASE ──────────────────────────────────────────────────────────────────
+function phase(met) {
+  if(met<0)                   return ['PRE-LAUNCH','Awaiting liftoff'];
+  if(met<3600e3)              return ['ASCENT & ORBIT','Climbing to initial parking orbit'];
+  if(met<TLI_MS)              return ['HIGH EARTH ORBIT','Proximity ops & TLI preparation'];
+  if(met<TLI_MS+3600e3)       return ['TRANS-LUNAR INJECTION','TLI burn — departing Earth orbit'];
+  if(met<FLYBY_MS-86400e3)    return ['TRANS-LUNAR CRUISE','Outbound — coasting to the Moon'];
+  if(met<FLYBY_MS-3600e3)     return ['LUNAR APPROACH','Moon filling the windows'];
+  if(met<RET_MS)              return ['LUNAR FLYBY','Far-side passage & gravity assist'];
+  if(met<MISSION_MS-86400e3)  return ['TRANS-EARTH CRUISE','Return journey — accelerating home'];
+  if(met<MISSION_MS-7200e3)   return ['REENTRY PREP','Suit-up & procedure review'];
+  if(met<MISSION_MS)          return ['ATMOSPHERIC REENTRY','25,000 mph entry · heat shield active'];
+  return ['MISSION COMPLETE','Splashdown · Pacific Ocean'];
+}
+
+// ─── CREW PERSPECTIVE ────────────────────────────────────────────────────────
+function crewView(met, de) {
+  if(met<0) return 'Suited up in crew quarters. <em>Integrity</em> sits on LC-39B, fueled and sealed.';
+  if(met<3600e3) return 'Earth fills the windows edge-to-edge. The crew can see <em>full continental landmasses, ocean glint, the curve of the atmosphere</em> — and watch it slowly shrink in real time as they gain altitude.';
+  if(met<TLI_MS) return 'In high Earth orbit. Earth still dominates the window — <em>a vast blue arc</em> of oceans and clouds. The Moon is a bright distant disc. The crew is preparing for the burn that will take them beyond Earth orbit for the first time in over 50 years.';
+  if(met<TLI_MS+12*3600e3) return 'Humans have left Earth orbit for the first time since 1972. Earth is <em>visibly shrinking with every minute</em> — the crew can now see the whole planet in a single window frame. The Moon is growing incrementally, hour by hour.';
+  if(de<100000) return 'Earth is a <em>stunning full-disk marble</em> — continents, weather systems, and oceans all visible simultaneously. No longer filling the window, but still dominant. The Moon is growing noticeably ahead.';
+  if(de<200000) return 'Earth has shrunk to roughly <em>the size of a golf ball held at arm\'s length</em>. A thumb covers it. This is the Overview Effect in motion — the sudden visceral awareness that all of human civilization fits in that tiny blue disc. The Moon is now a detailed world ahead.';
+  if(met<FLYBY_MS-6*3600e3) return 'Earth is now <em>a small, brilliant blue point of light</em> — beautiful and fragile. The Moon looms large ahead, craters and highlands sharp and detailed. The crew is experiencing the cognitive shift that every deep-space astronaut has described — the sense that home is impossibly small.';
+  if(met<RET_MS) return '<em>At or past the Moon.</em> During far-side passage, Earth disappears entirely from view for several minutes — just the alien grey surface of the lunar far side, blanketed in ancient craters, and an unobstructed star field. A brief, profound isolation from all of humanity.';
+  if(de<150000) return 'The Moon is receding behind them. Earth is growing again — <em>reassembling itself in the window</em>, continent by continent, as Orion accelerates back toward home. The crew can watch their home planet get larger in real time.';
+  if(de<50000)  return 'Earth now fills a significant portion of the window. <em>Home is close.</em> The crew is suited up for reentry. The thin blue line of the atmosphere is visible — the fragile shell they\'re about to hit at 25,000 mph.';
+  return '<em>Mission complete.</em> The crew has returned. They traveled farther from Earth than any humans since Apollo 17. Recovery operations underway in the Pacific.';
+}
+
+// ─── CREW SCHEDULE ───────────────────────────────────────────────────────────
+function crewSchedule(met) {
+  if(met<0) return ['LAUNCH PREP','Suited up in crew quarters'];
+  const hrs=met/3600e3, dayFrac=hrs%24, fd=Math.floor(hrs/24)+1;
+  const acts={1:'Ascent, orbit insertion, proximity ops',2:'TLI burn, translunar injection',
+    3:'CPR training, exercise ops, lunar photo prep',4:'Systems checks, deep-space science',
+    5:'Lunar approach prep, photography briefings',6:'Lunar flyby, far-side comms blackout',
+    7:'Post-flyby debrief, return burns',8:'Deep-space science, medical monitoring',
+    9:'Reentry procedure review, suit checks',10:'Reentry, splashdown, recovery'};
+  const act=acts[Math.min(fd,10)]||'Mission operations';
+  let state='Active operations';
+  if(dayFrac<1||dayFrac>=22) state='Sleep period';
+  else if(dayFrac>=14&&dayFrac<16) state='Meal / downtime';
+  return [state, act];
+}
+
+// ─── RAD ZONE ────────────────────────────────────────────────────────────────
+function radZone(met,de) {
+  if(met<0) return 'Surface (shielded)';
+  if(de<1200) return 'Van Allen belts — transiting';
+  if(de<40000) return 'Post-belt · GCR exposure begins';
+  return 'Deep space · GCR + SPE exposure';
+}
+
+// ─── TIMELINE ────────────────────────────────────────────────────────────────
+function renderTimeline(now) {
+  const el=document.getElementById('timeline');
+  el.innerHTML='';
+  const nextKey=(MILESTONES.find(m=>m.date>now)||{}).key;
+  MILESTONES.forEach((m,i)=>{
+    const complete=now>m.date, active=m.key===nextKey;
+    const status=complete?'complete':active?'active':'upcoming';
+    const isLast=i===MILESTONES.length-1;
+    const ds=m.date.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/New_York'})
+      +' '+m.date.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',timeZone:'America/New_York',timeZoneName:'short'});
+    el.innerHTML+=`
+      <div class="ms">
+        <div class="ms-date">${ds}</div>
+        <div class="ms-dot-col">
+          <div class="dot ${status}"></div>
+          ${!isLast?'<div class="dot-line"></div>':''}
+        </div>
+        <div>
+          <div class="ms-name ${status}">${complete?'✓ ':active?'▶ ':'○ '}${m.name}</div>
+          <div class="ms-desc">${m.desc}</div>
+        </div>
+      </div>`;
+  });
+}
+
+// ─── BEZIER ──────────────────────────────────────────────────────────────────
+function bz(p0,p1,p2,p3,t){ return Math.pow(1-t,3)*p0+3*Math.pow(1-t,2)*t*p1+3*(1-t)*t*t*p2+Math.pow(t,3)*p3; }
+
+// ─── TRAJECTORY CANVAS ───────────────────────────────────────────────────────
+function drawTraj(met) {
+  const c=document.getElementById('traj');
+  c.width=c.offsetWidth||800; c.height=200;
+  const ctx=c.getContext('2d'), W=c.width, H=c.height;
+  ctx.clearRect(0,0,W,H);
+
+  const eX=62,eY=H/2,eR=26, mX=W-56,mY=H/2,mR=18;
+  const cp1x=W*.38,cp1y=H*.08, cp2x=W*.62,cp2y=H*.92;
+
+  // Earth
+  const eg=ctx.createRadialGradient(eX-7,eY-7,3,eX,eY,eR);
+  eg.addColorStop(0,'#1a6bb5'); eg.addColorStop(.5,'#2e8b57'); eg.addColorStop(1,'#0a3366');
+  ctx.beginPath(); ctx.arc(eX,eY,eR,0,Math.PI*2); ctx.fillStyle=eg; ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,.3)'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='rgba(0,212,255,.5)'; ctx.font='9px Share Tech Mono'; ctx.textAlign='center';
+  ctx.fillText('EARTH',eX,eY+eR+14);
+
+  // Moon
+  const mg=ctx.createRadialGradient(mX-5,mY-5,2,mX,mY,mR);
+  mg.addColorStop(0,'#e8d8c0'); mg.addColorStop(1,'#6a5a48');
+  ctx.beginPath(); ctx.arc(mX,mY,mR,0,Math.PI*2); ctx.fillStyle=mg; ctx.fill();
+  ctx.fillStyle='rgba(200,184,154,.5)'; ctx.fillText('MOON',mX,mY+mR+14);
+
+  // Ghost paths
+  ctx.setLineDash([4,6]);
+  ctx.beginPath(); ctx.moveTo(eX+eR,eY);
+  ctx.bezierCurveTo(cp1x,cp1y,mX-mR-35,mY-50,mX-mR,mY);
+  ctx.strokeStyle='rgba(0,212,255,.18)'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mX-mR,mY);
+  ctx.bezierCurveTo(mX-mR-35,mY+50,cp2x,cp2y,eX+eR,eY);
+  ctx.strokeStyle='rgba(200,184,154,.18)'; ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Completed outbound
+  const outT=met<TLI_MS?0:met<FLYBY_MS?Math.min(1,(met-TLI_MS)/(FLYBY_MS-TLI_MS)):1;
+  if(outT>0){
+    ctx.beginPath(); ctx.moveTo(eX+eR,eY);
+    for(let t=0;t<=outT;t+=0.02) ctx.lineTo(bz(eX+eR,cp1x,mX-mR-35,mX-mR,t),bz(eY,cp1y,mY-50,mY,t));
+    ctx.strokeStyle='rgba(0,212,255,.75)'; ctx.lineWidth=2; ctx.stroke();
+  }
+  // Completed inbound
+  if(met>FLYBY_MS){
+    const retT=Math.min(1,(met-FLYBY_MS)/(MISSION_MS-FLYBY_MS));
+    ctx.beginPath(); ctx.moveTo(mX-mR,mY);
+    for(let t=0;t<=retT;t+=0.02) ctx.lineTo(bz(mX-mR,mX-mR-35,cp2x,eX+eR,t),bz(mY,mY+50,cp2y,eY,t));
+    ctx.strokeStyle='rgba(200,184,154,.75)'; ctx.lineWidth=2; ctx.stroke();
+  }
+
+  // Spacecraft
+  let sX,sY;
+  if(met<=0){sX=eX+eR+8;sY=eY;}
+  else if(met<FLYBY_MS){
+    const t=met<TLI_MS?0:Math.min(1,(met-TLI_MS)/(FLYBY_MS-TLI_MS));
+    sX=bz(eX+eR,cp1x,mX-mR-35,mX-mR,t); sY=bz(eY,cp1y,mY-50,mY,t);
+  } else {
+    const t=Math.min(1,(met-FLYBY_MS)/(MISSION_MS-FLYBY_MS));
+    sX=bz(mX-mR,mX-mR-35,cp2x,eX+eR,t); sY=bz(mY,mY+50,cp2y,eY,t);
+  }
+  const sg=ctx.createRadialGradient(sX,sY,0,sX,sY,14);
+  sg.addColorStop(0,'rgba(255,107,53,.5)'); sg.addColorStop(1,'transparent');
+  ctx.beginPath(); ctx.arc(sX,sY,14,0,Math.PI*2); ctx.fillStyle=sg; ctx.fill();
+  ctx.beginPath(); ctx.arc(sX,sY,4,0,Math.PI*2); ctx.fillStyle='#ff6b35'; ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke();
+  ctx.fillStyle='rgba(255,107,53,.95)'; ctx.font='bold 9px Share Tech Mono';
+  ctx.textAlign='left'; ctx.fillText('INTEGRITY',sX+9,sY-5);
+}
+
+// ─── SPACE WEATHER ───────────────────────────────────────────────────────────
+let swLast=0;
+async function fetchSW() {
+  if(Date.now()-swLast < 5*60*1000) return;
+  swLast=Date.now();
+  try {
+    const [pRes,sRes,kRes,mRes] = await Promise.allSettled([
+      fetch('https://services.swpc.noaa.gov/products/solar-wind/plasma-2-hour.json'),
+      fetch('https://services.swpc.noaa.gov/products/noaa-scales.json'),
+      fetch('https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json'),
+      fetch('https://services.swpc.noaa.gov/products/solar-wind/mag-2-hour.json'),
+    ]);
+
+    if(pRes.status==='fulfilled'&&pRes.value.ok){
+      const d=await pRes.value.json();
+      if(d.length>1){
+        const r=d[d.length-1];
+        const spd=parseFloat(r[2]), den=parseFloat(r[1]);
+        if(!isNaN(spd)) document.getElementById('sw-speed').textContent=Math.round(spd);
+        if(!isNaN(den)) document.getElementById('sw-density').textContent=den.toFixed(1);
+      }
+    }
+    if(mRes.status==='fulfilled'&&mRes.value.ok){
+      const d=await mRes.value.json();
+      if(d.length>1){
+        const r=d[d.length-1], bz=parseFloat(r[3]);
+        if(!isNaN(bz)){
+          const el=document.getElementById('sw-bz');
+          el.textContent=bz.toFixed(1);
+          el.style.color=bz<-5?'#ff4444':bz<0?'#ffcc00':'#7fff7f';
+        }
+      }
+    }
+    if(sRes.status==='fulfilled'&&sRes.value.ok){
+      const d=await sRes.value.json();
+      const cur=d['0'];
+      if(cur){
+        const G=parseInt(cur.G?.Scale||0), S=parseInt(cur.S?.Scale||0);
+        const gEl=document.getElementById('sw-g'), sEl=document.getElementById('sw-s');
+        gEl.textContent=G===0?'G0 · QUIET':`G${G}`;
+        gEl.style.color=G>=3?'#ff4444':G>=1?'#ffcc00':'#7fff7f';
+        sEl.textContent=S===0?'S0 · NONE':`S${S}`;
+        sEl.style.color=S>=2?'#ff4444':S>=1?'#ffcc00':'#7fff7f';
+      }
+    }
+    if(kRes.status==='fulfilled'&&kRes.value.ok){
+      const d=await kRes.value.json();
+      if(d.length>1){
+        const kp=parseFloat(d[d.length-1][1]);
+        if(!isNaN(kp)){
+          document.getElementById('sw-kp').textContent=kp.toFixed(1);
+          document.getElementById('kp-fill').style.width=Math.min(100,(kp/9)*100)+'%';
+        }
+      }
+    }
+    document.getElementById('sw-time').textContent=new Date().toUTCString().replace('GMT','UTC');
+  } catch(e){ console.warn('SW fetch failed:',e); }
+}
+
+// ─── MAIN TICK ───────────────────────────────────────────────────────────────
+function tick() {
+  const now=new Date(), met=now-LAUNCH;
+
+  document.getElementById('live-time').textContent=now.toUTCString().replace('GMT','UTC');
+  document.getElementById('met').textContent=fmtMET(met);
+
+  const [ph,phSub]=phase(met);
+  document.getElementById('phase').textContent=ph;
+  document.getElementById('phase-sub').textContent=phSub;
+
+  const next=MILESTONES.find(m=>m.date>now);
+  document.getElementById('next-cd').textContent=next?fmtCountdown(next.date-now):'COMPLETE';
+  document.getElementById('next-name').textContent=next?next.name:'All milestones reached';
+
+  const de=distEarth(met), dm=distMoon(de), v=velocity(met);
+  document.getElementById('dist-earth').textContent=Math.round(de).toLocaleString()+' mi';
+  document.getElementById('dist-moon').textContent=Math.round(dm).toLocaleString()+' mi';
+  document.getElementById('velocity').textContent=Math.round(v).toLocaleString()+' mph';
+
+  const delayMs=(de/186282)*1000;
+  document.getElementById('comms').textContent=delayMs<1000?Math.round(delayMs)+' ms':(delayMs/1000).toFixed(2)+' s';
+
+  document.getElementById('earth-angle').textContent=angDeg(EARTH_R_MI,de).toFixed(2)+'°';
+  document.getElementById('moon-angle').textContent=angDeg(MOON_R_MI,dm).toFixed(2)+'°';
+
+  document.getElementById('crew-view').innerHTML=crewView(met,de);
+
+  const fd=Math.max(1,Math.ceil(met/86400e3));
+  document.getElementById('flight-day').textContent='DAY '+fd;
+  const [cs,ca]=crewSchedule(met);
+  document.getElementById('crew-status').textContent=cs;
+  document.getElementById('crew-activity').textContent=ca;
+  document.getElementById('rad-zone').textContent=radZone(met,de);
+
+  const pct=Math.max(0,Math.min(100,(met/MISSION_MS)*100));
+  document.getElementById('prog-bar').style.width=pct.toFixed(1)+'%';
+  document.getElementById('pct').textContent=pct.toFixed(1)+'%';
+
+  renderTimeline(now);
+  drawTraj(met);
+  fetchSW();
+}
+
+tick();
+setInterval(tick,1000);
+window.addEventListener('resize',()=>drawTraj(Date.now()-LAUNCH));
+</script>
+</body>
+</html>
