@@ -51,22 +51,24 @@ const App = (() => {
       });
     });
 
-    // Active state on scroll
-    const sections = ['cipher', 'eggs', 'characters'];
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          links.forEach(l => l.classList.remove('active'));
-          const active = document.querySelector(`nav a[data-section="${entry.target.id}"]`);
-          if (active) active.classList.add('active');
-        }
-      });
-    }, { threshold: 0.3 });
+    // Active nav highlight — scroll-based, works for all section sizes
+    const sectionIds = ['cipher', 'eggs', 'characters'];
+    const headerH = document.querySelector('header')?.offsetHeight || 60;
 
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
+    function updateActiveNav() {
+      const scrollY = window.scrollY + headerH + 10;
+      let current = sectionIds[0];
+      sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollY) current = id;
+      });
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector(`nav a[data-section="${current}"]`);
+      if (active) active.classList.add('active');
+    }
+
+    window.addEventListener('scroll', updateActiveNav, { passive: true });
+    updateActiveNav();
   }
 
   // ── Cipher Decoder ──
@@ -340,18 +342,10 @@ const App = (() => {
   }
 
   function wireReveals() {
-    const targets = document.querySelectorAll('.reveal, .reveal-stagger');
-    if (!targets.length) return;
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      });
-    }, { threshold: 0.05, rootMargin: '0px' });
-
-    targets.forEach(target => observer.observe(target));
+    // Immediately mark all reveal elements visible — no scroll gating on mobile
+    document.querySelectorAll('.reveal, .reveal-stagger').forEach(el => {
+      el.classList.add('is-visible');
+    });
   }
 
   return { init };
