@@ -23,6 +23,7 @@
 
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- lone wolf, quiet teeth | Matt Livingston -->
 </head>
 <body>
@@ -45,6 +46,11 @@
   ════════════════════════════════════════════ -->
   <section id="cipher">
     <div class="section-wrapper" style="padding-top:0;padding-bottom:0;max-width:960px">
+      <div class="hero-compass" aria-hidden="true">
+        <span>northwest woods</span>
+        <span>anomalies logged</span>
+        <span>trust no one</span>
+      </div>
 
       <div class="hero-label">Gravity Falls Companion</div>
       <h1 class="hero-title">Cipher Decoder</h1>
@@ -52,6 +58,18 @@
         Gravity Falls hid encrypted messages in episode credits, background props, and promotional materials throughout its run.
         Paste any ciphertext below and decode it — or explore every cipher the show used.
       </p>
+      <div class="hero-notes">
+        <div class="hero-note">
+          <span class="hero-note-kicker">Field note 01</span>
+          <strong>Journal-style decoder</strong>
+          <p>Built for cryptograms, weird clues, and hidden messages scattered across the series.</p>
+        </div>
+        <div class="hero-note">
+          <span class="hero-note-kicker">Field note 02</span>
+          <strong>Spoiler-aware archive</strong>
+          <p>Browse eggs and character files without stepping past the point you have actually watched.</p>
+        </div>
+      </div>
 
       <div class="cipher-workspace">
 
@@ -107,42 +125,44 @@
   ════════════════════════════════════════════ -->
   <section id="eggs">
     <div class="section-wrapper">
+      <div class="paper-panel reveal">
+        <div class="section-kicker">Mystery Shack files</div>
 
-      <h2 class="section-title">Easter Eggs</h2>
-      <p class="section-subtitle">
-        Every entry includes a spoiler-free hint. Click "Reveal spoiler" only when you're ready.
-      </p>
+        <h2 class="section-title">Easter Eggs</h2>
+        <p class="section-subtitle">
+          Every entry includes a spoiler-free hint. Click "Reveal spoiler" only when you're ready.
+        </p>
 
-      <!-- Spoiler tier selector -->
-      <div class="spoiler-tier-notice">
-        <span>Show spoilers up to:</span>
-        <div class="tier-selector">
-          <button class="tier-btn active" data-tier="all">All</button>
-          <button class="tier-btn" data-tier="safe">No spoilers</button>
-          <button class="tier-btn" data-tier="s1">After S1</button>
-          <button class="tier-btn" data-tier="s2">After S2</button>
-          <button class="tier-btn" data-tier="finale">Post-finale</button>
+        <!-- Spoiler tier selector -->
+        <div class="spoiler-tier-notice">
+          <span>Show spoilers up to:</span>
+          <div class="tier-selector">
+            <button class="tier-btn active" data-tier="all">All</button>
+            <button class="tier-btn" data-tier="safe">No spoilers</button>
+            <button class="tier-btn" data-tier="s1">After S1</button>
+            <button class="tier-btn" data-tier="s2">After S2</button>
+            <button class="tier-btn" data-tier="finale">Post-finale</button>
+          </div>
+        </div>
+
+        <!-- Category / season filters -->
+        <div class="filter-bar">
+          <span class="filter-label">Season:</span>
+          <button class="filter-btn active" data-season="all">All</button>
+          <button class="filter-btn" data-season="1">Season 1</button>
+          <button class="filter-btn" data-season="2">Season 2</button>
+
+          <span class="filter-label" style="margin-left:1rem">Type:</span>
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="background">Background</button>
+          <button class="filter-btn" data-category="cryptogram">Cryptogram</button>
+          <button class="filter-btn" data-category="journal">Journal</button>
+        </div>
+
+        <div id="eggs-grid" class="eggs-grid reveal-stagger">
+          <!-- built by JS -->
         </div>
       </div>
-
-      <!-- Category / season filters -->
-      <div class="filter-bar">
-        <span class="filter-label">Season:</span>
-        <button class="filter-btn active" data-season="all">All</button>
-        <button class="filter-btn" data-season="1">Season 1</button>
-        <button class="filter-btn" data-season="2">Season 2</button>
-
-        <span class="filter-label" style="margin-left:1rem">Type:</span>
-        <button class="filter-btn active" data-category="all">All</button>
-        <button class="filter-btn" data-category="background">Background</button>
-        <button class="filter-btn" data-category="cryptogram">Cryptogram</button>
-        <button class="filter-btn" data-category="journal">Journal</button>
-      </div>
-
-      <div id="eggs-grid" class="eggs-grid">
-        <!-- built by JS -->
-      </div>
-
     </div>
   </section>
 
@@ -151,16 +171,18 @@
   ════════════════════════════════════════════ -->
   <section id="characters">
     <div class="section-wrapper">
+      <div class="paper-panel reveal">
+        <div class="section-kicker">Case board</div>
 
-      <h2 class="section-title">Characters</h2>
-      <p class="section-subtitle">
-        Major characters, their arcs, hidden details, and the easter eggs associated with each of them.
-      </p>
+        <h2 class="section-title">Characters</h2>
+        <p class="section-subtitle">
+          Major characters, their arcs, hidden details, and the easter eggs associated with each of them.
+        </p>
 
-      <div id="char-grid" class="char-grid">
-        <!-- built by JS -->
+        <div id="char-grid" class="char-grid reveal-stagger">
+          <!-- built by JS -->
+        </div>
       </div>
-
     </div>
   </section>
 

@@ -23,6 +23,7 @@ const App = (() => {
     wireNav();
     wireCipherDecoder();
     wireEggFilters();
+    wireReveals();
   }
 
   async function fetchJSON(path) {
@@ -117,7 +118,7 @@ const App = (() => {
         <div class="cipher-ref-desc">
           ${c.description}
           ${c.tip ? `<div style="margin-top:6px;font-style:italic;opacity:0.85">${c.tip}</div>` : ''}
-          ${c.example ? `<div style="margin-top:8px;font-family:'DM Mono',monospace;font-size:0.75rem;opacity:0.7">e.g. "${c.example.encoded}" → ${c.example.decoded}</div>` : ''}
+          ${c.example ? `<div style="margin-top:8px;font-family:'Special Elite',monospace;font-size:0.75rem;opacity:0.7">e.g. "${c.example.encoded}" → ${c.example.decoded}</div>` : ''}
           ${c.id !== 'bill-wheel' ? `<button class="try-it-btn" data-cipher-id="${c.id}" data-example="${encodeURIComponent(c.example?.encoded || '')}">Try it ↗</button>` : ''}
         </div>
       `;
@@ -309,7 +310,7 @@ const App = (() => {
           document.getElementById('eggs').scrollIntoView({ behavior: 'smooth', block: 'start' });
           setTimeout(() => {
             eggCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            eggCard.style.outline = '2px solid #3d7a57';
+            eggCard.style.outline = '2px solid #7f3520';
             setTimeout(() => eggCard.style.outline = '', 1800);
           }, 500);
         });
@@ -327,6 +328,21 @@ const App = (() => {
   function tierBadgeHTML(tier) {
     const labels = { safe: 'No spoilers', s1: 'After S1', s2: 'After S2', finale: 'Post-finale' };
     return `<span class="badge badge-tier-${tier}">${labels[tier] || tier}</span>`;
+  }
+
+  function wireReveals() {
+    const targets = document.querySelectorAll('.reveal, .reveal-stagger');
+    if (!targets.length) return;
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(target => observer.observe(target));
   }
 
   return { init };
