@@ -349,7 +349,7 @@ const App = (() => {
         entry.target.classList.add('is-visible');
         observer.unobserve(entry.target);
       });
-    }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.05, rootMargin: '0px' });
 
     targets.forEach(target => observer.observe(target));
   }
