@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gravity Falls Companion — Cipher Decoder &amp; Episode Guide</title>
+  <meta name="description" content="An unofficial companion to Gravity Falls. Decode ciphers, explore easter eggs, and read character bios — all spoiler-safe for first-time watchers.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <!-- lone wolf, quiet teeth | Matt Livingston -->
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <header>
+    <a class="logo" href="#cipher">
+      <div class="logo-mark">GF</div>
+      <span class="logo-text">Gravity Falls <span>Companion</span></span>
+    </a>
+    <nav>
+      <a href="#cipher" data-section="cipher" class="active">Cipher Decoder</a>
+      <a href="#eggs" data-section="eggs">Easter Eggs</a>
+      <a href="#characters" data-section="characters">Characters</a>
+    </nav>
+  </header>
+
+  <!-- ════════════════════════════════════════════
+       HERO — CIPHER DECODER
+  ════════════════════════════════════════════ -->
+  <section id="cipher">
+    <div class="section-wrapper" style="padding-top:0;padding-bottom:0;max-width:960px">
+
+      <div class="hero-label">Gravity Falls Companion</div>
+      <h1 class="hero-title">Cipher Decoder</h1>
+      <p class="hero-sub">
+        Gravity Falls hid encrypted messages in episode credits, background props, and promotional materials throughout its run.
+        Paste any ciphertext below and decode it — or explore every cipher the show used.
+      </p>
+
+      <div class="cipher-workspace">
+
+        <!-- Decoder tool -->
+        <div class="cipher-card">
+          <h3>Decode a message</h3>
+
+          <label class="field-label" for="cipher-select">Cipher type</label>
+          <select id="cipher-select" class="cipher-select">
+            <option value="caesar">Caesar cipher (shift 3)</option>
+            <option value="atbash">Atbash</option>
+            <option value="a1z26">A1Z26 (numbers → letters)</option>
+            <option value="vigenere">Vigenère (key: STANFORD)</option>
+            <option value="multilayer">Multi-layer (Caesar + Atbash)</option>
+          </select>
+
+          <div class="vigenere-key-row" id="vigenere-key-row">
+            <label class="field-label" style="white-space:nowrap;margin-bottom:0">Key word</label>
+            <input id="vigenere-key" class="key-input" type="text" value="STANFORD" placeholder="STANFORD" maxlength="32">
+          </div>
+
+          <label class="field-label" for="cipher-input">Ciphertext</label>
+          <textarea
+            id="cipher-input"
+            class="cipher-textarea"
+            placeholder="Paste ciphertext here… e.g. ZHOFRPH WR JUDYLWB IDOOV"
+            spellcheck="false"
+          ></textarea>
+
+          <button id="decode-btn" class="decode-btn">Decode ↓</button>
+
+          <div class="result-area">
+            <div class="result-label">Decoded output</div>
+            <div id="cipher-result-empty" class="result-empty">Result will appear here</div>
+            <div id="cipher-result-text" class="result-text" style="display:none;white-space:pre-line"></div>
+          </div>
+        </div>
+
+        <!-- Cipher reference -->
+        <div class="cipher-card">
+          <h3>Ciphers used in the show</h3>
+          <ul id="cipher-ref-list" class="cipher-ref-list" aria-label="List of ciphers used in Gravity Falls">
+            <!-- built by JS -->
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       EASTER EGGS
+  ════════════════════════════════════════════ -->
+  <section id="eggs">
+    <div class="section-wrapper">
+
+      <h2 class="section-title">Easter Eggs</h2>
+      <p class="section-subtitle">
+        Every entry includes a spoiler-free hint. Click "Reveal spoiler" only when you're ready.
+      </p>
+
+      <!-- Spoiler tier selector -->
+      <div class="spoiler-tier-notice">
+        <span>Show spoilers up to:</span>
+        <div class="tier-selector">
+          <button class="tier-btn active" data-tier="all">All</button>
+          <button class="tier-btn" data-tier="safe">No spoilers</button>
+          <button class="tier-btn" data-tier="s1">After S1</button>
+          <button class="tier-btn" data-tier="s2">After S2</button>
+          <button class="tier-btn" data-tier="finale">Post-finale</button>
+        </div>
+      </div>
+
+      <!-- Category / season filters -->
+      <div class="filter-bar">
+        <span class="filter-label">Season:</span>
+        <button class="filter-btn active" data-season="all">All</button>
+        <button class="filter-btn" data-season="1">Season 1</button>
+        <button class="filter-btn" data-season="2">Season 2</button>
+
+        <span class="filter-label" style="margin-left:1rem">Type:</span>
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="background">Background</button>
+        <button class="filter-btn" data-category="cryptogram">Cryptogram</button>
+        <button class="filter-btn" data-category="journal">Journal</button>
+      </div>
+
+      <div id="eggs-grid" class="eggs-grid">
+        <!-- built by JS -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════
+       CHARACTERS
+  ════════════════════════════════════════════ -->
+  <section id="characters">
+    <div class="section-wrapper">
+
+      <h2 class="section-title">Characters</h2>
+      <p class="section-subtitle">
+        Major characters, their arcs, hidden details, and the easter eggs associated with each of them.
+      </p>
+
+      <div id="char-grid" class="char-grid">
+        <!-- built by JS -->
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <p class="footer-text">
+      Gravity Falls Companion · Unofficial fan reference · Not affiliated with Disney or Alex Hirsch<br>
+      Built for rewatchers and first-timers alike · <em>Trust no one</em>
+    </p>
+  </footer>
+
+  <script src="js/decoders.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

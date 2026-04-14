@@ -1,0 +1,162 @@
+[
+  {
+    "id": "s1e1-gnome-painting",
+    "season": 1,
+    "episode": 1,
+    "title": "Gnome in the tourist trap painting",
+    "category": "background",
+    "hint": "Look at the large painted mural on the wall of the Mystery Shack gift shop during Dipper and Mabel's first tour.",
+    "spoilerTier": "safe",
+    "spoiler": "One of the painted figures in the mural is clearly a gnome wearing a hat — the same style as the gnome leader Jeff, who doesn't appear until the next episode. The prop team planted him a full episode early."
+  },
+  {
+    "id": "s1e1-bill-triangle",
+    "season": 1,
+    "episode": 1,
+    "title": "Bill's shape on the dollar bill",
+    "category": "background",
+    "hint": "During the opening scene when Stan is counting money at his register, look at the bills themselves.",
+    "spoilerTier": "s2",
+    "spoiler": "The dollar bills shown in the register feature a triangle with a single eye — Bill Cipher's iconic form — printed where the pyramid normally appears on US currency. This is the very first shot of the entire series, meaning Bill was introduced before the show's premise was."
+  },
+  {
+    "id": "s1e1-journals-shelf",
+    "season": 1,
+    "episode": 1,
+    "title": "The three journals on Stan's shelf",
+    "category": "background",
+    "hint": "Before Dipper discovers Journal 3 in the attic, pan your eye across the bookshelf visible behind Stan's desk.",
+    "spoilerTier": "s2",
+    "spoiler": "All three journals (1, 2, and 3) are visible on the shelf, distinguishable by color. Season 2 reveals Stan had possessed Journal 1 the entire time — meaning it was sitting in plain sight from episode one."
+  },
+  {
+    "id": "s1e2-stan-tattoo",
+    "season": 1,
+    "episode": 2,
+    "title": "Stan's tattoo in the shower scene",
+    "category": "background",
+    "hint": "When Stan is shown in the bathroom in episode 2, there's a glimpse of something on his back.",
+    "spoilerTier": "s2",
+    "spoiler": "A tattoo is briefly visible — the same tattoo that, in the Season 2 finale, is revealed to be part of the portal activation sequence. It was designed and planted in Season 1, two years before the payoff aired."
+  },
+  {
+    "id": "s1e2-credits-cipher",
+    "season": 1,
+    "episode": 2,
+    "title": "First end-credits cryptogram",
+    "category": "cryptogram",
+    "hint": "Stay through the credits of 'The Legend of the Gobblewonker.' There's a short string of letters hidden in the black card.",
+    "spoilerTier": "safe",
+    "spoiler": "The cryptogram reads 'ZHOFRPH WR JUDYLWB IDOOV' — a Caesar cipher (shift 3) that decodes to 'WELCOME TO GRAVITY FALLS.' This was the first of many end-credits ciphers that fans decoded in real time, kicking off one of the most active fan-decoding communities in animation history."
+  },
+  {
+    "id": "s1e3-wax-figures",
+    "season": 1,
+    "episode": 3,
+    "title": "The wax figures' hidden arrangement",
+    "category": "background",
+    "hint": "When the wax figures are first shown in the Hall of the Forgotten, count them and note their positions carefully.",
+    "spoilerTier": "safe",
+    "spoiler": "There are exactly 10 wax figures at the start of the episode. The arrangement mirrors the seating at the last supper — a detail the animators confirmed was intentional, though they never explained why."
+  },
+  {
+    "id": "s1e5-blendin-first",
+    "season": 1,
+    "episode": 5,
+    "title": "Blendin Blandin in the background",
+    "category": "background",
+    "hint": "In 'The Inconveniencing,' look in the background near the Dusk 2 Dawn parking lot during the establishing shot.",
+    "spoilerTier": "s1",
+    "spoiler": "A figure in a camouflage jumpsuit is barely visible near the treeline — Blendin Blandin, the time traveler who won't be formally introduced until episode 9. He's there because, in-universe, he had already been tracking Dipper and Mabel through time."
+  },
+  {
+    "id": "s1e6-hand-symbol",
+    "season": 1,
+    "episode": 6,
+    "title": "Six-fingered hand in the journal",
+    "category": "journal",
+    "hint": "When Dipper consults Journal 3 in 'Dipper vs. Manliness,' the page he flips past — not the one he reads — has something unusual on it.",
+    "spoilerTier": "s2",
+    "spoiler": "The page shows a six-fingered hand print. This is the first visual clue that the journal's author has six fingers — a detail that becomes central to identifying Ford Pines in Season 2. It was hidden in a blink-and-miss-it frame flip."
+  },
+  {
+    "id": "s1e8-bill-first-shadow",
+    "season": 1,
+    "episode": 8,
+    "title": "Bill's silhouette in the dreamscape",
+    "category": "background",
+    "hint": "In 'Irrational Treasure,' there's a brief dream sequence. Watch the shadows on the wall behind the main action.",
+    "spoilerTier": "s1",
+    "spoiler": "A triangular shadow passes across the wall for approximately four frames — almost certainly Bill Cipher, observing before his formal introduction in episode 9. Most viewers don't catch it until a rewatch after finishing Season 1."
+  },
+  {
+    "id": "s1e9-bill-debut",
+    "season": 1,
+    "episode": 9,
+    "title": "Bill's true name hidden in his introduction",
+    "category": "cryptogram",
+    "hint": "During Bill's debut in 'Little Dipper,' he introduces himself. Listen to the syllables of his speech — something is encoded in the rhythm.",
+    "spoilerTier": "s2",
+    "spoiler": "Fans who slowed down the audio discovered that the background music during Bill's introduction plays a reversed message: 'MY NAME IS BILL.' Alex Hirsch confirmed this was deliberate — Bill was introducing himself twice, once openly and once in a layer only rewatchers would find."
+  },
+  {
+    "id": "s1e12-stan-fez",
+    "season": 1,
+    "episode": 12,
+    "title": "Stan's fez and the symbols",
+    "category": "background",
+    "hint": "Look closely at the emblem on Stan's fez when he's shown from the front in 'Summerween.'",
+    "spoilerTier": "s2",
+    "spoiler": "The fez symbol is a six-pointed star — the same symbol used in the Society of the Blind Eye. Stan's membership in (or awareness of) this group is never explicitly confirmed, but the symbol placement was not accidental according to the show's production notes."
+  },
+  {
+    "id": "s1e13-underground-lab",
+    "season": 1,
+    "episode": 13,
+    "title": "The basement door in the shack",
+    "category": "background",
+    "hint": "In 'Boss Mabel,' there's a shot of the Mystery Shack's lower hallway. One door in the background has a different handle than the others.",
+    "spoilerTier": "s2",
+    "spoiler": "The door leads to Ford's underground lab — introduced formally in Season 2. It's visible in at least six Season 1 episodes, always closed, always with a subtly different handle design than every other door in the shack."
+  },
+  {
+    "id": "s2e1-fiddleford-photo",
+    "season": 2,
+    "episode": 1,
+    "title": "Fiddleford in Stan's old photo",
+    "category": "background",
+    "hint": "Season 2, episode 1: a framed photo is visible on Stan's desk that wasn't there in Season 1. Look closely at the people in it.",
+    "spoilerTier": "s2",
+    "spoiler": "The photo shows a younger Stan alongside a man fans would recognize as Fiddleford McGucket — decades before the events of the show. It confirms their connection long before the show directly addresses it, and eagle-eyed fans spotted it before the plot caught up."
+  },
+  {
+    "id": "s2e2-cipher-wheel",
+    "season": 2,
+    "episode": 2,
+    "title": "The cipher wheel in the journal margins",
+    "category": "journal",
+    "hint": "In 'Into the Bunker,' the pages of Journal 3 visible during the shapeshifter scene include something in the margin that isn't part of the main text.",
+    "spoilerTier": "s2",
+    "spoiler": "The margin shows a partial version of what fans call the 'cipher wheel' or 'zodiac wheel' — the same wheel used in the Season 2 finale to defeat Bill. It appears here months before the finale, in a margin doodle most viewers dismissed as set decoration."
+  },
+  {
+    "id": "s2e11-weirdmageddon-shadow",
+    "season": 2,
+    "episode": 11,
+    "title": "Weirdmageddon in the sky — episode 11",
+    "category": "background",
+    "hint": "In 'Not What He Seems,' during the outdoor scenes before the finale events, look at the horizon in wide shots.",
+    "spoilerTier": "s2",
+    "spoiler": "A subtle discoloration in the sky — a faint prismatic shimmer — is visible in the distance in two separate wide shots. In retrospect it's the beginning of Weirdmageddon, already seeping through the barrier before Bill fully enters the physical world."
+  },
+  {
+    "id": "s2e20-stans-real-name",
+    "season": 2,
+    "episode": 20,
+    "title": "Stanley vs. Stanford — the name clue in Season 1",
+    "category": "background",
+    "hint": "Go back to Season 1, episode 1. Stan's full name is briefly visible on a legal document pinned to the wall behind his register.",
+    "spoilerTier": "finale",
+    "spoiler": "The document reads 'STANLEY PINES' — not Stanford. The show's writers had already decided in Season 1 that Stan was not the journal's author. The name was in frame as early as the pilot, but no one noticed because there was no reason to care about the distinction yet. It's the longest-planted twin twist in modern animation."
+  }
+]
