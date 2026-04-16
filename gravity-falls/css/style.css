@@ -931,7 +931,6 @@ footer {
 }
 
 @media (max-width: 640px) {
-  .logo-text { display: none; }
   .hero-title { max-width: none; }
   .paper-panel { padding: 1.35rem; border-radius: 22px; }
   .spoiler-tier-notice { align-items: flex-start; }
@@ -2046,4 +2045,100 @@ footer {
   text-transform: uppercase;
   color: var(--pine-light, #4a8850);
   margin-bottom: 4px;
+}
+
+/* ════════════════════════════════════════
+   HAMBURGER MENU & MOBILE NAV
+════════════════════════════════════════ */
+
+/* Hamburger button — hidden on desktop */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid rgba(212,155,45,0.35);
+  border-radius: 6px;
+  padding: 7px 9px;
+  cursor: pointer;
+  margin-left: auto;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+
+.nav-toggle:hover { border-color: rgba(212,155,45,0.7); }
+
+.nav-toggle-bar {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: rgba(212,155,45,0.85);
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  transform-origin: center;
+}
+
+/* Animated X when open */
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 760px) {
+  header {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 0.65rem 1rem;
+    gap: 0;
+    align-items: center;
+  }
+
+  .logo { flex: 1; }
+
+  /* Show logo text on mobile */
+  .logo-text {
+    display: block;
+    font-size: 0.82rem;
+    line-height: 1.25;
+  }
+
+  /* Show hamburger */
+  .nav-toggle { display: flex; }
+
+  /* Nav hidden by default on mobile */
+  #main-nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.5rem 0 0.75rem;
+    border-top: 1px solid rgba(212,155,45,0.2);
+    margin-top: 0.5rem;
+    gap: 2px;
+  }
+
+  /* Nav open state */
+  #main-nav.nav-open { display: flex; }
+
+  #main-nav a {
+    padding: 0.55rem 0.25rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  #main-nav a:hover,
+  #main-nav a.active {
+    background: rgba(212,155,45,0.1);
+    padding-left: 0.6rem;
+  }
 }

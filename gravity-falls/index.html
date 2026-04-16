@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gravity Falls Companion App — Cipher Decoder &amp; Episode Guide</title>
+  <title>Gravity Falls: Unlocked Archives</title>
   <meta name="description" content="An unofficial companion to Gravity Falls. Decode ciphers, explore easter eggs, and read character bios — all spoiler-safe for first-time watchers.">
-  <meta name="title" content="Gravity Falls Companion App">
+  <meta name="title" content="Gravity Falls: Unlocked Archives">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/gravity-falls/">
-  <meta property="og:title" content="Gravity Falls Companion App">
+  <meta property="og:title" content="Gravity Falls: Unlocked Archives">
   <meta property="og:description" content="Find easter eggs, secrets & hidden gems. Decode ciphers and explore the mystery.">
   <meta property="og:image" content="https://mattlivingston.com/gravity-falls/social-card.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/gravity-falls/">
-  <meta name="twitter:title" content="Gravity Falls Companion App">
+  <meta name="twitter:title" content="Gravity Falls: Unlocked Archives">
   <meta name="twitter:description" content="Find easter eggs, secrets & hidden gems. Decode ciphers and explore the mystery.">
   <meta name="twitter:image" content="https://mattlivingston.com/gravity-falls/social-card.png">
   <link rel="stylesheet" href="css/style.css">
@@ -27,9 +27,14 @@
   <header>
     <a class="logo" href="#hero">
       <img class="logo-mark" src="bill-icon.png" alt="Bill Cipher eye in a dark forest">
-      <span class="logo-text">Gravity Falls <span>Companion</span></span>
+      <span class="logo-text">Gravity Falls: <span>Unlocked Archives</span></span>
     </a>
-    <nav>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
+    <nav id="main-nav">
       <a href="#hero"        data-section="hero"        class="active">Home</a>
       <a href="#cipher"      data-section="cipher"      >Cipher Decoder</a>
       <a href="#cipherhunt"  data-section="cipherhunt"  >Cipher Hunt</a>
@@ -450,7 +455,7 @@
   <!-- ── Footer ── -->
   <footer>
     <p class="footer-text">
-      Gravity Falls Companion · Unofficial fan reference · Not affiliated with Disney or Alex Hirsch<br>
+      Gravity Falls: Unlocked Archives · Unofficial fan reference · Not affiliated with Disney or Alex Hirsch<br>
       Built for rewatchers and first-timers alike · <em>Trust no one</em><br>
       <span class="footer-credit">Created by <a href="https://mattlivingston.com" target="_blank" rel="noopener" class="footer-link">Matt Livingston</a> as a curiosity experiment</span>
     </p>
