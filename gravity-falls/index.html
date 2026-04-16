@@ -41,9 +41,9 @@
       <a href="#eggs"        data-section="eggs"        >Easter Eggs</a>
       <a href="#marginalia"  data-section="marginalia"  >Marginalia</a>
       <a href="#episodes"    data-section="episodes"    >Episodes</a>
-      <a href="#zodiac"      data-section="zodiac"      >Zodiac</a>
       <a href="#journals"    data-section="journals"    >Journals</a>
       <a href="#theories"    data-section="theories"    >Theories</a>
+      <a href="#zodiac"      data-section="zodiac"      >Zodiac</a>
       <a href="#characters"  data-section="characters"  >Characters</a>
     </nav>
   </header>
@@ -55,61 +55,116 @@
     <div class="hero-inner">
 
       <div class="hero-top">
-        <p class="hero-label">Unofficial Fan Companion</p>
-        <h1 class="hero-title">Gravity Falls</h1>
-        <p class="hero-sub">Everything hidden. Everything decoded. Everything worth finding.</p>
+        <div class="hero-copy">
+          <p class="hero-label">Unofficial Fan Companion</p>
+          <h1 class="hero-title">Gravity Falls</h1>
+          <p class="hero-sub">A field guide to every planted clue, whisper, symbol, and bad idea hiding in the woods.</p>
 
-        <!-- Bill Cipher rotating quote -->
-        <div class="bill-quote-wrap" aria-live="polite">
-          <span class="bill-quote-attr">Bill Cipher —</span>
-          <span id="bill-quote-text" class="bill-quote-text"></span>
+          <div class="hero-notes">
+            <article class="hero-note">
+              <span class="hero-note-kicker">Field Notice</span>
+              <strong>Spoiler-safe by design</strong>
+              <p>Follow the summer one layer at a time, or go full rewatch mode and open every sealed file.</p>
+            </article>
+            <article class="hero-note">
+              <span class="hero-note-kicker">Archive Status</span>
+              <strong>Case files cross-linked</strong>
+              <p>Episodes, ciphers, journals, and character notes all point to each other like a proper corkboard.</p>
+            </article>
+          </div>
+
+          <!-- Bill Cipher rotating quote -->
+          <div class="bill-quote-wrap" aria-live="polite">
+            <span class="bill-quote-attr">Intercepted transmission —</span>
+            <span id="bill-quote-text" class="bill-quote-text"></span>
+          </div>
+        </div>
+
+        <aside class="hero-dossier" aria-label="Archive highlights">
+          <div class="hero-dossier-card dossier-journal">
+            <div class="dossier-stamp">Journal 3</div>
+            <div class="dossier-title">Author's Notes</div>
+            <p>Classified field notes, anomalies, and warnings for anyone still foolish enough to investigate.</p>
+          </div>
+          <div class="hero-dossier-card dossier-casefile">
+            <div class="dossier-stamp">Case Board</div>
+            <div class="dossier-title">Local Evidence</div>
+            <p>Small background details become major reveals when you pin them to the right episode.</p>
+          </div>
+          <div class="hero-dossier-card dossier-warning">
+            <div class="dossier-stamp">Rule #1</div>
+            <div class="dossier-title">Do Not Make Deals</div>
+            <p>Suspicious triangles, dimensional rifts, and offers of cosmic power remain highly discouraged.</p>
+          </div>
+        </aside>
+      </div>
+
+      <div class="hero-archive">
+        <div class="archive-tool archive-search-card">
+          <div class="archive-kicker">Search the archives</div>
+          <label class="archive-label" for="archive-search">Find any case, cipher, journal, or episode</label>
+          <div class="archive-search-row">
+            <input id="archive-search" class="archive-search-input" type="search" placeholder="Try Bill, Stan, portal, Weirdmageddon, Journal 2..." autocomplete="off">
+            <button id="archive-random-btn" class="archive-random-btn" type="button">Random file</button>
+          </div>
+          <div id="archive-search-status" class="archive-search-status">Start typing to search across the full archive.</div>
+          <div id="archive-search-results" class="archive-search-results" aria-live="polite"></div>
+        </div>
+
+        <div class="archive-tool archive-checklist-card">
+          <div class="archive-kicker">Suggested path</div>
+          <ol class="archive-checklist">
+            <li>Start with the <a href="#episodes">Episode Index</a> if you want a guided rewatch.</li>
+            <li>Use <a href="#cipherhunt">Cipher Hunt</a> to solve the end-credit messages in order.</li>
+            <li>Jump into the <a href="#journals">Journals</a> and <a href="#theories">open cases</a> when you're ready to connect the threads.</li>
+          </ol>
         </div>
       </div>
 
       <!-- Section navigation cards -->
       <div class="hero-grid hero-grid-3col">
         <a class="hero-card" href="#cipher">
-          <div class="hero-card-glyph">⌬</div>
+          <div class="hero-card-glyph symbol symbol-cipher"></div>
           <div class="hero-card-name">Cipher Decoder</div>
           <div class="hero-card-desc">Decode any cryptogram from the show</div>
         </a>
         <a class="hero-card" href="#cipherhunt">
-          <div class="hero-card-glyph">◈</div>
+          <div class="hero-card-glyph symbol symbol-rune"></div>
           <div class="hero-card-name">Cipher Hunt</div>
           <div class="hero-card-desc">Every end-credits cipher, episode by episode</div>
         </a>
         <a class="hero-card" href="#eggs">
-          <div class="hero-card-glyph">◉</div>
+          <div class="hero-card-glyph symbol symbol-bill"></div>
           <div class="hero-card-name">Easter Eggs</div>
           <div class="hero-card-desc">59 hidden details, secrets & planted clues</div>
         </a>
         <a class="hero-card" href="#marginalia">
-          <div class="hero-card-glyph">✎</div>
+          <div class="hero-card-glyph symbol symbol-note"></div>
           <div class="hero-card-name">McGucket's Marginalia</div>
           <div class="hero-card-desc">Readable background text & prop documents</div>
         </a>
         <a class="hero-card" href="#episodes">
-          <div class="hero-card-glyph">◫</div>
+          <div class="hero-card-glyph symbol symbol-map"></div>
           <div class="hero-card-name">Episode Index</div>
           <div class="hero-card-desc">All 40 episodes with linked eggs & ciphers</div>
         </a>
         <a class="hero-card" href="#zodiac">
-          <div class="hero-card-glyph">△</div>
+          <div class="hero-card-glyph symbol symbol-zodiac"></div>
           <div class="hero-card-name">Zodiac Wheel</div>
           <div class="hero-card-desc">Bill's 12-symbol cipher wheel, fully mapped</div>
         </a>
         <a class="hero-card" href="#journals">
-          <div class="hero-card-glyph">📖</div>
+          <div class="hero-card-glyph symbol symbol-journal"></div>
           <div class="hero-card-name">The Journals</div>
           <div class="hero-card-desc">All three journals — contents, owners & secrets</div>
         </a>
         <a class="hero-card" href="#theories">
-          <div class="hero-card-glyph">?</div>
+          <div class="hero-card-glyph symbol symbol-question"></div>
           <div class="hero-card-name">Theories & Mysteries</div>
           <div class="hero-card-desc">Ten things the show never fully explained</div>
         </a>
         <a class="hero-card" href="#characters">
-          <div class="hero-card-glyph">✦</div>
+          <div class="hero-card-glyph symbol symbol-pinetree"></div>
           <div class="hero-card-name">Characters</div>
           <div class="hero-card-desc">Bios, hidden facts & related easter eggs</div>
         </a>
@@ -177,7 +232,7 @@
   ════════════════════════════════════════════ -->
   <section id="cipherhunt">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-archive">
         <div class="section-kicker">End-credits archive</div>
         <h2 class="section-title">Cipher Hunt</h2>
         <p class="section-subtitle">
@@ -209,7 +264,7 @@
 
   <section id="eggs">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-shack">
         <div class="section-kicker">Mystery Shack files</div>
         <h2 class="section-title">Easter Eggs</h2>
         <p class="section-subtitle">Every entry includes a spoiler-free hint. Click "Reveal spoiler" only when you're ready.</p>
@@ -247,7 +302,7 @@
   ════════════════════════════════════════════ -->
   <section id="marginalia">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-scrap">
         <div class="section-kicker">Background text archive</div>
         <h2 class="section-title">McGucket's Marginalia</h2>
         <p class="section-subtitle">
@@ -273,7 +328,7 @@
   ════════════════════════════════════════════ -->
   <section id="episodes">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-index">
         <div class="section-kicker">Full series reference</div>
         <h2 class="section-title">Episode Index</h2>
         <p class="section-subtitle">
@@ -298,7 +353,7 @@
   ════════════════════════════════════════════ -->
   <section id="journals">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-journal">
         <div class="section-kicker">Ford's field research</div>
         <h2 class="section-title">The Journals</h2>
         <p class="section-subtitle">
@@ -314,7 +369,7 @@
   ════════════════════════════════════════════ -->
   <section id="theories">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-danger">
         <div class="section-kicker">Open case files</div>
         <h2 class="section-title">Theories &amp; Unsolved Mysteries</h2>
         <p class="section-subtitle">
@@ -332,7 +387,7 @@
 
   <section id="zodiac">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-occult">
         <div class="section-kicker">Bill's cipher wheel</div>
         <h2 class="section-title">The Zodiac</h2>
         <p class="section-subtitle">
@@ -443,7 +498,7 @@
 
   <section id="characters">
     <div class="section-wrapper">
-      <div class="paper-panel reveal">
+      <div class="paper-panel reveal section-caseboard">
         <div class="section-kicker">Case board</div>
         <h2 class="section-title">Characters</h2>
         <p class="section-subtitle">Major characters, their arcs, hidden details, and the easter eggs associated with each of them.</p>
