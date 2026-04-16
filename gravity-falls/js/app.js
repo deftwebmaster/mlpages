@@ -671,7 +671,7 @@ const App = (() => {
       const label  = item.number ? `Journal ${item.number}` : 'The Three Combined';
 
       const card = document.createElement('div');
-      card.className = 'journal-card';
+      card.className = 'journal-card' + (item.color === 'all' ? ' journal-combined' : '');
       card.innerHTML = `
         <div class="journal-card-spine" style="background:${spine}"></div>
         <div class="journal-card-header" style="background:rgba(255,255,255,0.3)">
