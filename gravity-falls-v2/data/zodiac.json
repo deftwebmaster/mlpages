@@ -1,0 +1,134 @@
+[
+  {
+    "id": "pine-tree",
+    "symbol": "🌲",
+    "svgPath": "M0,-18 L6,0 L-6,0 Z M-3,0 L3,0 L3,8 L-3,8 Z",
+    "label": "Pine Tree",
+    "character": "Dipper Pines",
+    "angle": 90,
+    "description": "Dipper's hat symbol — the pine tree he found drawn on his hat before he had a name for himself. Ford later tells him the symbol chose him as much as he chose it.",
+    "finaleRole": "active",
+    "finaleNote": "Dipper's slot activated in the finale zodiac sequence. His willingness to trust Stan over Ford in the critical moment is what ultimately breaks the circle — making him simultaneously the wheel's greatest asset and its point of failure."
+  },
+  {
+    "id": "shooting-star",
+    "symbol": "⭐",
+    "svgPath": "M0,-18 L2,-6 L14,-6 L4,2 L8,14 L0,6 L-8,14 L-4,2 L-14,-6 L-2,-6 Z",
+    "label": "Shooting Star",
+    "character": "Mabel Pines",
+    "angle": 120,
+    "description": "Mabel's sweater symbol for much of the series — the shooting star she wished on the night before leaving for Gravity Falls. She wished for a summer she'd never forget.",
+    "finaleRole": "active",
+    "finaleNote": "Mabel's slot activated. Her role in the finale is the emotional anchor — she refuses to give up on Stan even when Dipper doubts him, and that faith is what makes the memory restoration possible."
+  },
+  {
+    "id": "question-mark",
+    "symbol": "❓",
+    "svgPath": "",
+    "label": "Question Mark",
+    "character": "Soos Ramirez",
+    "angle": 150,
+    "description": "The question mark on Soos's shirt — originally a design placeholder that was kept because it fit him too well. Soos is the show's most genuine mystery: a person who is exactly what he appears to be in a town full of things that aren't.",
+    "finaleRole": "active",
+    "finaleNote": "Soos's slot activated. He drives the Stan Vanzilla into the Fearamid, making the physical rescue of Dipper and Mabel possible. His role is unglamorous and essential."
+  },
+  {
+    "id": "ice-bag",
+    "symbol": "🧊",
+    "svgPath": "",
+    "label": "Ice Bag",
+    "character": "McGucket",
+    "angle": 210,
+    "description": "McGucket's symbol is an ice bag — a reference to his mental state throughout the series, specifically the cold compresses he uses to manage the headaches from decades of memory erasure. Cold is also what remains when memory is gone.",
+    "finaleRole": "active",
+    "finaleNote": "McGucket's slot activated after recovering enough of his memories to function. His technical knowledge — he helped build the portal — is instrumental in understanding what Bill can and can't do inside a human mind."
+  },
+  {
+    "id": "glasses",
+    "symbol": "🕶",
+    "svgPath": "",
+    "label": "Glasses",
+    "character": "Ford Pines",
+    "angle": 240,
+    "description": "Ford's round-framed glasses, worn since his research days at Backupsmore University. The glasses appear in every journal illustration of the author before Ford is revealed — another clue hiding in plain sight.",
+    "finaleRole": "broken",
+    "finaleNote": "Ford's slot is the wheel's critical failure point. Bill possesses him before the circle can close, removing the only person who fully understood how the wheel worked. The symbol is there — the person can't be reached."
+  },
+  {
+    "id": "star",
+    "symbol": "⭐",
+    "svgPath": "",
+    "label": "Six-Point Star",
+    "character": "Stan Pines",
+    "angle": 270,
+    "description": "The six-pointed star on Stan's fez — the same emblem used by the Society of the Blind Eye. Whether Stan's connection to that symbol is intentional or incidental is one of the show's few permanently unresolved questions.",
+    "finaleRole": "active",
+    "finaleNote": "Stan's slot is the wheel's true key. The plan ultimately requires him to sacrifice his memories — everything he is — to give Ford the window to destroy Bill. He agrees without hesitation. The star burns brightest at the end."
+  },
+  {
+    "id": "llama",
+    "symbol": "🦙",
+    "svgPath": "",
+    "label": "Llama",
+    "character": "Pacifica Northwest",
+    "angle": 300,
+    "description": "Pacifica's symbol — confirmed in promotional materials and the Journal 3 prop replica. The llama is an unusual choice for a character defined by wealth and status, which is probably the point. The animal is associated with stubbornness and endurance.",
+    "finaleRole": "inactive",
+    "finaleNote": "Pacifica does not make it to the zodiac circle in time. Her arc in 'Northwest Mansion Mystery' establishes her as someone capable of real courage, but the finale doesn't give her the opportunity to demonstrate it at the wheel."
+  },
+  {
+    "id": "bag-of-ice",
+    "symbol": "💎",
+    "svgPath": "",
+    "label": "Crescent Moon",
+    "character": "Gideon Gleeful",
+    "angle": 330,
+    "description": "Gideon's symbol is the crescent moon — tied to his stage persona and his obsession with mystery and performance. The moon is also something that appears powerful and whole while being, in reality, a reflection of someone else's light.",
+    "finaleRole": "inactive",
+    "finaleNote": "Gideon is freed from the Fearamid's stone garden during Weirdmageddon but does not join the zodiac circle. His redemption arc is present but incomplete — he chooses the right side without being fully trusted with the wheel."
+  },
+  {
+    "id": "tent-of-telepathy",
+    "symbol": "🔮",
+    "svgPath": "",
+    "label": "Six-Fingered Hand",
+    "character": "The Author (Ford, as symbol)",
+    "angle": 0,
+    "description": "The six-fingered handprint — Ford's defining physical characteristic and the primary clue to his identity throughout Season 1. As a wheel symbol distinct from his glasses, it represents Ford as the journal's author rather than Ford as a person.",
+    "finaleRole": "active",
+    "finaleNote": "Represented in the wheel as the author, separate from Ford the character. The handprint symbol activates in the context of the journals themselves playing a role — Dipper using the knowledge Ford recorded is the hand reaching through time."
+  },
+  {
+    "id": "heart",
+    "symbol": "❤️",
+    "svgPath": "",
+    "label": "Heart",
+    "character": "Wendy Corduroy",
+    "angle": 30,
+    "description": "Wendy's symbol — a heart that reflects her role as the show's emotional constant. She is never defined by the supernatural, always by her relationships. The heart is also the most honest symbol on the wheel: it means exactly what it looks like.",
+    "finaleRole": "active",
+    "finaleNote": "Wendy's slot activated. She fights through Weirdmageddon with a ferocity that surprises even her closest friends, and her presence at the circle represents what everyone is fighting to protect: an ordinary life in a weird town."
+  },
+  {
+    "id": "fish",
+    "symbol": "🐟",
+    "svgPath": "",
+    "label": "Fish",
+    "character": "Robbie Valentino",
+    "angle": 60,
+    "description": "Robbie's symbol — unexplained in the show itself, documented in promotional materials. The fish may reference his emotional shallowness early in the series, or simply the fact that he's a side character who was always slightly out of his depth.",
+    "finaleRole": "inactive",
+    "finaleNote": "Robbie does not reach the zodiac circle. He survives Weirdmageddon and has a genuine moment of bravery, but his role in the finale is peripheral. The wheel had a place for him that went unfilled."
+  },
+  {
+    "id": "hand",
+    "symbol": "✋",
+    "svgPath": "",
+    "label": "Waving Hand",
+    "character": "Dipper & Mabel's Friendship",
+    "angle": 330,
+    "description": "The outstretched hand — sometimes interpreted as representing the twins' bond itself rather than any single character. In the show's visual language, an open hand reaching out is the gesture of connection, trust, and the refusal to let go.",
+    "finaleRole": "active",
+    "finaleNote": "Activated. Whatever specific character this symbol maps to, its presence in the circle represents the show's core argument: that the most powerful force in Gravity Falls is the willingness to reach toward someone else."
+  }
+]
