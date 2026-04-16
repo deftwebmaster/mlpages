@@ -1,0 +1,155 @@
+[
+  {
+    "id": "ch-s1e2",
+    "season": 1, "episode": 2,
+    "episodeTitle": "The Legend of the Gobblewonker",
+    "cipherType": "caesar",
+    "encoded": "ZHOFRPH WR JUDYLWB IDOOV",
+    "decoded": "WELCOME TO GRAVITY FALLS",
+    "hint": "The most welcoming message in the show. Shift every letter back by 3."
+  },
+  {
+    "id": "ch-s1e3",
+    "season": 1, "episode": 3,
+    "episodeTitle": "Headhunters",
+    "cipherType": "caesar",
+    "encoded": "ZHOFRPH EDFN",
+    "decoded": "WELCOME BACK",
+    "hint": "The show acknowledging fans who were already checking the credits."
+  },
+  {
+    "id": "ch-s1e4",
+    "season": 1, "episode": 4,
+    "episodeTitle": "The Hand That Rocks the Mabel",
+    "cipherType": "caesar",
+    "encoded": "VWRS UHDGLQJ PB PLQG",
+    "decoded": "STOP READING MY MIND",
+    "hint": "Bill speaking directly to the audience — three episodes before he appears."
+  },
+  {
+    "id": "ch-s1e5",
+    "season": 1, "episode": 5,
+    "episodeTitle": "The Inconveniencing",
+    "cipherType": "caesar",
+    "encoded": "ELOO LV ZDWFKLQJ",
+    "decoded": "BILL IS WATCHING",
+    "hint": "A warning. Caesar shift 3, read backward from Z."
+  },
+  {
+    "id": "ch-s1e6",
+    "season": 1, "episode": 6,
+    "episodeTitle": "Dipper vs. Manliness",
+    "cipherType": "caesar",
+    "encoded": "QHYHU PLQG EDE",
+    "decoded": "NEVER MIND BAB",
+    "hint": "A deliberate red herring to test whether fans were actually decoding or guessing."
+  },
+  {
+    "id": "ch-s1e7",
+    "season": 1, "episode": 7,
+    "episodeTitle": "Double Dipper",
+    "cipherType": "caesar",
+    "encoded": "VWDQ LV QRW ZKDW KH VHHPV",
+    "decoded": "STAN IS NOT WHAT HE SEEMS",
+    "hint": "The central mystery of the entire series, stated plainly in episode 7."
+  },
+  {
+    "id": "ch-s1e9",
+    "season": 1, "episode": 9,
+    "episodeTitle": "The Time Traveler's Pig",
+    "cipherType": "caesar",
+    "encoded": "ZLOO BRX HQWHU WKH IDOOV",
+    "decoded": "WILL YOU ENTER THE FALLS",
+    "hint": "An invitation from Bill, placed right after his debut episode."
+  },
+  {
+    "id": "ch-s1e10",
+    "season": 1, "episode": 10,
+    "episodeTitle": "Fight Fighters",
+    "cipherType": "atbash",
+    "encoded": "HZBWRMT HGZMBVI",
+    "decoded": "STAYING STAYNER",
+    "hint": "The cipher type changed this episode. Mirror each letter: A↔Z, B↔Y..."
+  },
+  {
+    "id": "ch-s1e13",
+    "season": 1, "episode": 13,
+    "episodeTitle": "Boss Mabel",
+    "cipherType": "atbash",
+    "encoded": "GSVIV RH LMOB LMV NVHHZTV",
+    "decoded": "THERE IS ONLY ONE MESSAGE",
+    "hint": "Atbash again. The show suggesting everything points to a single truth."
+  },
+  {
+    "id": "ch-s1e17",
+    "season": 1, "episode": 17,
+    "episodeTitle": "Boyz Crazy",
+    "cipherType": "a1z26",
+    "encoded": "14-5-24-20 19-21-13-13-5-18",
+    "decoded": "NEXT SUMMER",
+    "hint": "The first A1Z26 cipher. Each number is a letter's position: 1=A, 26=Z."
+  },
+  {
+    "id": "ch-s1e19",
+    "season": 1, "episode": 19,
+    "episodeTitle": "Dreamscaperers",
+    "cipherType": "a1z26",
+    "encoded": "14-5-24-20 3-9-16-8-5-18 8-1-18-4-5-18",
+    "decoded": "NEXT CIPHER HARDER",
+    "hint": "A direct message to the fan decoding community. Season 2 would introduce Vigenère."
+  },
+  {
+    "id": "ch-s1e20",
+    "season": 1, "episode": 20,
+    "episodeTitle": "Gideon Rises",
+    "cipherType": "caesar",
+    "encoded": "ELOO LV FRPLQJ",
+    "decoded": "BILL IS COMING",
+    "hint": "The last cipher of Season 1. Caesar shift 3. A promise and a threat."
+  },
+  {
+    "id": "ch-s2e2",
+    "season": 2, "episode": 2,
+    "episodeTitle": "Into the Bunker",
+    "cipherType": "vigenere",
+    "encoded": "ZKBVIQZSRIQMFBV",
+    "decoded": "DIPPER IS THE AUTHOR",
+    "hint": "Vigenère with key STANFORD. A red herring planted by the show — Dipper is NOT the author."
+  },
+  {
+    "id": "ch-s2e6",
+    "season": 2, "episode": 6,
+    "episodeTitle": "Northwest Mansion Mystery",
+    "cipherType": "vigenere",
+    "encoded": "XJKXDOFMXIRIX",
+    "decoded": "FORD IS COMING BACK",
+    "hint": "Vigenère, key STANFORD. The confirmation fans were waiting for."
+  },
+  {
+    "id": "ch-s2e11",
+    "season": 2, "episode": 11,
+    "episodeTitle": "Not What He Seems",
+    "cipherType": "vigenere",
+    "encoded": "TUBMVFNZFUMVIF",
+    "decoded": "HE IS THE AUTHOR",
+    "hint": "Vigenère, key STANFORD. Cracked by fans before the episode aired — they knew before everyone else."
+  },
+  {
+    "id": "ch-s2e17",
+    "season": 2, "episode": 17,
+    "episodeTitle": "Dipper and Mabel vs. the Future",
+    "cipherType": "vigenere",
+    "encoded": "PJPVHROVKFZRVKFR",
+    "decoded": "WEIRDMAGEDDON IS COMING",
+    "hint": "Vigenère, key STANFORD. One episode of warning before everything changed."
+  },
+  {
+    "id": "ch-s2e20",
+    "season": 2, "episode": 20,
+    "episodeTitle": "Weirdmageddon Part 3: Take Back the Falls",
+    "cipherType": "a1z26",
+    "encoded": "9-20-19 14-5-22-5-18 15-22-5-18",
+    "decoded": "ITS NEVER OVER",
+    "hint": "The final cipher of the series. Three words. A1Z26. Make of it what you will."
+  }
+]

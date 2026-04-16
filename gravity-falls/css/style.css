@@ -148,6 +148,7 @@ nav a.active {
 #cipher {
   padding: 4rem 2rem 4.5rem;
   overflow: hidden;
+  background: linear-gradient(180deg, #1a3528 0%, #1e3d2a 100%);
 }
 
 #cipher::before,
@@ -870,7 +871,21 @@ footer {
 .footer-text {
   color: rgba(244, 230, 197, 0.72);
   font-size: 0.88rem;
+  line-height: 1.9;
 }
+
+.footer-credit {
+  font-size: 0.78rem;
+  opacity: 0.6;
+}
+
+.footer-link {
+  color: rgba(244, 230, 197, 0.85);
+  text-underline-offset: 3px;
+  transition: opacity 0.15s;
+}
+
+.footer-link:hover { opacity: 0.6; }
 
 /* Reveal classes — content always visible, animation is enhancement only */
 .reveal {
@@ -933,4 +948,1079 @@ footer {
     animation: none !important;
     transition: none !important;
   }
+}
+
+/* ════════════════════════════════════════
+   HERO HUB
+════════════════════════════════════════ */
+
+#hero {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 5rem 2rem 4rem;
+  background: linear-gradient(180deg, #112218 0%, #1a3528 100%);
+}
+
+/* Constellation dots */
+#hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    radial-gradient(1.5px 1.5px at 8%  14%, rgba(245,200,66,0.7) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 18% 68%, rgba(245,200,66,0.4) 0%, transparent 100%),
+    radial-gradient(2px   2px   at 33% 28%, rgba(168,210,200,0.5) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 52% 82%, rgba(245,200,66,0.35) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 67% 12%, rgba(168,210,200,0.6) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 78% 55%, rgba(245,200,66,0.45) 0%, transparent 100%),
+    radial-gradient(2px   2px   at 91% 38%, rgba(168,210,200,0.3) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 42% 47%, rgba(245,200,66,0.25) 0%, transparent 100%),
+    radial-gradient(1px   1px   at 85% 78%, rgba(245,200,66,0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 24% 90%, rgba(168,210,200,0.35) 0%, transparent 100%);
+}
+
+/* Large ghost Bill triangle */
+#hero::after {
+  content: '';
+  position: absolute;
+  right: -60px; top: 50%;
+  transform: translateY(-50%);
+  width: 500px; height: 440px;
+  opacity: 0.03; pointer-events: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 87'%3E%3Cpolygon points='50,2 98,85 2,85' fill='%23f5c842'/%3E%3Cellipse cx='50' cy='55' rx='14' ry='18' fill='%230d1f2d'/%3E%3Cellipse cx='50' cy='55' rx='7' ry='9' fill='%23f5c842'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+.hero-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-top {
+  margin-bottom: 3rem;
+}
+
+/* Bill quote block */
+.bill-quote-wrap {
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.1rem;
+  border-left: 3px solid rgba(245,200,66,0.4);
+  max-width: 560px;
+  min-height: 3.2rem;
+}
+
+.bill-quote-attr {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(245,200,66,0.5);
+  margin-right: 0.5rem;
+}
+
+.bill-quote-text {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  color: rgba(244,230,197,0.7);
+  font-style: italic;
+  line-height: 1.5;
+  transition: opacity 0.4s ease;
+}
+
+.bill-quote-text.fading { opacity: 0; }
+
+/* Section navigation cards */
+.hero-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.hero-card {
+  display: block;
+  text-decoration: none;
+  padding: 1.25rem 1.1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(245,200,66,0.15);
+  background: rgba(255,255,255,0.04);
+  transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  backdrop-filter: blur(4px);
+}
+
+.hero-card:hover {
+  border-color: rgba(245,200,66,0.4);
+  background: rgba(245,200,66,0.06);
+  transform: translateY(-2px);
+}
+
+.hero-card-glyph {
+  font-size: 1.4rem;
+  color: var(--gold);
+  margin-bottom: 0.6rem;
+  line-height: 1;
+}
+
+.hero-card-name {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  color: #f4e6c5;
+  margin-bottom: 0.3rem;
+  line-height: 1.2;
+}
+
+.hero-card-desc {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  color: rgba(244,230,197,0.5);
+  line-height: 1.45;
+  letter-spacing: 0.02em;
+}
+
+/* ════════════════════════════════════════
+   McGUCKET'S MARGINALIA
+════════════════════════════════════════ */
+
+.marginalia-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.marginalia-card {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+  padding: 1rem 1.2rem;
+  background: rgba(255,255,255,0.25);
+  position: relative;
+}
+
+.marginalia-card::after {
+  content: '✎';
+  position: absolute;
+  bottom: 10px; right: 14px;
+  font-size: 0.85rem;
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+.marginalia-meta {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.marginalia-location {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.marginalia-ep {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  color: var(--gold-dim);
+  background: rgba(200,130,10,0.1);
+  padding: 1px 7px;
+  border-radius: 2px;
+}
+
+.marginalia-text {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  color: var(--ink-mid);
+  line-height: 1.45;
+  margin-bottom: 0.55rem;
+}
+
+.marginalia-note {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  font-style: italic;
+  padding-left: 10px;
+  border-left: 2px solid rgba(122,26,16,0.25);
+}
+
+/* ── Responsive additions ── */
+@media (max-width: 680px) {
+  #hero { padding: 4rem 1rem 3rem; min-height: auto; }
+  .hero-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .hero-card { padding: 1rem 0.85rem; }
+  .hero-card-desc { display: none; }
+}
+
+@media (max-width: 400px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-card-desc { display: none; }
+}
+
+/* ════════════════════════════════════════
+   CIPHER HUNT
+════════════════════════════════════════ */
+
+#cipherhunt { background: var(--parchment-bg); }
+
+.hunt-progress-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.hunt-progress-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.hunt-progress-track {
+  flex: 1;
+  min-width: 120px;
+  height: 6px;
+  background: var(--parchment-xdk, #cfc09a);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.hunt-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--pine-mid, #2d5c30);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+.hunt-reset-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint, #8a7a60);
+  background: transparent;
+  border: 1px solid var(--parchment-xdk, #cfc09a);
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.hunt-reset-btn:hover { border-color: var(--danger, #8b2020); color: var(--danger, #8b2020); }
+
+.hunt-season-group { margin-bottom: 1.5rem; }
+
+.hunt-season-label {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.1rem;
+  color: var(--ink-mid);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--parchment-xdk, #cfc09a);
+}
+
+.hunt-grid { display: grid; gap: 8px; }
+
+.hunt-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border, rgba(0,0,0,0.1));
+  border-left: 4px solid var(--parchment-xdk, #cfc09a);
+  border-radius: 0 6px 6px 0;
+  background: rgba(255,255,255,0.35);
+  transition: border-left-color 0.2s;
+}
+
+.hunt-row.solved {
+  border-left-color: var(--pine-mid, #2d5c30);
+  background: rgba(45,92,48,0.06);
+}
+
+.hunt-row.solved .hunt-encoded {
+  opacity: 0.5;
+  text-decoration: line-through;
+  text-decoration-color: var(--pine-mid, #2d5c30);
+}
+
+.hunt-ep {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--teal-mid, #1a3a4a);
+  background: var(--teal-mist, #c8dcc8);
+  padding: 2px 7px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.hunt-main { min-width: 0; }
+
+.hunt-title {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hunt-encoded {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hunt-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.hunt-decode-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  background: transparent;
+  border: 1px solid var(--pine-light, #4a8850);
+  border-radius: 3px;
+  color: var(--pine-light, #4a8850);
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.hunt-decode-btn:hover { background: var(--pine-light, #4a8850); color: var(--parchment, #f2e8d0); }
+
+.hunt-reveal-btn {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  background: transparent;
+  border: 1px solid var(--purple-mid, #6a4a8a);
+  border-radius: 3px;
+  color: var(--purple-mid, #6a4a8a);
+  cursor: pointer;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.hunt-reveal-btn:hover { background: var(--purple-mid, #6a4a8a); color: #e8d8f8; }
+
+.hunt-check {
+  width: 22px; height: 22px;
+  border: 2px solid var(--parchment-xdk, #cfc09a);
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  color: transparent;
+}
+.hunt-check:hover { border-color: var(--pine-mid, #2d5c30); }
+.hunt-check.checked { background: var(--pine-mid, #2d5c30); border-color: var(--pine-mid, #2d5c30); color: #fff; }
+
+.hunt-answer-row {
+  display: none;
+  padding: 0.5rem 1rem 0.5rem 3.5rem;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.95rem;
+  color: var(--red-ink, #7a1a10);
+  font-style: italic;
+  border-left: 4px solid rgba(122,26,16,0.25);
+  border-right: 1px solid var(--border, rgba(0,0,0,0.1));
+  border-bottom: 1px solid var(--border, rgba(0,0,0,0.1));
+  background: rgba(122,26,16,0.03);
+  border-radius: 0 0 6px 0;
+  animation: fadeIn 0.2s ease;
+}
+.hunt-answer-row.open { display: block; }
+
+.hunt-hint {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-faint, #8a7a60);
+  margin-top: 4px;
+  font-style: normal;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 600px) {
+  .hunt-row {
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+  }
+  .hunt-actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .hunt-check { margin-left: auto; }
+  .hunt-title { font-size: 0.85rem; }
+}
+
+/* ════════════════════════════════════════
+   ZODIAC WHEEL
+════════════════════════════════════════ */
+
+#zodiac { background: var(--parchment-bg); }
+
+.zodiac-layout {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+.zodiac-wheel-wrap { position: relative; }
+
+/* Node hover/active states */
+.znode { cursor: pointer; }
+.znode .znode-ring {
+  transition: stroke-width 0.15s, filter 0.15s;
+}
+.znode:hover .znode-ring,
+.znode.selected .znode-ring {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgba(245,200,66,0.5));
+}
+.znode.selected .znode-ring {
+  stroke: #f5c842 !important;
+}
+
+/* Legend */
+.zodiac-legend {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+  justify-content: center;
+}
+
+.zleg {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.zleg::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.zleg-active   { color: #4a8850; background: rgba(74,136,80,0.1); }
+.zleg-active::before   { background: #4a8850; }
+.zleg-inactive { color: var(--ink-faint); background: rgba(0,0,0,0.06); }
+.zleg-inactive::before { background: var(--ink-faint); }
+.zleg-broken   { color: #8b2020; background: rgba(139,32,32,0.08); }
+.zleg-broken::before   { background: #8b2020; }
+
+/* Detail panel */
+.zodiac-detail {
+  position: sticky;
+  top: 80px;
+  min-height: 300px;
+}
+
+.zodiac-prompt {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.82rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.06em;
+  margin-top: 2rem;
+  opacity: 0.6;
+}
+
+.zodiac-detail-inner {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--gold-dim, #c8960a);
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem;
+  background: rgba(255,255,255,0.3);
+  animation: fadeIn 0.2s ease;
+}
+
+.zodiac-detail-inner.empty {
+  border-left-color: var(--parchment-xdk, #cfc09a);
+  background: transparent;
+  border-color: transparent;
+}
+
+.zodiac-detail-symbol {
+  font-size: 2rem;
+  margin-bottom: 0.3rem;
+  line-height: 1;
+}
+
+.zodiac-detail-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold-dim, #c8960a);
+  margin-bottom: 0.2rem;
+}
+
+.zodiac-detail-character {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.35rem;
+  color: var(--ink-mid);
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.zodiac-detail-desc {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.zodiac-finale-block {
+  padding: 0.75rem 0.9rem;
+  border-radius: 4px;
+  border-left: 3px solid;
+}
+
+.zodiac-finale-block.active   { background: rgba(45,92,48,0.08);  border-color: #4a8850; }
+.zodiac-finale-block.inactive { background: rgba(0,0,0,0.04);     border-color: var(--ink-faint); }
+.zodiac-finale-block.broken   { background: rgba(139,32,32,0.06); border-color: #8b2020; }
+
+.zodiac-finale-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+}
+
+.active   .zodiac-finale-label { color: #4a8850; }
+.inactive .zodiac-finale-label { color: var(--ink-faint); }
+.broken   .zodiac-finale-label { color: #8b2020; }
+
+.zodiac-finale-note {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 760px) {
+  .zodiac-layout {
+    grid-template-columns: 1fr;
+  }
+  .zodiac-detail {
+    position: static;
+    min-height: auto;
+  }
+  .zodiac-detail-inner {
+    margin-top: 0.5rem;
+  }
+}
+
+/* ════════════════════════════════════════
+   EPISODE INDEX
+════════════════════════════════════════ */
+
+#episodes { background: var(--parchment-bg); }
+
+.ep-season-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.ep-tab {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 6px 18px;
+  border-radius: 3px;
+  border: 1px solid var(--parchment-xdk, #cfc09a);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ep-tab:hover { border-color: var(--pine-mid); color: var(--pine-mid); }
+.ep-tab.active { background: var(--pine, #1e3d20); color: var(--pine-mist, #c8dcc8); border-color: var(--pine); }
+
+.ep-grid { display: grid; gap: 8px; }
+
+.ep-row {
+  border: 1px solid var(--border, rgba(0,0,0,0.1));
+  border-left: 4px solid var(--parchment-xdk, #cfc09a);
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+  transition: border-left-color 0.15s;
+}
+
+.ep-row:hover { border-left-color: var(--pine-mid, #2d5c30); }
+.ep-row.open  { border-left-color: var(--pine, #1e3d20); }
+
+.ep-header {
+  display: grid;
+  grid-template-columns: 52px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 0.7rem 1rem;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  user-select: none;
+}
+
+.ep-header:hover { background: rgba(255,255,255,0.5); }
+
+.ep-num {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--teal-mid, #1a3a4a);
+  background: var(--teal-mist, #c8dcc8);
+  text-align: center;
+  padding: 3px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.ep-title-wrap { min-width: 0; }
+
+.ep-title {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 0.95rem;
+  color: var(--ink-mid);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ep-badges {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.ep-badge-count {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.ep-badge-egg   { background: var(--pine-mist, #c8dcc8); color: var(--pine, #1e3d20); }
+.ep-badge-cipher{ background: var(--amber-pale, #faefd0); color: var(--amber, #d4820a); }
+
+.ep-chevron {
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  transition: transform 0.2s;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.ep-row.open .ep-chevron { transform: rotate(180deg); }
+
+/* Expanded body */
+.ep-body {
+  display: none;
+  padding: 0.9rem 1rem 1rem;
+  border-top: 1px solid var(--border, rgba(0,0,0,0.08));
+  background: rgba(255,255,255,0.15);
+  animation: fadeIn 0.18s ease;
+}
+.ep-row.open .ep-body { display: block; }
+
+.ep-desc {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.ep-links-section { margin-bottom: 0.75rem; }
+
+.ep-links-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.4rem;
+}
+
+.ep-links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ep-link-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 3px;
+  transition: background 0.12s, color 0.12s;
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.ep-link-item:hover { background: rgba(0,0,0,0.05); color: var(--ink-mid); }
+
+.ep-link-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.ep-link-dot.egg    { background: var(--pine-mid, #2d5c30); }
+.ep-link-dot.cipher { background: var(--amber, #d4820a); }
+
+.ep-empty {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  font-style: italic;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 520px) {
+  .ep-header { grid-template-columns: 44px 1fr; }
+  .ep-badges { display: none; }
+  .ep-title  { font-size: 0.88rem; }
+}
+
+/* ── Hero grid 3×3 override ── */
+.hero-grid-3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 680px) {
+  .hero-grid-3col {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-grid-3col {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ════════════════════════════════════════
+   THE JOURNALS
+════════════════════════════════════════ */
+
+.journals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.journal-card {
+  border: 1px solid var(--border, rgba(0,0,0,0.1));
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.18s, box-shadow 0.18s;
+  cursor: pointer;
+}
+
+.journal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+}
+
+.journal-card-spine {
+  height: 6px;
+}
+
+.journal-card-header {
+  padding: 1rem 1.1rem 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(255,255,255,0.35);
+  border-bottom: 1px solid var(--border, rgba(0,0,0,0.08));
+}
+
+.journal-number-badge {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+
+.journal-card-meta { min-width: 0; }
+
+.journal-title {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  color: var(--ink-mid);
+  margin-bottom: 2px;
+}
+
+.journal-owner {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.journal-card-body {
+  padding: 0.9rem 1.1rem;
+  background: rgba(255,255,255,0.2);
+}
+
+.journal-bio {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 0.9rem;
+  letter-spacing: 0.01em;
+}
+
+.journal-contents-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.journal-contents-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 0.9rem;
+}
+
+.journal-contents-list li {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  padding-left: 12px;
+  position: relative;
+  letter-spacing: 0.01em;
+}
+
+.journal-contents-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--ink-faint);
+}
+
+.journal-hidden-detail {
+  padding: 0.65rem 0.85rem;
+  background: rgba(122,26,16,0.05);
+  border-left: 3px solid rgba(122,26,16,0.3);
+  border-radius: 0 4px 4px 0;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.72rem;
+  color: var(--red-ink, #7a1a10);
+  line-height: 1.6;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+/* ════════════════════════════════════════
+   THEORIES & MYSTERIES
+════════════════════════════════════════ */
+
+.theories-filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+}
+
+.theories-filter {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 2px;
+  border: 1px solid var(--parchment-xdk, #cfc09a);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.theories-filter:hover { border-color: var(--pine-mid); color: var(--pine-mid); }
+.theories-filter.active { background: var(--pine, #1e3d20); color: var(--pine-mist, #c8dcc8); border-color: var(--pine); }
+
+.theories-grid { display: grid; gap: 12px; }
+
+.theory-card {
+  border: 1px solid var(--border, rgba(0,0,0,0.1));
+  border-left: 4px solid var(--parchment-xdk, #cfc09a);
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+  transition: border-left-color 0.15s;
+}
+
+.theory-card[data-status="unsolved"]         { border-left-color: #8b2020; }
+.theory-card[data-status="partially-solved"] { border-left-color: var(--amber, #d4820a); }
+
+.theory-card.hidden { display: none; }
+
+.theory-header {
+  padding: 0.85rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+}
+.theory-header:hover { background: rgba(255,255,255,0.5); }
+
+.theory-status-badge {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.theory-status-badge.unsolved         { background: rgba(139,32,32,0.12); color: #8b2020; }
+.theory-status-badge.partially-solved { background: rgba(212,130,10,0.12); color: var(--amber, #d4820a); }
+
+.theory-title {
+  font-family: 'IM Fell English SC', serif;
+  font-size: 1rem;
+  color: var(--ink-mid);
+  flex: 1;
+  min-width: 0;
+}
+
+.theory-chevron {
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.theory-card.open .theory-chevron { transform: rotate(180deg); }
+
+.theory-body {
+  display: none;
+  padding: 0.9rem 1.1rem 1rem;
+  border-top: 1px solid var(--border, rgba(0,0,0,0.08));
+  background: rgba(255,255,255,0.15);
+  animation: fadeIn 0.18s ease;
+}
+.theory-card.open .theory-body { display: block; }
+
+.theory-summary {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.theory-evidence-label {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.5rem;
+}
+
+.theory-evidence-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 1rem;
+}
+
+.theory-evidence-list li {
+  font-family: 'Special Elite', monospace;
+  font-size: 0.73rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+  padding-left: 14px;
+  position: relative;
+  letter-spacing: 0.01em;
+}
+
+.theory-evidence-list li::before {
+  content: '◦';
+  position: absolute;
+  left: 0;
+  color: var(--ink-faint);
+}
+
+.theory-leading {
+  padding: 0.75rem 0.9rem;
+  background: rgba(45,92,48,0.07);
+  border-left: 3px solid var(--pine-mid, #2d5c30);
+  border-radius: 0 4px 4px 0;
+  font-family: 'Special Elite', monospace;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+}
+
+.theory-leading-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pine-light, #4a8850);
+  margin-bottom: 4px;
 }

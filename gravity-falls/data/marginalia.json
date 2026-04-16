@@ -1,0 +1,107 @@
+[
+  {
+    "id": "mg-shack-sign",
+    "location": "Mystery Shack exterior sign",
+    "episodes": "S1, multiple",
+    "text": "\"MYSTERY SHACK — ENTER IF YOU DARE — ADMISSION $10 / CHILDREN $15\"",
+    "note": "Children cost more than adults. Stan's pricing is on the sign from the very first episode and no one in the show ever comments on it."
+  },
+  {
+    "id": "mg-journal-warning",
+    "location": "Journal 3, inside front cover",
+    "episodes": "S1E1",
+    "text": "\"Property of: ??? — DO NOT READ\"",
+    "note": "The author's name is literally replaced with question marks. Ford wrote this knowing he might forget who he was, or knowing someone else might find it. The instruction is addressed to no one in particular, which makes it more unsettling than a name would."
+  },
+  {
+    "id": "mg-journal-3-warning2",
+    "location": "Journal 3, page margins throughout",
+    "episodes": "S1–S2",
+    "text": "\"I know he's watching\" / \"don't trust him\" / \"it's too late for me\"",
+    "note": "Ford's margin annotations grow increasingly paranoid as the journals progress. These notes are addressed to the reader — whoever found the journal — not to himself. He was writing instructions for a successor he hoped would never exist."
+  },
+  {
+    "id": "mg-stan-wanted",
+    "location": "Post office wall, background",
+    "episodes": "S1E3",
+    "text": "\"WANTED: STANFORD PINES — FRAUD, IMPERSONATION, UNLICENSED TOURISM\"",
+    "note": "The wanted poster uses the name Stanford, not Stanley. Readable if you pause. Stan is wanted under his brother's name — which means law enforcement already suspects him of impersonation, but for the wrong reasons."
+  },
+  {
+    "id": "mg-laptop-warning",
+    "location": "McGucket's laptop screen",
+    "episodes": "S1E10",
+    "text": "\"EXPERIMENT LOG 00026 — SUBJECT RETAINS 0% MEMORY — PROCEED\"",
+    "note": "McGucket's own experiment log, visible on his screen for two frames. He documented himself erasing his memories so methodically that he kept notes on how completely it was working. The log number suggests he did this at least 26 times before this entry."
+  },
+  {
+    "id": "mg-gravity-falls-gossiper",
+    "location": "Gravity Falls Gossiper newspaper",
+    "episodes": "S1E7",
+    "text": "\"LOCAL MAN STILL NOT ACCOUNTED FOR — FORD PINES, NOTED RESEARCHER, MISSING SINCE 1982\"",
+    "note": "The newspaper headline is readable in the background of the gift shop. 1982 is the year Ford went through the portal. The paper treats it as an old unsolved disappearance. Stan has been living under Ford's name for over 30 years at this point in the story."
+  },
+  {
+    "id": "mg-shack-rules",
+    "location": "Mystery Shack employee break room",
+    "episodes": "S1E13",
+    "text": "\"RULES: 1. No refunds. 2. No questions. 3. If you hear something in the basement, you did not hear something in the basement.\"",
+    "note": "Rule 3 is the tell. Stan had an active interdimensional portal in the basement the entire time the shack was operating as a tourist attraction. He wrote this rule himself. It implies staff had been hearing it for years."
+  },
+  {
+    "id": "mg-bill-contract",
+    "location": "Bill Cipher's deal contract (pause frame)",
+    "episodes": "S1E19",
+    "text": "\"I, THE UNDERSIGNED, AGREE TO GIVE BILL CIPHER ACCESS TO MY MIND IN EXCHANGE FOR [REDACTED] — SIGNED: GIDEON GLEEFUL\"",
+    "note": "The contract is visible for a fraction of a second when Gideon makes his deal. The consideration — what Bill agreed to give Gideon in exchange — is literally blacked out. The show never reveals what Gideon asked for. Fans have speculated for a decade."
+  },
+  {
+    "id": "mg-ford-research-board",
+    "location": "Ford's underground lab corkboard",
+    "episodes": "S2E12",
+    "text": "Pinned notes: \"BILL KNOWS ABOUT THE PORTAL\" / \"DO NOT DREAM\" / \"SLEEP ONLY 4 HRS\" / \"IT'S IN THE WALLS\"",
+    "note": "Ford's lab corkboard is readable in several Season 2 frames. 'DO NOT DREAM' and 'SLEEP ONLY 4 HRS' confirm he was rationing sleep to limit Bill's access to his mind. 'IT'S IN THE WALLS' has never been satisfactorily explained."
+  },
+  {
+    "id": "mg-society-blindeye-book",
+    "location": "Society of the Blind Eye ceremony room",
+    "episodes": "S2E7",
+    "text": "\"WHAT IS SEEN CANNOT BE UNSEEN — WHAT IS FORGOTTEN IS MERCY\"",
+    "note": "The Society's motto, carved above the door of their meeting room. It frames memory erasure as an act of compassion — they genuinely believed they were protecting people. This makes them considerably more tragic than a simple villain organization."
+  },
+  {
+    "id": "mg-grunkle-stan-diploma",
+    "location": "Stan's office wall",
+    "episodes": "S1, multiple",
+    "text": "\"STAN PINES — CERTIFICATE OF ATTENDANCE — GLASS SHARD COMMUNITY COLLEGE — HALF A SEMESTER\"",
+    "note": "Stan's only credential, hung proudly in his office alongside the Mystery Shack's operating license (which expires in 1999). Both are visible in wide shots. The diploma says 'Certificate of Attendance,' not graduation, and specifies half a semester."
+  },
+  {
+    "id": "mg-dipper-journal-marginalia",
+    "location": "Dipper's own notes in Journal 3",
+    "episodes": "S1–S2",
+    "text": "Margin notes in different ink: \"this can't be right\" / \"ask Stan??\" / \"DON'T TRUST\" with an arrow pointing at a redacted name",
+    "note": "Dipper annotated Journal 3 in his own handwriting as he read it. His notes are in noticeably shakier handwriting than Ford's, suggesting he was writing them quickly or nervously. The redacted name he distrusts is never shown clearly enough to read."
+  },
+  {
+    "id": "mg-weirdmageddon-graffiti",
+    "location": "Gravity Falls town walls during Weirdmageddon",
+    "episodes": "S2E18–S2E20",
+    "text": "Various graffiti: \"HE KNOWS YOUR NAME\" / \"CIPHER SEES ALL\" / \"THERE IS NO GOING BACK\" / \"WE TRIED\"",
+    "note": "During Weirdmageddon, the town walls are covered in graffiti from residents before they were petrified or captured. These were written by ordinary townspeople who had hours or minutes to leave a record. 'WE TRIED' appears near the town hall entrance."
+  },
+  {
+    "id": "mg-postcard-author",
+    "location": "Postcard visible in Stan's drawer",
+    "episodes": "S2E13",
+    "text": "\"Stan — I know you haven't forgiven me. I haven't forgiven myself. But if you're reading this, the machine worked. — F\"",
+    "note": "Visible for three frames when Stan opens his desk drawer in 'A Tale of Two Stans.' The postcard is from Ford, sent through the portal before he was fully trapped on the other side. Stan received confirmation that the portal could work — that Ford was alive — and spent 30 years building it alone."
+  },
+  {
+    "id": "mg-gift-shop-oddities",
+    "location": "Mystery Shack gift shop shelves",
+    "episodes": "S1, multiple",
+    "text": "Product labels: \"GENUINE MONSTER HAIR (CAT)\" / \"CURSED GEMSTONE (PROBABLY FINE)\" / \"AUTHENTIC GRAVITY FALLS DIRT ($8/oz)\"",
+    "note": "Stan's gift shop labels are fully readable throughout the series and are uniformly, specifically dishonest. The parenthetical disclaimers — '(cat)', '(probably fine)' — suggest he considered not including them and decided they made the scam more defensible."
+  }
+]
