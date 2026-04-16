@@ -433,26 +433,26 @@ const App = (() => {
       // Main row
       const row = document.createElement('div');
       row.className = 'hunt-row' + (solved.has(item.id) ? ' solved' : '');
-      row.innerHTML = \`
-        <span class="hunt-ep">S\${item.season}E\${item.episode}</span>
+      row.innerHTML = `
+        <span class="hunt-ep">S${item.season}E${item.episode}</span>
         <div class="hunt-main">
-          <div class="hunt-title">\${item.episodeTitle}</div>
-          <div class="hunt-encoded">\${item.encoded}</div>
+          <div class="hunt-title">${item.episodeTitle}</div>
+          <div class="hunt-encoded">${item.encoded}</div>
         </div>
         <div class="hunt-actions">
           <button class="hunt-decode-btn" title="Load into decoder">Decode ↗</button>
           <button class="hunt-reveal-btn">Answer</button>
         </div>
-        <div class="hunt-check\${solved.has(item.id) ? ' checked' : ''}" title="Mark as solved">✓</div>
-      \`;
+        <div class="hunt-check${solved.has(item.id) ? ' checked' : ''}" title="Mark as solved">✓</div>
+      `;
 
       // Answer row
       const answerRow = document.createElement('div');
       answerRow.className = 'hunt-answer-row';
-      answerRow.innerHTML = \`
-        "\${item.decoded}"
-        <div class="hunt-hint">\${item.hint}</div>
-      \`;
+      answerRow.innerHTML = `
+        "${item.decoded}"
+        <div class="hunt-hint">${item.hint}</div>
+      `;
 
       // Load into decoder
       row.querySelector('.hunt-decode-btn').addEventListener('click', () => {
