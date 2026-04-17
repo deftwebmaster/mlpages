@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gravity Falls: Scattered Pages</title>
+  <meta name="description" content="A text adventure set in Gravity Falls, one summer after Weirdmageddon.">
+  <meta name="theme-color" content="#0a1208">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/game.css">
+  <!-- lone wolf, own sky | Matt Livingston -->
+</head>
+<body>
+
+  <!-- ── Title Screen ── -->
+  <div id="title-screen" class="title-screen">
+    <div class="title-bg-trees" aria-hidden="true"></div>
+    <div class="title-content">
+      <div class="title-eye" aria-hidden="true">
+        <svg viewBox="0 0 100 87" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="50,4 96,83 4,83" fill="none" stroke="rgba(180,150,60,0.9)" stroke-width="2"/>
+          <ellipse cx="50" cy="57" rx="13" ry="17" fill="none" stroke="rgba(180,150,60,0.6)" stroke-width="1.5"/>
+          <ellipse cx="50" cy="57" rx="6" ry="8" fill="rgba(180,150,60,0.4)"/>
+          <circle cx="46" cy="53" r="2.5" fill="rgba(220,190,100,0.6)"/>
+        </svg>
+      </div>
+      <p class="title-super">GRAVITY FALLS</p>
+      <h1 class="title-name">Scattered Pages</h1>
+      <p class="title-tagline">One summer after Weirdmageddon.<br>Something was left behind.</p>
+      <button class="title-btn" id="start-btn">Begin</button>
+      <button class="title-btn title-btn-secondary" id="resume-btn">Resume from checkpoint</button>
+    </div>
+    <p class="title-credit">An unofficial fan game · Not affiliated with Disney or Alex Hirsch</p>
+  </div>
+
+  <!-- ── Checkpoint Resume Modal ── -->
+  <div id="resume-modal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Paste Checkpoint</h2>
+      <p class="modal-desc">Paste your checkpoint block below to resume your session.</p>
+      <textarea id="checkpoint-input" class="checkpoint-textarea" placeholder="═══════════════════════════════════════════════&#10;CHECKPOINT — ...&#10;═══════════════════════════════════════════════&#10;..."></textarea>
+      <div class="modal-actions">
+        <button class="modal-btn-cancel" id="resume-cancel">Cancel</button>
+        <button class="modal-btn-confirm" id="resume-confirm">Resume</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main Game ── -->
+  <div id="game" class="game hidden">
+
+    <!-- Header -->
+    <header class="game-header">
+      <div class="game-header-left">
+        <span class="game-title-small">Scattered Pages</span>
+      </div>
+      <div class="game-header-right">
+        <button class="header-btn" id="stats-toggle-btn" aria-label="Toggle stats">
+          <span class="header-btn-icon">◈</span>
+          <span class="header-btn-label">Stats</span>
+        </button>
+        <button class="header-btn" id="checkpoint-btn" aria-label="Copy checkpoint">
+          <span class="header-btn-icon">◎</span>
+          <span class="header-btn-label">Save</span>
+        </button>
+        <button class="header-btn header-btn-danger" id="new-game-btn" aria-label="New game">
+          <span class="header-btn-icon">↺</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main layout -->
+    <div class="game-layout">
+
+      <!-- Chat column -->
+      <main class="game-main">
+        <div id="chat-window" class="chat-window">
+          <!-- Messages rendered here by JS -->
+        </div>
+        <div class="typing-indicator hidden" id="typing-indicator">
+          <span></span><span></span><span></span>
+        </div>
+      </main>
+
+      <!-- Stats sidebar (desktop) / drawer (mobile) -->
+      <aside class="stats-panel" id="stats-panel">
+        <div class="stats-inner">
+
+          <div class="stats-section">
+            <h3 class="stats-label">Location</h3>
+            <p class="stats-value" id="stat-location">—</p>
+            <p class="stats-sub" id="stat-time">—</p>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Sanity</h3>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar sanity-bar" id="sanity-bar"></div>
+            </div>
+            <p class="stats-value stats-value-num" id="stat-sanity">85</p>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Exposure</h3>
+            <div class="stat-bar-wrap">
+              <div class="stat-bar exposure-bar" id="exposure-bar"></div>
+            </div>
+            <p class="stats-value stats-value-num" id="stat-exposure">0</p>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Bill Echo</h3>
+            <p class="stats-value echo-value" id="stat-echo">Silent</p>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Journal Fragments</h3>
+            <p class="stats-value" id="stat-fragments">0 of 12</p>
+            <div class="fragment-pips" id="fragment-pips">
+              <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+              <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+              <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+              <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+            </div>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Trust</h3>
+            <ul class="trust-list" id="trust-list">
+              <li class="trust-item"><span class="trust-name">Stan</span><span class="trust-level" data-char="stan">Stranger</span></li>
+              <li class="trust-item"><span class="trust-name">Ford</span><span class="trust-level" data-char="ford">Stranger</span></li>
+              <li class="trust-item"><span class="trust-name">Soos</span><span class="trust-level" data-char="soos">Stranger</span></li>
+              <li class="trust-item"><span class="trust-name">Wendy</span><span class="trust-level" data-char="wendy">Stranger</span></li>
+              <li class="trust-item"><span class="trust-name">McGucket</span><span class="trust-level" data-char="mcgucket">Stranger</span></li>
+              <li class="trust-item"><span class="trust-name">Pacifica</span><span class="trust-level" data-char="pacifica">Stranger</span></li>
+            </ul>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Inventory</h3>
+            <ul class="inventory-list" id="inventory-list">
+              <li class="inventory-item dim">Journal page (pocket, unknown origin)</li>
+            </ul>
+          </div>
+
+          <div class="stats-section">
+            <h3 class="stats-label">Active Thread</h3>
+            <p class="stats-value stats-thread" id="stat-thread">—</p>
+          </div>
+
+        </div>
+      </aside>
+
+    </div>
+
+    <!-- Input bar -->
+    <div class="input-bar">
+      <textarea
+        id="player-input"
+        class="player-input"
+        placeholder="What do you do?"
+        rows="1"
+        maxlength="1000"
+        aria-label="Player input"
+      ></textarea>
+      <button class="send-btn" id="send-btn" aria-label="Send">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
+          <path d="M3 10L17 10M17 10L11 4M17 10L11 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Stats drawer backdrop (mobile) -->
+  <div class="stats-backdrop hidden" id="stats-backdrop"></div>
+
+  <!-- Checkpoint copied toast -->
+  <div class="toast hidden" id="toast">Checkpoint copied to clipboard</div>
+
+  <script src="js/game.js"></script>
+</body>
+</html>
