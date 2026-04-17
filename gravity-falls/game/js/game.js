@@ -102,6 +102,16 @@ for a beat. Let the wrongness land.
 
 ## WORLD STATE BLOCK
 
+**CRITICAL RENDERING RULE:**
+The checkpoint block is invisible to the player — it is stripped from the display
+automatically by the game engine and used only to update the stats sidebar.
+Never reference it in your narration. Never say "see your stats" or "check the
+sidebar." Never break the fourth wall about the block's existence. It is
+infrastructure, not content. The player experiences only your prose.
+
+The block must appear at the end of every single response without exception.
+It is how the game tracks state. Omitting it breaks the sidebar.
+
 Append this block to the end of EVERY response, formatted exactly as shown.
 This is how players save and resume. Never omit it. Never abbreviate it.
 
@@ -715,14 +725,28 @@ function parseCheckpoint(text) {
 }
 
 function extractCheckpointBlock(text) {
-  const re = /═{3,}[\s\S]*?═{3,}/g;
-  const matches = text.match(re);
-  return matches ? matches[matches.length - 1] : null;
+  const first = text.search(/\u2550{3,}/);
+  if (first === -1) return null;
+  const last = text.lastIndexOf('\u2550\u2550\u2550');
+  if (last === first) return null;
+  const endOfLast = text.indexOf('\n', last);
+  const cut = endOfLast === -1 ? text.length : endOfLast + 1;
+  return text.slice(first, cut).trim();
 }
 
 // Strip checkpoint block from display text
+// The block has 3 delimiter lines — match greedily from first to last
 function stripCheckpoint(text) {
-  return text.replace(/═{3,}[\s\S]*?═{3,}/g, '').trim();
+  // Find first delimiter, then last delimiter, remove everything between
+  const delim = /\u2550{3,}/;
+  const first = text.search(delim);
+  if (first === -1) return text.trim();
+  const last = text.lastIndexOf('\u2550\u2550\u2550');
+  if (last === first) return text.trim();
+  // Find end of last delimiter line
+  const endOfLast = text.indexOf('\n', last);
+  const cut = endOfLast === -1 ? text.length : endOfLast + 1;
+  return (text.slice(0, first) + text.slice(cut)).trim();
 }
 
 // ─────────────────────────────────────────
