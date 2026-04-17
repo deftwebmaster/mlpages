@@ -874,7 +874,6 @@ async function sendToAPI(userMessage) {
           { role: 'system', content: SYSTEM_PROMPT },
           ...State.messages,
         ],
-        stream: CONFIG.streamResponses,
       }),
     });
 
@@ -886,41 +885,10 @@ async function sendToAPI(userMessage) {
 
     let fullText = '';
 
-    if (CONFIG.streamResponses) {
-      // Stream handling
-      const msgDiv = addMessage('narrator', '');
-      const body = msgDiv.querySelector('.message-body');
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
-
-        for (const line of lines) {
-          const data = line.slice(6);
-          if (data === '[DONE]') continue;
-          try {
-            const parsed = JSON.parse(data);
-            const delta = parsed.choices?.[0]?.delta?.content || '';
-            fullText += delta;
-            body.innerHTML = formatNarratorText(stripCheckpoint(fullText));
-            scrollToBottom();
-          } catch {
-            // malformed chunk, skip
-          }
-        }
-      }
-    } else {
-      // Non-streaming
-      const data = await response.json();
-      fullText = data.choices?.[0]?.message?.content || '';
-      addMessage('narrator', fullText);
-    }
+    // Full response — checkpoint stripped before display
+    const data = await response.json();
+    fullText = data.choices?.[0]?.message?.content || '';
+    addMessage('narrator', fullText);
 
     // Parse and apply checkpoint from response
     const checkpoint = extractCheckpointBlock(fullText);
