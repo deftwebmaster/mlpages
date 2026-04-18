@@ -73,7 +73,7 @@ body {
 .title-bg-image {
   position: absolute;
   inset: 0;
-  background: url('game-card.png') center center / cover no-repeat;
+  background: url('../game-card.png') center center / cover no-repeat;
   pointer-events: none;
 }
 
