@@ -4,8 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Gravity Falls: Scattered Pages</title>
-  <meta name="description" content="A text adventure set in Gravity Falls, one summer after Weirdmageddon.">
+  <meta name="description" content="A text adventure set in Gravity Falls, one summer after Weirdmageddon. Find the journal fragments. Don't trust everything you read.">
   <meta name="theme-color" content="#0a1208">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://mattlivingston.com/gravity-falls/game/">
+  <meta property="og:title"       content="Gravity Falls: Scattered Pages">
+  <meta property="og:description" content="A text adventure set in Gravity Falls, one summer after Weirdmageddon. Find the journal fragments. Don't trust everything you read.">
+  <meta property="og:image"       content="https://mattlivingston.com/gravity-falls/game/game-card.png">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:url"         content="https://mattlivingston.com/gravity-falls/game/">
+  <meta name="twitter:title"       content="Gravity Falls: Scattered Pages">
+  <meta name="twitter:description" content="A text adventure set in Gravity Falls, one summer after Weirdmageddon. Find the journal fragments. Don't trust everything you read.">
+  <meta name="twitter:image"       content="https://mattlivingston.com/gravity-falls/game/game-card.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
@@ -16,23 +31,27 @@
 
   <!-- ── Title Screen ── -->
   <div id="title-screen" class="title-screen">
-    <div class="title-bg-trees" aria-hidden="true"></div>
+    <!-- Game card background image -->
+    <div class="title-bg-image" aria-hidden="true"></div>
+    <!-- Dark gradient overlay so text is readable -->
+    <div class="title-overlay" aria-hidden="true"></div>
+
     <div class="title-content">
-      <div class="title-eye" aria-hidden="true">
-        <svg viewBox="0 0 100 87" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="50,4 96,83 4,83" fill="none" stroke="rgba(180,150,60,0.9)" stroke-width="2"/>
-          <ellipse cx="50" cy="57" rx="13" ry="17" fill="none" stroke="rgba(180,150,60,0.6)" stroke-width="1.5"/>
-          <ellipse cx="50" cy="57" rx="6" ry="8" fill="rgba(180,150,60,0.4)"/>
-          <circle cx="46" cy="53" r="2.5" fill="rgba(220,190,100,0.6)"/>
-        </svg>
-      </div>
-      <p class="title-super">GRAVITY FALLS</p>
+      <div class="title-badge">Unofficial Fan Game</div>
+      <p class="title-super">Gravity Falls</p>
       <h1 class="title-name">Scattered Pages</h1>
-      <p class="title-tagline">One summer after Weirdmageddon.<br>Something was left behind.</p>
-      <button class="title-btn" id="start-btn">Begin</button>
-      <button class="title-btn title-btn-secondary" id="resume-btn">Resume from checkpoint</button>
+      <p class="title-tagline">
+        One summer after Weirdmageddon.<br>
+        The journal is missing. The town remembers.<br>
+        <em>Something was left behind.</em>
+      </p>
+      <div class="title-divider" aria-hidden="true">— ⌬ —</div>
+      <div class="title-actions">
+        <button class="title-btn" id="start-btn">Begin</button>
+        <button class="title-btn title-btn-secondary" id="resume-btn">Resume from checkpoint</button>
+      </div>
     </div>
-    <p class="title-credit">An unofficial fan game · Not affiliated with Disney or Alex Hirsch</p>
+    <p class="title-credit">Not affiliated with Disney or Alex Hirsch · <a href="https://mattlivingston.com" target="_blank" rel="noopener" class="title-credit-link">Matt Livingston</a></p>
   </div>
 
   <!-- ── Checkpoint Resume Modal ── -->
