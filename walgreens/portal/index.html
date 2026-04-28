@@ -598,8 +598,33 @@
     font-size: 11px;
     line-height: 1.6;
     font-family: var(--mono);
+    position: relative;
+    padding-right: 48px;
   }
   .page-footer .footer-main { margin-bottom: 3px; color: var(--gray-500); }
+  .footer-badge {
+    position: absolute;
+    right: 0;
+    bottom: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: background 0.15s, transform 0.15s;
+  }
+  .footer-badge:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+  }
 
   /* ── CORPORATE MSG GENERATOR ── */
   #corp-msg-output {
@@ -836,6 +861,7 @@
     .tab-nav { display: block; }
     .app-body { padding-bottom: calc(var(--tabnav-h) + 16px); }
     .header-store-badge { display: none; }
+    .page-footer { padding-right: 42px; }
   }
 </style>
 </head>
@@ -857,6 +883,7 @@
     <div class="drawer-label">Main</div>
     <a class="drawer-item active" data-section="dashboard" onclick="showSection('dashboard', this, true)"><span class="nav-icon">⊞</span> Dashboard</a>
     <a class="drawer-item" data-section="schedule" onclick="showSection('schedule', this, true)"><span class="nav-icon">◷</span> My Schedule</a>
+    <a class="drawer-item" href="https://mattlivingston.com/walgreens/time-off/" target="_blank" rel="noopener"><span class="nav-icon">↗</span> Time Off</a>
     <a class="drawer-item" data-section="training" onclick="showSection('training', this, true)"><span class="nav-icon">◈</span> Training</a>
   </div>
   <div class="drawer-section">
@@ -939,6 +966,7 @@
       <div class="sidebar-label">Main</div>
       <a class="nav-item active" data-section="dashboard" onclick="showSection('dashboard', this)"><span class="nav-icon">⊞</span> Dashboard</a>
       <a class="nav-item" data-section="schedule" onclick="showSection('schedule', this)"><span class="nav-icon">◷</span> My Schedule</a>
+      <a class="nav-item" href="https://mattlivingston.com/walgreens/time-off/" target="_blank" rel="noopener"><span class="nav-icon">↗</span> Time Off</a>
       <a class="nav-item" data-section="training" onclick="showSection('training', this)"><span class="nav-icon">◈</span> Training</a>
     </div>
     <div class="sidebar-section">
@@ -1789,6 +1817,7 @@
     <div class="page-footer">
       <div class="footer-main">wDashboard Internal Beta © 2026 — This portal is not responsible for coupon decisions, register freezes, or emotional damage caused by photo kiosks.</div>
       <div>Built for Store #4577 · Plano, TX · May malfunction near clearance tags.</div>
+      <a class="footer-badge" href="https://mattlivingston.com/" target="_blank" rel="noopener" aria-label="Matt Livingston website">ML</a>
     </div>
 
   </main>
