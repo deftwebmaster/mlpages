@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Time Off Request — Walgreens Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #1e2330;
+      --surface:   #252c3a;
+      --card:      #2c3347;
+      --border:    #343d52;
+      --border-hi: #3f4a61;
+      --accent:    #e31837;
+      --accent-dim:#a81028;
+      --red:       #e31837;
+      --red-dim:   #6b0e1c;
+      --text:      #edf0f5;
+      --muted:     #8492a8;
+      --label:     #a0abbe;
+      --radius:    10px;
+      --font-head: 'DM Serif Display', Georgia, serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 20px 80px;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 50% -10%, rgba(227, 24, 55, 0.08) 0%, transparent 70%),
+        repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px),
+        repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.015) 40px);
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 44px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.7;
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(2rem, 5vw, 2.9rem);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .header-sub {
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3), 0 1px 0 rgba(255,255,255,0.04) inset;
+    }
+
+    @media (min-width: 520px) {
+      .card { padding: 36px 40px; }
+    }
+
+    /* ── Form Grid ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 520px) {
+      .form-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 22px 24px;
+      }
+      .date-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--label);
+    }
+
+    select, input[type="date"], input[type="text"], textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 14px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      width: 100%;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a8494' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(227,24,55,0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+      line-height: 1.6;
+    }
+
+    .date-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    /* ── Type Pills ── */
+    .type-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .type-pill {
+      position: relative;
+    }
+    .type-pill input { display: none; }
+    .type-pill label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--surface);
+    }
+    .type-pill label:hover {
+      border-color: var(--border-hi);
+      color: var(--text);
+    }
+    .type-pill input:checked + label {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(227,24,55,0.08);
+    }
+
+    /* ── Divider ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 28px 0;
+    }
+
+    /* ── Submit ── */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .submit-btn:hover { background: #c8112e; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled {
+      background: var(--border-hi);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ── Response Panel ── */
+    #response-panel {
+      width: 100%;
+      max-width: 680px;
+      margin-top: 20px;
+      display: none;
+      animation: slideUp 0.3s ease both;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .denial-card {
+      background: var(--card);
+      border: 1px solid var(--red-dim);
+      border-left: 4px solid var(--red);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: 0 4px 24px rgba(224,82,82,0.08);
+    }
+
+    .denial-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .denial-stamp {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      background: rgba(224,82,82,0.1);
+      border: 1px solid var(--red-dim);
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+
+    .denial-ref {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      margin-left: auto;
+    }
+
+    .denial-name {
+      font-family: var(--font-head);
+      font-size: 1.15rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .denial-reason {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--label);
+    }
+    .denial-reason strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .denial-footer {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 48px;
+      width: 100%;
+      max-width: 680px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #3a4050;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .footer-copy { text-align: left; }
+
+    .ml-sig {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      width: 34px;
+      height: 34px;
+      border-radius: 6px;
+      border: 1px solid #2a303f;
+      background: #1e2330;
+      color: #4a5568;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0;
+      line-height: 1;
+      transition: border-color 0.18s, color 0.18s, background 0.18s;
+      flex-shrink: 0;
+    }
+    .ml-sig:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(227,24,55,0.07);
+    }
+    .ml-sig svg {
+      display: block;
+      width: 18px;
+      height: 14px;
+    }
+
+    @media (max-width: 519px) {
+      h1 { font-size: 1.8rem; }
+      body { padding: 32px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-eyebrow">Walgreens #4577 Operations</div>
+    <h1>Time <em>Off</em> Request</h1>
+    <p class="header-sub">Submit your request below. All requests are reviewed by management and responded to promptly.</p>
+  </header>
+
+  <div class="card">
+    <div class="form-grid">
+
+      <div class="field full">
+        <label for="employee">Employee Name</label>
+        <select id="employee" required>
+          <option value="">— Select your name —</option>
+          <option>Amanda Hibbitts</option>
+          <option>Catherine Washington</option>
+          <option>Daniel Rodriguez</option>
+          <option>David Scott</option>
+          <option>Graham Reyes</option>
+          <option>Hudson Muneea</option>
+          <option>Matt Livingston</option>
+          <option>Narinder Bajwa</option>
+          <option>Stan Milton</option>
+          <option>Syed Husain</option>
+        </select>
+      </div>
+
+      <div class="field full">
+        <label>Request Type</label>
+        <div class="type-group">
+          <div class="type-pill"><input type="radio" name="type" id="t1" value="Vacation" checked /><label for="t1">🏖 Vacation</label></div>
+          <div class="type-pill"><input type="radio" name="type" id="t2" value="Sick Leave" /><label for="t2">🤒 Sick Leave</label></div>
+          <div class="type-pill"><input type="radio" name="type" id="t3" value="Personal" /><label for="t3">📋 Personal</label></div>
+          <div class="type-pill"><input type="radio" name="type" id="t4" value="Family Emergency" /><label for="t4">🏠 Family Emergency</label></div>
+          <div class="type-pill"><input type="radio" name="type" id="t5" value="Bereavement" /><label for="t5">🕊 Bereavement</label></div>
+          <div class="type-pill"><input type="radio" name="type" id="t6" value="Other" /><label for="t6">📌 Other</label></div>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label>Date Range</label>
+        <div class="date-row">
+          <div>
+            <input type="date" id="date-start" required />
+          </div>
+          <div>
+            <input type="date" id="date-end" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="field full">
+        <label for="notes">Additional Notes <span style="color:var(--muted);font-style:normal;">(optional)</span></label>
+        <textarea id="notes" placeholder="Any context management should know…"></textarea>
+      </div>
+
+    </div>
+
+    <hr class="divider" />
+
+    <button class="submit-btn" id="submit-btn" onclick="submitRequest()">Submit Request</button>
+  </div>
+
+  <div id="response-panel">
+    <div class="denial-card">
+      <div class="denial-header">
+        <div class="denial-stamp">&#x2715;&nbsp; Denied</div>
+        <div class="denial-ref" id="denial-ref"></div>
+      </div>
+      <div class="denial-name" id="denial-name"></div>
+      <div class="denial-reason" id="denial-reason"></div>
+      <div class="denial-footer">
+        <span id="denial-dates"></span>
+        <span id="denial-type"></span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-copy">&copy; <span id="yr"></span> Walgreens #4577 &mdash; Internal Use Only</span>
+    <a class="ml-sig" href="https://mattlivingston.com" target="_blank" rel="noopener" title="Matt Livingston">
+ML</a>
+    <!-- * lone wolf, quiet teeth | Matt Livingston -->
+  </footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Set sensible date defaults
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date-start').value = today;
+  document.getElementById('date-end').value = today;
+
+  const DENIALS = [
+    (name, type, start, end) =>
+      `After careful deliberation and a brief nap, management has determined that <strong>${name}'s</strong> request for <strong>${type}</strong> (${start} – ${end}) conflicts with the ancient prophecy carved into the break room whiteboard. The prophecy is non-negotiable.`,
+    (name, type, start, end) =>
+      `Your <strong>${type}</strong> request (${start} – ${end}) has been reviewed and denied on the grounds that <strong>${name}</strong> is currently the only person who knows where the mop bucket key is. Until this knowledge is formally transferred, departure is prohibited.`,
+    (name, type, start, end) =>
+      `Management regrets to inform <strong>${name}</strong> that the <strong>${type}</strong> request for ${start} – ${end} has been denied. A psychic consultant hired at considerable expense predicted that your absence would cause the self-checkout machines to "gain awareness." We cannot take that risk.`,
+    (name, type, start, end) =>
+      `<strong>${name}</strong>'s <strong>${type}</strong> request (${start} – ${end}) was submitted to the Regional Approval Committee, who reviewed it, shrugged collectively, and denied it. No further explanation was provided, nor will one be forthcoming.`,
+    (name, type, start, end) =>
+      `Request denied. Our scheduling algorithm — a spreadsheet named Gerald — has flagged <strong>${name}</strong> as "irreplaceable, probably" for the period ${start} – ${end}. Gerald's decisions are final. Gerald has never been wrong. We do not question Gerald.`,
+    (name, type, start, end) =>
+      `<strong>${name}</strong>'s <strong>${type}</strong> request has been denied following an internal audit that revealed the store only functions at peak efficiency when you are physically present. Science cannot explain it. HR is looking into it. Request denied.`,
+    (name, type, start, end) =>
+      `After reviewing the <strong>${type}</strong> request (${start} – ${end}), management has determined that <strong>${name}</strong> has accumulated an insufficient number of "vibes points." Current balance: 14. Required: 500. Consider reapplying next fiscal quarter.`,
+    (name, type, start, end) =>
+      `<strong>${name}</strong>'s request for <strong>${type}</strong> (${start} – ${end}) was denied after a visiting consultant observed that your workstation has a "particular energy" that can't be replicated. The consultant then left without paying for their consulting fee. We took this as a sign.`,
+    (name, type, start, end) =>
+      `Your <strong>${type}</strong> request (${start} – ${end}) has been escalated to District, reviewed by District, forwarded back to store level, misfiled, recovered, and ultimately denied. <strong>${name}</strong>, the system works exactly as intended.`,
+    (name, type, start, end) =>
+      `Management has denied this <strong>${type}</strong> request on behalf of <strong>${name}</strong> citing Section 7, Paragraph 2, Clause F of the Employee Handbook, which — upon closer inspection — appears to be a grocery list. The denial stands. Clause F is binding.`,
+  ];
+
+  function pad(s) { return String(s).padStart(2, '0'); }
+
+  function refCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+    const nums  = '0123456789';
+    let r = 'TOR-';
+    for (let i = 0; i < 3; i++) r += chars[Math.floor(Math.random() * chars.length)];
+    r += '-';
+    for (let i = 0; i < 4; i++) r += nums[Math.floor(Math.random() * nums.length)];
+    return r;
+  }
+
+  function fmtDate(d) {
+    if (!d) return '—';
+    const [y,m,day] = d.split('-');
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${months[+m-1]} ${+day}, ${y}`;
+  }
+
+  function submitRequest() {
+    const name  = document.getElementById('employee').value;
+    const type  = document.querySelector('input[name="type"]:checked')?.value || 'Time Off';
+    const start = document.getElementById('date-start').value;
+    const end   = document.getElementById('date-end').value;
+
+    if (!name) {
+      document.getElementById('employee').focus();
+      document.getElementById('employee').style.borderColor = 'var(--red)';
+      setTimeout(() => document.getElementById('employee').style.borderColor = '', 1500);
+      return;
+    }
+    if (!start || !end) return;
+    if (end < start) {
+      document.getElementById('date-end').style.borderColor = 'var(--red)';
+      setTimeout(() => document.getElementById('date-end').style.borderColor = '', 1500);
+      return;
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing…';
+
+    setTimeout(() => {
+      const denial = DENIALS[Math.floor(Math.random() * DENIALS.length)];
+      const panel  = document.getElementById('response-panel');
+
+      document.getElementById('denial-ref').textContent    = refCode();
+      document.getElementById('denial-name').textContent   = `Dear ${name},`;
+      document.getElementById('denial-reason').innerHTML   = denial(name, type, fmtDate(start), fmtDate(end));
+      document.getElementById('denial-dates').textContent  = `${fmtDate(start)} – ${fmtDate(end)}`;
+      document.getElementById('denial-type').textContent   = type;
+
+      panel.style.display = 'block';
+      panel.style.animation = 'none';
+      panel.offsetHeight; // reflow
+      panel.style.animation = '';
+      panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      btn.disabled = false;
+      btn.textContent = 'Submit Request';
+    }, 900);
+  }
+</script>
+</body>
+</html>
