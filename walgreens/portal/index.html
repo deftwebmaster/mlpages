@@ -1,0 +1,1973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wDashboard — Employee Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #CC0000;
+    --red-dark: #990000;
+    --red-light: #f5e6e6;
+    --red-mid: #e8c0c0;
+    --gray-50: #f9f9f9;
+    --gray-100: #f0f0f0;
+    --gray-200: #e0e0e0;
+    --gray-300: #c4c4c4;
+    --gray-400: #9e9e9e;
+    --gray-500: #6e6e6e;
+    --gray-700: #3a3a3a;
+    --gray-900: #1a1a1a;
+    --sidebar-w: 220px;
+    --header-h: 52px;
+    --tabnav-h: 60px;
+    --font: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --radius: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font);
+    background: var(--gray-50);
+    color: var(--gray-700);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* ── TOP HEADER ── */
+  .header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: var(--red);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    z-index: 90;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    background: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 600;
+    color: var(--red);
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .brand-text { color: white; }
+  .brand-text .title { font-size: 15px; font-weight: 600; letter-spacing: 0.3px; line-height: 1.1; }
+  .brand-text .sub { font-size: 9.5px; opacity: 0.7; font-family: var(--mono); }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .header-store-badge {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.9);
+    font-family: var(--mono);
+    white-space: nowrap;
+  }
+  /* Hide store badge on very small screens */
+  @media (max-width: 360px) { .header-store-badge { display: none; } }
+
+  /* Hamburger — mobile only */
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+    padding: 6px;
+    border: none;
+    background: none;
+  }
+  .hamburger span {
+    display: block;
+    width: 20px; height: 2px;
+    background: white;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  /* ── DRAWER (mobile sidebar) ── */
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 200;
+  }
+  .drawer-overlay.open { display: block; }
+
+  .drawer {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 260px;
+    background: white;
+    z-index: 201;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    background: var(--red-dark);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: var(--header-h);
+  }
+  .drawer-header .brand-mark { width: 28px; height: 28px; font-size: 13px; }
+  .drawer-header .title { font-size: 14px; font-weight: 600; color: white; }
+  .drawer-header .sub { font-size: 9px; color: rgba(255,255,255,0.65); font-family: var(--mono); }
+
+  .drawer-section { padding: 12px 0 6px; }
+  .drawer-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    padding: 0 16px 5px;
+  }
+  .drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    cursor: pointer;
+    color: var(--gray-600, #555);
+    font-size: 14px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .drawer-item:active { background: var(--gray-100); }
+  .drawer-item.active {
+    border-left-color: var(--red);
+    background: var(--red-light);
+    color: var(--red);
+    font-weight: 500;
+  }
+  .drawer-item .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+  .drawer-logout {
+    margin-top: auto;
+    border-top: 1px solid var(--gray-200);
+    padding-top: 6px;
+  }
+  .drawer-logout .drawer-item { color: var(--gray-400); font-size: 13px; }
+
+  /* ── BOTTOM TAB NAV (mobile) ── */
+  .tab-nav {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: var(--tabnav-h);
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    z-index: 90;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .tab-nav-inner {
+    display: flex;
+    height: 100%;
+    align-items: stretch;
+  }
+  .tab-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 6px 2px;
+    cursor: pointer;
+    color: var(--gray-400);
+    font-size: 10px;
+    font-weight: 500;
+    border: none;
+    background: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s;
+    min-width: 0;
+  }
+  .tab-btn .tab-icon { font-size: 18px; line-height: 1; }
+  .tab-btn.active { color: var(--red); }
+  .tab-btn.active .tab-icon { transform: scale(1.1); }
+  .tab-more { position: relative; }
+
+  /* ── LAYOUT ── */
+  .app-body {
+    padding-top: var(--header-h);
+    padding-bottom: calc(var(--tabnav-h) + 16px); /* room below tab nav */
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── DESKTOP SIDEBAR (hidden on mobile) ── */
+  .sidebar {
+    display: none;
+  }
+
+  /* ── MAIN CONTENT ── */
+  .main {
+    flex: 1;
+    padding: 16px;
+    min-height: 100%;
+    max-width: 100%;
+  }
+
+  /* Section management */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .page-header h1 {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--gray-900);
+    margin-bottom: 2px;
+  }
+  .page-header p { font-size: 12px; color: var(--gray-400); }
+
+  /* ── CARDS ── */
+  .card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    padding: 13px 16px 11px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .card-header h2 { font-size: 13px; font-weight: 600; color: var(--gray-900); }
+  .card-body { padding: 14px 16px; }
+
+  /* ── WELCOME CARD ── */
+  .welcome-card {
+    background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
+    color: white;
+    border: none;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .welcome-card::before {
+    content: '';
+    position: absolute;
+    right: -40px; top: -40px;
+    width: 140px; height: 140px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .welcome-card .card-body { padding: 20px 18px; position: relative; }
+  .welcome-card h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; line-height: 1.2; }
+  .welcome-card p { font-size: 13px; opacity: 0.85; margin-bottom: 14px; }
+  .welcome-streak {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 3px;
+    padding: 3px 9px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .btn-primary { background: var(--red); color: white; border-color: var(--red-dark); }
+  .btn-primary:active { background: var(--red-dark); }
+  .btn-white { background: white; color: var(--red); }
+  .btn-white:active { background: rgba(255,255,255,0.85); }
+  .btn-outline { background: transparent; color: var(--gray-500); border-color: var(--gray-300); }
+  .btn-outline:active { background: var(--gray-50); }
+  .btn-full { width: 100%; }
+  .btn-sm { padding: 8px 12px; font-size: 12px; }
+
+  /* ── METRIC CARDS ── */
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .metric-card {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px;
+    box-shadow: var(--shadow);
+    border-top: 3px solid var(--gray-200);
+  }
+  .metric-card.critical { border-top-color: #CC0000; }
+  .metric-card.warning { border-top-color: #e67e00; }
+  .metric-card.unknown { border-top-color: #6e6e6e; }
+  .metric-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.7px; color: var(--gray-400); margin-bottom: 6px; }
+  .metric-value { font-size: 24px; font-weight: 300; color: var(--gray-900); font-family: var(--mono); line-height: 1; margin-bottom: 4px; }
+  .metric-status { font-size: 11px; font-weight: 600; margin-bottom: 5px; }
+  .metric-status.red { color: var(--red); }
+  .metric-status.orange { color: #e67e00; }
+  .metric-status.gray { color: var(--gray-400); }
+  .metric-sub { font-size: 11px; color: var(--gray-400); line-height: 1.4; }
+
+  /* ── DASHBOARD GRID ── */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* ── TABLES ── */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 420px; }
+  thead th {
+    background: var(--gray-50);
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--gray-400);
+    border-bottom: 1px solid var(--gray-200);
+    white-space: nowrap;
+  }
+  tbody td {
+    padding: 11px 12px;
+    border-bottom: 1px solid var(--gray-100);
+    color: var(--gray-700);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+
+  /* Recognition table — slightly wider */
+  .recognition-table { min-width: 560px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 10.5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .badge-red { background: #fde8e8; color: var(--red); }
+  .badge-orange { background: #fef0e0; color: #c45e00; }
+  .badge-gray { background: var(--gray-100); color: var(--gray-500); }
+  .badge-yellow { background: #fff9e6; color: #8a6500; }
+  .badge-green { background: #e6f4ea; color: #1d6b35; }
+  .badge-blue { background: #e6f0fb; color: #1a4f99; }
+  .badge-purple { background: #f0e6fb; color: #5c2a9e; }
+
+  .table-note {
+    font-size: 11px;
+    color: var(--gray-400);
+    padding: 9px 12px;
+    font-family: var(--mono);
+    border-top: 1px solid var(--gray-100);
+  }
+
+  /* ── TRAINING CARDS ── */
+  .training-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .training-card {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px;
+    background: white;
+  }
+  .training-card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; gap: 8px; }
+  .training-card h3 { font-size: 13px; font-weight: 600; color: var(--gray-900); line-height: 1.3; }
+  .training-desc { font-size: 12px; color: var(--gray-500); margin-top: 5px; line-height: 1.5; }
+  .progress-bar { height: 5px; background: var(--gray-100); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+  .progress-fill.low { background: var(--red); }
+  .progress-fill.mid { background: #e67e00; }
+  .progress-fill.good { background: #2e7d32; }
+  .progress-meta { display: flex; justify-content: space-between; margin-top: 4px; font-size: 10.5px; color: var(--gray-400); font-family: var(--mono); }
+
+  /* ── RECOGNITION ── */
+  .award-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .award-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 13px;
+    color: var(--gray-600, #555);
+  }
+  .award-item .award-icon { font-size: 16px; }
+
+  /* ── FORM ELEMENTS ── */
+  .form-group { margin-bottom: 14px; }
+  .form-label { display: block; font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px; }
+  select, textarea, input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    font-family: var(--font);
+    font-size: 14px;
+    color: var(--gray-700);
+    background: white;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239e9e9e' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  select:focus, textarea:focus, input:focus { border-color: var(--red); box-shadow: 0 0 0 2px rgba(204,0,0,0.1); }
+  textarea { min-height: 90px; resize: vertical; }
+
+  .form-output {
+    margin-top: 12px;
+    padding: 12px 14px;
+    background: #f5f5f5;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 12.5px;
+    color: var(--gray-600, #555);
+    font-family: var(--mono);
+    display: none;
+    line-height: 1.5;
+  }
+  .form-output.visible { display: block; }
+
+  /* ── INVENTORY SEARCH ── */
+  .search-bar { display: flex; gap: 8px; margin-bottom: 12px; }
+  .search-bar input { flex: 1; }
+
+  /* ── CORPORATE MESSAGES ── */
+  .message-list { display: flex; flex-direction: column; gap: 10px; }
+  .message-card {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 13px 15px;
+    background: white;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .message-card .msg-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+  .message-card h4 { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 3px; }
+  .message-card p { font-size: 12.5px; color: var(--gray-500); line-height: 1.4; }
+
+  /* ── STORE METRICS ── */
+  .store-metric-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--gray-100);
+    gap: 12px;
+  }
+  .store-metric-item:last-child { border-bottom: none; }
+  .store-metric-left { flex: 1; min-width: 0; }
+  .store-metric-name { font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 2px; }
+  .store-metric-sub { font-size: 11px; color: var(--gray-400); }
+  .store-metric-right { text-align: right; flex-shrink: 0; }
+  .store-metric-value { font-size: 22px; font-weight: 300; color: var(--gray-900); font-family: var(--mono); line-height: 1; }
+  .store-metric-unit { font-size: 10px; color: var(--gray-400); }
+
+  /* ── SETTINGS ── */
+  .pref-list { display: flex; flex-direction: column; }
+  .pref-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--gray-100);
+    gap: 12px;
+  }
+  .pref-item:last-child { border-bottom: none; }
+  .pref-name { font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 2px; }
+  .pref-note { font-size: 11px; color: var(--gray-400); }
+  .pref-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .pref-value { font-family: var(--mono); font-size: 11.5px; color: var(--gray-500); }
+  .fake-toggle {
+    width: 38px; height: 22px;
+    border-radius: 11px;
+    position: relative;
+    cursor: not-allowed;
+    flex-shrink: 0;
+  }
+  .fake-toggle.on { background: var(--red); }
+  .fake-toggle.off { background: var(--gray-300); }
+  .fake-toggle::after {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+  }
+  .fake-toggle.on::after { left: 18px; }
+  .fake-toggle.off::after { left: 2px; }
+
+  /* ── FOOTER ── */
+  .page-footer {
+    margin-top: 24px;
+    padding: 16px 0;
+    border-top: 1px solid var(--gray-200);
+    color: var(--gray-400);
+    font-size: 11px;
+    line-height: 1.6;
+    font-family: var(--mono);
+  }
+  .page-footer .footer-main { margin-bottom: 3px; color: var(--gray-500); }
+
+  /* ── CORPORATE MSG GENERATOR ── */
+  #corp-msg-output {
+    background: var(--red-light);
+    border: 1px solid var(--red-mid);
+    border-left: 3px solid var(--red);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-size: 12.5px;
+    color: var(--gray-700);
+    margin-top: 12px;
+    font-family: var(--mono);
+    display: none;
+    line-height: 1.5;
+  }
+  #corp-msg-output.visible { display: block; }
+
+  /* ── SHIFT TOOLS ── */
+  .tool-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tool-card .card-body { display: flex; flex-direction: column; gap: 12px; }
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .status-panel {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gray-600, #555);
+    line-height: 1.55;
+    min-height: 42px;
+  }
+  .status-panel.red {
+    background: var(--red-light);
+    border-color: var(--red-mid);
+    border-left: 3px solid var(--red);
+  }
+  .mini-kpi-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .mini-kpi {
+    border: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: 10px;
+  }
+  .mini-kpi-label {
+    font-size: 10px;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .mini-kpi-value {
+    font-family: var(--mono);
+    color: var(--gray-900);
+    font-size: 13px;
+  }
+  .translator-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .override-steps {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+  .override-steps li {
+    padding: 8px 10px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    background: white;
+  }
+  .override-steps li.active {
+    color: var(--red);
+    border-color: var(--red-mid);
+    background: var(--red-light);
+    font-weight: 500;
+  }
+
+  /* ── PERFORMANCE REVIEW ── */
+  #review-output {
+    margin-top: 12px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: none;
+  }
+  #review-output.visible { display: block; }
+  .review-header { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray-400); font-weight: 600; margin-bottom: 4px; }
+  #review-text { font-size: 13px; color: var(--gray-700); line-height: 1.6; }
+
+  /* ── TOAST ── */
+  .mini-alert {
+    position: fixed;
+    bottom: calc(var(--tabnav-h) + 40px);
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: var(--gray-900);
+    color: white;
+    padding: 11px 18px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-family: var(--mono);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    z-index: 9999;
+    max-width: calc(100vw - 32px);
+    width: max-content;
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+    text-align: center;
+  }
+  .mini-alert.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── DESKTOP OVERRIDES ── */
+  @media (min-width: 700px) {
+    :root { --header-h: 56px; --tabnav-h: 0px; }
+
+    body { font-size: 13px; }
+
+    .hamburger { display: none; }
+    .tab-nav { display: none; }
+    .header { padding: 0 20px 0 0; }
+    .header-brand { padding: 0 20px; min-width: var(--sidebar-w); background: var(--red-dark); height: 100%; }
+
+    /* show sidebar, hide drawer */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      width: var(--sidebar-w);
+      background: white;
+      border-right: 1px solid var(--gray-200);
+      position: fixed;
+      top: var(--header-h);
+      left: 0;
+      bottom: 0;
+      overflow-y: auto;
+      z-index: 80;
+    }
+    .sidebar-section { padding: 14px 0 6px; }
+    .sidebar-label {
+      font-size: 10px; font-weight: 600; letter-spacing: 1px;
+      color: var(--gray-400); text-transform: uppercase;
+      padding: 0 16px 5px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px; cursor: pointer;
+      color: var(--gray-500); font-size: 12.5px;
+      border-left: 3px solid transparent;
+      transition: all 0.15s; user-select: none; text-decoration: none;
+    }
+    .nav-item:hover { background: var(--gray-50); color: var(--gray-700); }
+    .nav-item.active { border-left-color: var(--red); background: var(--red-light); color: var(--red); font-weight: 500; }
+    .nav-item .nav-icon { font-size: 14px; width: 16px; text-align: center; flex-shrink: 0; }
+    .nav-logout { border-top: 1px solid var(--gray-200); padding-top: 6px; position: relative; }
+    .nav-logout .nav-item { color: var(--gray-400); }
+    .nav-logout .nav-item:hover { color: var(--red); }
+    .nav-logout .nav-item:hover::after {
+      content: 'Logout disabled during active shift.';
+      position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%);
+      background: var(--gray-900); color: white; padding: 5px 10px;
+      border-radius: var(--radius); font-size: 11px; white-space: nowrap;
+      pointer-events: none; z-index: 999; font-family: var(--mono);
+    }
+
+    .app-body {
+      padding-bottom: 0;
+    }
+    .main {
+      margin-left: var(--sidebar-w);
+      padding: 24px;
+    }
+
+    .metrics-grid { grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .dash-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .training-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+    .tool-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+    .translator-row { grid-template-columns: 1fr auto; }
+
+    .mini-alert {
+      bottom: 24px;
+      left: auto; right: 24px;
+      transform: translateY(10px);
+      border-radius: var(--radius);
+      max-width: 320px;
+      width: auto;
+    }
+    .mini-alert.show { transform: translateY(0); }
+
+    .btn { padding: 7px 14px; font-size: 12px; }
+    .btn-sm { padding: 5px 10px; font-size: 11px; }
+    .btn-full { width: auto; }
+
+    .header-right { gap: 16px; }
+    .header-user {
+      display: flex; align-items: center; gap: 12px;
+      color: rgba(255,255,255,0.9); font-size: 12px;
+    }
+    .user-meta { text-align: right; }
+    .user-meta .name { font-weight: 600; color: white; font-size: 13px; }
+    .user-meta .role { font-size: 11px; opacity: 0.8; }
+    .user-meta .status { font-size: 10px; opacity: 0.65; font-family: var(--mono); }
+    .user-avatar {
+      width: 34px; height: 34px;
+      background: rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.35);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 600; color: white; font-size: 12px; flex-shrink: 0;
+    }
+  }
+
+  /* ── MOBILE: show tab nav ── */
+  @media (max-width: 699px) {
+    .tab-nav { display: block; }
+    .app-body { padding-bottom: calc(var(--tabnav-h) + 16px); }
+    .header-store-badge { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Drawer Overlay -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- Drawer (mobile nav) -->
+<nav class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="brand-mark">W</div>
+    <div>
+      <div class="title">wDashboard</div>
+      <div class="sub">Internal Beta · Store #4577</div>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-label">Main</div>
+    <a class="drawer-item active" data-section="dashboard" onclick="showSection('dashboard', this, true)"><span class="nav-icon">⊞</span> Dashboard</a>
+    <a class="drawer-item" data-section="schedule" onclick="showSection('schedule', this, true)"><span class="nav-icon">◷</span> My Schedule</a>
+    <a class="drawer-item" data-section="training" onclick="showSection('training', this, true)"><span class="nav-icon">◈</span> Training</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-label">Operations</div>
+    <a class="drawer-item" data-section="metrics" onclick="showSection('metrics', this, true)"><span class="nav-icon">◉</span> Store Metrics</a>
+    <a class="drawer-item" data-section="tools" onclick="showSection('tools', this, true)"><span class="nav-icon">⌁</span> Shift Tools</a>
+    <a class="drawer-item" data-section="incidents" onclick="showSection('incidents', this, true)"><span class="nav-icon">⚑</span> Incident Reports</a>
+    <a class="drawer-item" data-section="recognition" onclick="showSection('recognition', this, true)"><span class="nav-icon">★</span> Recognition</a>
+    <a class="drawer-item" data-section="inventory" onclick="showSection('inventory', this, true)"><span class="nav-icon">☰</span> Inventory</a>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-label">Company</div>
+    <a class="drawer-item" data-section="corporate" onclick="showSection('corporate', this, true)"><span class="nav-icon">✉</span> Corporate Messages</a>
+    <a class="drawer-item" data-section="settings" onclick="showSection('settings', this, true)"><span class="nav-icon">⚙</span> Settings</a>
+  </div>
+  <div class="drawer-logout">
+    <a class="drawer-item" style="cursor:not-allowed;"><span class="nav-icon">⏻</span> Logout (disabled)</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-brand">
+    <div class="brand-mark">W</div>
+    <div class="brand-text">
+      <div class="title">wDashboard</div>
+      <div class="sub">Internal Beta — Accuracy Not Guaranteed</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="header-store-badge">#4577 · Plano, TX</span>
+    <!-- Desktop user info -->
+    <div class="header-user" style="display:none;" id="desktop-user">
+      <div class="user-meta">
+        <div class="name">Store #4577</div>
+        <div class="role">Shift Lead Portal</div>
+        <div class="status">Status: Slightly Overqualified</div>
+      </div>
+      <div class="user-avatar">W</div>
+    </div>
+    <!-- Hamburger (mobile) -->
+    <button class="hamburger" onclick="openDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- Bottom Tab Nav (mobile) -->
+<nav class="tab-nav">
+  <div class="tab-nav-inner">
+    <button class="tab-btn active" onclick="showSection('dashboard', this)" data-tab="dashboard">
+      <span class="tab-icon">⊞</span>
+      <span>Home</span>
+    </button>
+    <button class="tab-btn" onclick="showSection('schedule', this)" data-tab="schedule">
+      <span class="tab-icon">◷</span>
+      <span>Schedule</span>
+    </button>
+    <button class="tab-btn" onclick="showSection('incidents', this)" data-tab="incidents">
+      <span class="tab-icon">⚑</span>
+      <span>Reports</span>
+    </button>
+    <button class="tab-btn" onclick="showSection('recognition', this)" data-tab="recognition">
+      <span class="tab-icon">★</span>
+      <span>Team</span>
+    </button>
+    <button class="tab-btn tab-more" onclick="openDrawer()">
+      <span class="tab-icon">☰</span>
+      <span>More</span>
+    </button>
+  </div>
+</nav>
+
+<!-- App Body -->
+<div class="app-body">
+
+  <!-- Desktop Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Main</div>
+      <a class="nav-item active" data-section="dashboard" onclick="showSection('dashboard', this)"><span class="nav-icon">⊞</span> Dashboard</a>
+      <a class="nav-item" data-section="schedule" onclick="showSection('schedule', this)"><span class="nav-icon">◷</span> My Schedule</a>
+      <a class="nav-item" data-section="training" onclick="showSection('training', this)"><span class="nav-icon">◈</span> Training</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operations</div>
+      <a class="nav-item" data-section="metrics" onclick="showSection('metrics', this)"><span class="nav-icon">◉</span> Store Metrics</a>
+      <a class="nav-item" data-section="tools" onclick="showSection('tools', this)"><span class="nav-icon">⌁</span> Shift Tools</a>
+      <a class="nav-item" data-section="incidents" onclick="showSection('incidents', this)"><span class="nav-icon">⚑</span> Incident Reports</a>
+      <a class="nav-item" data-section="recognition" onclick="showSection('recognition', this)"><span class="nav-icon">★</span> Recognition</a>
+      <a class="nav-item" data-section="inventory" onclick="showSection('inventory', this)"><span class="nav-icon">☰</span> Inventory</a>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Company</div>
+      <a class="nav-item" data-section="corporate" onclick="showSection('corporate', this)"><span class="nav-icon">✉</span> Corporate Messages</a>
+      <a class="nav-item" data-section="settings" onclick="showSection('settings', this)"><span class="nav-icon">⚙</span> Settings</a>
+    </div>
+    <div class="nav-logout">
+      <a class="nav-item" style="cursor: not-allowed; position: relative;"><span class="nav-icon">⏻</span> Logout</a>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="section-dashboard" class="section active">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>Last synced: 4 minutes ago · Sync may have been psychological</p>
+      </div>
+
+      <!-- Welcome Card -->
+      <div class="card welcome-card" style="margin-bottom: 16px;">
+        <div class="card-body">
+          <h2>Welcome back.</h2>
+          <div class="welcome-streak">● 312 consecutive interactions without documented breakdown</div>
+          <p>You have survived 312 consecutive customer interactions since the last documented breakdown. The system considers this an achievement. The system has not worked a closing shift.</p>
+          <button class="btn btn-white" onclick="shiftSim()">Begin Shift Simulation</button>
+        </div>
+      </div>
+
+      <!-- System Notice -->
+      <div style="background:#fff9e6;border:1px solid #f0d060;border-left:3px solid #c8a000;border-radius:var(--radius);padding:10px 14px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px;">
+        <span style="font-size:13px;flex-shrink:0;margin-top:1px;">⚠</span>
+        <span style="font-size:12px;color:#7a5c00;font-family:var(--mono);line-height:1.5;"><strong>System Notice:</strong> Portal performance may be affected by coupon disputes, printer trauma, or customers asking if we sell propane.</span>
+      </div>
+
+      <!-- Metric Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card critical">
+          <div class="metric-label">Customer Patience Index</div>
+          <div class="metric-value">14%</div>
+          <div class="metric-status red">Critically Low</div>
+          <div class="metric-sub">Down 38% since someone asked if expired coupons are "more powerful now."</div>
+        </div>
+        <div class="metric-card warning">
+          <div class="metric-label">Printer Stability</div>
+          <div class="metric-value">—</div>
+          <div class="metric-status orange">Haunted</div>
+          <div class="metric-sub">Last known emotion: resentment.</div>
+        </div>
+        <div class="metric-card critical">
+          <div class="metric-label">Coupon Threat Level</div>
+          <div class="metric-value">⚠</div>
+          <div class="metric-status red">Severe</div>
+          <div class="metric-sub">One customer has presented a laminated manufacturer coupon from 2009.</div>
+        </div>
+        <div class="metric-card unknown">
+          <div class="metric-label">Break Room Morale</div>
+          <div class="metric-value">?</div>
+          <div class="metric-status gray">Flickering</div>
+          <div class="metric-sub">Energy detected near vending machine. Source unknown.</div>
+        </div>
+      </div>
+
+      <!-- Generate Review + Corp Message -->
+      <div class="dash-grid">
+        <div class="card">
+          <div class="card-header">
+            <h2>Performance Review Generator</h2>
+            <span class="badge badge-gray">Q2 2026</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:12px; color: var(--gray-400); margin-bottom: 12px;">Click to generate your quarterly performance summary. Results are final. Results are also entirely made up.</p>
+            <button class="btn btn-primary btn-sm" onclick="genReview()">Generate Performance Review</button>
+            <div id="review-output">
+              <div class="review-header">Auto-Generated Review · Q2 2026</div>
+              <div id="review-text"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Corporate Broadcast</h2>
+            <span class="badge badge-red">Live Feed</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:12px; color: var(--gray-400); margin-bottom: 12px;">Receive a real-time communication from Corporate. Corporate is always communicating. Please acknowledge.</p>
+            <div class="form-group" style="margin-bottom:10px;">
+              <label class="form-label" for="corp-tone">Communication Tone</label>
+              <select id="corp-tone">
+                <option value="inspirational">Inspirational</option>
+                <option value="threatening">Vaguely Threatening</option>
+                <option value="wellness">Wellness-Themed</option>
+                <option value="exciting">Exciting Opportunity</option>
+                <option value="apology">Apology Without Apologizing</option>
+              </select>
+            </div>
+            <button class="btn btn-outline btn-sm" onclick="randCorp()">Random Corporate Message</button>
+            <div id="corp-msg-output"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SCHEDULE ── -->
+    <div id="section-schedule" class="section">
+      <div class="page-header">
+        <h1>Today's Shift Forecast</h1>
+        <p>Generated by Kronos-adjacent technology</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h2>Shift Schedule — Today</h2>
+          <span class="badge badge-orange">Active Shift</span>
+        </div>
+        <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Assignment</th>
+              <th>Risk Level</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span style="font-family: var(--mono); font-size: 12px;">7:00 AM</span></td>
+              <td><strong>Open Store</strong></td>
+              <td><span class="badge badge-yellow">Moderate</span></td>
+              <td style="color: var(--gray-500);">Door may already contain customer.</td>
+            </tr>
+            <tr>
+              <td><span style="font-family: var(--mono); font-size: 12px;">10:30 AM</span></td>
+              <td><strong>Photo Counter</strong></td>
+              <td><span class="badge badge-orange">High</span></td>
+              <td style="color: var(--gray-500);">Passport photo printer has entered witness protection.</td>
+            </tr>
+            <tr>
+              <td><span style="font-family: var(--mono); font-size: 12px;">12:00 PM</span></td>
+              <td><strong>Lunch Break</strong></td>
+              <td><span class="badge badge-gray">Mythical</span></td>
+              <td style="color: var(--gray-500);">Subject to sudden disappearance.</td>
+            </tr>
+            <tr>
+              <td><span style="font-family: var(--mono); font-size: 12px;">2:15 PM</span></td>
+              <td><strong>Register Backup</strong></td>
+              <td><span class="badge badge-red">Severe</span></td>
+              <td style="color: var(--gray-500);">Customer approaching with envelope of receipts.</td>
+            </tr>
+            <tr>
+              <td><span style="font-family: var(--mono); font-size: 12px;">3:00 PM</span></td>
+              <td><strong>Attempt to Leave</strong></td>
+              <td><span class="badge badge-red" style="background:#fde8e8; color: #800000;">Critical</span></td>
+              <td style="color: var(--gray-500);">Someone will say "real quick."</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="table-note">Schedule accuracy: estimated. Shift end time: theoretical.</div>
+        </div><!-- /table-wrap -->
+      </div>
+    </div>
+
+    <!-- ── TRAINING ── -->
+    <div id="section-training" class="section">
+      <div class="page-header">
+        <h1>Required Learning</h1>
+        <p>4 modules assigned · 0 completed · Corporate is aware</p>
+      </div>
+      <div class="training-grid">
+        <div class="card training-card">
+          <div class="training-card-header">
+            <h3>Advanced Coupon Combat</h3>
+            <span class="badge badge-red">Overdue</span>
+          </div>
+          <div class="training-desc">Learn how to determine whether a coupon applies to shampoo, batteries, or one specific toothbrush sold only during lunar eclipses.</div>
+          <div class="progress-bar"><div class="progress-fill low" style="width: 7%;"></div></div>
+          <div class="progress-meta"><span>7% complete</span><span>Overdue since 2018</span></div>
+        </div>
+
+        <div class="card training-card">
+          <div class="training-card-header">
+            <h3>Saying "Let Me Check" With Authority</h3>
+            <span class="badge badge-yellow">In Progress</span>
+          </div>
+          <div class="training-desc">Covers tone, pacing, and strategic walking-away techniques. Module 3 covers the art of taking noticeably longer than necessary.</div>
+          <div class="progress-bar"><div class="progress-fill mid" style="width: 42%;"></div></div>
+          <div class="progress-meta"><span>42% complete</span><span>In Progress</span></div>
+        </div>
+
+        <div class="card training-card">
+          <div class="training-card-header">
+            <h3>De-Escalation: When the Customer Has a Cart Full of Seasonal Clearance</h3>
+            <span class="badge badge-gray">Assigned</span>
+          </div>
+          <div class="training-desc">No one has completed this course. The completion rate column has been removed from reporting to preserve morale.</div>
+          <div class="progress-bar"><div class="progress-fill low" style="width: 0%;"></div></div>
+          <div class="progress-meta"><span>0% complete</span><span>Assigned by Corporate</span></div>
+        </div>
+
+        <div class="card training-card">
+          <div class="training-card-header">
+            <h3>Photo Department Survival Basics</h3>
+            <span class="badge badge-gray" style="background: #f5e6e6; color: #800000;">Unavailable</span>
+          </div>
+          <div class="training-desc">The training module jammed. A replacement module is in production. The production module also jammed.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 0%; background: var(--gray-300);"></div></div>
+          <div class="progress-meta"><span style="color: var(--red);">Error</span><span>Course unavailable</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── METRICS ── -->
+    <div id="section-metrics" class="section">
+      <div class="page-header">
+        <h1>Live Store Metrics</h1>
+        <p>Data is refreshed every 15 minutes or never, whichever comes first</p>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="store-metric-item">
+            <div class="store-metric-left">
+              <div class="store-metric-name">Times Someone Asked "Do You Work Here?"</div>
+              <div class="store-metric-sub">Uniform visibility remains ineffective.</div>
+            </div>
+            <div class="store-metric-right">
+              <div class="store-metric-value">47</div>
+              <div class="store-metric-unit">today</div>
+            </div>
+          </div>
+          <div class="store-metric-item">
+            <div class="store-metric-left">
+              <div class="store-metric-name">Receipts Printed Today</div>
+              <div class="store-metric-sub">Environmental impact: legally mysterious.</div>
+            </div>
+            <div class="store-metric-right">
+              <div class="store-metric-value">1.8</div>
+              <div class="store-metric-unit">miles</div>
+            </div>
+          </div>
+          <div class="store-metric-item">
+            <div class="store-metric-left">
+              <div class="store-metric-name">Manager Pages Ignored</div>
+              <div class="store-metric-sub">Standard operating range.</div>
+            </div>
+            <div class="store-metric-right">
+              <div class="store-metric-value">12</div>
+              <div class="store-metric-unit">pages</div>
+            </div>
+          </div>
+          <div class="store-metric-item">
+            <div class="store-metric-left">
+              <div class="store-metric-name">Customer Saying "It Said Online…"</div>
+              <div class="store-metric-sub">Online has declined to comment.</div>
+            </div>
+            <div class="store-metric-right">
+              <div class="store-metric-value">23</div>
+              <div class="store-metric-unit">incidents</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid" style="margin-top:16px;">
+        <div class="card">
+          <div class="card-header">
+            <h2>Zebra Scanner Mood</h2>
+            <span class="badge badge-red">Withholding</span>
+          </div>
+          <div class="card-body">
+            <div class="mini-kpi-grid">
+              <div class="mini-kpi">
+                <div class="mini-kpi-label">Battery</div>
+                <div class="mini-kpi-value">3%</div>
+              </div>
+              <div class="mini-kpi">
+                <div class="mini-kpi-label">Location</div>
+                <div class="mini-kpi-value">Not where you left it</div>
+              </div>
+              <div class="mini-kpi">
+                <div class="mini-kpi-label">Attitude</div>
+                <div class="mini-kpi-value">Withholding</div>
+              </div>
+              <div class="mini-kpi">
+                <div class="mini-kpi-label">Last Scan</div>
+                <div class="mini-kpi-value">Item you did not ask for</div>
+              </div>
+            </div>
+            <div class="status-panel">Device note: scanner chirped once, refused to elaborate, and joined the wrong Wi-Fi.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Break Room Forecast</h2>
+            <span class="badge badge-orange">Advisory</span>
+          </div>
+          <div class="card-body">
+            <div class="store-metric-item">
+              <div class="store-metric-left">
+                <div class="store-metric-name">Microwave Congestion</div>
+                <div class="store-metric-sub">One container has entered minute six.</div>
+              </div>
+              <div class="store-metric-right"><div class="store-metric-value">Severe</div></div>
+            </div>
+            <div class="store-metric-item">
+              <div class="store-metric-left">
+                <div class="store-metric-name">Chair Availability</div>
+                <div class="store-metric-sub">Technically present. Spiritually occupied.</div>
+              </div>
+              <div class="store-metric-right"><div class="store-metric-value">1</div><div class="store-metric-unit">wobbly</div></div>
+            </div>
+            <div class="store-metric-item">
+              <div class="store-metric-left">
+                <div class="store-metric-name">Vibe</div>
+                <div class="store-metric-sub">Someone is watching videos at full volume.</div>
+              </div>
+              <div class="store-metric-right"><div class="store-metric-value">Dense</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SHIFT TOOLS ── -->
+    <div id="section-tools" class="section">
+      <div class="page-header">
+        <h1>Shift Tools</h1>
+        <p>Operational support tools calibrated for retail reality</p>
+      </div>
+
+      <div class="tool-grid">
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>IC3 Summoning Console</h2>
+            <span class="badge badge-red">Front End</span>
+          </div>
+          <div class="card-body">
+            <div class="button-row">
+              <button class="btn btn-primary btn-sm" onclick="ic3('Request Backup')">Request Backup</button>
+              <button class="btn btn-outline btn-sm" onclick="ic3('Request Backup Again')">Request Backup Again</button>
+              <button class="btn btn-outline btn-sm" onclick="ic3('Pretend Backup Is Coming')">Pretend Backup Is Coming</button>
+              <button class="btn btn-outline btn-sm" onclick="ic3('Accept Fate')">Accept Fate</button>
+            </div>
+            <div id="ic3-output" class="status-panel red">Awaiting headset activity.</div>
+          </div>
+        </div>
+
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>Photo Kiosk Incident Heatmap</h2>
+            <span class="badge badge-orange">Escalating</span>
+          </div>
+          <div class="card-body">
+            <div class="mini-kpi-grid">
+              <div class="mini-kpi"><div class="mini-kpi-label">Passport Printer</div><div class="mini-kpi-value">Uncooperative</div></div>
+              <div class="mini-kpi"><div class="mini-kpi-label">Canvas Orders</div><div class="mini-kpi-value">Spiritually delayed</div></div>
+              <div class="mini-kpi"><div class="mini-kpi-label">Phone Storage</div><div class="mini-kpi-value">98,000 photos</div></div>
+              <div class="mini-kpi"><div class="mini-kpi-label">User Confidence</div><div class="mini-kpi-value">Declining</div></div>
+            </div>
+            <div class="status-panel">Heatmap conclusion: customer has selected every photo except the one they came in for.</div>
+          </div>
+        </div>
+
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>Coupon Court</h2>
+            <span class="badge badge-purple">In Session</span>
+          </div>
+          <div class="card-body">
+            <div class="mini-kpi-grid">
+              <div class="form-group">
+                <label class="form-label">Coupon Age</label>
+                <select id="coupon-age">
+                  <option>Current-ish</option>
+                  <option>Expired Last Week</option>
+                  <option>From 2009</option>
+                  <option>Predates Rewards Program</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Lamination</label>
+                <select id="coupon-lamination">
+                  <option>None</option>
+                  <option>Suspicious Gloss</option>
+                  <option>Laminated</option>
+                  <option>Professionally Framed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Customer Confidence</label>
+                <select id="coupon-confidence">
+                  <option>Unsure</option>
+                  <option>Certain</option>
+                  <option>Already Asked for Manager</option>
+                  <option>Has Binder</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Font Integrity</label>
+                <select id="coupon-font">
+                  <option>Normal</option>
+                  <option>Slightly Off</option>
+                  <option>Clip Art Adjacent</option>
+                  <option>Printed at Home With Purpose</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="couponCourt()">Issue Ruling</button>
+            <div id="coupon-output" class="status-panel">The court awaits evidence.</div>
+          </div>
+        </div>
+
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>Customer Phrase Translator</h2>
+            <span class="badge badge-blue">Live Translation</span>
+          </div>
+          <div class="card-body">
+            <div class="translator-row">
+              <select id="phrase-select">
+                <option>I just have one quick question</option>
+                <option>It said online you had it</option>
+                <option>The other Walgreens does it</option>
+                <option>I know the manager</option>
+                <option>Can you check in the back?</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="translatePhrase()">Translate</button>
+            </div>
+            <div id="phrase-output" class="status-panel">Translation pending.</div>
+          </div>
+        </div>
+
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>Manager Override Simulator</h2>
+            <span class="badge badge-yellow">Pending</span>
+          </div>
+          <div class="card-body">
+            <button class="btn btn-primary btn-sm" onclick="managerOverride()">Call Manager</button>
+            <ul class="override-steps" id="override-steps">
+              <li>Locating manager...</li>
+              <li>Manager spotted near office...</li>
+              <li>Manager has changed direction...</li>
+              <li>Override approved for reasons no one will document.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card tool-card">
+          <div class="card-header">
+            <h2>Tiny System Details</h2>
+            <span class="badge badge-gray">Ambient</span>
+          </div>
+          <div class="card-body">
+            <div class="status-panel">Session expires after 8 hours or one difficult return.</div>
+            <div class="status-panel">HR sentiment analysis: inconclusive, but concerned.</div>
+            <div class="status-panel">This setting is managed by someone who has never opened a register.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INCIDENTS ── -->
+    <div id="section-incidents" class="section">
+      <div class="page-header">
+        <h1>File Incident Report</h1>
+        <p>All reports are reviewed. Review timeline: unspecified.</p>
+      </div>
+      <div class="card" style="max-width: 600px;">
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Incident Type</label>
+            <select id="incident-type">
+              <option value="">— Select Incident —</option>
+              <option>Customer Presented Ancient Coupon</option>
+              <option>Register Made Eye Contact</option>
+              <option>Pharmacy Line Achieved Consciousness</option>
+              <option>Someone Asked If We Sell Live Fish</option>
+              <option>Seasonal Aisle Became Emotionally Unsafe</option>
+              <option>Corporate Email Used the Word "Exciting"</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Severity</label>
+            <select id="incident-sev">
+              <option value="">— Select Severity —</option>
+              <option>Mildly Concerning</option>
+              <option>Spiritually Expensive</option>
+              <option>Manager Needed</option>
+              <option>District Manager Pretending Not to See It</option>
+              <option>Call The Void</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea id="incident-desc" placeholder="Describe the incident using professional language, exaggerated restraint, and at least one sigh."></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="submitIncident()">Submit Report</button>
+          <div id="incident-output" class="form-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RECOGNITION ── -->
+    <div id="section-recognition" class="section">
+      <div class="page-header">
+        <h1>Employee Recognition</h1>
+        <p>Recognition is meaningful. Recognition is also subject to HR review, revision, and quiet deletion.</p>
+      </div>
+
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="card-header">
+          <h2>Store #4577 — Full Roster Recognition</h2>
+          <span class="badge badge-gray">Q2 2026 · Auto-Generated</span>
+        </div>
+        <div class="table-wrap">
+        <table class="recognition-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Recognition</th>
+              <th>Status</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Amanda Hibbitts</strong></td>
+              <td>Fantastic Daydreamer &amp; Customer Justice Enforcer</td>
+              <td><span class="badge badge-purple">Certified</span></td>
+              <td style="color:var(--gray-500);">Maintains an active imagination while enforcing customer justice with courtroom-level side eye. Can detect nonsense from two aisles away and deny it politely enough to remain employed.</td>
+            </tr>
+            <tr>
+              <td><strong>Cathy Washington</strong></td>
+              <td>Legendary Cashier &amp; Customer Service Icon</td>
+              <td><span class="badge badge-green">Elite Tier</span></td>
+              <td style="color:var(--gray-500);">Runs a register like it owes her money. Customers leave faster, happier, and slightly confused about how they got handled with that much grace and velocity.</td>
+            </tr>
+            <tr>
+              <td><strong>Danny Rodriguez</strong></td>
+              <td>Customer Service Extraordinaire</td>
+              <td><span class="badge badge-orange">Modified Duty</span></td>
+              <td style="color:var(--gray-500);">Delivers top-tier service with the calm of a man who has lifted one too many totes and learned the truth about the human spine. Still somehow gets asked for help by everyone.</td>
+            </tr>
+            <tr>
+              <td><strong>David Scott</strong></td>
+              <td>Premier Cashier</td>
+              <td><span class="badge badge-yellow">Top Performer</span></td>
+              <td style="color:var(--gray-500);">Scans with the confidence of a barcode whisperer. The register behaves better around him, which IT has classified as unexplained but convenient.</td>
+            </tr>
+            <tr>
+              <td><strong>Graham Reyes</strong></td>
+              <td>Leading Inventory Specialist</td>
+              <td><span class="badge badge-yellow">Operational Asset</span></td>
+              <td style="color:var(--gray-500);">Knows where everything is, where it used to be, and where the system falsely believes it lives now. May be personally responsible for keeping the concept of inventory alive.</td>
+            </tr>
+            <tr>
+              <td><strong>Hudson Muneea</strong></td>
+              <td>New Emerging Store Manager</td>
+              <td><span class="badge badge-green">Rising Star</span></td>
+              <td style="color:var(--gray-500);">Shows early management potential by reading the memos, understanding the memos, and somehow not letting the memos dim his spark. Corporate finds this promising and a little suspicious.</td>
+            </tr>
+            <tr>
+              <td><strong>Matt Livingston</strong></td>
+              <td>Newbie</td>
+              <td><span class="badge badge-gray">Onboarding</span></td>
+              <td style="color:var(--gray-500);">Fresh enough to still ask sincere questions, brave enough to keep asking after hearing the answers. Has not yet unlocked the thousand-yard register stare, but the tutorial is progressing.</td>
+            </tr>
+            <tr>
+              <td><strong>Narinder Bajwa</strong></td>
+              <td>Cross-Department Pillar</td>
+              <td><span class="badge badge-blue">Essential</span></td>
+              <td style="color:var(--gray-500);">Operates between store and pharmacy like a shared custody arrangement nobody wants to lose. Both departments claim full ownership and neither has produced paperwork.</td>
+            </tr>
+            <tr>
+              <td><strong>Stan Milton</strong></td>
+              <td>Grade-A Leadership</td>
+              <td><span class="badge badge-blue">Decorated</span></td>
+              <td style="color:var(--gray-500);">Leads with the steady presence of someone who can hear a problem forming before the headset crackles. Keeps the floor moving while projecting advanced-level "we've got this" energy.</td>
+            </tr>
+            <tr>
+              <td><strong>Syed Husain</strong></td>
+              <td>Disciplinary Watch — Excessive Chit Chat</td>
+              <td><span class="badge badge-red">Under Review</span></td>
+              <td style="color:var(--gray-500);">Universally beloved. Technically problematic. HR has filed the no-chit-chat paperwork. HR also stopped to chat with Syed on the way out.</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="table-note">Recognition status is non-binding. Awards are commemorative. Lanyards are pending supply chain resolution.</div>
+        </div><!-- /table-wrap -->
+      </div>
+
+      <div class="card">
+        <div class="card-header"><h2>Peer Awards</h2></div>
+        <div class="card-body">
+          <ul class="award-list">
+            <li class="award-item"><span class="award-icon">🌫️</span> Most Likely to Vanish During Truck</li>
+            <li class="award-item"><span class="award-icon">🚶</span> Best "I'll Be Right Back" Delivery</li>
+            <li class="award-item"><span class="award-icon">⚡</span> Fastest Register Login Under Pressure</li>
+            <li class="award-item"><span class="award-icon">🔍</span> Most Emotionally Complex Zebra Scanner Relationship</li>
+            <li class="award-item"><span class="award-icon">🏆</span> Best Thousand-Yard Register Stare</li>
+            <li class="award-item"><span class="award-icon">📍</span> Most Likely to Know the Actual Aisle</li>
+            <li class="award-item"><span class="award-icon">⏱️</span> Fastest "Let Me Check" Walk</li>
+            <li class="award-item"><span class="award-icon">🖨️</span> Excellence in Pretending the Printer Error Is New</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── INVENTORY ── -->
+    <div id="section-inventory" class="section">
+      <div class="page-header">
+        <h1>Inventory Search</h1>
+        <p>SKU data is best-effort. Emotional data is exact.</p>
+      </div>
+      <div class="card">
+        <div class="card-body" style="padding-bottom: 0;">
+          <div class="search-bar">
+            <input type="text" placeholder="Search item, SKU, or emotional wound…" id="inv-search">
+            <button class="btn btn-primary btn-sm" onclick="searchInv()">Search</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+        <table>
+          <thead><tr><th>Item</th><th>Aisle</th><th>Status</th><th>Notes</th></tr></thead>
+          <tbody id="inv-table">
+            <tr>
+              <td><span style="font-family:var(--mono)">Seasonal</span></td>
+              <td><span class="badge badge-red">Contained</span></td>
+              <td style="color: var(--gray-500);">Has renegotiated its own price twice. Do not make eye contact.</td>
+            </tr>
+            <tr>
+              <td><strong>Pre-Expired Milk (Vintage)</strong></td>
+              <td><span style="font-family:var(--mono)">Dairy-Adjacent</span></td>
+              <td><span class="badge badge-orange">Aged to Perfection</span></td>
+              <td style="color: var(--gray-500);">Customer specifically requested 2021. We delivered.</td>
+            </tr>
+            <tr>
+              <td><strong>Emotional Support Receipt Paper</strong></td>
+              <td><span style="font-family:var(--mono)">Front End</span></td>
+              <td><span class="badge badge-yellow">Low Stock</span></td>
+              <td style="color: var(--gray-500);">Cries when torn. Refuses thermal printing after 6 PM.</td>
+            </tr>
+            <tr>
+              <td><strong>Coupon From the Before Times</strong></td>
+              <td><span style="font-family:var(--mono)">Register 2</span></td>
+              <td><span class="badge badge-red">Active Threat</span></td>
+              <td style="color: var(--gray-500);">Laminated. Still warm. Do not attempt to override. Do not.</td>
+            </tr>
+            <tr>
+              <td><strong>Manager Repellent Spray</strong></td>
+              <td><span style="font-family:var(--mono)">Office</span></td>
+              <td><span class="badge badge-orange">Backordered</span></td>
+              <td style="color: var(--gray-500);">Corporate blocked reorder. Corporate did not explain why. Corporate never does.</td>
+            </tr>
+            <tr>
+              <td><strong>Phantom Photo Order (Unclaimed Since 2019)</strong></td>
+              <td><span style="font-family:var(--mono)">Photo Dept.</span></td>
+              <td><span class="badge badge-gray">Haunting</span></td>
+              <td style="color: var(--gray-500);">Contents unknown. The printer refuses to discuss it.</td>
+            </tr>
+            <tr>
+              <td><strong>Schrödinger's Inventory Item</strong></td>
+              <td><span style="font-family:var(--mono)">Unknown</span></td>
+              <td><span class="badge badge-purple">Both</span></td>
+              <td style="color: var(--gray-500);">System says in stock. Shelf says no. Truth remains theoretical until observed.</td>
+            </tr>
+            <tr>
+              <td><strong>Backup Backup Register Key</strong></td>
+              <td><span style="font-family:var(--mono)">???</span></td>
+              <td><span class="badge badge-red">Missing</span></td>
+              <td style="color: var(--gray-500);">The backup key for the backup key has been lost. A backup is being sourced.</td>
+            </tr>
+            <tr>
+              <td><strong>Teleportation Socks (Seasonal)</strong></td>
+              <td><span style="font-family:var(--mono)">Seasonal</span></td>
+              <td><span class="badge badge-gray">Lost</span></td>
+              <td style="color: var(--gray-500);">Working as designed. Last confirmed location: aisle 7. Current location: unknowable.</td>
+            </tr>
+            <tr>
+              <td><strong>Void-Certified Hand Sanitizer</strong></td>
+              <td><span style="font-family:var(--mono)">Health &amp; Beauty</span></td>
+              <td><span class="badge badge-green">In Stock</span></td>
+              <td style="color: var(--gray-500);">Kills 99.9% of germs. Also kills 12% of ambient hope. Still better than nothing.</td>
+            </tr>
+            <tr>
+              <td><strong>Anti-Antibiotics</strong></td>
+              <td><span style="font-family:var(--mono)">Pharmacy-ish</span></td>
+              <td><span class="badge badge-red">Quarantined</span></td>
+              <td style="color: var(--gray-500);">Actively undoing progress. Pharmacy has lodged a formal complaint with itself.</td>
+            </tr>
+            <tr>
+              <td><strong>Extended Warranty for Feelings</strong></td>
+              <td><span style="font-family:var(--mono)">Register Upsell</span></td>
+              <td><span class="badge badge-orange">Low Confidence</span></td>
+              <td style="color: var(--gray-500);">Coverage unclear. Claim process involves three forms and a waiting period of indeterminate length.</td>
+            </tr>
+          </tbody>
+        </table>
+        </div><!-- /table-wrap -->
+      </div>
+    </div>
+    <div id="section-corporate" class="section">
+      <div class="page-header">
+        <h1>Corporate Communications</h1>
+        <p>4 unread · 4 acknowledged · 4 ignored · Please acknowledge.</p>
+      </div>
+      <div class="message-list">
+
+        <div class="message-card">
+          <div class="msg-dot"></div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <h4>We Hear You</h4>
+              <span class="badge badge-red">High Priority</span>
+            </div>
+            <p>No further action is planned at this time.</p>
+          </div>
+        </div>
+
+        <div class="message-card">
+          <div class="msg-dot"></div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <h4>Exciting New Workflow Update</h4>
+              <span class="badge badge-orange">Mandatory</span>
+            </div>
+            <p>We have added three steps to save time.</p>
+          </div>
+        </div>
+
+        <div class="message-card">
+          <div class="msg-dot" style="background: #2e7d32;"></div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <h4>Team Member Wellness Initiative</h4>
+              <span class="badge badge-green">Wellness</span>
+            </div>
+            <p>Please enjoy this PDF about balance while covering two departments.</p>
+          </div>
+        </div>
+
+        <div class="message-card">
+          <div class="msg-dot" style="background: #1a4f99;"></div>
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+              <h4>Register Update Complete</h4>
+              <span class="badge badge-blue">Technology</span>
+            </div>
+            <p>Registers may now freeze in higher resolution.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div id="section-settings" class="section">
+      <div class="page-header">
+        <h1>Employee Preferences</h1>
+        <p>Some settings are adjustable. All settings are decorative.</p>
+      </div>
+      <div class="card" style="max-width: 560px;">
+        <div class="card-body">
+          <div class="pref-list">
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">Care Level</div>
+                <div class="pref-note">Adjustable in theory. Locked in practice.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">18%</div>
+                <div class="fake-toggle on"></div>
+              </div>
+            </div>
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">Customer Voice Volume</div>
+                <div class="pref-note">Cannot be reduced. Can only be endured.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">Maximum</div>
+                <div class="fake-toggle on"></div>
+              </div>
+            </div>
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">Receipt Length</div>
+                <div class="pref-note">Contractually infinite. Environmental audit pending.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">∞</div>
+                <div class="fake-toggle on"></div>
+              </div>
+            </div>
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">Break Reminder</div>
+                <div class="pref-note">Disabled at the system level. Also at the reality level.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">Off</div>
+                <div class="fake-toggle off"></div>
+              </div>
+            </div>
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">Reality Distortion Filter</div>
+                <div class="pref-note">Keeps things manageable. Accuracy may suffer.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">Enabled</div>
+                <div class="fake-toggle on"></div>
+              </div>
+            </div>
+            <div class="pref-item">
+              <div>
+                <div class="pref-name">"Ask For Backup" Button</div>
+                <div class="pref-note">Decorative only. Backup is aware of the situation.</div>
+              </div>
+              <div class="pref-right">
+                <div class="pref-value">Decorative</div>
+                <div class="fake-toggle off"></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 16px;">
+            <button class="btn btn-primary" onclick="savePrefs()">Save Preferences</button>
+          </div>
+          <div id="prefs-output" class="form-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="page-footer">
+      <div class="footer-main">wDashboard Internal Beta © 2026 — This portal is not responsible for coupon decisions, register freezes, or emotional damage caused by photo kiosks.</div>
+      <div>Built for Store #4577 · Plano, TX · May malfunction near clearance tags.</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast Alert -->
+<div class="mini-alert" id="mini-alert"></div>
+
+<script>
+  // ── Navigation ──
+  // Single source of truth: data-section attribute on every nav trigger
+  function showSection(id, el, fromDrawer) {
+    // Guard: section must exist
+    const target = document.getElementById('section-' + id);
+    if (!target) return;
+
+    // Hide all sections
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    target.classList.add('active');
+
+    // Clear all nav active states
+    document.querySelectorAll('.nav-item, .drawer-item, .tab-btn').forEach(n => n.classList.remove('active'));
+
+    // Mark the clicked element active
+    if (el) el.classList.add('active');
+
+    // Sync sidebar nav-item for this section
+    document.querySelectorAll('.nav-item[data-section="' + id + '"]').forEach(n => n.classList.add('active'));
+
+    // Sync drawer item for this section
+    document.querySelectorAll('.drawer-item[data-section="' + id + '"]').forEach(n => n.classList.add('active'));
+
+    // Sync tab button for this section
+    const tabBtn = document.querySelector('.tab-btn[data-tab="' + id + '"]');
+    if (tabBtn) tabBtn.classList.add('active');
+
+    if (fromDrawer) closeDrawer();
+    window.scrollTo(0, 0);
+  }
+
+  // ── Drawer ──
+  function openDrawer() {
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawer-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeDrawer() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawer-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // ── Toast ──
+  function toast(msg, dur = 3200) {
+    const el = document.getElementById('mini-alert');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), dur);
+  }
+
+  // ── Shift Simulation ──
+  function shiftSim() {
+    toast('Shift simulation failed: already in shift.');
+  }
+
+  // ── Incident Report ──
+  function submitIncident() {
+    const out = document.getElementById('incident-output');
+    out.textContent = 'Thank you. Your report has been filed directly into the Maybe Later Archive.';
+    out.classList.add('visible');
+  }
+
+  // ── Save Preferences ──
+  function savePrefs() {
+    const out = document.getElementById('prefs-output');
+    out.textContent = 'Preferences saved locally, emotionally, but not operationally.';
+    out.classList.add('visible');
+  }
+
+  // ── Inventory Search (cosmetic) ──
+  function searchInv() {
+    const q = document.getElementById('inv-search').value.trim().toLowerCase();
+    if (!q) return;
+    toast('Search complete. Results may not reflect physical reality.');
+  }
+
+  // ── Shift Tools ──
+  function ic3(action) {
+    const out = document.getElementById('ic3-output');
+    const responses = {
+      'Request Backup': 'Backup request acknowledged. Backup is currently pretending not to hear the headset.',
+      'Request Backup Again': 'Second request received. System has upgraded concern level from "front end noise" to "probably fine."',
+      'Pretend Backup Is Coming': 'A confident nod has been issued. Please maintain eye contact with the line.',
+      'Accept Fate': 'Fate accepted. Register light remains blinking with unnecessary optimism.'
+    };
+    out.textContent = responses[action];
+  }
+
+  function couponCourt() {
+    const age = document.getElementById('coupon-age').value;
+    const lamination = document.getElementById('coupon-lamination').value;
+    const confidence = document.getElementById('coupon-confidence').value;
+    const font = document.getElementById('coupon-font').value;
+    const out = document.getElementById('coupon-output');
+    const severity = [age, lamination, confidence, font].filter(v => /2009|Predates|Laminated|Framed|Manager|Binder|Clip Art|Home/.test(v)).length;
+    const verdicts = [
+      'Approved, but only because the line has entered a dangerous shape.',
+      'Denied with emotional damages. Customer may appeal to someone wearing keys.',
+      'Escalated to manager override court. Everyone loses 7 minutes.',
+      'Coupon accepted as a historical document, not as currency.',
+      'Register refuses jurisdiction. Please consult the laminated-coupon protocol.'
+    ];
+    out.textContent = 'Evidence: ' + age + ', ' + lamination + ', ' + confidence + ', ' + font + '. Verdict: ' + verdicts[Math.min(severity, verdicts.length - 1)];
+  }
+
+  const phraseTranslations = {
+    'I just have one quick question': 'Twenty-minute event detected. Backup recommended. Hope discouraged.',
+    'It said online you had it': 'Inventory reality conflict initiated. Shelf truth and website truth are no longer speaking.',
+    'The other Walgreens does it': 'Policy fog deployed. Alternate store mythology has entered the chat.',
+    'I know the manager': 'Social leverage attempt detected. Manager knowledge level: unverified.',
+    'Can you check in the back?': 'Customer requests journey to secondary emptiness location.'
+  };
+  function translatePhrase() {
+    const phrase = document.getElementById('phrase-select').value;
+    document.getElementById('phrase-output').textContent = phraseTranslations[phrase];
+  }
+
+  let overrideTimer;
+  function managerOverride() {
+    clearInterval(overrideTimer);
+    const steps = Array.from(document.querySelectorAll('#override-steps li'));
+    steps.forEach(step => step.classList.remove('active'));
+    let index = 0;
+    steps[index].classList.add('active');
+    overrideTimer = setInterval(() => {
+      steps[index].classList.remove('active');
+      index += 1;
+      if (index >= steps.length) {
+        clearInterval(overrideTimer);
+        toast('Override complete. Documentation has chosen privacy.');
+        return;
+      }
+      steps[index].classList.add('active');
+    }, 900);
+  }
+
+  // ── Generate Performance Review ──
+  const reviews = [
+    "Employee demonstrates strong floor presence, moderate caffeine dependency, and the ability to say \"Let me check in the back\" with Oscar-level conviction. Coupon literacy is classified. Patience index remains statistically improbable. Recommended for promotion, pending the definition of promotion.",
+    "Employee consistently performs above role expectations, particularly when those expectations have been left intentionally vague. Register speed is noted. Emotional regulation during printer events is described by peers as \"inspiring\" and \"suspicious.\" Rating: Exceeds whatever this is.",
+    "This quarter, employee exceeded targets in three areas we cannot name for legal reasons. The ability to identify when a customer is about to escalate — before the customer knows it — has been flagged as both an asset and a mild concern. Compensation review: pending since Q3 2024.",
+    "Performance is rated: Competent to a degree that raises questions. Shift coverage, problem-solving approach, and capacity to look busy when district is in-store are all exceptional. Employee has been nominated for the Efficiency Award. The Efficiency Award does not exist.",
+  ];
+  function genReview() {
+    const out = document.getElementById('review-output');
+    const text = document.getElementById('review-text');
+    text.textContent = reviews[Math.floor(Math.random() * reviews.length)];
+    out.classList.add('visible');
+  }
+
+  // ── Random Corporate Message ──
+  const corpMessages = {
+    inspirational: [
+      "Good news: the new process has replaced the old process, which replaced the working process.",
+      "Store performance is on track. Please be advised that 'on track' has been redefined.",
+      "Your resilience has been noticed by a dashboard and may someday be noticed by a person."
+    ],
+    threatening: [
+      "Reminder: all problems should be escalated only after they become impossible to solve.",
+      "Associates are encouraged to own outcomes, especially outcomes created by other systems.",
+      "Compliance is voluntary in the same way gravity is optional."
+    ],
+    wellness: [
+      "Please enjoy this PDF about balance while covering two departments.",
+      "We recognize staffing has been dynamic. Please continue delivering legendary service with your current number of arms.",
+      "Remember to hydrate between customer concerns, register freezes, and silent personal reckonings."
+    ],
+    exciting: [
+      "We are excited to announce an exciting new initiative around exciting engagement. More details to follow once we know what it is.",
+      "An exciting opportunity is coming soon: the same task, now with a new button.",
+      "Effective immediately, the old portal is the new portal because we changed the banner."
+    ],
+    apology: [
+      "We apologize for any confusion you may have experienced while accurately understanding the situation.",
+      "Thank you for your feedback. It has been converted into a decorative spreadsheet.",
+      "We hear you. No further action is planned at this time."
+    ]
+  };
+  function randCorp() {
+    const tone = document.getElementById('corp-tone')?.value || 'inspirational';
+    const messages = corpMessages[tone] || corpMessages.inspirational;
+    const out = document.getElementById('corp-msg-output');
+    out.textContent = '📢 ' + messages[Math.floor(Math.random() * messages.length)];
+    out.classList.add('visible');
+  }
+</script>
+
+<!-- * lone wolf, quiet teeth | Matt Livingston -->
+</body>
+</html>
