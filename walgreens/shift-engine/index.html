@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111827">
+    <title>Shift Engine</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Walgreens shift lead field tool</p>
+          <h1>Shift Engine</h1>
+        </div>
+        <button class="mode-pill" id="modeToggle" type="button" aria-label="Toggle chaos mode">
+          <span id="modeDot"></span>
+          <span id="modeLabel">Normal</span>
+        </button>
+      </header>
+
+      <main>
+        <section class="screen active" id="todayScreen" aria-labelledby="todayTitle">
+          <div class="hero-panel">
+            <div>
+              <p class="eyebrow">Current shift</p>
+              <h2 id="todayTitle">Pick the pressure you are working under</h2>
+              <p class="hero-copy">Triage beats completion. Protect the work that can hurt the store, then deliberately drop the rest.</p>
+            </div>
+            <div class="status-grid">
+              <div>
+                <span class="status-number" id="criticalRemaining">0</span>
+                <span class="status-label">critical left</span>
+              </div>
+              <div>
+                <span class="status-number" id="deferredCount">0</span>
+                <span class="status-label">deferred</span>
+              </div>
+            </div>
+            <div class="progress-wrap" aria-label="Shift progress">
+              <div class="progress-meta">
+                <span id="progressLabel">0% complete</span>
+                <span id="progressDetail">0 of 0 tasks</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="shift-grid" id="shiftButtons" aria-label="Shift selector"></div>
+
+          <article class="reference-card collapsed" id="priorityStackCard">
+            <button class="section-heading reference-toggle" id="priorityStackToggle" type="button" aria-expanded="false" aria-controls="priorityStack">
+              <h3>Master Priority Stack</h3>
+              <span>Use when the shift gets loud</span>
+              <span class="chevron" aria-hidden="true">▾</span>
+            </button>
+            <div class="reference-content" id="priorityStackContent">
+              <ol id="priorityStack"></ol>
+            </div>
+          </article>
+
+          <div class="task-board" id="taskBoard"></div>
+        </section>
+
+        <section class="screen" id="rulesScreen" aria-labelledby="rulesTitle">
+          <div class="section-heading screen-heading">
+            <div>
+              <p class="eyebrow">Decision rules</p>
+              <h2 id="rulesTitle">What do I do now?</h2>
+            </div>
+          </div>
+          <div class="filter-row" id="rulesFilters" aria-label="Rule filters">
+            <button class="filter-chip active" data-rule-filter="current" type="button">Current</button>
+            <button class="filter-chip" data-rule-filter="all" type="button">All</button>
+            <button class="filter-chip" data-rule-filter="critical" type="button">Critical</button>
+            <button class="filter-chip" data-rule-filter="high" type="button">High</button>
+            <button class="filter-chip" data-rule-filter="medium" type="button">Medium</button>
+          </div>
+          <div class="rules-list" id="rulesList"></div>
+          <article class="reference-card override-card">
+            <div class="section-heading">
+              <h3>Override Rules</h3>
+              <span>Hard-coded calls</span>
+            </div>
+            <div class="override-list" id="overrideList"></div>
+          </article>
+        </section>
+
+        <section class="screen" id="chaosScreen" aria-labelledby="chaosTitle">
+          <div class="chaos-panel">
+            <p class="eyebrow">Minimum viable shift</p>
+            <h2 id="chaosTitle">Protect the floor. Drop the vanity work.</h2>
+            <p>Shows only customer coverage, registers, cash/safe issues, same-day orders, waiting photo customers, FedEx customers, and closing security.</p>
+            <button class="primary-button danger" id="minimumToggle" type="button">Enter Minimum Viable Mode</button>
+          </div>
+          <div class="section-heading screen-heading">
+            <h3>Protect Only</h3>
+            <span>Minimum viable scope</span>
+          </div>
+          <div class="protect-grid" id="protectGrid"></div>
+          <div class="section-heading screen-heading">
+            <h3>Suppressed</h3>
+            <span>Dropped first</span>
+          </div>
+          <div class="suppressed-list" id="suppressedList"></div>
+          <div class="task-board" id="chaosBoard"></div>
+        </section>
+
+        <section class="screen" id="reviewScreen" aria-labelledby="reviewTitle">
+          <div class="section-heading screen-heading">
+            <div>
+              <p class="eyebrow">End of shift</p>
+              <h2 id="reviewTitle">Quick review</h2>
+            </div>
+          </div>
+          <form class="review-form" id="reviewForm">
+            <div class="review-stats">
+              <div><strong id="reviewCompleted">0</strong><span>completed</span></div>
+              <div><strong id="reviewDeferred">0</strong><span>deferred</span></div>
+              <div><strong id="reviewMissed">0</strong><span>critical missed</span></div>
+            </div>
+            <label>
+              What got completed?
+              <textarea id="reviewCompletedNotes" rows="3" placeholder="Key wins this shift"></textarea>
+            </label>
+            <label>
+              What got deferred?
+              <textarea id="reviewDeferredNotes" rows="3" placeholder="What is still hanging"></textarea>
+            </label>
+            <label>
+              What caused the shift to break?
+              <select id="breakCause">
+                <option>Customer rush</option>
+                <option>Photo backlog</option>
+                <option>FedEx interruption</option>
+                <option>Truck overload</option>
+                <option>Cash issue</option>
+                <option>Staffing issue</option>
+                <option>Ad day interruption</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <label>
+              Notes for next shift
+              <textarea id="reviewNotes" rows="5" placeholder="What needs context tomorrow?"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Save review</button>
+          </form>
+          <div class="review-history" id="reviewHistory"></div>
+        </section>
+
+        <section class="screen" id="settingsScreen" aria-labelledby="settingsTitle">
+          <div class="section-heading screen-heading">
+            <div>
+              <p class="eyebrow">Settings</p>
+              <h2 id="settingsTitle">Local data</h2>
+            </div>
+          </div>
+          <div class="settings-stack">
+            <button class="primary-button" id="resetDay" type="button">Reset today</button>
+            <button class="secondary-button" id="exportData" type="button">Export JSON</button>
+            <label class="import-label">
+              Import JSON
+              <input id="importData" type="file" accept="application/json">
+            </label>
+            <button class="secondary-button danger-text" id="resetAll" type="button">Reset all data</button>
+          </div>
+          <pre class="data-preview" id="dataPreview"></pre>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="taskDialog">
+      <form method="dialog" id="taskDialogForm">
+        <h3 id="dialogTitle">Task action</h3>
+        <p id="dialogCopy"></p>
+        <label id="dialogReasonWrap">
+          Reason
+          <select id="deferReason">
+            <option>Customer flow</option>
+            <option>Short staffed</option>
+            <option>Time ran out</option>
+            <option>Blocked</option>
+            <option>Lower priority</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label id="dialogStateWrap">
+          State
+          <select id="taskStateSelect">
+            <option value="not_started">Not started</option>
+            <option value="in_progress">In progress</option>
+            <option value="completed">Completed</option>
+            <option value="deferred">Deferred</option>
+            <option value="blocked">Blocked</option>
+            <option value="missed">Missed</option>
+          </select>
+        </label>
+        <label>
+          Note
+          <textarea id="taskNote" rows="4" placeholder="Optional context"></textarea>
+        </label>
+        <div class="dialog-actions">
+          <button class="secondary-button" value="cancel" type="submit">Cancel</button>
+          <button class="primary-button" id="dialogConfirm" value="confirm" type="submit">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <nav class="bottom-nav" aria-label="Primary navigation">
+      <button class="nav-button active" data-screen="todayScreen" type="button">Today</button>
+      <button class="nav-button" data-screen="rulesScreen" type="button">Rules</button>
+      <button class="nav-button" data-screen="chaosScreen" type="button">Chaos</button>
+      <button class="nav-button" data-screen="reviewScreen" type="button">Review</button>
+      <button class="nav-button" data-screen="settingsScreen" type="button">Settings</button>
+    </nav>
+
+    <script src="app.js"></script>
+  </body>
+</html>
