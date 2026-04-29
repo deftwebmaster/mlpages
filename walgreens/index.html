@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Walgreens | Plano Store 4577</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #CC1F1A;
+    --red-dark: #8B1410;
+    --red-light: #FF3B35;
+    --cream: #F2EFE4;
+    --paper: #E8E4D8;
+    --ink: #1A1A18;
+    --ink-faded: #3D3C38;
+    --chalk: #C8C4B5;
+    --chalk-light: #DEDAD0;
+    --cork: #B5935A;
+    --tape: #D4C98A;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--ink);
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 28px, rgba(255,255,255,0.015) 28px, rgba(255,255,255,0.015) 29px),
+      repeating-linear-gradient(90deg, transparent, transparent 28px, rgba(255,255,255,0.015) 28px, rgba(255,255,255,0.015) 29px);
+    font-family: 'Space Mono', monospace;
+    color: var(--cream);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  .cork-board {
+    max-width: 860px;
+    margin: 0 auto;
+    background: #6B4C2A;
+    background-image:
+      radial-gradient(ellipse at 20% 30%, rgba(180,130,70,0.3) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(100,60,20,0.4) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='2' height='2' fill='rgba(0,0,0,0.08)'/%3E%3Crect x='2' y='2' width='2' height='2' fill='rgba(255,255,255,0.03)'/%3E%3C/svg%3E");
+    border-radius: 4px;
+    padding: 2.5rem 2rem 3rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.06);
+    position: relative;
+  }
+
+  /* Corner pins */
+  .cork-board::before, .cork-board::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #e8c870, #8B6914);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    top: 1.2rem;
+  }
+  .cork-board::before { left: 1.2rem; }
+  .cork-board::after { right: 1.2rem; }
+
+  /* Header block — taped paper */
+  .header-paper {
+    background: var(--paper);
+    padding: 1.5rem 2rem 1.2rem;
+    margin-bottom: 2.5rem;
+    position: relative;
+    transform: rotate(-0.4deg);
+    box-shadow: 2px 4px 12px rgba(0,0,0,0.4);
+  }
+
+  /* Tape strips */
+  .header-paper::before, .header-paper::after {
+    content: '';
+    position: absolute;
+    background: rgba(212, 201, 138, 0.75);
+    height: 22px;
+    width: 70px;
+    top: -10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  .header-paper::before { left: 2rem; transform: rotate(-2deg); }
+  .header-paper::after  { right: 3rem; transform: rotate(1.5deg); }
+
+  .store-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--chalk);
+    background: var(--ink);
+    display: inline-block;
+    padding: 3px 8px;
+    margin-bottom: 0.6rem;
+  }
+
+  .store-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 7vw, 4rem);
+    color: var(--red);
+    letter-spacing: 0.04em;
+    line-height: 0.95;
+  }
+
+  .store-title .location {
+    color: var(--ink-faded);
+    font-size: 0.55em;
+    display: block;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+  }
+
+  .header-tagline {
+    margin-top: 0.8rem;
+    font-size: 0.72rem;
+    color: var(--ink-faded);
+    font-style: italic;
+    letter-spacing: 0.04em;
+    border-top: 1px solid var(--chalk-light);
+    padding-top: 0.6rem;
+  }
+
+  /* Section divider */
+  .section-heading {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1rem;
+    color: var(--tape);
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+  }
+
+  /* Cards */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.4rem;
+  }
+
+  .card {
+    background: var(--cream);
+    color: var(--ink);
+    padding: 1.4rem 1.3rem 1.2rem;
+    text-decoration: none;
+    display: block;
+    position: relative;
+    box-shadow: 3px 5px 14px rgba(0,0,0,0.45);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border-left: 5px solid var(--chalk);
+  }
+
+  .card:hover {
+    transform: translateY(-3px) rotate(0.3deg);
+    box-shadow: 5px 8px 20px rgba(0,0,0,0.5);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(0deg);
+    background: rgba(212, 201, 138, 0.8);
+    height: 20px;
+    width: 55px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+
+  .card.shift { border-left-color: var(--red); transform: rotate(0.5deg); }
+  .card.portal { border-left-color: var(--cork); transform: rotate(-0.7deg); }
+  .card.timeoff { border-left-color: var(--chalk); transform: rotate(0.3deg); }
+
+  .card.shift:hover  { transform: translateY(-3px) rotate(1deg); }
+  .card.portal:hover { transform: translateY(-3px) rotate(-0.3deg); }
+  .card.timeoff:hover{ transform: translateY(-3px) rotate(0.8deg); }
+
+  .card-tag {
+    display: inline-block;
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    margin-bottom: 0.6rem;
+    color: #fff;
+  }
+
+  .card.shift .card-tag   { background: var(--red); }
+  .card.portal .card-tag  { background: var(--cork); }
+  .card.timeoff .card-tag { background: var(--ink-faded); }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.55rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-desc {
+    font-size: 0.7rem;
+    color: var(--ink-faded);
+    line-height: 1.65;
+    margin-bottom: 1rem;
+  }
+
+  .card-status {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--chalk);
+    border-top: 1px dashed var(--chalk-light);
+    padding-top: 0.55rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-green  { background: #4CAF50; }
+  .dot-amber  { background: #FF9800; }
+  .dot-red    { background: var(--red); }
+
+  /* Bottom note */
+  .footer-note {
+    margin-top: 2.5rem;
+    padding: 1rem 1.2rem;
+    background: rgba(0,0,0,0.25);
+    border-left: 3px solid rgba(212,201,138,0.4);
+    font-size: 0.62rem;
+    color: var(--chalk);
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-note strong {
+    color: var(--tape);
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<div class="cork-board">
+
+  <div class="header-paper">
+    <span class="store-label">Matt Livingston / Deftwebmaster</span>
+    <div class="store-title">
+      Walgreens Tools
+      <span class="location">Plano &mdash; Store 4577</span>
+    </div>
+    <p class="header-tagline">Internal tools &amp; utilities for shift operations &mdash; some official, some definitely not.</p>
+  </div>
+
+  <p class="section-heading">// pinned tools</p>
+
+  <div class="cards">
+
+    <a href="/walgreens/shift-engine/" class="card shift">
+      <span class="card-tag">Operations</span>
+      <div class="card-title">Shift Engine</div>
+      <p class="card-desc">Checklist and prioritization tool for shift lead operations. Walk in, get oriented, get moving. Tasks ranked by urgency and shift phase.</p>
+      <div class="card-status">
+        <span class="dot dot-green"></span>
+        Live &mdash; shift-engine/
+      </div>
+    </a>
+
+    <a href="/walgreens/portal/" class="card portal">
+      <span class="card-tag">Totally Real</span>
+      <div class="card-title">Employee Portal</div>
+      <p class="card-desc">The official Walgreens employee experience. Announcements, recognition, HR guidance, and synergistic engagement metrics. (Satirical.)</p>
+      <div class="card-status">
+        <span class="dot dot-amber"></span>
+        Live &mdash; portal/
+      </div>
+    </a>
+
+    <a href="/walgreens/time-off/" class="card timeoff">
+      <span class="card-tag">Workflow</span>
+      <div class="card-title">Time Off Request</div>
+      <p class="card-desc">Submit a time-off request. Receive a denial. Marvel at the reason. Someday this may evolve into a real tool. Today is not that day.</p>
+      <div class="card-status">
+        <span class="dot dot-red"></span>
+        Live &mdash; currently auto-denies all requests
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer-note">
+    <strong>Note:</strong> Shift Engine is the only tool here with operational intent. Portal and Time Off are satirical projects. None of this is affiliated with or endorsed by Walgreens Boots Alliance. &mdash; <strong>mattlivingston.com/walgreens/</strong>
+  </div>
+
+</div>
+
+<!-- * lone wolf, own sky | Matt Livingston -->
+</body>
+</html>
