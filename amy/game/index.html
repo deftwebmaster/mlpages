@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- * lone wolf, quiet teeth | Matt Livingston -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Amy's Harvest of Chaos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    background: #1a1a2e;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Courier New', monospace;
+  }
+  #game-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a14;
+  }
+  #title-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(0,0,0,0.82);
+    color: #f9e4a0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 6px 0 5px;
+    z-index: 300;
+    text-shadow: 1px 1px 0 #7a5c00;
+  }
+  #canvas-container {
+    position: relative;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    transform-origin: center center;
+  }
+  canvas {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    image-rendering: -moz-crisp-edges;
+  }
+  /* D-PAD — overlaid bottom-left ON the game */
+  #dpad {
+    position: fixed;
+    bottom: 32px;
+    left: 24px;
+    width: 156px;
+    height: 156px;
+    z-index: 200;
+  }
+  .dpad-btn {
+    position: absolute;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid rgba(255,255,255,0.30);
+    border-radius: 8px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.75);
+    font-size: 20px;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .dpad-btn:active, .dpad-btn.pressed {
+    background: rgba(249,228,160,0.30);
+    border-color: rgba(249,228,160,0.65);
+  }
+  #btn-up    { top: 0;   left: 52px; }
+  #btn-down  { bottom: 0; left: 52px; }
+  #btn-left  { left: 0;  top: 52px; }
+  #btn-right { right: 0; top: 52px; }
+  .dpad-center {
+    position: absolute;
+    width: 52px; height: 52px;
+    top: 52px; left: 52px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  #action-btn {
+    position: fixed;
+    right: 26px;
+    bottom: 42px;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    z-index: 210;
+    border: 2px solid rgba(249,228,160,0.72);
+    background: rgba(40,20,30,0.62);
+    color: #f9e4a0;
+    font: bold 18px/1 'Courier New', monospace;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.08), 0 8px 22px rgba(0,0,0,0.35);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  #action-btn:active, #action-btn.pressed {
+    background: rgba(232,40,88,0.40);
+    transform: translateY(1px);
+  }
+  @media (max-width: 520px) {
+    #title-bar { font-size: 10px; padding-top: 5px; }
+    #dpad {
+      left: 14px;
+      bottom: 20px;
+      width: 132px;
+      height: 132px;
+    }
+    .dpad-btn, .dpad-center {
+      width: 44px;
+      height: 44px;
+      border-radius: 7px;
+    }
+    #btn-up { left: 44px; }
+    #btn-down { left: 44px; }
+    #btn-left { top: 44px; }
+    #btn-right { top: 44px; }
+    .dpad-center { top: 44px; left: 44px; }
+    #action-btn {
+      right: 16px;
+      bottom: 30px;
+      width: 66px;
+      height: 66px;
+      font-size: 17px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="title-bar">AMY'S HARVEST OF CHAOS</div>
+
+<div id="game-wrapper">
+  <div id="canvas-container">
+    <canvas id="gameCanvas"></canvas>
+  </div>
+</div>
+
+<!-- D-PAD -->
+<div id="dpad">
+  <div class="dpad-btn" id="btn-up">▲</div>
+  <div class="dpad-btn" id="btn-left">◀</div>
+  <div class="dpad-center"></div>
+  <div class="dpad-btn" id="btn-right">▶</div>
+  <div class="dpad-btn" id="btn-down">▼</div>
+</div>
+<button id="action-btn" aria-label="Interact">A</button>
+
+<script>
+// ============================================================
+// CANVAS SETUP — scales to fill screen maintaining aspect ratio
+// ============================================================
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+ctx.imageSmoothingEnabled = false;
+
+const TILE = 16;
+const COLS = 15;
+const ROWS = 13;
+const MAP_W = COLS * TILE; // 240
+const MAP_H = ROWS * TILE; // 208
+
+function resize() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const scale = Math.min(vw / MAP_W, vh / MAP_H);
+  canvas.width  = MAP_W;
+  canvas.height = MAP_H;
+  canvas.style.width  = MAP_W + 'px';
+  canvas.style.height = MAP_H + 'px';
+  const container = document.getElementById('canvas-container');
+  container.style.transform = `scale(${scale})`;
+  ctx.imageSmoothingEnabled = false;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// ============================================================
+// PALETTE  (Gen 3 Pokémon feel)
+// ============================================================
+const P = {
+  // Terrain
+  grass:      '#74c442',
+  grassDark:  '#5aaa32',
+  grassTrim:  '#4a9628',
+  dirt:       '#c8a86c',
+  dirtDark:   '#b09058',
+  sand:       '#e8c87c',
+  path:       '#d4a85c',
+  soil:       '#8b6040',
+  soilDark:   '#704830',
+  // Tree / bush
+  leafDark:   '#2a7a1a',
+  leafMid:    '#3a9a28',
+  leafLight:  '#58b840',
+  treeTrunk:  '#6b4420',
+  // Fence
+  fenceWood:  '#b87840',
+  fenceShad:  '#8a5428',
+  // Water
+  water1:     '#4898d8',
+  water2:     '#3880c0',
+  waterFoam:  '#80c8f8',
+  // Building
+  shopPink:   '#f8a8c0',
+  shopPinkDk: '#e07898',
+  shopRoof:   '#e05878',
+  shopWin:    '#a0d8f8',
+  shopWinDk:  '#60a8d8',
+  shopDoor:   '#c04868',
+  // Truck
+  truckBody:  '#c8c8c8',
+  truckDark:  '#909090',
+  truckStripe:'#e84040',
+  // Misc
+  signBg:     '#f0e8c0',
+  black:      '#181010',
+  white:      '#f8f8f8',
+};
+
+// ============================================================
+// TILE MAP  (0=grass, 1=dirtPath, 2=soil, 3=water, 4=fence,
+//            10=treeTL, 11=treeTR, 12=treeBL, 13=treeBR,
+//            20=bush, 21=flowerBush, 30=shopBase, 31=truckBase)
+// ============================================================
+const MAP = [
+  // row 0
+  [10,11,0, 0, 0, 0, 30,30,30,30,30,30, 0, 0, 0],
+  // row 1
+  [12,13,0, 0, 0, 0, 30,30,30,30,30,30, 20,20,10],
+  // row 2
+  [0, 0, 31,31,31,31,0, 0, 0, 0, 0, 0, 20,21,11],
+  // row 3
+  [0, 0, 31,31,31,31,0, 0, 0, 0, 0, 0, 0, 0, 12],
+  // row 4
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+  // row 5
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+  // row 6  (player starts ~col7 row6)
+  [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+  // row 7
+  [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+  // row 8
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  // row 9
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  // row 10
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  // row 11
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  // row 12
+  [10,11,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,10,11],
+];
+
+// Collision map (1=solid)
+const COLL = [
+  [1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0],
+  [1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1],
+  [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+];
+
+function isSolid(px, py) {
+  // px,py in pixels
+  // Check all four corners of a 10x12 hitbox centered on player feet
+  const HW = 4, HH = 5;
+  const checks = [
+    [px - HW, py - HH],
+    [px + HW, py - HH],
+    [px - HW, py + HH],
+    [px + HW, py + HH],
+  ];
+  for (const [x, y] of checks) {
+    const tx = Math.floor(x / TILE);
+    const ty = Math.floor(y / TILE);
+    if (tx < 0 || ty < 0 || tx >= COLS || ty >= ROWS) return true;
+    if (COLL[ty][tx] === 1) return true;
+  }
+  return false;
+}
+
+// ============================================================
+// SPRITE DRAWING  — Amy pixel art, hand-crafted
+// ============================================================
+// Each frame is 16×24 pixels. We draw them to an offscreen canvas
+// and cache them as ImageData.
+
+// Helper: set pixel on offscreen ctx
+function px(oc, x, y, color) {
+  if (x < 0 || y < 0 || x >= 16 || y >= 24) return;
+  oc.fillStyle = color;
+  oc.fillRect(x, y, 1, 1);
+}
+
+function buildAmy() {
+  // 4 directions × 3 frames (idle=0, step1=1, step2=2)
+  // dir: 0=down, 1=left, 2=right, 3=up
+  // Sprite canvas: 16×26 pixels
+
+  const frames = [];
+
+  // ── Palette ──────────────────────────────────────────────
+  const HAIR   = '#7a4820';   // warm chestnut
+  const HAIRHI = '#b07038';   // caramel highlight
+  const HAIRDK = '#3e1e08';   // deep shadow
+  const SKIN   = '#f0c898';   // soft peach skin
+  const SKINSH = '#d8a070';   // skin shadow
+  const SKINHI = '#fce4c0';   // skin highlight (forehead, nose bridge)
+  const BLUSH  = '#f0a0a0';   // cheek blush
+  const EYE    = '#281008';   // dark brown iris
+  const PUPIL  = '#100808';   // pupil center
+  const EYEHI  = '#ffffff';   // eye sparkle
+  const LASH   = '#180808';   // eyelash / brow
+  const LIP    = '#d07878';   // warm rosy lip
+  const LIPHI  = '#e8a898';   // lip highlight
+  const TOP    = '#4a2c18';   // dark brown top
+  const TOPHI  = '#6e4432';   // top highlight
+  const TOPSH  = '#2c1608';   // top shadow
+  const PANT   = '#202030';   // dark jeans
+  const PANTHI = '#383858';   // jeans highlight
+  const BOOT   = '#281408';   // dark boot
+  const BOOTHI = '#4a3020';   // boot highlight
+  const LACE   = '#e8dcc8';   // lace waistband light
+  const LACE2  = '#c0b098';   // lace waistband shadow
+  const ROSE_W = '#f8f2f0';   // white rose petal
+  const ROSE_P = '#f0c8d0';   // rose blush shadow
+  const ROSE_C = '#e890a8';   // rose center
+  const ROSE_G = '#307820';   // rose stem
+  const RIB_R  = '#e82858';
+  const RIB_Y  = '#f8d020';
+  const RIB_W  = '#f0f0e8';
+  const RIB_G  = '#50c050';
+  const BEAD   = '#c02858';
+
+  // ── pixel helper ─────────────────────────────────────────
+  function p(oc, x, y, c) {
+    if (x<0||y<0||x>=16||y>=26) return;
+    oc.fillStyle = c; oc.fillRect(x,y,1,1);
+  }
+
+  // ── HAIR (down-facing) ───────────────────────────────────
+  function hairDown(oc) {
+    // Crown
+    for (let x=3;x<=12;x++) p(oc,x,1,HAIRDK);
+    for (let x=3;x<=12;x++) p(oc,x,2,HAIR);
+    for (let x=4;x<=11;x++) p(oc,x,3,HAIRHI);
+    for (let x=3;x<=12;x++) p(oc,x,4,HAIR);
+    // Wide sides — voluminous
+    p(oc,2,3,HAIR); p(oc,2,4,HAIR); p(oc,2,5,HAIR); p(oc,2,6,HAIR); p(oc,2,7,HAIR);
+    p(oc,1,4,HAIRDK); p(oc,1,5,HAIRDK); p(oc,1,6,HAIRDK);
+    p(oc,13,3,HAIR); p(oc,13,4,HAIR); p(oc,13,5,HAIR); p(oc,13,6,HAIR); p(oc,13,7,HAIR);
+    p(oc,14,4,HAIRDK); p(oc,14,5,HAIRDK); p(oc,14,6,HAIRDK);
+    // Side wisps over shoulders
+    p(oc,2,8,HAIR); p(oc,2,9,HAIR); p(oc,1,8,HAIRDK);
+    p(oc,13,8,HAIR); p(oc,13,9,HAIR); p(oc,14,8,HAIRDK);
+    // Soft bottom edge of hair framing face
+    p(oc,3,5,HAIRHI); p(oc,12,5,HAIRHI);
+  }
+
+  // ── FACE (down) ──────────────────────────────────────────
+  function faceDown(oc) {
+    // Face oval — slightly rounder/shorter for cute chibi
+    for (let x=4;x<=11;x++) for (let y=5;y<=9;y++) p(oc,x,y,SKIN);
+    p(oc,4,5,SKINSH); p(oc,11,5,SKINSH); // temple shadow
+    p(oc,7,5,SKINHI); p(oc,8,5,SKINHI);  // forehead highlight
+
+    // ── EYES — big, cute, lashed ──
+    // Left eye (x=5-6, y=6-7)
+    // Lash row above
+    p(oc,5,6,LASH); p(oc,6,6,LASH); p(oc,7,6,LASH);
+    // Iris
+    p(oc,5,7,EYE);  p(oc,6,7,EYE);
+    p(oc,5,8,EYE);  p(oc,6,8,PUPIL);
+    // Sparkle
+    p(oc,5,7,EYEHI);
+    // Lower lash line
+    p(oc,5,9,SKINSH); p(oc,6,9,SKINSH);
+
+    // Right eye (x=9-10, y=6-7)
+    p(oc,9,6,LASH); p(oc,10,6,LASH); p(oc,8,6,LASH);
+    p(oc,9,7,EYE);  p(oc,10,7,EYE);
+    p(oc,9,8,PUPIL);p(oc,10,8,EYE);
+    p(oc,10,7,EYEHI);
+    p(oc,9,9,SKINSH); p(oc,10,9,SKINSH);
+
+    // Tiny eyebrows (thin, arched)
+    p(oc,5,5,HAIRDK); p(oc,6,5,LASH);
+    p(oc,10,5,HAIRDK); p(oc,9,5,LASH);
+
+    // Nose — just a tiny shadow dot
+    p(oc,7,9,SKINSH);
+
+    // Blush dots — key for cute/girly
+    p(oc,4,8,BLUSH); p(oc,4,9,BLUSH);
+    p(oc,11,8,BLUSH); p(oc,11,9,BLUSH);
+
+    // Lips — small, curved, bright
+    p(oc,7,10,LIP); p(oc,8,10,LIPHI); p(oc,9,10,LIP);
+    // Smile corners
+    p(oc,6,10,SKINSH); p(oc,10,10,SKINSH);
+  }
+
+  // ── NECK (down) — clean, no choker ───────────────────────
+  function neckDown(oc) {
+    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
+    p(oc,7,11,SKINHI);
+  }
+
+  // ── BODY (down) ──────────────────────────────────────────
+  function bodyDown(oc, step) {
+    neckDown(oc);
+    // Torso — narrower shoulders (x5-x10), more feminine shape
+    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
+    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
+    p(oc,5,13,TOPSH); p(oc,10,13,TOPSH);
+    p(oc,5,15,TOPSH); p(oc,10,15,TOPSH);
+    // Mesh skin peek
+    p(oc,7,14,SKINSH); p(oc,8,14,SKINSH);
+    // Arms — slender
+    p(oc,4,12,TOP);  p(oc,4,13,TOP); p(oc,4,14,SKIN); p(oc,4,15,SKIN);
+    p(oc,11,12,TOP); p(oc,11,13,TOP); p(oc,11,14,SKIN); p(oc,11,15,SKIN);
+    // Hands
+    p(oc,3,14,SKIN); p(oc,3,15,SKIN);
+    p(oc,12,14,SKIN); p(oc,12,15,SKIN);
+    // Rose in right hand
+    p(oc,13,12,ROSE_W); p(oc,13,11,ROSE_W); p(oc,14,11,ROSE_P);
+    p(oc,12,11,ROSE_C); p(oc,13,10,ROSE_G);
+    // Ribbons at right hip
+    p(oc,12,15,RIB_R); p(oc,13,15,RIB_W);
+    p(oc,12,16,RIB_Y); p(oc,13,16,RIB_G);
+    p(oc,12,17,BEAD);  p(oc,13,17,RIB_R);
+    // Lace waistband
+    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
+    p(oc,5,16,LACE2); p(oc,7,16,LACE2); p(oc,9,16,LACE2);
+    // Pants
+    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
+    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
+    // Hair over shoulders
+    p(oc,3,12,HAIR); p(oc,3,13,HAIR); p(oc,2,12,HAIRDK);
+    p(oc,12,12,HAIR); p(oc,12,13,HAIR); p(oc,13,12,HAIRDK);
+    // Boots walk cycle
+    const lx = 5+(step===1?-1:step===2?1:0);
+    const rx = 8+(step===1?1:step===2?-1:0);
+    for (let x=lx;x<=lx+2;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    for (let x=rx;x<=rx+2;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    p(oc,lx,21,BOOTHI); p(oc,lx+1,21,BOOTHI);
+    p(oc,rx,21,BOOTHI);  p(oc,rx+1,21,BOOTHI);
+  }
+
+  // ── FACE (left/right 3/4 view) ───────────────────────────
+  function faceSide(oc, dir) {
+    const fl = dir==='left'; // facing left
+    // Face block
+    for (let x=4;x<=10;x++) for (let y=5;y<=10;y++) p(oc,x,y,SKIN);
+    p(oc,11,6,SKIN); p(oc,11,7,SKIN); p(oc,11,8,SKIN); // cheek roundness
+    p(oc,fl?4:11, 5, SKINSH); // temple shadow
+
+    // Forehead highlight
+    p(oc,7,5,SKINHI); p(oc,8,5,SKINHI);
+
+    // One big visible eye (far side)
+    const ex = fl ? 6 : 8;
+    p(oc,ex-1,6,LASH); p(oc,ex,6,LASH); p(oc,ex+1,6,LASH);
+    p(oc,ex,7,EYE);   p(oc,ex-1,7,EYE);
+    p(oc,ex,8,PUPIL); p(oc,ex-1,8,EYE);
+    p(oc,ex,7,EYEHI);
+    p(oc,ex,9,SKINSH); p(oc,ex-1,9,SKINSH);
+    // Brow
+    p(oc,ex-1,5,LASH); p(oc,ex,5,HAIRDK);
+
+    // Blush
+    p(oc,fl?4:11,8,BLUSH); p(oc,fl?4:11,9,BLUSH);
+
+    // Nose hint
+    p(oc,fl?4:11,8,SKINSH);
+
+    // Lips
+    p(oc,7,10,LIP); p(oc,8,10,LIPHI); p(oc,9,10,LIP);
+    p(oc,fl?6:10,10,SKINSH);
+  }
+
+  // ── BODY (side) ──────────────────────────────────────────
+  function bodySide(oc, step, dir) {
+    const fl = dir==='left';
+    // Neck
+    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
+    // Torso
+    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
+    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
+    p(oc,5,13,TOPSH); p(oc,10,13,TOPSH);
+    p(oc,7,14,SKINSH);
+    // Front arm
+    const fa = fl ? 10 : 5;
+    p(oc,fa,12,TOP); p(oc,fa,13,TOP); p(oc,fa,14,SKIN); p(oc,fa,15,SKIN);
+    // Rose + ribbons on front-facing side
+    if (!fl) {
+      // facing right — rose on right side
+      p(oc,11,12,ROSE_W); p(oc,12,11,ROSE_W); p(oc,12,12,ROSE_P);
+      p(oc,11,11,ROSE_C); p(oc,12,10,ROSE_G);
+      p(oc,11,15,RIB_R); p(oc,12,15,RIB_W);
+      p(oc,11,16,RIB_Y); p(oc,12,16,BEAD);
+    } else {
+      // facing left — rose on left side
+      p(oc,4,12,ROSE_W); p(oc,3,11,ROSE_W); p(oc,3,12,ROSE_P);
+      p(oc,4,11,ROSE_C); p(oc,3,10,ROSE_G);
+      p(oc,4,15,RIB_R); p(oc,3,15,RIB_W);
+      p(oc,4,16,RIB_Y); p(oc,3,16,BEAD);
+    }
+    // Lace waist
+    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
+    p(oc,6,16,LACE2); p(oc,8,16,LACE2);
+    // Pants
+    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
+    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
+    // Back hair
+    const bhx = fl ? [10,11,12,13] : [2,3,4,5];
+    for (const bx of bhx) for (let y=11;y<=18;y++) p(oc,bx,y,HAIR);
+    if (fl) { for(let y=11;y<=18;y++) { p(oc,13,y,HAIRDK); p(oc,10,y,HAIRHI); } }
+    else    { for(let y=11;y<=18;y++) { p(oc,2,y,HAIRDK);  p(oc,5,y,HAIRHI);  } }
+    // Boots walk cycle
+    for (let x=5;x<=7;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    for (let x=8;x<=10;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    if (step===1) for (let x=5;x<=7;x++)  p(oc,x,20,PANT);
+    if (step===2) for (let x=8;x<=10;x++) p(oc,x,20,PANT);
+    p(oc,5,21,BOOTHI); p(oc,6,21,BOOTHI);
+    p(oc,8,21,BOOTHI); p(oc,9,21,BOOTHI);
+  }
+
+  // ── HAIR (left-facing) ───────────────────────────────────
+  function hairSide(oc, dir) {
+    const fl = dir==='left';
+    // Front hair (visible side)
+    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,1,HAIRDK);
+    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,2,HAIR);
+    for (let x=fl?4:5;x<=(fl?10:11);x++) p(oc,x,3,HAIRHI);
+    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,4,HAIR);
+    // Front side puff
+    if (fl) {
+      p(oc,2,3,HAIR); p(oc,2,4,HAIR); p(oc,2,5,HAIR); p(oc,2,6,HAIR); p(oc,1,4,HAIRDK); p(oc,1,5,HAIRDK);
+    } else {
+      p(oc,13,3,HAIR); p(oc,13,4,HAIR); p(oc,13,5,HAIR); p(oc,13,6,HAIR); p(oc,14,4,HAIRDK); p(oc,14,5,HAIRDK);
+    }
+    // Back hair cascade
+    const bhStart = fl ? 11 : 2;
+    const bhEnd   = fl ? 14 : 5;
+    for (let x=bhStart;x<=bhEnd;x++) for (let y=2;y<=10;y++) p(oc,x,y,HAIR);
+    if (fl) { for(let y=2;y<=10;y++) { p(oc,14,y,HAIRDK); p(oc,11,y,HAIRHI); } }
+    else    { for(let y=2;y<=10;y++) { p(oc,2,y,HAIRDK);  p(oc,5,y,HAIRHI);  } }
+  }
+
+  // ── HAIR (up-facing) ─────────────────────────────────────
+  function hairUp(oc) {
+    for (let x=2;x<=13;x++) p(oc,x,1,HAIRDK);
+    for (let x=2;x<=13;x++) p(oc,x,2,HAIR);
+    for (let x=3;x<=12;x++) p(oc,x,3,HAIRHI);
+    for (let x=2;x<=13;x++) p(oc,x,4,HAIR);
+    for (let x=2;x<=13;x++) p(oc,x,5,HAIR);
+    for (let x=3;x<=12;x++) p(oc,x,6,HAIRDK);
+    p(oc,1,3,HAIRDK); p(oc,1,4,HAIRDK); p(oc,14,3,HAIRDK); p(oc,14,4,HAIRDK);
+    p(oc,1,5,HAIR); p(oc,14,5,HAIR);
+  }
+
+  function bodyUp(oc, step) {
+    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
+    // Torso
+    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
+    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
+    p(oc,5,14,TOPSH); p(oc,10,14,TOPSH);
+    // Lace
+    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
+    p(oc,6,16,LACE2); p(oc,8,16,LACE2);
+    // Back hair streams down
+    for (let y=11;y<=19;y++) {
+      p(oc,2,y,HAIRDK); p(oc,3,y,HAIR);  p(oc,4,y,HAIRHI);
+      p(oc,11,y,HAIRHI); p(oc,12,y,HAIR); p(oc,13,y,HAIRDK);
+    }
+    p(oc,1,12,HAIRDK); p(oc,14,12,HAIRDK);
+    // Pants
+    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
+    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
+    // Boots
+    const lx=5+(step===1?-1:step===2?1:0);
+    const rx=8+(step===1?1:step===2?-1:0);
+    for(let x=lx;x<=lx+2;x++) for(let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    for(let x=rx;x<=rx+2;x++) for(let y=21;y<=25;y++) p(oc,x,y,BOOT);
+    p(oc,lx,21,BOOTHI); p(oc,rx,21,BOOTHI);
+  }
+
+  // ── BUILD ALL FRAMES ─────────────────────────────────────
+  for (let dir=0; dir<4; dir++) {
+    frames[dir] = [];
+    for (let step=0; step<3; step++) {
+      const oc = document.createElement('canvas');
+      oc.width = 16; oc.height = 26;
+      const octx = oc.getContext('2d');
+      octx.imageSmoothingEnabled = false;
+
+      if (dir===0) {
+        hairDown(octx);
+        faceDown(octx);
+        bodyDown(octx, step);
+      } else if (dir===1) {
+        hairSide(octx,'left');
+        faceSide(octx,'left');
+        bodySide(octx, step, 'left');
+      } else if (dir===2) {
+        hairSide(octx,'right');
+        faceSide(octx,'right');
+        bodySide(octx, step, 'right');
+      } else {
+        hairUp(octx);
+        bodyUp(octx, step);
+      }
+
+      frames[dir][step] = oc;
+    }
+  }
+  return frames;
+}
+
+function buildAmyOverworld() {
+  const W = 18;
+  const H = 28;
+  const frames = [];
+  const C = {
+    outline:'#17100d',
+    hair0:'#2a160d',
+    hair1:'#4f2b18',
+    hair2:'#7a472a',
+    hair3:'#b07042',
+    skin0:'#b87955',
+    skin1:'#efbd8f',
+    skin2:'#ffd9aa',
+    blush:'#df777d',
+    eye:'#1d1210',
+    top0:'#221511',
+    top1:'#3e241c',
+    top2:'#6c4134',
+    pants0:'#11131b',
+    pants1:'#242836',
+    pants2:'#3b4051',
+    boot0:'#1b100b',
+    boot1:'#59351f',
+    lace:'#efe0c8',
+    rose0:'#fff6f2',
+    rose1:'#e59aad',
+    rose2:'#c94268',
+    leaf:'#386f28',
+    ribbon0:'#e73966',
+    ribbon1:'#f6d25b',
+    ribbon2:'#f9eee9'
+  };
+
+  function p(oc, x, y, c) {
+    if (x < 0 || y < 0 || x >= W || y >= H) return;
+    oc.fillStyle = c;
+    oc.fillRect(x, y, 1, 1);
+  }
+  function rect(oc, x, y, w, h, c) {
+    oc.fillStyle = c;
+    oc.fillRect(x, y, w, h);
+  }
+  function mirrorX(fn) {
+    return (oc, x, y, c) => fn(oc, W - 1 - x, y, c);
+  }
+
+  function shadow(oc) {
+    rect(oc, 4, 25, 10, 2, 'rgba(0,0,0,0.28)');
+    rect(oc, 6, 24, 6, 1, 'rgba(0,0,0,0.18)');
+  }
+  function hairFront(oc) {
+    rect(oc, 5, 1, 8, 1, C.outline);
+    rect(oc, 3, 2, 12, 2, C.hair0);
+    rect(oc, 2, 4, 14, 4, C.hair1);
+    rect(oc, 3, 5, 12, 3, C.hair2);
+    rect(oc, 4, 3, 5, 1, C.hair3);
+    rect(oc, 10, 4, 3, 1, C.hair3);
+    p(oc, 2, 8, C.hair0); p(oc, 15, 8, C.hair0);
+    rect(oc, 1, 7, 3, 8, C.hair0);
+    rect(oc, 14, 7, 3, 8, C.hair0);
+    rect(oc, 2, 8, 3, 8, C.hair1);
+    rect(oc, 13, 8, 3, 8, C.hair1);
+    rect(oc, 3, 11, 2, 7, C.hair2);
+    rect(oc, 13, 11, 2, 7, C.hair2);
+    p(oc, 4, 13, C.hair3); p(oc, 13, 13, C.hair3);
+  }
+  function faceFront(oc) {
+    rect(oc, 5, 6, 8, 6, C.skin1);
+    rect(oc, 6, 5, 6, 1, C.skin2);
+    p(oc, 5, 6, C.skin0); p(oc, 12, 6, C.skin0);
+    rect(oc, 6, 8, 2, 2, C.eye);
+    rect(oc, 10, 8, 2, 2, C.eye);
+    p(oc, 6, 8, C.rose0); p(oc, 11, 8, C.rose0);
+    p(oc, 5, 10, C.blush); p(oc, 12, 10, C.blush);
+    p(oc, 8, 11, C.outline); p(oc, 9, 11, C.blush);
+  }
+  function torsoFront(oc, step) {
+    rect(oc, 6, 12, 6, 5, C.top1);
+    rect(oc, 7, 12, 5, 1, C.top2);
+    p(oc, 6, 14, C.top0); p(oc, 11, 14, C.top0);
+    rect(oc, 6, 17, 6, 1, C.lace);
+    p(oc, 7, 17, C.skin0); p(oc, 10, 17, C.skin0);
+    rect(oc, 5, 13, 1, 4, C.skin1);
+    rect(oc, 12, 13, 1, 4, C.skin1);
+    p(oc, 4, 15, C.skin2); p(oc, 13, 15, C.skin2);
+    rose(oc, 13, 12);
+    ribbons(oc, 13, 16);
+    rect(oc, 6, 18, 6, 5, C.pants1);
+    rect(oc, 6, 18, 2, 5, C.pants2);
+    p(oc, 8, 19, C.pants0); p(oc, 9, 19, C.pants0);
+    const l = step === 1 ? 5 : step === 2 ? 7 : 6;
+    const r = step === 1 ? 10 : step === 2 ? 8 : 9;
+    boot(oc, l, 23);
+    boot(oc, r, 23);
+  }
+  function hairBack(oc) {
+    rect(oc, 3, 2, 12, 3, C.hair0);
+    rect(oc, 2, 5, 14, 8, C.hair1);
+    rect(oc, 3, 4, 11, 4, C.hair2);
+    rect(oc, 4, 3, 6, 1, C.hair3);
+    rect(oc, 2, 12, 4, 8, C.hair0);
+    rect(oc, 12, 12, 4, 8, C.hair0);
+    rect(oc, 3, 13, 3, 8, C.hair1);
+    rect(oc, 12, 13, 3, 8, C.hair1);
+    p(oc, 4, 15, C.hair3); p(oc, 13, 15, C.hair3);
+  }
+  function bodyBack(oc, step) {
+    rect(oc, 6, 12, 6, 5, C.top1);
+    rect(oc, 7, 12, 5, 1, C.top2);
+    rect(oc, 6, 17, 6, 1, C.lace);
+    rect(oc, 5, 13, 1, 4, C.top0);
+    rect(oc, 12, 13, 1, 4, C.top0);
+    rect(oc, 6, 18, 6, 5, C.pants1);
+    rect(oc, 6, 18, 2, 5, C.pants2);
+    const l = step === 1 ? 5 : step === 2 ? 7 : 6;
+    const r = step === 1 ? 10 : step === 2 ? 8 : 9;
+    boot(oc, l, 23);
+    boot(oc, r, 23);
+  }
+  function sideHead(oc, left) {
+    const q = left ? p : mirrorX(p);
+    rect(oc, left ? 3 : 4, 2, 11, 2, C.hair0);
+    rect(oc, left ? 2 : 5, 4, 11, 5, C.hair1);
+    rect(oc, left ? 3 : 6, 5, 8, 3, C.hair2);
+    rect(oc, left ? 11 : 3, 7, 4, 10, C.hair0);
+    rect(oc, left ? 10 : 4, 9, 4, 10, C.hair1);
+    rect(oc, 5, 6, 7, 6, C.skin1);
+    q(oc, 5, 7, C.skin0);
+    q(oc, 7, 8, C.eye);
+    q(oc, 7, 9, C.eye);
+    q(oc, 7, 8, C.rose0);
+    q(oc, 5, 10, C.blush);
+    q(oc, 6, 11, C.outline);
+    q(oc, 10, 3, C.hair3);
+    q(oc, 11, 13, C.hair3);
+  }
+  function sideBody(oc, step, left) {
+    const q = left ? p : mirrorX(p);
+    rect(oc, 6, 12, 6, 5, C.top1);
+    rect(oc, 6, 12, 5, 1, C.top2);
+    rect(oc, 6, 17, 6, 1, C.lace);
+    q(oc, 11, 13, C.skin1); q(oc, 11, 14, C.skin1); q(oc, 11, 15, C.skin2);
+    if (left) rose(oc, 3, 12); else rose(oc, 13, 12);
+    if (left) ribbons(oc, 3, 16); else ribbons(oc, 13, 16);
+    rect(oc, 6, 18, 6, 5, C.pants1);
+    rect(oc, 6, 18, 2, 5, C.pants2);
+    boot(oc, step === 1 ? 5 : 6, step === 1 ? 22 : 23);
+    boot(oc, step === 2 ? 10 : 9, step === 2 ? 22 : 23);
+  }
+  function rose(oc, x, y) {
+    p(oc, x, y - 1, C.leaf);
+    p(oc, x, y, C.rose2);
+    p(oc, x + 1, y, C.rose0);
+    p(oc, x, y + 1, C.rose0);
+    p(oc, x + 1, y + 1, C.rose1);
+    p(oc, x, y + 2, C.leaf);
+  }
+  function ribbons(oc, x, y) {
+    p(oc, x, y, C.ribbon0);
+    p(oc, x + 1, y, C.ribbon2);
+    p(oc, x, y + 1, C.ribbon1);
+    p(oc, x + 1, y + 1, C.ribbon0);
+    p(oc, x, y + 2, C.ribbon0);
+  }
+  function boot(oc, x, y) {
+    rect(oc, x, y, 3, 3, C.boot0);
+    rect(oc, x, y, 2, 1, C.boot1);
+    p(oc, x + 2, y + 2, C.outline);
+  }
+
+  for (let dir = 0; dir < 4; dir++) {
+    frames[dir] = [];
+    for (let step = 0; step < 3; step++) {
+      const oc = document.createElement('canvas');
+      oc.width = W;
+      oc.height = H;
+      const octx = oc.getContext('2d');
+      octx.imageSmoothingEnabled = false;
+      shadow(octx);
+      if (dir === 0) {
+        hairFront(octx);
+        faceFront(octx);
+        torsoFront(octx, step);
+      } else if (dir === 1) {
+        sideHead(octx, true);
+        sideBody(octx, step, true);
+      } else if (dir === 2) {
+        sideHead(octx, false);
+        sideBody(octx, step, false);
+      } else {
+        hairBack(octx);
+        bodyBack(octx, step);
+      }
+      frames[dir][step] = oc;
+    }
+  }
+  return frames;
+}
+
+const amyFrames = buildAmyOverworld();
+
+// ============================================================
+// PLAYER STATE
+// ============================================================
+const player = {
+  x: 7 * TILE + 8,  // pixel center-x
+  y: 6 * TILE + 8,  // pixel center-y (feet mid)
+  dir: 0,            // 0=down,1=left,2=right,3=up
+  moving: false,
+  speed: 1.2,
+  frame: 0,          // 0=idle,1,2
+  frameTimer: 0,
+  frameRate: 10,     // ticks per frame switch
+};
+
+// ============================================================
+// INPUT
+// ============================================================
+const keys = { up:false, down:false, left:false, right:false };
+const game = {
+  dialogue: null,
+  prompt: null,
+  promptPulse: 0,
+};
+
+const interactions = [
+  {
+    name: 'Doll Shop',
+    tiles: [[9,4],[10,4]],
+    text: "The Doll Shop window glows pink. Two dolls stare out with tiny painted smiles."
+  },
+  {
+    name: 'Munchies Truck',
+    tiles: [[3,4],[4,4],[5,4]],
+    text: "The truck smells like fries and trouble. The menu says: TODAY'S SPECIAL - CHAOS BURGER."
+  },
+  {
+    name: 'Farm Gate',
+    tiles: [[1,7],[2,7],[3,7],[4,7]],
+    text: "A hand-painted sign reads: POT FARM. The rows are tidy, green, and suspiciously well-watered."
+  },
+  {
+    name: 'Poster',
+    tiles: [[10,5]],
+    text: "A sidewalk poster advertises a doll raffle. Someone scribbled a heart over the prize number."
+  },
+];
+
+document.addEventListener('keydown', e => {
+  if (e.key==='ArrowUp'||e.key==='w') keys.up=true;
+  if (e.key==='ArrowDown'||e.key==='s') keys.down=true;
+  if (e.key==='ArrowLeft'||e.key==='a') keys.left=true;
+  if (e.key==='ArrowRight'||e.key==='d') keys.right=true;
+  if (e.key===' '||e.key==='Enter'||e.key==='e') {
+    e.preventDefault();
+    doAction();
+  }
+});
+document.addEventListener('keyup', e => {
+  if (e.key==='ArrowUp'||e.key==='w') keys.up=false;
+  if (e.key==='ArrowDown'||e.key==='s') keys.down=false;
+  if (e.key==='ArrowLeft'||e.key==='a') keys.left=false;
+  if (e.key==='ArrowRight'||e.key==='d') keys.right=false;
+});
+
+// D-PAD touch
+['up','down','left','right'].forEach(dir => {
+  const btn = document.getElementById('btn-'+dir);
+  const set = v => { keys[dir]=v; btn.classList.toggle('pressed',v); };
+  btn.addEventListener('touchstart', e=>{e.preventDefault();set(true);},{passive:false});
+  btn.addEventListener('touchend',   e=>{e.preventDefault();set(false);},{passive:false});
+  btn.addEventListener('touchcancel',e=>{e.preventDefault();set(false);},{passive:false});
+  btn.addEventListener('mousedown', ()=>set(true));
+  btn.addEventListener('mouseup',   ()=>set(false));
+  btn.addEventListener('mouseleave',()=>set(false));
+});
+
+const actionBtn = document.getElementById('action-btn');
+function pressActionButton(pressed) {
+  actionBtn.classList.toggle('pressed', pressed);
+}
+actionBtn.addEventListener('touchstart', e=>{e.preventDefault();pressActionButton(true);doAction();},{passive:false});
+actionBtn.addEventListener('touchend', e=>{e.preventDefault();pressActionButton(false);},{passive:false});
+actionBtn.addEventListener('touchcancel', e=>{e.preventDefault();pressActionButton(false);},{passive:false});
+actionBtn.addEventListener('mousedown', ()=>{pressActionButton(true);doAction();});
+actionBtn.addEventListener('mouseup', ()=>pressActionButton(false));
+actionBtn.addEventListener('mouseleave', ()=>pressActionButton(false));
+
+function facingTile() {
+  let x = Math.floor(player.x / TILE);
+  let y = Math.floor(player.y / TILE);
+  if (player.dir === 0) y++;
+  if (player.dir === 1) x--;
+  if (player.dir === 2) x++;
+  if (player.dir === 3) y--;
+  return [x, y];
+}
+
+function getInteraction() {
+  const [fx, fy] = facingTile();
+  return interactions.find(it => it.tiles.some(([x, y]) => x === fx && y === fy)) || null;
+}
+
+function doAction() {
+  if (game.dialogue) {
+    game.dialogue = null;
+    return;
+  }
+
+  const hit = getInteraction();
+  if (hit) {
+    game.dialogue = { title: hit.name, text: hit.text };
+    return;
+  }
+}
+
+// ============================================================
+// TILE DRAWING
+// ============================================================
+let waterAnim = 0;
+
+function drawTile(tx, ty) {
+  const t = MAP[ty][tx];
+  const x = tx*TILE, y = ty*TILE;
+
+  if (t===0) {
+    // Grass
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(x,y,TILE,TILE);
+    // subtle detail dots
+    ctx.fillStyle = P.grassDark;
+    if ((tx+ty)%3===0) { ctx.fillRect(x+3,y+5,1,1); ctx.fillRect(x+10,y+2,1,1); }
+    if ((tx*ty)%5===0) { ctx.fillRect(x+7,y+11,1,1); }
+  }
+  else if (t===1) {
+    // Dirt path
+    ctx.fillStyle = P.dirt;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.dirtDark;
+    if ((tx+ty*2)%4===0) ctx.fillRect(x+4,y+4,2,2);
+    if ((tx*2+ty)%5===1) ctx.fillRect(x+9,y+10,2,1);
+  }
+  else if (t===2) {
+    // Soil / farm
+    ctx.fillStyle = P.soil;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.soilDark;
+    ctx.fillRect(x,y,TILE,1);
+    ctx.fillRect(x,y,1,TILE);
+    // Plant in pot
+    ctx.fillStyle = '#8b5e3c'; // pot
+    ctx.fillRect(x+3,y+10,10,6);
+    ctx.fillStyle = '#7a4e2c';
+    ctx.fillRect(x+3,y+10,10,2);
+    // Leaves
+    ctx.fillStyle = P.leafMid;
+    ctx.fillRect(x+5,y+3,6,8);
+    ctx.fillStyle = P.leafDark;
+    ctx.fillRect(x+5,y+3,3,4);
+    ctx.fillStyle = P.leafLight;
+    ctx.fillRect(x+8,y+4,2,2);
+  }
+  else if (t===3) {
+    // Water
+    const wa = waterAnim;
+    ctx.fillStyle = P.water1;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.water2;
+    ctx.fillRect(x,y,TILE,3);
+    ctx.fillStyle = P.waterFoam;
+    ctx.fillRect(x+(wa%TILE),y+4,3,1);
+    ctx.fillRect(x+((wa+8)%TILE),y+10,2,1);
+  }
+  else if (t===4) {
+    // Fence row
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.fenceWood;
+    ctx.fillRect(x,y+4,TILE,3);
+    ctx.fillStyle = P.fenceShad;
+    ctx.fillRect(x,y+7,TILE,1);
+    // Posts
+    ctx.fillStyle = P.fenceWood;
+    ctx.fillRect(x,y+2,3,9);
+    ctx.fillStyle = '#7a4a20';
+    ctx.fillRect(x,y+11,3,1);
+  }
+  else if (t===10||t===11||t===12||t===13) {
+    // Tree (2x2)
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(x,y,TILE,TILE);
+    if (t===10) {
+      ctx.fillStyle = P.leafDark;
+      ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle = P.leafMid;
+      ctx.fillRect(x+2,y+2,10,10);
+      ctx.fillStyle = P.leafLight;
+      ctx.fillRect(x+4,y+3,5,4);
+    } else if (t===11) {
+      ctx.fillStyle = P.leafDark;
+      ctx.fillRect(x,y,TILE,TILE);
+      ctx.fillStyle = P.leafMid;
+      ctx.fillRect(x+2,y+2,10,10);
+      ctx.fillStyle = P.leafLight;
+      ctx.fillRect(x+5,y+3,5,4);
+    } else if (t===12) {
+      ctx.fillStyle = P.leafMid;
+      ctx.fillRect(x,y,TILE,8);
+      ctx.fillStyle = P.treeTrunk;
+      ctx.fillRect(x+4,y+6,5,10);
+      ctx.fillStyle = '#4a3010';
+      ctx.fillRect(x+4,y+6,2,10);
+    } else {
+      ctx.fillStyle = P.leafMid;
+      ctx.fillRect(x,y,TILE,8);
+      ctx.fillStyle = P.treeTrunk;
+      ctx.fillRect(x+2,y+6,5,10);
+    }
+  }
+  else if (t===20) {
+    // Bush
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.leafDark;
+    ctx.fillRect(x+1,y+8,14,8);
+    ctx.fillStyle = P.leafMid;
+    ctx.fillRect(x+2,y+6,12,8);
+    ctx.fillStyle = P.leafLight;
+    ctx.fillRect(x+4,y+6,5,4);
+  }
+  else if (t===21) {
+    // Flower bush
+    ctx.fillStyle = P.grass;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.leafDark;
+    ctx.fillRect(x+1,y+8,14,8);
+    ctx.fillStyle = P.leafMid;
+    ctx.fillRect(x+2,y+6,12,8);
+    ctx.fillStyle = '#f87090';
+    ctx.fillRect(x+3,y+5,3,3);
+    ctx.fillRect(x+9,y+6,3,3);
+    ctx.fillStyle = '#f8e0a0';
+    ctx.fillRect(x+6,y+4,3,3);
+  }
+  else if (t===30) {
+    // Shop base — pink building
+    ctx.fillStyle = P.shopPink;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.shopPinkDk;
+    ctx.fillRect(x,y,TILE,2);
+    ctx.fillRect(x,y,2,TILE);
+  }
+  else if (t===31) {
+    // Truck base
+    ctx.fillStyle = P.truckBody;
+    ctx.fillRect(x,y,TILE,TILE);
+    ctx.fillStyle = P.truckDark;
+    ctx.fillRect(x,y,TILE,2);
+    ctx.fillRect(x,y,2,TILE);
+  }
+}
+
+// ============================================================
+// DECORATIONS (shop front, truck, signs, etc.)
+// Draw on top of base tiles as composite decorations
+// ============================================================
+const PIXEL_FONT = {
+  A:['010','101','111','101','101'],
+  C:['111','100','100','100','111'],
+  D:['110','101','101','101','110'],
+  E:['111','100','110','100','111'],
+  F:['111','100','110','100','100'],
+  H:['101','101','111','101','101'],
+  I:['111','010','010','010','111'],
+  M:['101','111','111','101','101'],
+  N:['101','111','111','111','101'],
+  O:['111','101','101','101','111'],
+  P:['110','101','110','100','100'],
+  R:['110','101','110','101','101'],
+  S:['111','100','111','001','111'],
+  T:['111','010','010','010','010'],
+  U:['101','101','101','101','111'],
+};
+
+function drawPixelText(text, x, y, color, scale = 1) {
+  ctx.fillStyle = color;
+  let dx = x;
+  for (const ch of text) {
+    if (ch === ' ') {
+      dx += 3 * scale;
+      continue;
+    }
+    const glyph = PIXEL_FONT[ch];
+    if (!glyph) {
+      dx += 4 * scale;
+      continue;
+    }
+    glyph.forEach((row, gy) => {
+      [...row].forEach((bit, gx) => {
+        if (bit === '1') ctx.fillRect(dx + gx * scale, y + gy * scale, scale, scale);
+      });
+    });
+    dx += 4 * scale;
+  }
+}
+
+function drawDecorations() {
+  // === DOLL SHOP (cols 6-11, rows 0-3) ===
+  // Roof
+  ctx.fillStyle = P.shopRoof;
+  ctx.fillRect(6*TILE, 0, 6*TILE, TILE*1.5);
+  // Awning stripes
+  for (let i=0; i<6; i++) {
+    ctx.fillStyle = i%2===0 ? '#f8f8f8' : P.shopRoof;
+    ctx.fillRect(6*TILE + i*16, TILE*1.5-4, 16, 6);
+  }
+  // Building face
+  ctx.fillStyle = P.shopPink;
+  ctx.fillRect(6*TILE, TILE*1.5, 6*TILE, TILE*2.5);
+  // Sign
+  ctx.fillStyle = '#f8d0e0';
+  ctx.fillRect(6*TILE+4, 4, 6*TILE-8, 14);
+  ctx.fillStyle = P.shopRoof;
+  ctx.font = '5px monospace';
+  ctx.fillText('DOLL SHOP', 6*TILE+8, 13);
+  // Window
+  ctx.fillStyle = P.shopWin;
+  ctx.fillRect(6*TILE+4, TILE*1.8, 4*TILE-8, TILE*1.5);
+  ctx.fillStyle = P.shopWinDk;
+  ctx.fillRect(6*TILE+4, TILE*1.8, 1, TILE*1.5);
+  ctx.fillRect(6*TILE+4, TILE*1.8, 4*TILE-8, 1);
+  // Two dolls in window
+  // Doll 1
+  ctx.fillStyle = '#f8d0d0';
+  ctx.fillRect(6*TILE+10, TILE*2+1, 6, 6);
+  ctx.fillStyle = '#f8d888';
+  ctx.fillRect(6*TILE+8, TILE*2+7, 10, 10);
+  ctx.fillStyle = '#4898e8';
+  ctx.fillRect(6*TILE+8, TILE*2+9, 10, 7);
+  // Doll 2
+  ctx.fillStyle = '#f8d0d0';
+  ctx.fillRect(6*TILE+26, TILE*2+1, 6, 6);
+  ctx.fillStyle = '#9a6030';
+  ctx.fillRect(6*TILE+24, TILE*2+7, 10, 10);
+  ctx.fillStyle = '#e08060';
+  ctx.fillRect(6*TILE+24, TILE*2+9, 10, 7);
+  // Door
+  ctx.fillStyle = P.shopDoor;
+  ctx.fillRect(9*TILE+2, TILE*2+4, 12, 18);
+  ctx.fillStyle = '#f8d0e0';
+  ctx.fillRect(9*TILE+4, TILE*2+6, 4, 4);
+  // Flower boxes under window
+  ctx.fillStyle = '#c07050';
+  ctx.fillRect(6*TILE+4, TILE*3+4, 4*TILE-8, 5);
+  ctx.fillStyle = '#58b840';
+  ctx.fillRect(6*TILE+6, TILE*3+2, 4*TILE-12, 4);
+  for (let i=0; i<8; i++) {
+    ctx.fillStyle = i%2===0 ? '#f87090':'#f8b820';
+    ctx.fillRect(6*TILE+6+i*6, TILE*3+1, 4, 4);
+  }
+  // Potted plants beside shop
+  ctx.fillStyle = '#8b5e3c';
+  ctx.fillRect(12*TILE+2, TILE*1+8, 8, 6);
+  ctx.fillStyle = P.leafMid;
+  ctx.fillRect(12*TILE+1, TILE*1+2, 10, 8);
+  ctx.fillStyle = P.leafLight;
+  ctx.fillRect(12*TILE+3, TILE*1+3, 5, 4);
+
+  // Sidewalk sign (poster near shop)
+  ctx.fillStyle = '#e8e8e8';
+  ctx.fillRect(10*TILE+2, TILE*4+6, 14, 18);
+  ctx.fillStyle = P.shopRoof;
+  ctx.fillRect(10*TILE+3, TILE*4+7, 12, 14);
+  ctx.fillStyle = '#f8d0e0';
+  ctx.fillRect(10*TILE+5, TILE*4+9, 8, 10);
+
+  // === FOOD TRUCK (cols 2-5, rows 2-3) ===
+  // Truck body
+  ctx.fillStyle = '#d8d8d8';
+  ctx.fillRect(2*TILE, TILE*1+4, 4*TILE, TILE*2-4);
+  ctx.fillStyle = '#b0b0b0';
+  ctx.fillRect(2*TILE, TILE*1+4, 4*TILE, 3);
+  // Cab
+  ctx.fillStyle = '#c0c0c0';
+  ctx.fillRect(2*TILE, TILE, TILE+4, TILE+4);
+  ctx.fillStyle = '#80a8c0';
+  ctx.fillRect(2*TILE+2, TILE+2, TILE, 8);
+  // Awning stripes
+  for (let i=0; i<5; i++) {
+    ctx.fillStyle = i%2===0 ? '#f8f8f8':'#e04040';
+    ctx.fillRect(2*TILE + i*13, TILE*1+8, 13, 5);
+  }
+  // Serving window
+  ctx.fillStyle = '#c8a040';
+  ctx.fillRect(3*TILE, TILE*1+12, 3*TILE-4, 12);
+  ctx.fillStyle = '#a87030';
+  ctx.fillRect(3*TILE, TILE*1+12, 3*TILE-4, 2);
+  // Sign "MUNCHIES"
+  ctx.fillStyle = '#7d3426';
+  ctx.fillRect(3*TILE-4, TILE*2+2, 52, 16);
+  ctx.fillStyle = '#fff0d0';
+  ctx.fillRect(3*TILE-3, TILE*2+3, 50, 14);
+  ctx.fillStyle = '#f7c66e';
+  ctx.fillRect(3*TILE-3, TILE*2+15, 50, 2);
+  drawPixelText('MUNCHIES', 3*TILE+5, TILE*2+7, '#b7362e');
+  // Food icons on sign
+  // Burger
+  ctx.fillStyle = '#c87030';
+  ctx.fillRect(3*TILE, TILE*2+14, 7, 5);
+  ctx.fillStyle = '#e8d050';
+  ctx.fillRect(3*TILE+1, TILE*2+13, 6, 3);
+  // Fries
+  ctx.fillStyle = '#f8d030';
+  ctx.fillRect(3*TILE+10, TILE*2+12, 7, 7);
+  ctx.fillStyle = '#e89030';
+  ctx.fillRect(3*TILE+11, TILE*2+10, 2, 4);
+  ctx.fillRect(3*TILE+14, TILE*2+10, 2, 4);
+  // Wheels
+  ctx.fillStyle = '#303030';
+  ctx.fillRect(2*TILE+2, TILE*3+4, 10, 6);
+  ctx.fillRect(4*TILE+4, TILE*3+4, 10, 6);
+  ctx.fillStyle = '#505050';
+  ctx.fillRect(2*TILE+5, TILE*3+5, 4, 4);
+  ctx.fillRect(4*TILE+7, TILE*3+5, 4, 4);
+
+  // Menu blackboard
+  ctx.fillStyle = '#2a3a28';
+  ctx.fillRect(TILE, TILE*3+4, 14, 18);
+  ctx.fillStyle = '#f8f0d0';
+  ctx.font = '4px monospace';
+  ctx.fillText('MENU', TILE+1, TILE*3+10);
+  ctx.fillStyle = '#c0c0a0';
+  for (let i=0; i<3; i++) ctx.fillRect(TILE+2, TILE*3+13+i*4, 10, 1);
+
+  // === POT FARM SIGN ===
+  ctx.fillStyle = '#714a2b';
+  ctx.fillRect(TILE, TILE*7+1, 27, 24);
+  ctx.fillStyle = '#e8e0b0';
+  ctx.fillRect(TILE+1, TILE*7+2, 24, 22);
+  ctx.fillStyle = '#fff7d7';
+  ctx.fillRect(TILE+3, TILE*7+4, 20, 17);
+  ctx.fillStyle = '#2a6020';
+  drawPixelText('POT', TILE+7, TILE*7+6, '#2a6020');
+  drawPixelText('FARM', TILE+5, TILE*7+13, '#2a6020');
+  // Leaf icon
+  ctx.fillStyle = '#3a8028';
+  ctx.fillRect(TILE+9, TILE*7+19, 7, 3);
+  ctx.fillRect(TILE+11, TILE*7+17, 3, 5);
+}
+
+// ============================================================
+// GAME LOOP
+// ============================================================
+let tick = 0;
+
+function update() {
+  tick++;
+  waterAnim = Math.floor(tick / 8);
+  game.promptPulse = (game.promptPulse + 1) % 90;
+
+  const anyKey = keys.up||keys.down||keys.left||keys.right;
+  player.moving = anyKey && !game.dialogue;
+  game.prompt = game.dialogue ? null : getInteraction();
+
+  if (anyKey && !game.dialogue) {
+    let nx = player.x, ny = player.y;
+    const spd = player.speed;
+
+    if (keys.up)    { ny -= spd; player.dir = 3; }
+    if (keys.down)  { ny += spd; player.dir = 0; }
+    if (keys.left)  { nx -= spd; player.dir = 1; }
+    if (keys.right) { nx += spd; player.dir = 2; }
+
+    // Clamp to map
+    nx = Math.max(8, Math.min(MAP_W-8, nx));
+    ny = Math.max(12, Math.min(MAP_H-12, ny));
+
+    // Slide collision
+    if (!isSolid(nx, player.y)) player.x = nx;
+    if (!isSolid(player.x, ny)) player.y = ny;
+
+    // Animate walk
+    player.frameTimer++;
+    if (player.frameTimer >= player.frameRate) {
+      player.frameTimer = 0;
+      player.frame = player.frame === 1 ? 2 : 1;
+    }
+  } else {
+    player.frame = 0;
+    player.frameTimer = 0;
+  }
+}
+
+function drawPlayer() {
+  const frame = amyFrames[player.dir][player.frame];
+  const drawX = Math.round(player.x) - 9;
+  const drawY = Math.round(player.y) - 24; // feet at player.y (28px tall)
+  ctx.drawImage(frame, drawX, drawY, 18, 28);
+}
+
+function drawWorldFX() {
+  const sparkles = [
+    [154, 65, 0], [171, 60, 19], [57, 67, 38], [29, 126, 57],
+    [203, 75, 12], [115, 81, 27], [194, 27, 44]
+  ];
+  for (const [x, y, phase] of sparkles) {
+    const on = Math.floor((tick + phase) / 18) % 2 === 0;
+    if (!on) continue;
+    ctx.fillStyle = '#fff3b0';
+    ctx.fillRect(x, y, 1, 1);
+    ctx.fillRect(x - 1, y + 1, 3, 1);
+    ctx.fillRect(x, y + 2, 1, 1);
+  }
+}
+
+function drawPrompt() {
+  if (!game.prompt) return;
+  const bob = Math.floor(Math.sin(game.promptPulse / 9) * 2);
+  const x = Math.round(player.x) - 8;
+  const y = Math.round(player.y) - 37 + bob;
+  ctx.fillStyle = '#181010';
+  ctx.fillRect(x + 1, y + 1, 16, 9);
+  ctx.fillStyle = '#f9e4a0';
+  ctx.fillRect(x, y, 16, 9);
+  ctx.fillStyle = '#3a2118';
+  ctx.font = 'bold 6px monospace';
+  ctx.fillText('A', x + 6, y + 7);
+}
+
+function drawPanel(x, y, w, h) {
+  ctx.fillStyle = '#181010';
+  ctx.fillRect(x, y, w, h);
+  ctx.fillStyle = '#f8f0d8';
+  ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
+  ctx.fillStyle = '#533329';
+  ctx.fillRect(x + 4, y + 4, w - 8, h - 8);
+  ctx.fillStyle = '#f8f0d8';
+  ctx.fillRect(x + 6, y + 6, w - 12, h - 12);
+}
+
+function wrapText(text, maxChars) {
+  const words = text.split(' ');
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    const next = line ? `${line} ${word}` : word;
+    if (next.length > maxChars) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+function drawDialogue() {
+  if (!game.dialogue) return;
+  drawPanel(8, 148, 224, 54);
+  ctx.fillStyle = '#8e2c52';
+  ctx.font = 'bold 7px monospace';
+  ctx.fillText(game.dialogue.title.toUpperCase(), 18, 162);
+  ctx.fillStyle = '#2f1c18';
+  ctx.font = '6px monospace';
+  const lines = wrapText(game.dialogue.text, 41).slice(0, 4);
+  lines.forEach((line, i) => ctx.fillText(line, 18, 174 + i * 8));
+  if (Math.floor(tick / 18) % 2 === 0) {
+    ctx.fillStyle = '#8e2c52';
+    ctx.fillText('A', 213, 193);
+  }
+}
+
+function render() {
+  ctx.clearRect(0,0,MAP_W,MAP_H);
+
+  // Draw base tiles
+  for (let ty=0; ty<ROWS; ty++) {
+    for (let tx=0; tx<COLS; tx++) {
+      drawTile(tx, ty);
+    }
+  }
+
+  // Draw composite decorations
+  drawDecorations();
+  drawWorldFX();
+
+  // Player
+  drawPlayer();
+  drawPrompt();
+  drawDialogue();
+}
+
+function loop() {
+  update();
+  render();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
