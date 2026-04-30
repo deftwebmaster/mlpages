@@ -1,154 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- * lone wolf, quiet teeth | Matt Livingston -->
+<!-- * lone wolf, steady course | Matt Livingston | v0.1.3 -->
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a14">
 <title>Amy's Harvest of Chaos</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     width: 100%; height: 100%;
-    background: #1a1a2e;
+    background: #0a0a14;
     overflow: hidden;
     touch-action: none;
     -webkit-tap-highlight-color: transparent;
     font-family: 'Courier New', monospace;
   }
-  #game-wrapper {
+  /* Canvas fills the entire viewport — controls float over it */
+  #gameCanvas {
     position: fixed;
     top: 0; left: 0;
-    width: 100%; height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0a0a14;
-  }
-  #title-bar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    background: rgba(0,0,0,0.82);
-    color: #f9e4a0;
-    text-align: center;
-    font-size: 11px;
-    letter-spacing: 2px;
-    padding: 6px 0 5px;
-    z-index: 300;
-    text-shadow: 1px 1px 0 #7a5c00;
-  }
-  #canvas-container {
-    position: relative;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    transform-origin: center center;
-  }
-  canvas {
+    width: 100vw;
+    height: 100vh;
     display: block;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     image-rendering: -moz-crisp-edges;
+    background: #0a0a14;
   }
-  /* D-PAD — overlaid bottom-left ON the game */
+  #title-bar {
+    position: fixed;
+    top: env(safe-area-inset-top, 0);
+    left: 0; right: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.55));
+    color: #f9e4a0;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 8px 0 7px;
+    z-index: 300;
+    text-shadow: 1px 1px 0 #7a5c00;
+    pointer-events: none;
+  }
+
+  /* ============================================================
+     CONTROLS — overlay on game, mobile-first
+     ============================================================ */
   #dpad {
     position: fixed;
-    bottom: 32px;
-    left: 24px;
-    width: 156px;
-    height: 156px;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 24px);
+    left: calc(env(safe-area-inset-left, 0) + 18px);
+    width: 168px;
+    height: 168px;
     z-index: 200;
   }
   .dpad-btn {
     position: absolute;
-    background: rgba(255,255,255,0.15);
-    border: 2px solid rgba(255,255,255,0.30);
-    border-radius: 8px;
-    width: 52px;
-    height: 52px;
+    background: rgba(20,20,30,0.50);
+    border: 2px solid rgba(249,228,160,0.45);
+    border-radius: 10px;
+    width: 56px;
+    height: 56px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255,255,255,0.75);
-    font-size: 20px;
+    color: rgba(249,228,160,0.85);
+    font-size: 22px;
     user-select: none;
     -webkit-user-select: none;
     cursor: pointer;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: background 0.05s, border-color 0.05s;
   }
   .dpad-btn:active, .dpad-btn.pressed {
-    background: rgba(249,228,160,0.30);
-    border-color: rgba(249,228,160,0.65);
+    background: rgba(249,228,160,0.35);
+    border-color: rgba(249,228,160,0.85);
   }
-  #btn-up    { top: 0;   left: 52px; }
-  #btn-down  { bottom: 0; left: 52px; }
-  #btn-left  { left: 0;  top: 52px; }
-  #btn-right { right: 0; top: 52px; }
+  #btn-up    { top: 0;       left: 56px; }
+  #btn-down  { bottom: 0;    left: 56px; }
+  #btn-left  { left: 0;      top: 56px;  }
+  #btn-right { right: 0;     top: 56px;  }
   .dpad-center {
     position: absolute;
-    width: 52px; height: 52px;
-    top: 52px; left: 52px;
-    background: rgba(255,255,255,0.06);
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.12);
+    width: 56px; height: 56px;
+    top: 56px; left: 56px;
+    background: rgba(0,0,0,0.20);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.10);
   }
   #action-btn {
     position: fixed;
-    right: 26px;
-    bottom: 42px;
-    width: 76px;
-    height: 76px;
+    right: calc(env(safe-area-inset-right, 0) + 22px);
+    bottom: calc(env(safe-area-inset-bottom, 0) + 38px);
+    width: 82px;
+    height: 82px;
     border-radius: 50%;
     z-index: 210;
-    border: 2px solid rgba(249,228,160,0.72);
-    background: rgba(40,20,30,0.62);
+    border: 2px solid rgba(249,228,160,0.80);
+    background: rgba(40,20,30,0.65);
     color: #f9e4a0;
-    font: bold 18px/1 'Courier New', monospace;
-    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.08), 0 8px 22px rgba(0,0,0,0.35);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    font: bold 22px/1 'Courier New', monospace;
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.10), 0 8px 22px rgba(0,0,0,0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     user-select: none;
     -webkit-user-select: none;
+    cursor: pointer;
   }
   #action-btn:active, #action-btn.pressed {
-    background: rgba(232,40,88,0.40);
+    background: rgba(232,40,88,0.55);
     transform: translateY(1px);
+    box-shadow: inset 0 0 0 4px rgba(255,255,255,0.10), 0 4px 12px rgba(0,0,0,0.45);
   }
-  @media (max-width: 520px) {
-    #title-bar { font-size: 10px; padding-top: 5px; }
-    #dpad {
-      left: 14px;
-      bottom: 20px;
-      width: 132px;
-      height: 132px;
-    }
-    .dpad-btn, .dpad-center {
-      width: 44px;
-      height: 44px;
-      border-radius: 7px;
-    }
-    #btn-up { left: 44px; }
-    #btn-down { left: 44px; }
-    #btn-left { top: 44px; }
-    #btn-right { top: 44px; }
-    .dpad-center { top: 44px; left: 44px; }
-    #action-btn {
-      right: 16px;
-      bottom: 30px;
-      width: 66px;
-      height: 66px;
-      font-size: 17px;
-    }
+  /* Pulsing ring when an interaction is available */
+  #action-btn.available::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(249,228,160,0.85);
+    animation: pulse 1.1s ease-out infinite;
+    pointer-events: none;
+  }
+  @keyframes pulse {
+    0%   { transform: scale(0.92); opacity: 1; }
+    100% { transform: scale(1.18); opacity: 0; }
+  }
+
+  /* ============================================================
+     DIALOGUE — DOM overlay, crisp readable text
+     ============================================================ */
+  #dialogue {
+    position: fixed;
+    left: 12px; right: 12px;
+    bottom: calc(env(safe-area-inset-bottom, 0) + 140px);
+    background: #f8f0d8;
+    border: 3px solid #181010;
+    border-radius: 6px;
+    box-shadow: 0 0 0 2px #533329, 0 8px 24px rgba(0,0,0,0.55);
+    padding: 14px 16px 18px;
+    z-index: 250;
+    color: #2f1c18;
+    display: none;
+    font-family: 'Courier New', monospace;
+    line-height: 1.45;
+  }
+  #dialogue.show { display: block; }
+  #dialogue .title {
+    color: #8e2c52;
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #dialogue .text {
+    font-size: 16px;
+    color: #2f1c18;
+  }
+  #dialogue .arrow {
+    position: absolute;
+    right: 14px;
+    bottom: 8px;
+    color: #8e2c52;
+    font-weight: bold;
+    font-size: 14px;
+    animation: blink 0.9s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Larger phones: bump dialogue text size */
+  @media (min-width: 420px) {
+    #dialogue .text { font-size: 17px; }
+    #dialogue .title { font-size: 15px; }
+  }
+  /* Tiny screens: shrink dpad slightly */
+  @media (max-width: 360px) {
+    #dpad { width: 144px; height: 144px; }
+    .dpad-btn, .dpad-center { width: 48px; height: 48px; }
+    #btn-up { left: 48px; } #btn-down { left: 48px; }
+    #btn-left { top: 48px; } #btn-right { top: 48px; }
+    .dpad-center { top: 48px; left: 48px; }
+    #action-btn { width: 72px; height: 72px; font-size: 20px; }
   }
 </style>
 </head>
 <body>
 
-<div id="title-bar">AMY'S HARVEST OF CHAOS</div>
+<div id="title-bar">AMY'S HARVEST OF CHAOS · v0.1.3</div>
 
-<div id="game-wrapper">
-  <div id="canvas-container">
-    <canvas id="gameCanvas"></canvas>
-  </div>
+<canvas id="gameCanvas"></canvas>
+
+<!-- Dialogue panel (DOM, crisp text) -->
+<div id="dialogue" aria-live="polite">
+  <div class="title" id="dialogue-title"></div>
+  <div class="text" id="dialogue-text"></div>
+  <div class="arrow">▼</div>
 </div>
 
 <!-- D-PAD -->
@@ -163,7 +211,7 @@
 
 <script>
 // ============================================================
-// CANVAS SETUP — scales to fill screen maintaining aspect ratio
+// CANVAS + CAMERA — fills viewport, follows player
 // ============================================================
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -175,20 +223,67 @@ const ROWS = 13;
 const MAP_W = COLS * TILE; // 240
 const MAP_H = ROWS * TILE; // 208
 
+// Visible play area (in world pixels) — set by resize().
+// We render exactly this many world-pixels per frame, scaled to the screen.
+const view = {
+  w: MAP_W,   // visible world-pixel width
+  h: MAP_H,   // visible world-pixel height
+  scale: 1,   // pixels-per-world-pixel (CSS scale)
+};
+
+// Camera position (top-left of view in world coords)
+const camera = { x: 0, y: 0 };
+
 function resize() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const scale = Math.min(vw / MAP_W, vh / MAP_H);
-  canvas.width  = MAP_W;
-  canvas.height = MAP_H;
-  canvas.style.width  = MAP_W + 'px';
-  canvas.style.height = MAP_H + 'px';
-  const container = document.getElementById('canvas-container');
-  container.style.transform = `scale(${scale})`;
+
+  // Target ~10 tiles vertical visibility on phones — feels like Gen 3.
+  // Scale is "device pixels per world pixel".
+  // Pick a scale so the world looks chunky but lets a reasonable area show.
+  // We aim for roughly 10–12 tiles tall on portrait phones.
+  let scale = Math.floor(vh / (TILE * 11));
+  // Width sanity — never let scale make width-coverage absurd
+  scale = Math.max(2, Math.min(scale, Math.floor(vw / (TILE * 8))));
+  if (!isFinite(scale) || scale < 2) scale = 2;
+
+  // Backbuffer dimensions in world pixels
+  const worldW = Math.ceil(vw / scale);
+  const worldH = Math.ceil(vh / scale);
+
+  view.w = worldW;
+  view.h = worldH;
+  view.scale = scale;
+
+  canvas.width  = worldW;
+  canvas.height = worldH;
+  canvas.style.width  = (worldW * scale) + 'px';
+  canvas.style.height = (worldH * scale) + 'px';
   ctx.imageSmoothingEnabled = false;
 }
 resize();
 window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', resize);
+
+function updateCamera() {
+  // Center camera on player, clamped to map bounds.
+  // If view is larger than map on an axis, center the map.
+  let cx = Math.round(player.x - view.w / 2);
+  let cy = Math.round(player.y - view.h / 2);
+
+  if (view.w >= MAP_W) {
+    cx = Math.round((MAP_W - view.w) / 2);
+  } else {
+    cx = Math.max(0, Math.min(MAP_W - view.w, cx));
+  }
+  if (view.h >= MAP_H) {
+    cy = Math.round((MAP_H - view.h) / 2);
+  } else {
+    cy = Math.max(0, Math.min(MAP_H - view.h, cy));
+  }
+  camera.x = cx;
+  camera.y = cy;
+}
 
 // ============================================================
 // PALETTE  (Gen 3 Pokémon feel)
@@ -284,534 +379,486 @@ const COLL = [
   [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
 ];
 
+// ============================================================
+// COLLISION — foot-only hitbox, axis-swept with tile-edge snap
+// ============================================================
+// player.y is the FEET position (sprite's bottom-center).
+// player.x is the horizontal center.
+// The hitbox is a small rectangle centered on the feet:
+//   width = 8px  (4 either side of x)
+//   height = 6px (above the feet)
+// This matches Gen 3 Pokémon: only your boots collide, not your head.
+const HB_HALF_W = 4;
+const HB_TOP    = 6;   // pixels above feet
+const HB_BOTTOM = 0;   // feet line is the bottom
+
+function tileIsSolidAt(px, py) {
+  if (px < 0 || py < 0 || px >= MAP_W || py >= MAP_H) return true;
+  const tx = Math.floor(px / TILE);
+  const ty = Math.floor(py / TILE);
+  return COLL[ty][tx] === 1;
+}
+
+// Returns true if the foot-hitbox at (px, py) overlaps any solid tile.
 function isSolid(px, py) {
-  // px,py in pixels
-  // Check all four corners of a 10x12 hitbox centered on player feet
-  const HW = 4, HH = 5;
-  const checks = [
-    [px - HW, py - HH],
-    [px + HW, py - HH],
-    [px - HW, py + HH],
-    [px + HW, py + HH],
-  ];
-  for (const [x, y] of checks) {
-    const tx = Math.floor(x / TILE);
-    const ty = Math.floor(y / TILE);
-    if (tx < 0 || ty < 0 || tx >= COLS || ty >= ROWS) return true;
-    if (COLL[ty][tx] === 1) return true;
-  }
+  const left   = px - HB_HALF_W;
+  const right  = px + HB_HALF_W - 1;
+  const top    = py - HB_TOP;
+  const bottom = py - HB_BOTTOM;
+  // Sample the four corners — hitbox is small enough this is sufficient.
+  if (tileIsSolidAt(left,  top))    return true;
+  if (tileIsSolidAt(right, top))    return true;
+  if (tileIsSolidAt(left,  bottom)) return true;
+  if (tileIsSolidAt(right, bottom)) return true;
   return false;
 }
 
-// ============================================================
-// SPRITE DRAWING  — Amy pixel art, hand-crafted
-// ============================================================
-// Each frame is 16×24 pixels. We draw them to an offscreen canvas
-// and cache them as ImageData.
-
-// Helper: set pixel on offscreen ctx
-function px(oc, x, y, color) {
-  if (x < 0 || y < 0 || x >= 16 || y >= 24) return;
-  oc.fillStyle = color;
-  oc.fillRect(x, y, 1, 1);
+// Move on a single axis with sub-pixel precision; if blocked, snap the
+// hitbox edge flush against the offending tile boundary so the player
+// glides smoothly into walls instead of stopping short.
+function moveX(dx) {
+  if (dx === 0) return;
+  const sign = Math.sign(dx);
+  let nx = player.x + dx;
+  if (!isSolid(nx, player.y)) { player.x = nx; return; }
+  // Blocked — snap to tile edge.
+  if (sign > 0) {
+    const edge = Math.floor((player.x + HB_HALF_W) / TILE) * TILE + TILE;
+    player.x = edge - HB_HALF_W - 0.001;
+  } else {
+    const edge = Math.ceil((player.x - HB_HALF_W) / TILE) * TILE - TILE;
+    player.x = edge + HB_HALF_W + 0.001;
+  }
 }
 
-function buildAmy() {
-  // 4 directions × 3 frames (idle=0, step1=1, step2=2)
-  // dir: 0=down, 1=left, 2=right, 3=up
-  // Sprite canvas: 16×26 pixels
-
-  const frames = [];
-
-  // ── Palette ──────────────────────────────────────────────
-  const HAIR   = '#7a4820';   // warm chestnut
-  const HAIRHI = '#b07038';   // caramel highlight
-  const HAIRDK = '#3e1e08';   // deep shadow
-  const SKIN   = '#f0c898';   // soft peach skin
-  const SKINSH = '#d8a070';   // skin shadow
-  const SKINHI = '#fce4c0';   // skin highlight (forehead, nose bridge)
-  const BLUSH  = '#f0a0a0';   // cheek blush
-  const EYE    = '#281008';   // dark brown iris
-  const PUPIL  = '#100808';   // pupil center
-  const EYEHI  = '#ffffff';   // eye sparkle
-  const LASH   = '#180808';   // eyelash / brow
-  const LIP    = '#d07878';   // warm rosy lip
-  const LIPHI  = '#e8a898';   // lip highlight
-  const TOP    = '#4a2c18';   // dark brown top
-  const TOPHI  = '#6e4432';   // top highlight
-  const TOPSH  = '#2c1608';   // top shadow
-  const PANT   = '#202030';   // dark jeans
-  const PANTHI = '#383858';   // jeans highlight
-  const BOOT   = '#281408';   // dark boot
-  const BOOTHI = '#4a3020';   // boot highlight
-  const LACE   = '#e8dcc8';   // lace waistband light
-  const LACE2  = '#c0b098';   // lace waistband shadow
-  const ROSE_W = '#f8f2f0';   // white rose petal
-  const ROSE_P = '#f0c8d0';   // rose blush shadow
-  const ROSE_C = '#e890a8';   // rose center
-  const ROSE_G = '#307820';   // rose stem
-  const RIB_R  = '#e82858';
-  const RIB_Y  = '#f8d020';
-  const RIB_W  = '#f0f0e8';
-  const RIB_G  = '#50c050';
-  const BEAD   = '#c02858';
-
-  // ── pixel helper ─────────────────────────────────────────
-  function p(oc, x, y, c) {
-    if (x<0||y<0||x>=16||y>=26) return;
-    oc.fillStyle = c; oc.fillRect(x,y,1,1);
+function moveY(dy) {
+  if (dy === 0) return;
+  const sign = Math.sign(dy);
+  let ny = player.y + dy;
+  if (!isSolid(player.x, ny)) { player.y = ny; return; }
+  if (sign > 0) {
+    const edge = Math.floor(player.y / TILE) * TILE + TILE;
+    player.y = edge - 0.001;
+  } else {
+    const edge = Math.ceil((player.y - HB_TOP) / TILE) * TILE - TILE;
+    player.y = edge + HB_TOP + 0.001;
   }
-
-  // ── HAIR (down-facing) ───────────────────────────────────
-  function hairDown(oc) {
-    // Crown
-    for (let x=3;x<=12;x++) p(oc,x,1,HAIRDK);
-    for (let x=3;x<=12;x++) p(oc,x,2,HAIR);
-    for (let x=4;x<=11;x++) p(oc,x,3,HAIRHI);
-    for (let x=3;x<=12;x++) p(oc,x,4,HAIR);
-    // Wide sides — voluminous
-    p(oc,2,3,HAIR); p(oc,2,4,HAIR); p(oc,2,5,HAIR); p(oc,2,6,HAIR); p(oc,2,7,HAIR);
-    p(oc,1,4,HAIRDK); p(oc,1,5,HAIRDK); p(oc,1,6,HAIRDK);
-    p(oc,13,3,HAIR); p(oc,13,4,HAIR); p(oc,13,5,HAIR); p(oc,13,6,HAIR); p(oc,13,7,HAIR);
-    p(oc,14,4,HAIRDK); p(oc,14,5,HAIRDK); p(oc,14,6,HAIRDK);
-    // Side wisps over shoulders
-    p(oc,2,8,HAIR); p(oc,2,9,HAIR); p(oc,1,8,HAIRDK);
-    p(oc,13,8,HAIR); p(oc,13,9,HAIR); p(oc,14,8,HAIRDK);
-    // Soft bottom edge of hair framing face
-    p(oc,3,5,HAIRHI); p(oc,12,5,HAIRHI);
-  }
-
-  // ── FACE (down) ──────────────────────────────────────────
-  function faceDown(oc) {
-    // Face oval — slightly rounder/shorter for cute chibi
-    for (let x=4;x<=11;x++) for (let y=5;y<=9;y++) p(oc,x,y,SKIN);
-    p(oc,4,5,SKINSH); p(oc,11,5,SKINSH); // temple shadow
-    p(oc,7,5,SKINHI); p(oc,8,5,SKINHI);  // forehead highlight
-
-    // ── EYES — big, cute, lashed ──
-    // Left eye (x=5-6, y=6-7)
-    // Lash row above
-    p(oc,5,6,LASH); p(oc,6,6,LASH); p(oc,7,6,LASH);
-    // Iris
-    p(oc,5,7,EYE);  p(oc,6,7,EYE);
-    p(oc,5,8,EYE);  p(oc,6,8,PUPIL);
-    // Sparkle
-    p(oc,5,7,EYEHI);
-    // Lower lash line
-    p(oc,5,9,SKINSH); p(oc,6,9,SKINSH);
-
-    // Right eye (x=9-10, y=6-7)
-    p(oc,9,6,LASH); p(oc,10,6,LASH); p(oc,8,6,LASH);
-    p(oc,9,7,EYE);  p(oc,10,7,EYE);
-    p(oc,9,8,PUPIL);p(oc,10,8,EYE);
-    p(oc,10,7,EYEHI);
-    p(oc,9,9,SKINSH); p(oc,10,9,SKINSH);
-
-    // Tiny eyebrows (thin, arched)
-    p(oc,5,5,HAIRDK); p(oc,6,5,LASH);
-    p(oc,10,5,HAIRDK); p(oc,9,5,LASH);
-
-    // Nose — just a tiny shadow dot
-    p(oc,7,9,SKINSH);
-
-    // Blush dots — key for cute/girly
-    p(oc,4,8,BLUSH); p(oc,4,9,BLUSH);
-    p(oc,11,8,BLUSH); p(oc,11,9,BLUSH);
-
-    // Lips — small, curved, bright
-    p(oc,7,10,LIP); p(oc,8,10,LIPHI); p(oc,9,10,LIP);
-    // Smile corners
-    p(oc,6,10,SKINSH); p(oc,10,10,SKINSH);
-  }
-
-  // ── NECK (down) — clean, no choker ───────────────────────
-  function neckDown(oc) {
-    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
-    p(oc,7,11,SKINHI);
-  }
-
-  // ── BODY (down) ──────────────────────────────────────────
-  function bodyDown(oc, step) {
-    neckDown(oc);
-    // Torso — narrower shoulders (x5-x10), more feminine shape
-    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
-    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
-    p(oc,5,13,TOPSH); p(oc,10,13,TOPSH);
-    p(oc,5,15,TOPSH); p(oc,10,15,TOPSH);
-    // Mesh skin peek
-    p(oc,7,14,SKINSH); p(oc,8,14,SKINSH);
-    // Arms — slender
-    p(oc,4,12,TOP);  p(oc,4,13,TOP); p(oc,4,14,SKIN); p(oc,4,15,SKIN);
-    p(oc,11,12,TOP); p(oc,11,13,TOP); p(oc,11,14,SKIN); p(oc,11,15,SKIN);
-    // Hands
-    p(oc,3,14,SKIN); p(oc,3,15,SKIN);
-    p(oc,12,14,SKIN); p(oc,12,15,SKIN);
-    // Rose in right hand
-    p(oc,13,12,ROSE_W); p(oc,13,11,ROSE_W); p(oc,14,11,ROSE_P);
-    p(oc,12,11,ROSE_C); p(oc,13,10,ROSE_G);
-    // Ribbons at right hip
-    p(oc,12,15,RIB_R); p(oc,13,15,RIB_W);
-    p(oc,12,16,RIB_Y); p(oc,13,16,RIB_G);
-    p(oc,12,17,BEAD);  p(oc,13,17,RIB_R);
-    // Lace waistband
-    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
-    p(oc,5,16,LACE2); p(oc,7,16,LACE2); p(oc,9,16,LACE2);
-    // Pants
-    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
-    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
-    // Hair over shoulders
-    p(oc,3,12,HAIR); p(oc,3,13,HAIR); p(oc,2,12,HAIRDK);
-    p(oc,12,12,HAIR); p(oc,12,13,HAIR); p(oc,13,12,HAIRDK);
-    // Boots walk cycle
-    const lx = 5+(step===1?-1:step===2?1:0);
-    const rx = 8+(step===1?1:step===2?-1:0);
-    for (let x=lx;x<=lx+2;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    for (let x=rx;x<=rx+2;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    p(oc,lx,21,BOOTHI); p(oc,lx+1,21,BOOTHI);
-    p(oc,rx,21,BOOTHI);  p(oc,rx+1,21,BOOTHI);
-  }
-
-  // ── FACE (left/right 3/4 view) ───────────────────────────
-  function faceSide(oc, dir) {
-    const fl = dir==='left'; // facing left
-    // Face block
-    for (let x=4;x<=10;x++) for (let y=5;y<=10;y++) p(oc,x,y,SKIN);
-    p(oc,11,6,SKIN); p(oc,11,7,SKIN); p(oc,11,8,SKIN); // cheek roundness
-    p(oc,fl?4:11, 5, SKINSH); // temple shadow
-
-    // Forehead highlight
-    p(oc,7,5,SKINHI); p(oc,8,5,SKINHI);
-
-    // One big visible eye (far side)
-    const ex = fl ? 6 : 8;
-    p(oc,ex-1,6,LASH); p(oc,ex,6,LASH); p(oc,ex+1,6,LASH);
-    p(oc,ex,7,EYE);   p(oc,ex-1,7,EYE);
-    p(oc,ex,8,PUPIL); p(oc,ex-1,8,EYE);
-    p(oc,ex,7,EYEHI);
-    p(oc,ex,9,SKINSH); p(oc,ex-1,9,SKINSH);
-    // Brow
-    p(oc,ex-1,5,LASH); p(oc,ex,5,HAIRDK);
-
-    // Blush
-    p(oc,fl?4:11,8,BLUSH); p(oc,fl?4:11,9,BLUSH);
-
-    // Nose hint
-    p(oc,fl?4:11,8,SKINSH);
-
-    // Lips
-    p(oc,7,10,LIP); p(oc,8,10,LIPHI); p(oc,9,10,LIP);
-    p(oc,fl?6:10,10,SKINSH);
-  }
-
-  // ── BODY (side) ──────────────────────────────────────────
-  function bodySide(oc, step, dir) {
-    const fl = dir==='left';
-    // Neck
-    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
-    // Torso
-    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
-    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
-    p(oc,5,13,TOPSH); p(oc,10,13,TOPSH);
-    p(oc,7,14,SKINSH);
-    // Front arm
-    const fa = fl ? 10 : 5;
-    p(oc,fa,12,TOP); p(oc,fa,13,TOP); p(oc,fa,14,SKIN); p(oc,fa,15,SKIN);
-    // Rose + ribbons on front-facing side
-    if (!fl) {
-      // facing right — rose on right side
-      p(oc,11,12,ROSE_W); p(oc,12,11,ROSE_W); p(oc,12,12,ROSE_P);
-      p(oc,11,11,ROSE_C); p(oc,12,10,ROSE_G);
-      p(oc,11,15,RIB_R); p(oc,12,15,RIB_W);
-      p(oc,11,16,RIB_Y); p(oc,12,16,BEAD);
-    } else {
-      // facing left — rose on left side
-      p(oc,4,12,ROSE_W); p(oc,3,11,ROSE_W); p(oc,3,12,ROSE_P);
-      p(oc,4,11,ROSE_C); p(oc,3,10,ROSE_G);
-      p(oc,4,15,RIB_R); p(oc,3,15,RIB_W);
-      p(oc,4,16,RIB_Y); p(oc,3,16,BEAD);
-    }
-    // Lace waist
-    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
-    p(oc,6,16,LACE2); p(oc,8,16,LACE2);
-    // Pants
-    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
-    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
-    // Back hair
-    const bhx = fl ? [10,11,12,13] : [2,3,4,5];
-    for (const bx of bhx) for (let y=11;y<=18;y++) p(oc,bx,y,HAIR);
-    if (fl) { for(let y=11;y<=18;y++) { p(oc,13,y,HAIRDK); p(oc,10,y,HAIRHI); } }
-    else    { for(let y=11;y<=18;y++) { p(oc,2,y,HAIRDK);  p(oc,5,y,HAIRHI);  } }
-    // Boots walk cycle
-    for (let x=5;x<=7;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    for (let x=8;x<=10;x++) for (let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    if (step===1) for (let x=5;x<=7;x++)  p(oc,x,20,PANT);
-    if (step===2) for (let x=8;x<=10;x++) p(oc,x,20,PANT);
-    p(oc,5,21,BOOTHI); p(oc,6,21,BOOTHI);
-    p(oc,8,21,BOOTHI); p(oc,9,21,BOOTHI);
-  }
-
-  // ── HAIR (left-facing) ───────────────────────────────────
-  function hairSide(oc, dir) {
-    const fl = dir==='left';
-    // Front hair (visible side)
-    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,1,HAIRDK);
-    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,2,HAIR);
-    for (let x=fl?4:5;x<=(fl?10:11);x++) p(oc,x,3,HAIRHI);
-    for (let x=fl?3:4;x<=(fl?11:12);x++) p(oc,x,4,HAIR);
-    // Front side puff
-    if (fl) {
-      p(oc,2,3,HAIR); p(oc,2,4,HAIR); p(oc,2,5,HAIR); p(oc,2,6,HAIR); p(oc,1,4,HAIRDK); p(oc,1,5,HAIRDK);
-    } else {
-      p(oc,13,3,HAIR); p(oc,13,4,HAIR); p(oc,13,5,HAIR); p(oc,13,6,HAIR); p(oc,14,4,HAIRDK); p(oc,14,5,HAIRDK);
-    }
-    // Back hair cascade
-    const bhStart = fl ? 11 : 2;
-    const bhEnd   = fl ? 14 : 5;
-    for (let x=bhStart;x<=bhEnd;x++) for (let y=2;y<=10;y++) p(oc,x,y,HAIR);
-    if (fl) { for(let y=2;y<=10;y++) { p(oc,14,y,HAIRDK); p(oc,11,y,HAIRHI); } }
-    else    { for(let y=2;y<=10;y++) { p(oc,2,y,HAIRDK);  p(oc,5,y,HAIRHI);  } }
-  }
-
-  // ── HAIR (up-facing) ─────────────────────────────────────
-  function hairUp(oc) {
-    for (let x=2;x<=13;x++) p(oc,x,1,HAIRDK);
-    for (let x=2;x<=13;x++) p(oc,x,2,HAIR);
-    for (let x=3;x<=12;x++) p(oc,x,3,HAIRHI);
-    for (let x=2;x<=13;x++) p(oc,x,4,HAIR);
-    for (let x=2;x<=13;x++) p(oc,x,5,HAIR);
-    for (let x=3;x<=12;x++) p(oc,x,6,HAIRDK);
-    p(oc,1,3,HAIRDK); p(oc,1,4,HAIRDK); p(oc,14,3,HAIRDK); p(oc,14,4,HAIRDK);
-    p(oc,1,5,HAIR); p(oc,14,5,HAIR);
-  }
-
-  function bodyUp(oc, step) {
-    p(oc,7,11,SKIN); p(oc,8,11,SKIN);
-    // Torso
-    for (let x=5;x<=10;x++) for (let y=12;y<=16;y++) p(oc,x,y,TOP);
-    for (let x=5;x<=10;x++) p(oc,x,12,TOPHI);
-    p(oc,5,14,TOPSH); p(oc,10,14,TOPSH);
-    // Lace
-    for (let x=5;x<=10;x++) p(oc,x,16,LACE);
-    p(oc,6,16,LACE2); p(oc,8,16,LACE2);
-    // Back hair streams down
-    for (let y=11;y<=19;y++) {
-      p(oc,2,y,HAIRDK); p(oc,3,y,HAIR);  p(oc,4,y,HAIRHI);
-      p(oc,11,y,HAIRHI); p(oc,12,y,HAIR); p(oc,13,y,HAIRDK);
-    }
-    p(oc,1,12,HAIRDK); p(oc,14,12,HAIRDK);
-    // Pants
-    for (let x=5;x<=10;x++) for (let y=17;y<=20;y++) p(oc,x,y,PANT);
-    for (let x=5;x<=10;x++) p(oc,x,17,PANTHI);
-    // Boots
-    const lx=5+(step===1?-1:step===2?1:0);
-    const rx=8+(step===1?1:step===2?-1:0);
-    for(let x=lx;x<=lx+2;x++) for(let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    for(let x=rx;x<=rx+2;x++) for(let y=21;y<=25;y++) p(oc,x,y,BOOT);
-    p(oc,lx,21,BOOTHI); p(oc,rx,21,BOOTHI);
-  }
-
-  // ── BUILD ALL FRAMES ─────────────────────────────────────
-  for (let dir=0; dir<4; dir++) {
-    frames[dir] = [];
-    for (let step=0; step<3; step++) {
-      const oc = document.createElement('canvas');
-      oc.width = 16; oc.height = 26;
-      const octx = oc.getContext('2d');
-      octx.imageSmoothingEnabled = false;
-
-      if (dir===0) {
-        hairDown(octx);
-        faceDown(octx);
-        bodyDown(octx, step);
-      } else if (dir===1) {
-        hairSide(octx,'left');
-        faceSide(octx,'left');
-        bodySide(octx, step, 'left');
-      } else if (dir===2) {
-        hairSide(octx,'right');
-        faceSide(octx,'right');
-        bodySide(octx, step, 'right');
-      } else {
-        hairUp(octx);
-        bodyUp(octx, step);
-      }
-
-      frames[dir][step] = oc;
-    }
-  }
-  return frames;
 }
 
+// ============================================================
+// SPRITE — Amy overworld, dirty-blonde, flowing hair, bouquet
+// 20×32 canvas. Feet anchor at (W/2, H-3).
+// ============================================================
+// ============================================================
+// SPRITE — Amy overworld, dirty-blonde, flowing hair, bouquet
+// 20×32 canvas. Feet anchor at (W/2, H-3).
+// ============================================================
 function buildAmyOverworld() {
-  const W = 18;
-  const H = 28;
+  const W = 20;
+  const H = 32;
   const frames = [];
+
+  // ── DIRTY BLONDE PALETTE ──────────────────────────────────
   const C = {
-    outline:'#17100d',
-    hair0:'#2a160d',
-    hair1:'#4f2b18',
-    hair2:'#7a472a',
-    hair3:'#b07042',
-    skin0:'#b87955',
-    skin1:'#efbd8f',
-    skin2:'#ffd9aa',
-    blush:'#df777d',
-    eye:'#1d1210',
-    top0:'#221511',
-    top1:'#3e241c',
-    top2:'#6c4134',
-    pants0:'#11131b',
-    pants1:'#242836',
-    pants2:'#3b4051',
-    boot0:'#1b100b',
-    boot1:'#59351f',
-    lace:'#efe0c8',
-    rose0:'#fff6f2',
-    rose1:'#e59aad',
-    rose2:'#c94268',
-    leaf:'#386f28',
-    ribbon0:'#e73966',
-    ribbon1:'#f6d25b',
-    ribbon2:'#f9eee9'
+    outline:  '#1a1208',
+    hair0:    '#3a2a18',  // deepest shadow
+    hair1:    '#6e5230',  // mid shadow
+    hair2:    '#a88450',  // base "dirty blonde"
+    hair3:    '#d4b07a',  // highlight
+    hair4:    '#ecd29c',  // sparkle
+    skin0:    '#b87955',
+    skin1:    '#efbd8f',
+    skin2:    '#ffd9aa',
+    blush:    '#df777d',
+    eyeWhite: '#fffaf0',
+    eyeIris:  '#3a2010',
+    eyePupil: '#100808',
+    eyeShine: '#ffffff',
+    lash:     '#1a0a04',
+    lipDark:  '#a04848',
+    lipLight: '#e09090',
+    top0:     '#2a1810',
+    top1:     '#4a2c1c',
+    top2:     '#6e4530',
+    pants0:   '#0e0f15',
+    pants1:   '#1f2230',
+    pants2:   '#373a4d',
+    boot0:    '#1b100b',
+    boot1:    '#59351f',
+    rose0:    '#fff6f2',
+    rose1:    '#f0c8d0',
+    rose2:    '#e890a8',
+    leaf:     '#3a7028',
+    leafLt:   '#58a040',
+    ribR:     '#e73966',
+    ribY:     '#f6d25b',
+    ribG:     '#5cc06a',
+    ribW:     '#f9eee9',
+    earring:  '#e6c060',
   };
 
   function p(oc, x, y, c) {
     if (x < 0 || y < 0 || x >= W || y >= H) return;
-    oc.fillStyle = c;
+    oc.fillStyle = C[c] || c;
     oc.fillRect(x, y, 1, 1);
   }
   function rect(oc, x, y, w, h, c) {
-    oc.fillStyle = c;
+    oc.fillStyle = C[c] || c;
     oc.fillRect(x, y, w, h);
-  }
-  function mirrorX(fn) {
-    return (oc, x, y, c) => fn(oc, W - 1 - x, y, c);
   }
 
   function shadow(oc) {
-    rect(oc, 4, 25, 10, 2, 'rgba(0,0,0,0.28)');
-    rect(oc, 6, 24, 6, 1, 'rgba(0,0,0,0.18)');
-  }
-  function hairFront(oc) {
-    rect(oc, 5, 1, 8, 1, C.outline);
-    rect(oc, 3, 2, 12, 2, C.hair0);
-    rect(oc, 2, 4, 14, 4, C.hair1);
-    rect(oc, 3, 5, 12, 3, C.hair2);
-    rect(oc, 4, 3, 5, 1, C.hair3);
-    rect(oc, 10, 4, 3, 1, C.hair3);
-    p(oc, 2, 8, C.hair0); p(oc, 15, 8, C.hair0);
-    rect(oc, 1, 7, 3, 8, C.hair0);
-    rect(oc, 14, 7, 3, 8, C.hair0);
-    rect(oc, 2, 8, 3, 8, C.hair1);
-    rect(oc, 13, 8, 3, 8, C.hair1);
-    rect(oc, 3, 11, 2, 7, C.hair2);
-    rect(oc, 13, 11, 2, 7, C.hair2);
-    p(oc, 4, 13, C.hair3); p(oc, 13, 13, C.hair3);
-  }
-  function faceFront(oc) {
-    rect(oc, 5, 6, 8, 6, C.skin1);
-    rect(oc, 6, 5, 6, 1, C.skin2);
-    p(oc, 5, 6, C.skin0); p(oc, 12, 6, C.skin0);
-    rect(oc, 6, 8, 2, 2, C.eye);
-    rect(oc, 10, 8, 2, 2, C.eye);
-    p(oc, 6, 8, C.rose0); p(oc, 11, 8, C.rose0);
-    p(oc, 5, 10, C.blush); p(oc, 12, 10, C.blush);
-    p(oc, 8, 11, C.outline); p(oc, 9, 11, C.blush);
-  }
-  function torsoFront(oc, step) {
-    rect(oc, 6, 12, 6, 5, C.top1);
-    rect(oc, 7, 12, 5, 1, C.top2);
-    p(oc, 6, 14, C.top0); p(oc, 11, 14, C.top0);
-    rect(oc, 6, 17, 6, 1, C.lace);
-    p(oc, 7, 17, C.skin0); p(oc, 10, 17, C.skin0);
-    rect(oc, 5, 13, 1, 4, C.skin1);
-    rect(oc, 12, 13, 1, 4, C.skin1);
-    p(oc, 4, 15, C.skin2); p(oc, 13, 15, C.skin2);
-    rose(oc, 13, 12);
-    ribbons(oc, 13, 16);
-    rect(oc, 6, 18, 6, 5, C.pants1);
-    rect(oc, 6, 18, 2, 5, C.pants2);
-    p(oc, 8, 19, C.pants0); p(oc, 9, 19, C.pants0);
-    const l = step === 1 ? 5 : step === 2 ? 7 : 6;
-    const r = step === 1 ? 10 : step === 2 ? 8 : 9;
-    boot(oc, l, 23);
-    boot(oc, r, 23);
-  }
-  function hairBack(oc) {
-    rect(oc, 3, 2, 12, 3, C.hair0);
-    rect(oc, 2, 5, 14, 8, C.hair1);
-    rect(oc, 3, 4, 11, 4, C.hair2);
-    rect(oc, 4, 3, 6, 1, C.hair3);
-    rect(oc, 2, 12, 4, 8, C.hair0);
-    rect(oc, 12, 12, 4, 8, C.hair0);
-    rect(oc, 3, 13, 3, 8, C.hair1);
-    rect(oc, 12, 13, 3, 8, C.hair1);
-    p(oc, 4, 15, C.hair3); p(oc, 13, 15, C.hair3);
-  }
-  function bodyBack(oc, step) {
-    rect(oc, 6, 12, 6, 5, C.top1);
-    rect(oc, 7, 12, 5, 1, C.top2);
-    rect(oc, 6, 17, 6, 1, C.lace);
-    rect(oc, 5, 13, 1, 4, C.top0);
-    rect(oc, 12, 13, 1, 4, C.top0);
-    rect(oc, 6, 18, 6, 5, C.pants1);
-    rect(oc, 6, 18, 2, 5, C.pants2);
-    const l = step === 1 ? 5 : step === 2 ? 7 : 6;
-    const r = step === 1 ? 10 : step === 2 ? 8 : 9;
-    boot(oc, l, 23);
-    boot(oc, r, 23);
-  }
-  function sideHead(oc, left) {
-    const q = left ? p : mirrorX(p);
-    rect(oc, left ? 3 : 4, 2, 11, 2, C.hair0);
-    rect(oc, left ? 2 : 5, 4, 11, 5, C.hair1);
-    rect(oc, left ? 3 : 6, 5, 8, 3, C.hair2);
-    rect(oc, left ? 11 : 3, 7, 4, 10, C.hair0);
-    rect(oc, left ? 10 : 4, 9, 4, 10, C.hair1);
-    rect(oc, 5, 6, 7, 6, C.skin1);
-    q(oc, 5, 7, C.skin0);
-    q(oc, 7, 8, C.eye);
-    q(oc, 7, 9, C.eye);
-    q(oc, 7, 8, C.rose0);
-    q(oc, 5, 10, C.blush);
-    q(oc, 6, 11, C.outline);
-    q(oc, 10, 3, C.hair3);
-    q(oc, 11, 13, C.hair3);
-  }
-  function sideBody(oc, step, left) {
-    const q = left ? p : mirrorX(p);
-    rect(oc, 6, 12, 6, 5, C.top1);
-    rect(oc, 6, 12, 5, 1, C.top2);
-    rect(oc, 6, 17, 6, 1, C.lace);
-    q(oc, 11, 13, C.skin1); q(oc, 11, 14, C.skin1); q(oc, 11, 15, C.skin2);
-    if (left) rose(oc, 3, 12); else rose(oc, 13, 12);
-    if (left) ribbons(oc, 3, 16); else ribbons(oc, 13, 16);
-    rect(oc, 6, 18, 6, 5, C.pants1);
-    rect(oc, 6, 18, 2, 5, C.pants2);
-    boot(oc, step === 1 ? 5 : 6, step === 1 ? 22 : 23);
-    boot(oc, step === 2 ? 10 : 9, step === 2 ? 22 : 23);
-  }
-  function rose(oc, x, y) {
-    p(oc, x, y - 1, C.leaf);
-    p(oc, x, y, C.rose2);
-    p(oc, x + 1, y, C.rose0);
-    p(oc, x, y + 1, C.rose0);
-    p(oc, x + 1, y + 1, C.rose1);
-    p(oc, x, y + 2, C.leaf);
-  }
-  function ribbons(oc, x, y) {
-    p(oc, x, y, C.ribbon0);
-    p(oc, x + 1, y, C.ribbon2);
-    p(oc, x, y + 1, C.ribbon1);
-    p(oc, x + 1, y + 1, C.ribbon0);
-    p(oc, x, y + 2, C.ribbon0);
-  }
-  function boot(oc, x, y) {
-    rect(oc, x, y, 3, 3, C.boot0);
-    rect(oc, x, y, 2, 1, C.boot1);
-    p(oc, x + 2, y + 2, C.outline);
+    rect(oc, 5, 30, 10, 2, 'rgba(0,0,0,0.30)');
+    rect(oc, 7, 29, 6, 1, 'rgba(0,0,0,0.18)');
   }
 
+  // ─────────────────────────────────────────────────────────
+  // FRONT (down-facing)
+  // ─────────────────────────────────────────────────────────
+  // Plan:
+  //   rows 1-4: top of head/crown
+  //   rows 5-13: face area (8 rows tall, hair frames sides)
+  //   rows 14-19: torso/wrap
+  //   rows 20-24: hips/pants
+  //   rows 25-28: legs/boots
+  //   Hair cascades on outer edges (cols 2-4 and cols 15-17) from row 7 to row 24.
+
+  function hairFrontBack(oc) {
+    // The "back" half of the front-view hair: long cascading hair behind shoulders.
+    // Drawn FIRST (under the body) so the body silhouette is visible.
+    // Columns 2-4 (left cascade) and 15-17 (right cascade), rows 11-24
+    // Left cascade
+    rect(oc, 2, 11, 3, 13, 'hair1');
+    rect(oc, 2, 11, 1, 13, 'hair0');
+    p(oc, 3, 13, 'hair2'); p(oc, 3, 16, 'hair2'); p(oc, 3, 19, 'hair2');
+    p(oc, 4, 14, 'hair3'); p(oc, 4, 18, 'hair3');
+    // Right cascade
+    rect(oc, 15, 11, 3, 13, 'hair1');
+    rect(oc, 17, 11, 1, 13, 'hair0');
+    p(oc, 16, 13, 'hair2'); p(oc, 16, 16, 'hair2'); p(oc, 16, 19, 'hair2');
+    p(oc, 15, 14, 'hair3'); p(oc, 15, 18, 'hair3');
+    // Tapered tips (rounded at bottom)
+    p(oc, 2, 24, 'hair0'); p(oc, 4, 24, 'hair0');
+    p(oc, 15, 24, 'hair0'); p(oc, 17, 24, 'hair0');
+    p(oc, 3, 24, 'hair1'); p(oc, 16, 24, 'hair1');
+  }
+
+  function hairFrontTop(oc) {
+    // The front/top of the hair — drawn LAST over face to give bangs.
+    // Crown
+    rect(oc, 7, 1, 6, 1, 'outline');
+    rect(oc, 6, 2, 8, 1, 'hair0');
+    rect(oc, 5, 3, 10, 2, 'hair1');
+    // Highlight wisps on crown
+    rect(oc, 7, 3, 2, 1, 'hair3');
+    rect(oc, 11, 3, 2, 1, 'hair3');
+    p(oc, 9, 4, 'hair4'); p(oc, 11, 4, 'hair4');
+    // Hair frames sides of upper face (rows 5-10)
+    rect(oc, 4, 5, 2, 6, 'hair1');  // left frame
+    rect(oc, 14, 5, 2, 6, 'hair1'); // right frame
+    p(oc, 4, 5, 'hair0'); p(oc, 15, 5, 'hair0');
+    p(oc, 5, 7, 'hair2'); p(oc, 14, 7, 'hair2');
+    p(oc, 5, 9, 'hair3'); p(oc, 14, 9, 'hair3');
+    // Bangs over forehead — center parted, soft fall
+    rect(oc, 6, 5, 8, 1, 'hair1');
+    p(oc, 7, 6, 'hair2'); p(oc, 12, 6, 'hair2');
+    p(oc, 6, 6, 'hair0'); p(oc, 13, 6, 'hair0');
+    // Wispy strand hanging in middle
+    p(oc, 9, 6, 'hair2'); p(oc, 10, 6, 'hair2');
+    // Side flow continues down to meet shoulders (rows 10-12)
+    rect(oc, 4, 10, 2, 2, 'hair1');
+    rect(oc, 14, 10, 2, 2, 'hair1');
+    p(oc, 3, 10, 'hair0'); p(oc, 16, 10, 'hair0');
+    p(oc, 3, 11, 'hair1'); p(oc, 16, 11, 'hair1');
+  }
+
+  function faceFront(oc) {
+    // Face block — ROWS 6-12, COLS 6-13 (8 wide, 7 tall) — wider than before
+    rect(oc, 6, 6, 8, 7, 'skin1');
+    // Forehead highlight
+    rect(oc, 7, 6, 6, 1, 'skin2');
+    // Temple shadows
+    p(oc, 6, 6, 'skin0'); p(oc, 13, 6, 'skin0');
+    // Jaw shadow (rounded chin)
+    p(oc, 6, 11, 'skin0'); p(oc, 13, 11, 'skin0');
+    p(oc, 7, 12, 'skin0'); p(oc, 12, 12, 'skin0');
+    // Cheek roundness
+    p(oc, 5, 9, 'skin1'); p(oc, 14, 9, 'skin1');
+    p(oc, 5, 10, 'skin0'); p(oc, 14, 10, 'skin0');
+    // Earrings (small gold dot)
+    p(oc, 4, 10, 'earring');
+    p(oc, 15, 10, 'earring');
+
+    // ── EYES (cute big, pupil-dominant, 2x2 each) ──
+    // Lash above each eye
+    rect(oc, 7, 8, 2, 1, 'lash');
+    rect(oc, 11, 8, 2, 1, 'lash');
+    // Left eye 2x2 — mostly dark pupil with a single highlight pixel
+    p(oc, 7, 9, 'eyePupil'); p(oc, 8, 9, 'eyePupil');
+    p(oc, 7, 10, 'eyeIris'); p(oc, 8, 10, 'eyeIris');
+    p(oc, 8, 9, 'eyeShine'); // top-right shine
+    // Right eye 2x2
+    p(oc, 11, 9, 'eyePupil'); p(oc, 12, 9, 'eyePupil');
+    p(oc, 11, 10, 'eyeIris'); p(oc, 12, 10, 'eyeIris');
+    p(oc, 12, 9, 'eyeShine');
+    // Eyebrows — subtle, just a darker pixel above each lash
+    p(oc, 7, 7, 'hair1'); p(oc, 8, 7, 'hair0');
+    p(oc, 11, 7, 'hair0'); p(oc, 12, 7, 'hair1');
+    // Blush dots
+    p(oc, 6, 10, 'blush'); p(oc, 13, 10, 'blush');
+    // Nose hint (tiny shadow under)
+    p(oc, 9, 10, 'skin0');
+    // ── SMILE (clean, simple) ──
+    p(oc, 8, 11, 'lipDark');
+    p(oc, 9, 11, 'lipLight'); p(oc, 10, 11, 'lipLight');
+    p(oc, 11, 11, 'lipDark');
+  }
+
+  function torsoFront(oc, step) {
+    // Neck
+    p(oc, 9, 13, 'skin0'); p(oc, 10, 13, 'skin0');
+    // ── WRAP TOP — chocolate brown drape ──
+    // Main torso block rows 14-19
+    rect(oc, 6, 14, 8, 6, 'top1');
+    // Highlight along top edge (drape)
+    rect(oc, 6, 14, 8, 1, 'top2');
+    // Diagonal sweep — left shoulder higher than right (off-shoulder right)
+    p(oc, 13, 14, 'skin1'); p(oc, 13, 15, 'skin0');
+    rect(oc, 5, 14, 1, 3, 'top1');  // left strap reaches up to shoulder
+    p(oc, 5, 14, 'top0');
+    // Drape fold lines
+    p(oc, 8, 17, 'top0'); p(oc, 11, 17, 'top0');
+    p(oc, 9, 18, 'top2'); p(oc, 10, 18, 'top2');
+    // Bottom edge of wrap
+    rect(oc, 6, 19, 8, 1, 'top0');
+
+    // Arms (slender, hanging at sides)
+    p(oc, 5, 17, 'skin1'); p(oc, 5, 18, 'skin1');
+    p(oc, 14, 17, 'skin1'); p(oc, 14, 18, 'skin1');
+    p(oc, 5, 19, 'skin0'); p(oc, 14, 19, 'skin0');
+    // Hands at hip
+    p(oc, 6, 20, 'skin1'); p(oc, 13, 20, 'skin1');
+
+    // ── PANTS (high-waist, dark) ──
+    rect(oc, 6, 20, 8, 5, 'pants1');
+    rect(oc, 6, 20, 8, 1, 'pants0');  // belt seam
+    p(oc, 6, 21, 'pants2'); p(oc, 6, 22, 'pants2'); p(oc, 6, 23, 'pants2'); // left hi
+    p(oc, 9, 22, 'pants0'); p(oc, 10, 22, 'pants0');  // crease
+
+    // Walk-cycle boots (rows 25-28)
+    const lx = step === 1 ? 6 : step === 2 ? 8 : 7;
+    const rx = step === 1 ? 12 : step === 2 ? 10 : 11;
+    boot(oc, lx, 25);
+    boot(oc, rx, 25);
+  }
+
+  function bouquetFront(oc) {
+    // Holds bouquet in right hand (from viewer's left when she faces us… wait,
+    // she's facing the camera so her right is our left — but to match the
+    // reference image, the bouquet hangs on viewer's RIGHT side. Going with that.)
+    // Bouquet head clustered around (16, 20). Hand is at (13, 20).
+    // Stems go from hand down/right to bouquet head.
+    // Roses (rows 17-20)
+    p(oc, 14, 18, 'rose0'); p(oc, 15, 18, 'rose0');
+    p(oc, 14, 19, 'rose1'); p(oc, 15, 19, 'rose0'); p(oc, 16, 19, 'rose0');
+    p(oc, 14, 20, 'rose2'); p(oc, 15, 20, 'rose1'); p(oc, 16, 20, 'rose2');
+    // Leaves
+    p(oc, 17, 19, 'leafLt'); p(oc, 17, 20, 'leaf');
+    p(oc, 13, 19, 'leaf');
+    // Hand grip (skin showing through)
+    p(oc, 14, 21, 'skin1');
+    // Stem
+    p(oc, 15, 21, 'leaf');
+    // ── RIBBONS — long colorful streamers ──
+    // Trail from rows 22-28, 4 streamers slightly fanned
+    // Red
+    p(oc, 13, 22, 'ribR'); p(oc, 13, 23, 'ribR'); p(oc, 12, 24, 'ribR');
+    p(oc, 13, 25, 'ribR'); p(oc, 12, 26, 'ribR');
+    // Yellow
+    p(oc, 14, 22, 'ribY'); p(oc, 14, 23, 'ribY'); p(oc, 14, 24, 'ribY');
+    p(oc, 14, 25, 'ribY'); p(oc, 14, 26, 'ribY'); p(oc, 14, 27, 'ribY');
+    // Green
+    p(oc, 15, 22, 'ribG'); p(oc, 15, 23, 'ribG'); p(oc, 16, 24, 'ribG');
+    p(oc, 15, 25, 'ribG'); p(oc, 16, 26, 'ribG');
+    // Cream/white
+    p(oc, 16, 22, 'ribW'); p(oc, 16, 23, 'ribW'); p(oc, 17, 24, 'ribW');
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // BACK (up-facing)
+  // ─────────────────────────────────────────────────────────
+  function hairBack(oc) {
+    // Back of head — head shape narrower than back hair, with clear neck inset.
+    // Row 1-9: rounded head silhouette
+    rect(oc, 6, 1, 8, 1, 'outline');
+    rect(oc, 5, 2, 10, 1, 'hair0');
+    rect(oc, 4, 3, 12, 1, 'hair0');
+    rect(oc, 4, 4, 12, 5, 'hair1');
+    // Highlight the crown with a curved patch
+    rect(oc, 6, 5, 8, 2, 'hair2');
+    p(oc, 7, 5, 'hair3'); p(oc, 12, 5, 'hair3');
+    p(oc, 9, 5, 'hair3'); p(oc, 10, 5, 'hair3');
+    p(oc, 8, 6, 'hair4'); p(oc, 11, 6, 'hair4');
+    // Soften corners
+    p(oc, 4, 4, 'hair0'); p(oc, 15, 4, 'hair0');
+    // Slight neck inset (rows 9-10) — narrower than head
+    rect(oc, 5, 9, 10, 1, 'hair1');
+    p(oc, 4, 9, 'hair0'); p(oc, 15, 9, 'hair0');
+    // Long flowing back cascade (rows 10-24) — wider, draping past shoulders
+    rect(oc, 3, 10, 14, 13, 'hair1');
+    rect(oc, 4, 11, 12, 12, 'hair2');
+    // Diagonal "wave" highlights — short sparse arcs, not full stripes
+    p(oc, 7, 12, 'hair3'); p(oc, 8, 13, 'hair3'); p(oc, 9, 14, 'hair3');
+    p(oc, 11, 13, 'hair3'); p(oc, 12, 14, 'hair3'); p(oc, 11, 15, 'hair3');
+    p(oc, 6, 17, 'hair3'); p(oc, 7, 18, 'hair3');
+    p(oc, 12, 18, 'hair3'); p(oc, 11, 19, 'hair3');
+    // Sparkle highlights
+    p(oc, 8, 12, 'hair4');
+    p(oc, 12, 14, 'hair4');
+    p(oc, 7, 18, 'hair4');
+    // Edges darker
+    rect(oc, 3, 10, 1, 13, 'hair0');
+    rect(oc, 16, 10, 1, 13, 'hair0');
+    p(oc, 2, 12, 'hair0'); p(oc, 17, 12, 'hair0');
+    p(oc, 2, 16, 'hair0'); p(oc, 17, 16, 'hair0');
+    p(oc, 2, 20, 'hair0'); p(oc, 17, 20, 'hair0');
+    // Tapered tip
+    rect(oc, 5, 23, 10, 1, 'hair1');
+    rect(oc, 6, 24, 8, 1, 'hair0');
+  }
+
+  function bodyBack(oc, step) {
+    // Wrap top from behind — hair covers most of upper back, but
+    // wrap is visible at lower back (rows 17-19) and shoulders peek (rows 13-14)
+    // Skin shoulder peek
+    p(oc, 4, 12, 'skin1'); p(oc, 15, 12, 'skin1');
+    p(oc, 4, 13, 'skin0'); p(oc, 15, 13, 'skin0');
+    // Wrap visible at sides below hair (rows 17-19)
+    rect(oc, 5, 18, 10, 2, 'top1');
+    rect(oc, 5, 18, 10, 1, 'top2');
+    rect(oc, 5, 19, 10, 1, 'top0');
+    // Pants
+    rect(oc, 6, 20, 8, 5, 'pants1');
+    rect(oc, 6, 20, 8, 1, 'pants0');
+    rect(oc, 6, 21, 2, 4, 'pants2');
+    p(oc, 9, 22, 'pants0'); p(oc, 10, 22, 'pants0');
+    // Boots (walk cycle)
+    const lx = step === 1 ? 6 : step === 2 ? 8 : 7;
+    const rx = step === 1 ? 12 : step === 2 ? 10 : 11;
+    boot(oc, lx, 25);
+    boot(oc, rx, 25);
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // SIDE VIEW (built as LEFT-facing, mirrored for right)
+  // ─────────────────────────────────────────────────────────
+  function sideHair(oc) {
+    // She faces left. Her face on the LEFT side of canvas (cols 4-9).
+    // Hair pile on her crown + cascade behind her (cols 10-15).
+    // Top of head
+    rect(oc, 5, 1, 7, 1, 'outline');
+    rect(oc, 4, 2, 9, 2, 'hair0');
+    rect(oc, 4, 4, 9, 2, 'hair1');
+    rect(oc, 5, 4, 7, 1, 'hair2');
+    p(oc, 6, 4, 'hair3'); p(oc, 9, 4, 'hair3');
+    p(oc, 7, 3, 'hair4');
+    // Front wisp over forehead (covers a bit of face left side)
+    p(oc, 4, 6, 'hair2'); p(oc, 5, 6, 'hair2');
+    p(oc, 4, 7, 'hair1');
+    // Back of head and cascade — cols 10-14, rows 5-24
+    // Narrower than before so body shows
+    rect(oc, 11, 5, 3, 19, 'hair1');
+    rect(oc, 12, 5, 2, 19, 'hair2');
+    rect(oc, 11, 5, 1, 19, 'hair0');
+    rect(oc, 14, 5, 1, 19, 'hair0');
+    // Highlights
+    p(oc, 13, 9, 'hair3'); p(oc, 12, 13, 'hair3');
+    p(oc, 13, 17, 'hair3'); p(oc, 12, 21, 'hair4');
+    // Tapered tip
+    rect(oc, 12, 23, 2, 1, 'hair0');
+  }
+
+  function sideFace(oc) {
+    // Face cols 4-9, rows 6-12. She faces LEFT, so her nose protrudes LEFT.
+    // Solid face block — no gaps, no separate "nose" pixels detached from face.
+    rect(oc, 4, 6, 6, 6, 'skin1');
+    rect(oc, 4, 6, 6, 1, 'skin2');
+    // Subtle nose contour (single pixel showing the bridge)
+    p(oc, 3, 8, 'skin1'); // nose tip pokes out
+    p(oc, 4, 8, 'skin2'); // nose bridge highlight
+    p(oc, 4, 9, 'skin0'); // shadow under nose
+    // Chin shadow
+    p(oc, 4, 11, 'skin0'); p(oc, 9, 11, 'skin0');
+    // ── EYE (far side, visible) ──
+    rect(oc, 6, 8, 2, 1, 'lash');
+    p(oc, 6, 9, 'eyePupil'); p(oc, 7, 9, 'eyePupil');
+    p(oc, 7, 9, 'eyeShine');
+    // Brow
+    p(oc, 6, 7, 'hair0'); p(oc, 7, 7, 'hair1');
+    // Blush
+    p(oc, 5, 10, 'blush');
+    // Smile
+    p(oc, 5, 11, 'lipDark'); p(oc, 6, 11, 'lipLight'); p(oc, 7, 11, 'lipDark');
+    // Earring (jaw, far side)
+    p(oc, 9, 9, 'earring');
+  }
+
+  function sideBody(oc, step) {
+    // Wrap top
+    rect(oc, 5, 13, 6, 6, 'top1');
+    rect(oc, 5, 13, 6, 1, 'top2');
+    rect(oc, 5, 18, 6, 1, 'top0');
+    // Bare shoulder peek
+    p(oc, 10, 13, 'skin0');
+    // Front arm hanging
+    p(oc, 4, 15, 'skin1'); p(oc, 4, 16, 'skin1'); p(oc, 4, 17, 'skin1');
+    p(oc, 4, 18, 'skin0');
+    p(oc, 4, 19, 'skin1'); // hand at hip
+    // ── Bouquet held in front (visible because she walks left) ──
+    // Roses at hand level
+    p(oc, 3, 18, 'rose0');
+    p(oc, 2, 19, 'rose1'); p(oc, 3, 19, 'rose2');
+    p(oc, 3, 20, 'leaf');
+    // Ribbons trail
+    p(oc, 3, 21, 'ribR'); p(oc, 3, 22, 'ribY');
+    p(oc, 4, 23, 'ribG'); p(oc, 3, 24, 'ribW');
+    p(oc, 3, 25, 'ribR');
+    // Pants
+    rect(oc, 5, 19, 6, 6, 'pants1');
+    rect(oc, 5, 19, 6, 1, 'pants0');
+    rect(oc, 5, 20, 1, 4, 'pants2');
+    p(oc, 7, 22, 'pants0');
+    // Side walking step
+    if (step === 1) {
+      boot(oc, 5, 25);
+      boot(oc, 9, 24);
+    } else if (step === 2) {
+      boot(oc, 5, 24);
+      boot(oc, 9, 25);
+    } else {
+      boot(oc, 5, 25);
+      boot(oc, 9, 25);
+    }
+  }
+
+  function boot(oc, x, y) {
+    rect(oc, x, y, 3, 4, 'boot0');
+    rect(oc, x, y, 2, 1, 'boot1');
+    p(oc, x + 2, y + 3, 'outline');
+  }
+
+  function mirrorCanvas(srcCanvas) {
+    const m = document.createElement('canvas');
+    m.width = W; m.height = H;
+    const mctx = m.getContext('2d');
+    mctx.imageSmoothingEnabled = false;
+    mctx.translate(W, 0);
+    mctx.scale(-1, 1);
+    mctx.drawImage(srcCanvas, 0, 0);
+    return m;
+  }
+
+  // ── BUILD ALL FRAMES ─────────────────────────────────────
   for (let dir = 0; dir < 4; dir++) {
     frames[dir] = [];
     for (let step = 0; step < 3; step++) {
@@ -822,18 +869,24 @@ function buildAmyOverworld() {
       octx.imageSmoothingEnabled = false;
       shadow(octx);
       if (dir === 0) {
-        hairFront(octx);
-        faceFront(octx);
-        torsoFront(octx, step);
+        hairFrontBack(octx);   // long hair behind body (drawn first)
+        torsoFront(octx, step); // body
+        bouquetFront(octx);    // bouquet over body
+        faceFront(octx);       // face
+        hairFrontTop(octx);    // bangs on top of face
       } else if (dir === 1) {
-        sideHead(octx, true);
-        sideBody(octx, step, true);
+        sideHair(octx);
+        sideBody(octx, step);
+        sideFace(octx);
       } else if (dir === 2) {
-        sideHead(octx, false);
-        sideBody(octx, step, false);
+        sideHair(octx);
+        sideBody(octx, step);
+        sideFace(octx);
+        frames[dir][step] = mirrorCanvas(oc);
+        continue;
       } else {
-        hairBack(octx);
         bodyBack(octx, step);
+        hairBack(octx);
       }
       frames[dir][step] = oc;
     }
@@ -864,7 +917,6 @@ const keys = { up:false, down:false, left:false, right:false };
 const game = {
   dialogue: null,
   prompt: null,
-  promptPulse: 0,
 };
 
 const interactions = [
@@ -948,12 +1000,14 @@ function getInteraction() {
 function doAction() {
   if (game.dialogue) {
     game.dialogue = null;
+    hideDialogue();
     return;
   }
 
   const hit = getInteraction();
   if (hit) {
     game.dialogue = { title: hit.name, text: hit.text };
+    showDialogue(hit.name, hit.text);
     return;
   }
 }
@@ -1300,28 +1354,29 @@ let tick = 0;
 function update() {
   tick++;
   waterAnim = Math.floor(tick / 8);
-  game.promptPulse = (game.promptPulse + 1) % 90;
 
   const anyKey = keys.up||keys.down||keys.left||keys.right;
   player.moving = anyKey && !game.dialogue;
   game.prompt = game.dialogue ? null : getInteraction();
 
+  // Update action button glow state when an interaction is in range
+  if (actionBtn.classList.contains('available') !== !!game.prompt) {
+    actionBtn.classList.toggle('available', !!game.prompt);
+  }
+
   if (anyKey && !game.dialogue) {
-    let nx = player.x, ny = player.y;
     const spd = player.speed;
+    let dx = 0, dy = 0;
 
-    if (keys.up)    { ny -= spd; player.dir = 3; }
-    if (keys.down)  { ny += spd; player.dir = 0; }
-    if (keys.left)  { nx -= spd; player.dir = 1; }
-    if (keys.right) { nx += spd; player.dir = 2; }
+    // Cardinal-only movement (Pokémon-style: pick one axis if both pressed)
+    if (keys.up)         { dy = -spd; player.dir = 3; }
+    else if (keys.down)  { dy =  spd; player.dir = 0; }
+    else if (keys.left)  { dx = -spd; player.dir = 1; }
+    else if (keys.right) { dx =  spd; player.dir = 2; }
 
-    // Clamp to map
-    nx = Math.max(8, Math.min(MAP_W-8, nx));
-    ny = Math.max(12, Math.min(MAP_H-12, ny));
-
-    // Slide collision
-    if (!isSolid(nx, player.y)) player.x = nx;
-    if (!isSolid(player.x, ny)) player.y = ny;
+    // Axis-swept collision (handles each independently for smooth slide)
+    moveX(dx);
+    moveY(dy);
 
     // Animate walk
     player.frameTimer++;
@@ -1333,13 +1388,16 @@ function update() {
     player.frame = 0;
     player.frameTimer = 0;
   }
+
+  updateCamera();
 }
 
 function drawPlayer() {
   const frame = amyFrames[player.dir][player.frame];
-  const drawX = Math.round(player.x) - 9;
-  const drawY = Math.round(player.y) - 24; // feet at player.y (28px tall)
-  ctx.drawImage(frame, drawX, drawY, 18, 28);
+  // Sprite is 20x32; feet anchor at (10, 29). player.x/y is the feet position.
+  const drawX = Math.round(player.x) - 10 - camera.x;
+  const drawY = Math.round(player.y) - 29 - camera.y;
+  ctx.drawImage(frame, drawX, drawY, 20, 32);
 }
 
 function drawWorldFX() {
@@ -1350,89 +1408,63 @@ function drawWorldFX() {
   for (const [x, y, phase] of sparkles) {
     const on = Math.floor((tick + phase) / 18) % 2 === 0;
     if (!on) continue;
+    // Cull offscreen
+    if (x < camera.x - 2 || x > camera.x + view.w + 2) continue;
+    if (y < camera.y - 2 || y > camera.y + view.h + 2) continue;
     ctx.fillStyle = '#fff3b0';
-    ctx.fillRect(x, y, 1, 1);
-    ctx.fillRect(x - 1, y + 1, 3, 1);
-    ctx.fillRect(x, y + 2, 1, 1);
+    ctx.fillRect(x - camera.x, y - camera.y, 1, 1);
+    ctx.fillRect(x - 1 - camera.x, y + 1 - camera.y, 3, 1);
+    ctx.fillRect(x - camera.x, y + 2 - camera.y, 1, 1);
   }
 }
 
-function drawPrompt() {
-  if (!game.prompt) return;
-  const bob = Math.floor(Math.sin(game.promptPulse / 9) * 2);
-  const x = Math.round(player.x) - 8;
-  const y = Math.round(player.y) - 37 + bob;
-  ctx.fillStyle = '#181010';
-  ctx.fillRect(x + 1, y + 1, 16, 9);
-  ctx.fillStyle = '#f9e4a0';
-  ctx.fillRect(x, y, 16, 9);
-  ctx.fillStyle = '#3a2118';
-  ctx.font = 'bold 6px monospace';
-  ctx.fillText('A', x + 6, y + 7);
+// ============================================================
+// DIALOGUE — DOM-based (crisp text at any scale)
+// ============================================================
+const dlgEl      = document.getElementById('dialogue');
+const dlgTitleEl = document.getElementById('dialogue-title');
+const dlgTextEl  = document.getElementById('dialogue-text');
+
+function showDialogue(title, text) {
+  dlgTitleEl.textContent = title;
+  dlgTextEl.textContent  = text;
+  dlgEl.classList.add('show');
 }
 
-function drawPanel(x, y, w, h) {
-  ctx.fillStyle = '#181010';
-  ctx.fillRect(x, y, w, h);
-  ctx.fillStyle = '#f8f0d8';
-  ctx.fillRect(x + 2, y + 2, w - 4, h - 4);
-  ctx.fillStyle = '#533329';
-  ctx.fillRect(x + 4, y + 4, w - 8, h - 8);
-  ctx.fillStyle = '#f8f0d8';
-  ctx.fillRect(x + 6, y + 6, w - 12, h - 12);
-}
-
-function wrapText(text, maxChars) {
-  const words = text.split(' ');
-  const lines = [];
-  let line = '';
-  for (const word of words) {
-    const next = line ? `${line} ${word}` : word;
-    if (next.length > maxChars) {
-      lines.push(line);
-      line = word;
-    } else {
-      line = next;
-    }
-  }
-  if (line) lines.push(line);
-  return lines;
-}
-
-function drawDialogue() {
-  if (!game.dialogue) return;
-  drawPanel(8, 148, 224, 54);
-  ctx.fillStyle = '#8e2c52';
-  ctx.font = 'bold 7px monospace';
-  ctx.fillText(game.dialogue.title.toUpperCase(), 18, 162);
-  ctx.fillStyle = '#2f1c18';
-  ctx.font = '6px monospace';
-  const lines = wrapText(game.dialogue.text, 41).slice(0, 4);
-  lines.forEach((line, i) => ctx.fillText(line, 18, 174 + i * 8));
-  if (Math.floor(tick / 18) % 2 === 0) {
-    ctx.fillStyle = '#8e2c52';
-    ctx.fillText('A', 213, 193);
-  }
+function hideDialogue() {
+  dlgEl.classList.remove('show');
 }
 
 function render() {
-  ctx.clearRect(0,0,MAP_W,MAP_H);
+  // Clear full backbuffer to background color (covers any overscan)
+  ctx.fillStyle = '#0a0a14';
+  ctx.fillRect(0, 0, view.w, view.h);
+
+  // Compute visible tile range so we don't draw the whole map every frame
+  const startTx = Math.max(0, Math.floor(camera.x / TILE));
+  const startTy = Math.max(0, Math.floor(camera.y / TILE));
+  const endTx   = Math.min(COLS, Math.ceil((camera.x + view.w) / TILE) + 1);
+  const endTy   = Math.min(ROWS, Math.ceil((camera.y + view.h) / TILE) + 1);
+
+  // Apply camera translation for world drawing
+  ctx.save();
+  ctx.translate(-camera.x, -camera.y);
 
   // Draw base tiles
-  for (let ty=0; ty<ROWS; ty++) {
-    for (let tx=0; tx<COLS; tx++) {
+  for (let ty = startTy; ty < endTy; ty++) {
+    for (let tx = startTx; tx < endTx; tx++) {
       drawTile(tx, ty);
     }
   }
 
-  // Draw composite decorations
+  // Draw composite decorations (these draw at fixed world coords)
   drawDecorations();
-  drawWorldFX();
 
-  // Player
+  ctx.restore();
+
+  // World-FX and player draw applies its own camera offset internally
+  drawWorldFX();
   drawPlayer();
-  drawPrompt();
-  drawDialogue();
 }
 
 function loop() {
