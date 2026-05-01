@@ -1,11 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- * lone wolf, quiet teeth | Matt Livingston | v0.1.10 -->
+<!-- * lone wolf, own tools | Matt Livingston | v0.1.11 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a14">
 <title>Amy's Harvest of Chaos</title>
+<meta name="description" content="A mobile-first pixel RPG about Amy, chaos burgers, dolls, and a suspiciously tidy farm.">
+<meta property="og:title" content="Amy's Harvest of Chaos">
+<meta property="og:description" content="A mobile-first pixel RPG about Amy, chaos burgers, dolls, and a suspiciously tidy farm.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mattlivingston.com/amy/game/">
+<meta property="og:image" content="https://mattlivingston.com/amy/game/card.png">
+<meta property="og:image:secure_url" content="https://mattlivingston.com/amy/game/card.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="Amy's Harvest of Chaos pixel RPG preview card">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Amy's Harvest of Chaos">
+<meta name="twitter:description" content="A mobile-first pixel RPG about Amy, chaos burgers, dolls, and a suspiciously tidy farm.">
+<meta name="twitter:image" content="https://mattlivingston.com/amy/game/card.png">
+<meta name="twitter:image:alt" content="Amy's Harvest of Chaos pixel RPG preview card">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -188,7 +202,7 @@
 </head>
 <body>
 
-<div id="title-bar">AMY'S HARVEST OF CHAOS · v0.1.10</div>
+<div id="title-bar">AMY'S HARVEST OF CHAOS · v0.1.11</div>
 
 <canvas id="gameCanvas"></canvas>
 
@@ -414,7 +428,8 @@ function tileIsSolidAt(px, py) {
   return COLL[ty][tx] === 1;
 }
 
-// Returns true if the foot-hitbox at (px, py) overlaps any solid tile.
+// Returns true if the foot-hitbox at (px, py) overlaps any solid tile
+// OR overlaps Grayson the cat's body.
 function isSolid(px, py) {
   const left   = px - HB_HALF_W;
   const right  = px + HB_HALF_W - 1;
@@ -425,6 +440,16 @@ function isSolid(px, py) {
   if (tileIsSolidAt(right, top))    return true;
   if (tileIsSolidAt(left,  bottom)) return true;
   if (tileIsSolidAt(right, bottom)) return true;
+  // Grayson check — treat the cat as a solid 10×10 box around his center
+  if (typeof grayson !== 'undefined') {
+    const gLeft   = grayson.x - 6;
+    const gRight  = grayson.x + 6;
+    const gTop    = grayson.y - 12;
+    const gBottom = grayson.y;
+    if (right >= gLeft && left <= gRight && bottom >= gTop && top <= gBottom) {
+      return true;
+    }
+  }
   return false;
 }
 
@@ -964,6 +989,377 @@ function buildAmyOverworld() {
 const amyFrames = buildAmyOverworld();
 
 // ============================================================
+// GRAYSON THE CAT — sprite builder
+// 16×16 frames. 4 directions × 3 walk frames. Chubby gray tabby.
+// Anchored: bottom-center is at (8, 15).
+// ============================================================
+function buildGrayson() {
+  const W = 16, H = 16;
+  const frames = [];
+  const C = {
+    outline: '#1a1208',
+    fur0:    '#403830',  // darkest stripe color
+    fur1:    '#6a5e52',  // mid gray-brown
+    fur2:    '#8a7d70',  // lighter
+    fur3:    '#b0a294',  // highlight
+    belly:   '#d8cdbf',  // pale belly/chest fluff
+    eye:     '#f0c850',  // yellow iris
+    pupil:   '#1a1208',  // black pupil
+    pupilHi: '#ffffff',  // catchlight
+    nose:    '#d878a0',  // pink
+    mouth:   '#3a2a1c',
+    paw:     '#3a2a20',  // dark paw pads
+  };
+  function p(oc, x, y, c) {
+    if (x < 0 || y < 0 || x >= W || y >= H) return;
+    oc.fillStyle = C[c] || c;
+    oc.fillRect(x, y, 1, 1);
+  }
+  function rect(oc, x, y, w, h, c) {
+    oc.fillStyle = C[c] || c;
+    oc.fillRect(x, y, w, h);
+  }
+
+  // Drop shadow
+  function shadow(oc) {
+    rect(oc, 3, 14, 10, 1, 'rgba(0,0,0,0.30)');
+    rect(oc, 4, 15, 8, 1, 'rgba(0,0,0,0.18)');
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // FRONT VIEW (down-facing) — chunky body, big eyes
+  // ─────────────────────────────────────────────────────────
+  function front(oc, step) {
+    // Ears (rows 0-2) — triangular, dark inside
+    rect(oc, 3, 0, 2, 1, 'fur0');
+    rect(oc, 11, 0, 2, 1, 'fur0');
+    rect(oc, 2, 1, 3, 1, 'fur0');
+    rect(oc, 11, 1, 3, 1, 'fur0');
+    p(oc, 3, 2, 'fur1'); p(oc, 12, 2, 'fur1');
+    // Head outline (rows 2-7) — round, wide
+    rect(oc, 2, 2, 12, 6, 'fur1');
+    // Head highlights (lighter top)
+    rect(oc, 4, 2, 8, 1, 'fur2');
+    rect(oc, 5, 3, 6, 1, 'fur3');
+    // Tabby stripe markings on forehead
+    p(oc, 6, 2, 'fur0'); p(oc, 9, 2, 'fur0');
+    p(oc, 7, 3, 'fur0'); p(oc, 8, 3, 'fur0');
+    // Chubby cheeks (jaw widens slightly at row 7)
+    p(oc, 1, 5, 'fur1'); p(oc, 14, 5, 'fur1');
+    p(oc, 1, 6, 'fur0'); p(oc, 14, 6, 'fur0');
+
+    // ── EYES (big yellow, anime-cat style) ──
+    rect(oc, 4, 4, 2, 2, 'eye');   // left eye
+    rect(oc, 10, 4, 2, 2, 'eye');  // right eye
+    // Pupils — both centered on the inner-bottom of each eye for forward gaze
+    p(oc, 5, 5, 'pupil');
+    p(oc, 10, 5, 'pupil');
+    // Catchlight sparkles — symmetric, both on the same relative position
+    p(oc, 4, 4, 'pupilHi');
+    p(oc, 10, 4, 'pupilHi');
+
+    // Nose (pink triangle, small)
+    p(oc, 7, 6, 'nose'); p(oc, 8, 6, 'nose');
+
+    // Mouth — a soft "w" centered under nose. Just two pixels for cuteness.
+    p(oc, 7, 7, 'mouth');
+    p(oc, 8, 7, 'mouth');
+
+    // ── CHUBBY BODY (rows 8-13) ──
+    // Body is wider than head — that's the "chubby" tell
+    rect(oc, 1, 8, 14, 6, 'fur1');
+    // Tabby stripes on body
+    rect(oc, 3, 9, 1, 3, 'fur0');
+    rect(oc, 12, 9, 1, 3, 'fur0');
+    p(oc, 6, 10, 'fur0'); p(oc, 9, 10, 'fur0');
+    // Chest/belly fluff (lighter)
+    rect(oc, 5, 8, 6, 4, 'belly');
+    p(oc, 6, 9, 'fur3'); p(oc, 9, 9, 'fur3');
+    // Body top highlight
+    rect(oc, 4, 8, 8, 1, 'fur2');
+
+    // Tail curled to the side (visible on right) — drawn rows 9-13
+    rect(oc, 14, 9, 1, 4, 'fur1');
+    p(oc, 14, 9, 'fur0');
+    p(oc, 14, 13, 'fur2');
+    // Tail tip curls in
+    p(oc, 15, 12, 'fur0');
+
+    // Front paws — visible at the front of the body, walk-cycle shifts
+    // step 0 idle: paws side by side
+    // step 1: left paw forward, right back
+    // step 2: opposite
+    if (step === 0) {
+      // Idle: both paws planted
+      rect(oc, 4, 13, 2, 2, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else if (step === 1) {
+      // Left paw lifted (smaller), right planted
+      p(oc, 5, 13, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else {
+      rect(oc, 4, 13, 2, 2, 'paw');
+      p(oc, 10, 13, 'paw');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // BACK VIEW (up-facing) — tail prominent, ears visible
+  // ─────────────────────────────────────────────────────────
+  function back(oc, step) {
+    // Ears (rows 0-2)
+    rect(oc, 3, 0, 2, 1, 'fur0');
+    rect(oc, 11, 0, 2, 1, 'fur0');
+    rect(oc, 2, 1, 3, 1, 'fur1');
+    rect(oc, 11, 1, 3, 1, 'fur1');
+    // Head from behind (rows 2-7) — solid gray tabby
+    rect(oc, 2, 2, 12, 6, 'fur1');
+    rect(oc, 3, 2, 10, 1, 'fur2');
+    rect(oc, 5, 3, 6, 1, 'fur3');
+    // Stripe markings on top of head
+    p(oc, 5, 2, 'fur0'); p(oc, 8, 2, 'fur0'); p(oc, 11, 2, 'fur0');
+    p(oc, 6, 4, 'fur0'); p(oc, 10, 4, 'fur0');
+    p(oc, 8, 5, 'fur0');
+    // Body (rows 8-13) — tabby gray, no belly visible
+    rect(oc, 1, 8, 14, 6, 'fur1');
+    // Stripes on back
+    rect(oc, 4, 9, 1, 3, 'fur0');
+    rect(oc, 11, 9, 1, 3, 'fur0');
+    rect(oc, 7, 9, 2, 4, 'fur0');
+    rect(oc, 3, 11, 10, 1, 'fur2');
+    // Tail standing up (curled to one side at top) — rows 5-12 along side
+    rect(oc, 14, 7, 1, 6, 'fur1');
+    p(oc, 14, 7, 'fur0');
+    p(oc, 15, 8, 'fur0');
+    p(oc, 14, 12, 'fur2');
+    // Hind paws visible at bottom
+    if (step === 0) {
+      rect(oc, 4, 13, 2, 2, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else if (step === 1) {
+      p(oc, 5, 13, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else {
+      rect(oc, 4, 13, 2, 2, 'paw');
+      p(oc, 10, 13, 'paw');
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────
+  // LEFT-FACING SIDE VIEW
+  // (mirror for right)
+  // ─────────────────────────────────────────────────────────
+  function side(oc, step) {
+    // Head on the LEFT side of the canvas (cols 1-7)
+    // Ear (single, on top)
+    rect(oc, 2, 0, 2, 1, 'fur0');
+    rect(oc, 1, 1, 3, 1, 'fur1');
+    p(oc, 5, 1, 'fur1');  // back ear hint
+    // Head profile (rows 2-7) — narrower face shape
+    rect(oc, 1, 2, 7, 6, 'fur1');
+    rect(oc, 2, 2, 5, 1, 'fur2');
+    p(oc, 3, 3, 'fur3');
+    // Stripe
+    p(oc, 4, 3, 'fur0'); p(oc, 6, 4, 'fur0');
+    // Single eye visible (cat looking left)
+    rect(oc, 3, 4, 2, 2, 'eye');
+    p(oc, 4, 5, 'pupil');
+    p(oc, 3, 4, 'pupilHi');
+    // Nose — small pink dot at the front of the snout (col 1)
+    p(oc, 1, 5, 'nose');
+    // Mouth
+    p(oc, 1, 6, 'mouth');
+    p(oc, 2, 7, 'mouth');
+    // Body (rows 7-13) — long horizontal tube
+    rect(oc, 2, 8, 12, 6, 'fur1');
+    // Body stripes (3 vertical stripes along the back)
+    rect(oc, 5, 8, 1, 3, 'fur0');
+    rect(oc, 8, 8, 1, 3, 'fur0');
+    rect(oc, 11, 8, 1, 3, 'fur0');
+    // Belly (lighter underside)
+    rect(oc, 3, 11, 10, 2, 'belly');
+    // Top highlight
+    rect(oc, 3, 8, 8, 1, 'fur2');
+    // Tail curving up at back (right side of canvas since cat faces left)
+    rect(oc, 14, 6, 1, 7, 'fur1');
+    p(oc, 14, 6, 'fur0');
+    p(oc, 13, 5, 'fur1');  // tail bends up
+    p(oc, 14, 5, 'fur0');
+    p(oc, 13, 13, 'fur2');
+    // Paws — front paw closer to camera + back paw
+    // Walk cycle: alternate which is forward/back
+    if (step === 0) {
+      // Idle
+      rect(oc, 3, 13, 2, 2, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else if (step === 1) {
+      // Front paw lifted (mid-step)
+      p(oc, 4, 13, 'paw');
+      rect(oc, 10, 13, 2, 2, 'paw');
+    } else {
+      rect(oc, 3, 13, 2, 2, 'paw');
+      p(oc, 11, 13, 'paw');
+    }
+  }
+
+  function mirror(srcCanvas) {
+    const m = document.createElement('canvas');
+    m.width = W; m.height = H;
+    const mctx = m.getContext('2d');
+    mctx.imageSmoothingEnabled = false;
+    mctx.translate(W, 0);
+    mctx.scale(-1, 1);
+    mctx.drawImage(srcCanvas, 0, 0);
+    return m;
+  }
+
+  // Build all frames
+  for (let dir = 0; dir < 4; dir++) {
+    frames[dir] = [];
+    for (let step = 0; step < 3; step++) {
+      const oc = document.createElement('canvas');
+      oc.width = W; oc.height = H;
+      const octx = oc.getContext('2d');
+      octx.imageSmoothingEnabled = false;
+      shadow(octx);
+      if (dir === 0)      front(octx, step);
+      else if (dir === 1) side(octx, step);
+      else if (dir === 2) {
+        side(octx, step);
+        frames[dir][step] = mirror(oc);
+        continue;
+      }
+      else                back(octx, step);
+      frames[dir][step] = oc;
+    }
+  }
+  return frames;
+}
+const graysonFrames = buildGrayson();
+
+// ============================================================
+// GRAYSON entity — wandering cat AI
+// ============================================================
+// Lives below/right of the THC stand. Wanders randomly between those tiles.
+// Picks a target tile, walks toward it, idles when reached, picks again.
+const grayson = {
+  // Position in pixels (bottom-center anchor — like player)
+  x: 11 * TILE + 8,
+  y: 5 * TILE + 14,
+  dir: 0,             // 0=down,1=left,2=right,3=up
+  frame: 0,
+  frameTimer: 0,
+  speed: 0.4,         // slower than Amy (1.2)
+  // AI state
+  homeTiles: [
+    [12, 4], // right of the THC counter
+    [11, 5], [12, 5], [13, 5],
+    [12, 6], [13, 6],
+  ],
+  targetX: null,
+  targetY: null,
+  idleTicks: 0,       // ticks until next target picked
+  moving: false,
+};
+
+function graysonPickTarget() {
+  const [col, row] = grayson.homeTiles[Math.floor(Math.random() * grayson.homeTiles.length)];
+  grayson.targetX = col * TILE + 8;
+  grayson.targetY = row * TILE + 14;
+  grayson.idleTicks = 0;
+}
+
+function graysonUpdate() {
+  // If currently idle, count down
+  if (grayson.idleTicks > 0) {
+    grayson.idleTicks--;
+    grayson.moving = false;
+    grayson.frame = 0;
+    return;
+  }
+  // No target? pick one
+  if (grayson.targetX === null) {
+    graysonPickTarget();
+    return;
+  }
+  // Move toward target
+  const dx = grayson.targetX - grayson.x;
+  const dy = grayson.targetY - grayson.y;
+  const dist = Math.abs(dx) + Math.abs(dy);
+  if (dist < 0.5) {
+    // Reached target — idle for a random time (60-180 ticks ≈ 1-3 seconds at 60fps)
+    grayson.x = grayson.targetX;
+    grayson.y = grayson.targetY;
+    grayson.targetX = null;
+    grayson.idleTicks = 60 + Math.floor(Math.random() * 120);
+    grayson.moving = false;
+    grayson.frame = 0;
+    return;
+  }
+  // Move (cardinal-only, prefer the larger axis)
+  grayson.moving = true;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    grayson.x += Math.sign(dx) * grayson.speed;
+    grayson.dir = dx > 0 ? 2 : 1;  // right or left
+  } else {
+    grayson.y += Math.sign(dy) * grayson.speed;
+    grayson.dir = dy > 0 ? 0 : 3;  // down or up
+  }
+  // Animate walk cycle
+  grayson.frameTimer++;
+  if (grayson.frameTimer >= 14) {
+    grayson.frameTimer = 0;
+    grayson.frame = grayson.frame === 1 ? 2 : 1;
+  }
+}
+
+function drawGrayson() {
+  const frame = graysonFrames[grayson.dir][grayson.frame];
+  // Sprite is 16x16, anchored bottom-center at (8, 15).
+  const drawX = Math.round(grayson.x) - 8 - camera.x;
+  const drawY = Math.round(grayson.y) - 15 - camera.y;
+  ctx.drawImage(frame, drawX, drawY, 16, 16);
+  drawGraysonTailFlick(drawX, drawY);
+}
+
+function drawGraysonTailFlick(drawX, drawY) {
+  if (grayson.moving || game.dialogue) return;
+  const flick = tick % 150;
+  if (flick > 16) return;
+
+  ctx.fillStyle = '#3a332f';
+  if (grayson.dir === 1) {
+    ctx.fillRect(drawX + 12, drawY + 8, 3, 2);
+    ctx.fillRect(drawX + 14, drawY + 6, 2, 2);
+  } else if (grayson.dir === 2) {
+    ctx.fillRect(drawX + 1, drawY + 8, 3, 2);
+    ctx.fillRect(drawX, drawY + 6, 2, 2);
+  } else {
+    const sway = flick < 8 ? 1 : -1;
+    ctx.fillRect(drawX + 11 + sway, drawY + 7, 3, 2);
+    ctx.fillRect(drawX + 13 + sway, drawY + 5, 2, 2);
+  }
+}
+
+// Returns the tile column/row Grayson currently occupies (for collision lookup)
+function graysonTile() {
+  return [Math.floor(grayson.x / TILE), Math.floor((grayson.y - 1) / TILE)];
+}
+
+function faceGraysonTowardPlayer() {
+  const dx = player.x - grayson.x;
+  const dy = player.y - grayson.y;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    grayson.dir = dx > 0 ? 2 : 1;
+  } else {
+    grayson.dir = dy > 0 ? 0 : 3;
+  }
+  grayson.frame = 0;
+  grayson.frameTimer = 0;
+  grayson.moving = false;
+}
+
+// ============================================================
 // PLAYER STATE
 // ============================================================
 const player = {
@@ -990,26 +1386,31 @@ const interactions = [
   {
     // Player stands on row 4 facing up (dir=3) → faces tile (x, 3) which is the shop face.
     name: 'Doll Shop',
+    action: 'CHECK',
     tiles: [[7,3],[8,3],[9,3]],
     text: "I always wave at the dolls. They never wave back. I keep doing it. We have a thing going."
   },
   {
     name: 'Munchies Truck',
+    action: 'READ',
     tiles: [[3,3],[4,3],[5,3]],
     text: "Today's special: CHAOS BURGER. I've ordered it eleven times. It's never the same thing twice. Last time it was soup."
   },
   {
     name: 'Pot Farm',
+    action: 'READ',
     tiles: [[1,7],[2,7],[3,7],[4,7]],
     text: "POT FARM. I painted the sign myself. Real subtle. Mom thinks I grow tomatoes."
   },
   {
     name: 'Poster',
+    action: 'READ',
     tiles: [[10,4]],
     text: "Doll Raffle this Saturday. First prize: a doll. Second prize: two dolls. I don't make the rules."
   },
   {
     name: 'THC Stand',
+    action: 'CHECK',
     tiles: [[11,4]],
     text: "FRESH HARVEST · CASH ONLY · NO QUESTIONS! — Amy's Side Hustle"
   },
@@ -1067,7 +1468,20 @@ function facingTile() {
 
 function getInteraction() {
   const [fx, fy] = facingTile();
-  return interactions.find(it => it.tiles.some(([x, y]) => x === fx && y === fy)) || null;
+  // Static interactions
+  const hit = interactions.find(it => it.tiles.some(([x, y]) => x === fx && y === fy));
+  if (hit) return hit;
+  // Dynamic: Grayson the cat
+  const [gx, gy] = graysonTile();
+  if (fx === gx && fy === gy) {
+    return {
+      name: 'Grayson',
+      action: 'TALK',
+      target: 'grayson',
+      text: "Grayson: I'm not fat, I'm fluffy!"
+    };
+  }
+  return null;
 }
 
 function doAction() {
@@ -1079,6 +1493,7 @@ function doAction() {
 
   const hit = getInteraction();
   if (hit) {
+    if (hit.target === 'grayson') faceGraysonTowardPlayer();
     game.dialogue = { title: hit.name, text: hit.text };
     showDialogue(hit.name, hit.text);
     return;
@@ -1364,6 +1779,7 @@ const PIXEL_FONT = {
   F:['111','100','110','100','100'],
   H:['101','101','111','101','101'],
   I:['111','010','010','010','111'],
+  K:['101','101','110','101','101'],
   L:['100','100','100','100','111'],
   M:['101','111','111','101','101'],
   N:['101','111','111','111','101'],
@@ -1583,6 +1999,9 @@ function update() {
     player.frameTimer = 0;
   }
 
+  // Update Grayson's wandering AI (don't move during dialogue)
+  if (!game.dialogue) graysonUpdate();
+
   updateCamera();
 }
 
@@ -1592,6 +2011,59 @@ function drawPlayer() {
   const drawX = Math.round(player.x) - 10 - camera.x;
   const drawY = Math.round(player.y) - 29 - camera.y;
   ctx.drawImage(frame, drawX, drawY, 20, 32);
+  drawAmyBlink(drawX, drawY);
+}
+
+function drawAmyBlink(drawX, drawY) {
+  if (player.moving || player.frame !== 0 || player.dir === 3) return;
+  const blinkFrame = tick % 190;
+  if (blinkFrame > 5) return;
+
+  if (player.dir === 0) {
+    ctx.fillStyle = '#efbd8f';
+    ctx.fillRect(drawX + 7, drawY + 7, 2, 3);
+    ctx.fillRect(drawX + 11, drawY + 7, 2, 3);
+    ctx.fillStyle = '#1a0a04';
+    ctx.fillRect(drawX + 7, drawY + 8, 2, 1);
+    ctx.fillRect(drawX + 11, drawY + 8, 2, 1);
+    ctx.fillStyle = '#df777d';
+    ctx.fillRect(drawX + 5, drawY + 10, 2, 1);
+    ctx.fillRect(drawX + 13, drawY + 10, 2, 1);
+  } else {
+    const facingLeft = player.dir === 1;
+    const eyeX = drawX + (facingLeft ? 6 : 12);
+    ctx.fillStyle = '#efbd8f';
+    ctx.fillRect(eyeX, drawY + 8, 2, 3);
+    ctx.fillStyle = '#1a0a04';
+    ctx.fillRect(eyeX, drawY + 9, 2, 1);
+  }
+}
+
+function drawInteractionLabel() {
+  if (!game.prompt || game.dialogue) return;
+  const label = game.prompt.action || 'CHECK';
+  const x = Math.round(player.x - camera.x);
+  const y = Math.round(player.y - camera.y - 40 + Math.sin(tick / 10) * 2);
+  const w = label.length * 5 + 8;
+  const h = 13;
+  const px = Math.round(x - w / 2);
+  const py = Math.round(y);
+
+  ctx.fillStyle = '#181010';
+  ctx.fillRect(px + 1, py + 1, w, h);
+  ctx.fillStyle = '#fff0d0';
+  ctx.fillRect(px, py, w, h);
+  ctx.fillStyle = '#7d3426';
+  ctx.fillRect(px + 2, py + 2, w - 4, h - 4);
+  drawPixelText(label, px + 5, py + 4, '#fff0d0');
+
+  ctx.fillStyle = '#181010';
+  ctx.fillRect(x - 4, py + h + 1, 8, 6);
+  ctx.fillStyle = '#fff0d0';
+  ctx.fillRect(x - 5, py + h, 8, 5);
+  ctx.fillStyle = '#7d3426';
+  ctx.font = 'bold 5px monospace';
+  ctx.fillText('A', x - 2, py + h + 4);
 }
 
 function drawWorldFX() {
@@ -1656,9 +2128,18 @@ function render() {
 
   ctx.restore();
 
-  // World-FX and player draw applies its own camera offset internally
+  // World-FX and entities draw with their own camera offset.
   drawWorldFX();
-  drawPlayer();
+  // Y-sort: entity with the smaller foot-y draws first, so the closer
+  // entity (larger y) overlaps the further one. Standard Pokémon depth.
+  if (grayson.y <= player.y) {
+    drawGrayson();
+    drawPlayer();
+  } else {
+    drawPlayer();
+    drawGrayson();
+  }
+  drawInteractionLabel();
 }
 
 function loop() {
