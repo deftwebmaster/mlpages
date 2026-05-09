@@ -117,7 +117,7 @@
       min-height: 100svh;
       display: flex;
       flex-direction: column;
-      padding: 22px 18px 24px;
+      padding: 18px 16px 18px;
     }
 
     @media (min-width: 600px) {
@@ -132,7 +132,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 22px;
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
       opacity: 0;
       animation: fadeUp 0.5s ease 0.05s forwards;
@@ -181,15 +181,15 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 48px 0 40px;
+      padding: 32px 0 26px;
     }
 
     /* ─── LOGO ──────────────────────────────────────────────── */
     .logo-wrap {
       position: relative;
-      width:  clamp(136px, 38vw, 180px);
-      height: clamp(136px, 38vw, 180px);
-      margin-bottom: 32px;
+      width:  clamp(118px, 34vw, 176px);
+      height: clamp(118px, 34vw, 176px);
+      margin-bottom: 24px;
       opacity: 0;
       animation: scaleIn 0.7s cubic-bezier(0.22,1,0.36,1) 0.18s forwards;
     }
@@ -286,7 +286,7 @@
       letter-spacing: -0.025em;
       line-height: 1.0;
       color: var(--white);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       opacity: 0;
       animation: fadeUp 0.52s ease 0.36s forwards;
     }
@@ -303,7 +303,7 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--text-dim);
-      line-height: 2;
+      line-height: 1.8;
       opacity: 0;
       animation: fadeUp 0.52s ease 0.5s forwards;
     }
@@ -318,7 +318,7 @@
     /* ─── RULE ──────────────────────────────────────────────── */
     .rule {
       width: 44px; height: 1px;
-      margin: 28px auto;
+      margin: 22px auto;
       background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
       opacity: 0;
       animation: fadeUp 0.5s ease 0.6s forwards;
@@ -328,9 +328,9 @@
     .btn-group {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
       width: 100%;
-      max-width: 300px;
+      max-width: 308px;
       opacity: 0;
       animation: fadeUp 0.52s ease 0.7s forwards;
     }
@@ -349,7 +349,7 @@
       align-items: center;
       justify-content: center;
       gap: 9px;
-      padding: 13px 22px;
+      padding: 11px 20px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-size: 11px;
       font-weight: 500;
@@ -418,6 +418,81 @@
       width: 13px; height: 13px;
       flex-shrink: 0;
       opacity: 0.85;
+    }
+
+    .portal-link {
+      width: 100%;
+      max-width: 308px;
+      margin-top: 10px;
+      padding: 11px 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid rgba(34,211,238,0.2);
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, rgba(34,211,238,0.055), rgba(167,139,250,0.045)),
+        rgba(8,10,16,0.36);
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.78s forwards;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .portal-link:hover {
+      transform: translateY(-2px);
+      border-color: rgba(34,211,238,0.45);
+      background:
+        linear-gradient(135deg, rgba(34,211,238,0.09), rgba(167,139,250,0.075)),
+        rgba(8,10,16,0.48);
+      box-shadow: 0 0 22px rgba(34,211,238,0.12);
+    }
+
+    .portal-link:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .portal-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      line-height: 1.25;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .portal-subtext {
+      max-width: 250px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.45;
+      color: var(--text-dim);
+    }
+
+    @media (max-width: 390px), (max-height: 720px) {
+      .stage { padding: 14px 14px 16px; }
+      header { padding-bottom: 13px; }
+      main { padding: 24px 0 20px; }
+      .logo-wrap {
+        width: clamp(104px, 31vw, 124px);
+        height: clamp(104px, 31vw, 124px);
+        margin-bottom: 18px;
+      }
+      .name { margin-bottom: 8px; }
+      .tagline { line-height: 1.65; }
+      .rule { margin: 16px auto; }
+      .btn { padding: 9px 17px; }
+      .portal-link {
+        margin-top: 8px;
+        padding: 9px 12px;
+      }
+      .portal-subtext { line-height: 1.35; }
+      footer { padding-top: 16px; }
     }
 
     /* ─── FOOTER ─────────────────────────────────────────────── */
@@ -507,6 +582,15 @@
         </a>
 
       </nav>
+
+      <a
+        href="https://manicwebmaster.com"
+        class="portal-link"
+        aria-label="Visit ManicWebmaster for websites, logos, graphics, branding, and fast rebuilds for small businesses"
+      >
+        <span class="portal-title">Websites, Logos &amp; Graphics</span>
+        <span class="portal-subtext">Websites, branding, and fast rebuilds for small businesses.</span>
+      </a>
 
     </main>
 
