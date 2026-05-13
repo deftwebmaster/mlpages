@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Walgreens Bathroom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #CC0000;
+    --red-light: #E8002B;
+    --red-bg: #fff0f0;
+    --white: #ffffff;
+    --gray: #999;
+    --gray-light: #f5f5f5;
+    --border: #e0e0e0;
+    --text: #1a1a1a;
+  }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: #d0d0d0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .phone {
+    width: 390px;
+    min-height: 844px;
+    background: white;
+    border-radius: 44px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    min-height: 844px;
+    animation: fadeIn 0.25s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SCREEN 1: SPLASH ── */
+  #screen-splash {
+    background: white;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px 50px;
+    text-align: center;
+    gap: 0;
+  }
+
+  .w-logo {
+    font-size: 88px;
+    color: var(--red);
+    font-weight: 900;
+    line-height: 1;
+    font-style: italic;
+    margin-bottom: 32px;
+    font-family: Georgia, serif;
+  }
+
+  .splash-hero {
+    margin-bottom: 24px;
+  }
+
+  .splash-icon {
+    width: 140px;
+    height: 120px;
+    margin: 0 auto 20px;
+    position: relative;
+  }
+
+  .splash-headline {
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .splash-headline span { color: var(--red); }
+
+  .splash-sub {
+    font-size: 15px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 48px;
+  }
+
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 18px 0;
+    width: 100%;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background 0.15s;
+  }
+  .btn-primary:active { background: #990000; }
+
+  .btn-text {
+    background: none;
+    border: none;
+    color: var(--red);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+  }
+
+  /* ── SCREEN 2: HOME ── */
+  #screen-home {
+    background: white;
+  }
+
+  .home-header {
+    background: var(--red);
+    padding: 54px 24px 28px;
+    color: white;
+  }
+
+  .home-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .walgreens-wordmark {
+    font-size: 28px;
+    font-style: italic;
+    font-weight: 900;
+    font-family: Georgia, serif;
+    color: white;
+  }
+
+  .bell-icon { font-size: 24px; }
+
+  .home-greeting {
+    font-size: 30px;
+    font-weight: 900;
+    margin-bottom: 4px;
+  }
+  .home-subtext { font-size: 15px; opacity: 0.9; }
+
+  .home-body {
+    flex: 1;
+    padding: 20px 20px 0;
+    overflow-y: auto;
+  }
+
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .card:active { background: #fafafa; }
+
+  .card-icon {
+    font-size: 22px;
+    width: 28px;
+    text-align: center;
+    flex-shrink: 0;
+    color: var(--red);
+  }
+
+  .card-content { flex: 1; }
+  .card-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .card-sub { font-size: 13px; color: #666; line-height: 1.4; }
+
+  .card-arrow { color: #bbb; font-size: 18px; }
+
+  .card-upsell {
+    background: var(--red-bg);
+    border-color: #f8c0c0;
+  }
+  .card-upsell .card-title { color: var(--text); }
+  .upsell-promo { font-size: 13px; color: var(--red); font-weight: 700; margin-top: 3px; }
+
+  .sparkle { font-size: 20px; color: var(--red); }
+
+  .bottom-nav {
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 10px 0 24px;
+  }
+  .nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #aaa;
+    font-weight: 700;
+    padding-top: 4px;
+  }
+  .nav-item.active { color: var(--red); }
+  .nav-icon { font-size: 20px; }
+
+  /* ── SCREEN 3: RESERVE ── */
+  #screen-reserve {
+    background: white;
+  }
+
+  .sub-header {
+    background: var(--red);
+    padding: 54px 20px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .back-btn {
+    font-size: 22px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: white;
+    line-height: 1;
+  }
+  .sub-header-title { font-size: 18px; font-weight: 700; }
+
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    position: relative;
+  }
+
+  .step::after {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: calc(50% + 18px);
+    right: calc(-50% + 18px);
+    height: 2px;
+    background: var(--border);
+  }
+  .step:last-child::after { display: none; }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: #aaa;
+    background: white;
+    position: relative;
+    z-index: 1;
+  }
+  .step.active .step-num {
+    background: var(--red);
+    border-color: var(--red);
+    color: white;
+  }
+  .step-label { font-size: 10px; color: #aaa; font-weight: 700; }
+  .step.active .step-label { color: var(--red); }
+
+  .reserve-body {
+    flex: 1;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .toilet-icon-wrap {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--red-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    position: relative;
+  }
+
+  .check-badge {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--red);
+    color: white;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid white;
+  }
+
+  .good-news {
+    text-align: center;
+  }
+  .good-news h2 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+  .good-news p { font-size: 15px; color: #555; }
+
+  .details-card {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .detail-row-icon { font-size: 18px; color: var(--red); margin-top: 1px; flex-shrink: 0; }
+  .detail-label { font-size: 13px; color: #888; margin-bottom: 2px; font-weight: 700; }
+  .detail-value { font-size: 14px; font-weight: 700; color: var(--text); }
+  .detail-value.free { color: var(--red); font-size: 15px; }
+  .detail-sub { font-size: 12px; color: #888; }
+
+  .reserve-footer {
+    padding: 0 24px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .btn-outline {
+    background: white;
+    border: 2px solid var(--red);
+    color: var(--red);
+    border-radius: 50px;
+    padding: 16px 0;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-outline:active { background: var(--red-bg); }
+
+  .btn-cancel {
+    background: none;
+    border: none;
+    color: var(--red);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Lato', sans-serif;
+    padding: 8px;
+  }
+
+  /* ── SCREEN 4: PIN ── */
+  #screen-pin {
+    background: white;
+  }
+
+  .pin-body {
+    flex: 1;
+    padding: 32px 24px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .lock-icon-wrap {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--red-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+  }
+
+  .pin-headline { text-align: center; }
+  .pin-headline h2 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+  .pin-headline p { font-size: 14px; color: #555; }
+
+  .pin-display {
+    border: 2px solid var(--red);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+    background: #fff8f8;
+  }
+
+  .pin-digit {
+    font-size: 46px;
+    font-weight: 900;
+    color: var(--red);
+    width: 34px;
+    text-align: center;
+    animation: pinPop 0.3s ease backwards;
+  }
+
+  @keyframes pinPop {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1); opacity: 1; }
+  }
+
+  .pin-digit:nth-child(1) { animation-delay: 0.1s; }
+  .pin-digit:nth-child(2) { animation-delay: 0.18s; }
+  .pin-digit:nth-child(3) { animation-delay: 0.26s; }
+  .pin-digit:nth-child(4) { animation-delay: 0.34s; }
+  .pin-digit:nth-child(5) { animation-delay: 0.42s; }
+  .pin-digit:nth-child(6) { animation-delay: 0.50s; }
+
+  .pin-expires {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #666;
+    background: var(--gray-light);
+    padding: 10px 18px;
+    border-radius: 24px;
+  }
+  .pin-expires span { color: var(--red); font-weight: 700; font-size: 16px; }
+
+  .pin-footer {
+    padding: 0 24px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* ── OCCUPIED OVERLAY ── */
+  #screen-occupied {
+    background: #1a1a1a;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 40px 60px;
+    gap: 20px;
+  }
+
+  .occupied-icon {
+    font-size: 72px;
+    animation: shake 0.5s ease 0.3s;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-8deg); }
+    75% { transform: rotate(8deg); }
+  }
+
+  .occupied-title {
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    line-height: 1.2;
+  }
+  .occupied-title span { color: #ff4444; }
+
+  .occupied-sub {
+    font-size: 15px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+
+  .wait-badge {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 16px 24px;
+    color: #fff;
+    font-size: 14px;
+  }
+  .wait-badge strong { color: #ff8800; font-size: 20px; display: block; margin-top: 4px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #222;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+    max-width: 320px;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* SVG toilet icon */
+  svg.toilet { width: 56px; height: 56px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+
+  <!-- SCREEN 1: SPLASH -->
+  <div id="screen-splash" class="screen active">
+    <div class="w-logo">W</div>
+    <div class="splash-hero">
+      <div class="splash-icon">
+        <!-- Toilet SVG (outline, clean) -->
+        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+          <rect x="35" y="14" width="50" height="30" rx="6" stroke="#CC0000" stroke-width="4"/>
+          <path d="M25 44 Q25 90 60 90 Q95 90 95 44Z" stroke="#CC0000" stroke-width="4" fill="none"/>
+          <rect x="42" y="90" width="36" height="14" rx="4" stroke="#CC0000" stroke-width="4"/>
+          <rect x="36" y="104" width="48" height="8" rx="3" stroke="#CC0000" stroke-width="4"/>
+          <!-- sparkles -->
+          <text x="8" y="40" font-size="14" fill="#CC0000">✦</text>
+          <text x="98" y="55" font-size="12" fill="#CC0000">✦</text>
+          <text x="14" y="70" font-size="10" fill="#CC0000">✦</text>
+        </svg>
+      </div>
+    </div>
+    <h1 class="splash-headline">Bathroom access,<br><span>made simple.</span></h1>
+    <p class="splash-sub">Reserve a bathroom, get a<br>one-time PIN, and go.<br>Fast. Private. Convenient.</p>
+    <button class="btn-primary" onclick="goto('home')">Get started</button>
+    <button class="btn-text" onclick="showToast('Please hold — someone is already in there.')">Sign in to myWalgreens</button>
+  </div>
+
+  <!-- SCREEN 2: HOME -->
+  <div id="screen-home" class="screen">
+    <div class="home-header">
+      <div class="home-header-top">
+        <div class="walgreens-wordmark">Walgreens</div>
+        <div class="bell-icon">🔔</div>
+      </div>
+      <div class="home-greeting">Hi there!</div>
+      <div class="home-subtext">Reserve a bathroom and get your one-time PIN.</div>
+    </div>
+    <div class="home-body">
+      <div class="card" onclick="goto('reserve')">
+        <div class="card-icon">📍</div>
+        <div class="card-content">
+          <div class="card-title">Store #04577</div>
+          <div class="card-sub">901 Legacy Dr<br>Plano, TX 75023</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+      <div class="card" onclick="showOccupied()">
+        <div class="card-icon">📅</div>
+        <div class="card-content">
+          <div class="card-title">Check availability</div>
+          <div class="card-sub">See bathroom availability before you reserve.</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+      <div class="card" onclick="showToast('Step 1: Hope for the best.')">
+        <div class="card-icon">❓</div>
+        <div class="card-content">
+          <div class="card-title">How it works</div>
+          <div class="card-sub">Learn more about bathroom access and fees.</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+      <div class="card card-upsell" onclick="showToast('Two extra flushes added to cart. 🚽')">
+        <div class="card-icon"><span class="sparkle">✦</span></div>
+        <div class="card-content">
+          <div class="card-title">Extra flushes</div>
+          <div class="card-sub">*Free only for myWalgreens members</div>
+          <div class="upsell-promo">Buy two extra flushes, get one free</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+    </div>
+    <nav class="bottom-nav">
+      <div class="nav-item active">
+        <div class="nav-icon">🏠</div>
+        Home
+      </div>
+      <div class="nav-item" onclick="showToast('No reservations found. Story of your life.')">
+        <div class="nav-icon">📋</div>
+        Reservations
+      </div>
+      <div class="nav-item" onclick="showToast('Flushes are not refundable.')">
+        <div class="nav-icon">💳</div>
+        Payment
+      </div>
+      <div class="nav-item" onclick="showToast('Account suspended for excessive flush requests.')">
+        <div class="nav-icon">👤</div>
+        Account
+      </div>
+    </nav>
+  </div>
+
+  <!-- SCREEN 3: RESERVE -->
+  <div id="screen-reserve" class="screen">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goto('home')">‹</button>
+      <div class="sub-header-title">Reserve bathroom</div>
+    </div>
+    <div class="steps">
+      <div class="step active">
+        <div class="step-num">1</div>
+        <div class="step-label">Reserve</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-label">Get PIN</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-label">Done</div>
+      </div>
+    </div>
+    <div class="reserve-body">
+      <div class="toilet-icon-wrap">
+        🚽
+        <div class="check-badge">✓</div>
+      </div>
+      <div class="good-news">
+        <h2>Good news!</h2>
+        <p>A bathroom is available.</p>
+      </div>
+      <div class="details-card">
+        <div class="detail-row">
+          <div class="detail-row-icon">📍</div>
+          <div>
+            <div class="detail-label">Store #04577</div>
+            <div class="detail-value">901 Legacy Dr, Plano, TX 75023</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-row-icon">⏱</div>
+          <div>
+            <div class="detail-label">Access window</div>
+            <div class="detail-value">10 min</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-row-icon">💲</div>
+          <div>
+            <div class="detail-label">Price</div>
+            <div class="detail-value free">FREE</div>
+            <div class="detail-sub">Free only for myWalgreens members</div>
+          </div>
+        </div>
+      </div>
+      <div class="card card-upsell" style="width:100%" onclick="showToast('Smart. You never know.')">
+        <div class="card-icon"><span class="sparkle">✦</span></div>
+        <div class="card-content">
+          <div class="card-title">Extra flushes</div>
+          <div class="card-sub">*Free only for myWalgreens members</div>
+          <div class="upsell-promo">Buy two extra flushes, get one free</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+    </div>
+    <div class="reserve-footer">
+      <button class="btn-primary" onclick="goto('pin')">Continue</button>
+      <button class="btn-cancel" onclick="goto('home')">Cancel reservation</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 4: PIN -->
+  <div id="screen-pin" class="screen">
+    <div class="sub-header">
+      <button class="back-btn" onclick="goto('home')">‹</button>
+      <div class="sub-header-title">Your PIN</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-label">Reserve</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-label">Payment</div>
+      </div>
+      <div class="step active">
+        <div class="step-num">3</div>
+        <div class="step-label">Get PIN</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-label">Done</div>
+      </div>
+    </div>
+    <div class="pin-body">
+      <div class="lock-icon-wrap">
+        <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px">
+          <rect x="16" y="36" width="48" height="34" rx="6" stroke="#CC0000" stroke-width="4"/>
+          <path d="M26 36V26a14 14 0 0 1 28 0v10" stroke="#CC0000" stroke-width="4" stroke-linecap="round"/>
+          <circle cx="40" cy="53" r="5" fill="#CC0000"/>
+          <line x1="40" y1="57" x2="40" y2="63" stroke="#CC0000" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="pin-headline">
+        <h2>Your one-time PIN</h2>
+        <p>Use this PIN to unlock the<br>bathroom door.</p>
+      </div>
+      <div class="pin-display" id="pin-display">
+        <!-- digits injected by JS -->
+      </div>
+      <div class="pin-expires">
+        <span>⏱</span>
+        PIN expires in <span id="countdown">09:58</span>
+      </div>
+    </div>
+    <div class="pin-footer">
+      <button class="btn-primary" onclick="showToast('Go! Go! Go!')">I'm at the door</button>
+      <button class="btn-outline" onclick="addTime()">Need more time</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 5: OCCUPIED -->
+  <div id="screen-occupied" class="screen">
+    <div class="occupied-icon">🚫</div>
+    <div class="occupied-title">Bathroom is<br><span>occupied.</span></div>
+    <div class="occupied-sub">Someone beat you to it.<br>Please wait or check back in a moment.<br><br>Pro tip: next time, run.</div>
+    <div class="wait-badge">
+      Estimated wait time<br>
+      <strong id="wait-time">3–5 min</strong>
+    </div>
+    <button class="btn-primary" style="margin-top:16px" onclick="goto('home')">Go back</button>
+    <button class="btn-text" onclick="showToast('Notifying you when the coast is clear.')">Notify me when available</button>
+  </div>
+
+</div><!-- /phone -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let countdownInterval = null;
+  let seconds = 598;
+
+  function goto(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + screen).classList.add('active');
+
+    if (screen === 'pin') {
+      generatePin();
+      startCountdown();
+    } else {
+      clearInterval(countdownInterval);
+    }
+  }
+
+  function showOccupied() {
+    const waits = ['2–3 min', '3–5 min', '5–7 min', '∞', 'unknown (concerning)', '1 min (optimistic)'];
+    document.getElementById('wait-time').textContent = waits[Math.floor(Math.random() * waits.length)];
+    goto('occupied');
+  }
+
+  function generatePin() {
+    const display = document.getElementById('pin-display');
+    display.innerHTML = '';
+    const pin = Array.from({length: 6}, () => Math.floor(Math.random() * 10));
+    pin.forEach(d => {
+      const span = document.createElement('span');
+      span.className = 'pin-digit';
+      span.textContent = d;
+      display.appendChild(span);
+    });
+    seconds = 598;
+    updateCountdown();
+  }
+
+  function startCountdown() {
+    clearInterval(countdownInterval);
+    countdownInterval = setInterval(() => {
+      seconds--;
+      if (seconds <= 0) {
+        clearInterval(countdownInterval);
+        showToast('PIN expired. You had one job.');
+        setTimeout(() => goto('home'), 1800);
+        return;
+      }
+      updateCountdown();
+    }, 1000);
+  }
+
+  function updateCountdown() {
+    const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const s = String(seconds % 60).padStart(2, '0');
+    const el = document.getElementById('countdown');
+    if (el) {
+      el.textContent = m + ':' + s;
+      el.style.color = seconds < 60 ? '#ff4444' : 'var(--red)';
+    }
+  }
+
+  function addTime() {
+    seconds += 300;
+    showToast('5 minutes added. You owe us. 🚽');
+  }
+
+  let toastTimeout;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+</script>
+<!-- * lone wolf, own sky | Matt Livingston -->
+</body>
+</html>
