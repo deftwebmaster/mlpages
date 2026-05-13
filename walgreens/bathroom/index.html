@@ -350,6 +350,31 @@
     font-weight: 700;
   }
 
+  .employee-zone {
+    border-top: 1px dashed #d8d8d8;
+    margin-top: 18px;
+    padding-top: 14px;
+    padding-bottom: 12px;
+  }
+
+  .employee-zone-label {
+    color: #888;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+
+  .card-employee {
+    background: #f7f7f7;
+    border-style: dashed;
+  }
+
+  .card-employee .card-title {
+    color: #333;
+  }
+
   /* Savings pill on reserve */
   .savings-pill {
     background: #e8f5e9;
@@ -832,14 +857,6 @@
         </div>
         <div class="card-arrow">›</div>
       </div>
-      <div class="card" onclick="showToast('IC3 acknowledged. One associate is already pretending not to hear it.')">
-        <div class="card-icon">📢</div>
-        <div class="card-content">
-          <div class="card-title">IC3 restroom support</div>
-          <div class="card-sub">Request backup without making it weird over Theatro.</div>
-        </div>
-        <div class="card-arrow">›</div>
-      </div>
       <div class="card" onclick="showOccupied()">
         <div class="card-icon">📅</div>
         <div class="card-content">
@@ -890,6 +907,18 @@
           <div class="card-sub">Learn more about tiers, fees, queue etiquette, and why this has a dashboard.</div>
         </div>
         <div class="card-arrow">›</div>
+      </div>
+
+      <div class="employee-zone">
+        <div class="employee-zone-label">Employee tools accidentally visible</div>
+        <div class="card card-employee" onclick="showToast('IC3 acknowledged. One associate is already pretending not to hear it.')">
+          <div class="card-icon">📢</div>
+          <div class="card-content">
+            <div class="card-title">IC3 restroom support</div>
+            <div class="card-sub">Request backup without making it weird over Theatro.</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
       </div>
 
     </div>
