@@ -3,19 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>WalgreensGo Bathroom Access</title>
-<meta name="description" content="A tiny parody app for reserving the one working Walgreens bathroom.">
-<meta property="og:title" content="WalgreensGo Bathroom Access">
-<meta property="og:description" content="Bathroom access, made simple. A parody reservation app for the one working bathroom.">
-<meta property="og:type" content="website">
-<meta property="og:image" content="wg-br-card.png">
-<meta property="og:image:width" content="1729">
-<meta property="og:image:height" content="910">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="WalgreensGo Bathroom Access">
-<meta name="twitter:description" content="Reserve a stall. Get your PIN. Just go.">
-<meta name="twitter:image" content="wg-br-card.png">
-<link rel="image_src" href="wg-br-card.png">
+<title>Walgreens Bathroom</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -34,15 +22,11 @@
 
   body {
     font-family: 'Lato', sans-serif;
-    background:
-      radial-gradient(circle at 20% 10%, rgba(204,0,0,0.14), transparent 28%),
-      linear-gradient(135deg, #eeeeee 0%, #cfcfcf 100%);
+    background: #d0d0d0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 24px;
-    color: var(--text);
   }
 
   .phone {
@@ -55,30 +39,6 @@
     position: relative;
     display: flex;
     flex-direction: column;
-  }
-
-  .phone::before {
-    content: '';
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 112px;
-    height: 34px;
-    background: #111;
-    border-radius: 999px;
-    z-index: 3;
-  }
-
-  .legal-tag {
-    position: absolute;
-    right: 18px;
-    bottom: 14px;
-    color: rgba(0,0,0,0.42);
-    font-size: 10px;
-    font-weight: 700;
-    z-index: 4;
-    pointer-events: none;
   }
 
   /* SCREENS */
@@ -107,22 +67,13 @@
   }
 
   .w-logo {
-    font-size: 84px;
+    font-size: 88px;
     color: var(--red);
     font-weight: 900;
     line-height: 1;
     font-style: italic;
-    margin-bottom: 6px;
+    margin-bottom: 32px;
     font-family: Georgia, serif;
-  }
-
-  .app-name {
-    color: var(--red);
-    font-family: Georgia, serif;
-    font-size: 24px;
-    font-style: italic;
-    font-weight: 900;
-    margin-bottom: 26px;
   }
 
   .splash-hero {
@@ -149,26 +100,7 @@
     font-size: 15px;
     color: #555;
     line-height: 1.5;
-    margin-bottom: 26px;
-  }
-
-  .feature-pills {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-bottom: 28px;
-  }
-
-  .feature-pill {
-    border: 1px solid #f0b4b4;
-    color: var(--red);
-    background: #fff8f8;
-    border-radius: 999px;
-    padding: 8px 10px;
-    font-size: 12px;
-    font-weight: 900;
+    margin-bottom: 48px;
   }
 
   .btn-primary {
@@ -184,7 +116,7 @@
     margin-bottom: 20px;
     transition: background 0.15s;
   }
-  .btn-primary:active { background: #990000; transform: translateY(1px); }
+  .btn-primary:active { background: #990000; }
 
   .btn-text {
     background: none;
@@ -194,13 +126,6 @@
     font-weight: 700;
     cursor: pointer;
     font-family: 'Lato', sans-serif;
-  }
-
-  .fine-print {
-    color: #888;
-    font-size: 11px;
-    line-height: 1.35;
-    margin-top: 2px;
   }
 
   /* ── SCREEN 2: HOME ── */
@@ -238,35 +163,6 @@
   }
   .home-subtext { font-size: 15px; opacity: 0.9; }
 
-  .store-status {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(255,255,255,0.14);
-    border: 1px solid rgba(255,255,255,0.22);
-    border-radius: 999px;
-    padding: 8px 10px;
-    margin-top: 18px;
-    font-size: 12px;
-    font-weight: 900;
-    width: fit-content;
-  }
-
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #74e68a;
-    box-shadow: 0 0 0 0 rgba(116,230,138,0.65);
-    animation: pulse 1.8s infinite;
-  }
-
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(116,230,138,0.65); }
-    70% { box-shadow: 0 0 0 8px rgba(116,230,138,0); }
-    100% { box-shadow: 0 0 0 0 rgba(116,230,138,0); }
-  }
-
   .home-body {
     flex: 1;
     padding: 20px 20px 0;
@@ -275,7 +171,7 @@
 
   .card {
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 18px 16px;
     margin-bottom: 12px;
     display: flex;
@@ -312,7 +208,7 @@
   /* Flush Rewards banner */
   .rewards-banner {
     background: linear-gradient(135deg, #8B0000 0%, #CC0000 100%);
-    border-radius: 8px;
+    border-radius: 14px;
     padding: 14px 16px;
     margin-bottom: 12px;
     display: flex;
@@ -348,18 +244,6 @@
     margin-top: 4px;
   }
   .plus-price { font-size: 13px; color: #c9a84c; font-weight: 700; margin-top: 3px; }
-
-  .micro-alert {
-    border: 1px dashed #f0b4b4;
-    color: #7a0000;
-    background: #fff8f8;
-    border-radius: 8px;
-    padding: 11px 12px;
-    margin-bottom: 12px;
-    font-size: 12px;
-    line-height: 1.35;
-    font-weight: 700;
-  }
 
   /* Savings pill on reserve */
   .savings-pill {
@@ -528,7 +412,7 @@
 
   .details-card {
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 14px;
     padding: 16px 18px;
     width: 100%;
     display: flex;
@@ -612,7 +496,7 @@
 
   .pin-display {
     border: 2px solid var(--red);
-    border-radius: 8px;
+    border-radius: 14px;
     padding: 20px 24px;
     display: flex;
     gap: 10px;
@@ -654,18 +538,6 @@
     border-radius: 24px;
   }
   .pin-expires span { color: var(--red); font-weight: 700; font-size: 16px; }
-
-  .wallet-row {
-    display: flex;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .wallet-row .btn-outline {
-    flex: 1;
-    padding: 13px 0;
-    font-size: 14px;
-  }
 
   .pin-footer {
     padding: 0 24px 36px;
@@ -713,7 +585,7 @@
   .wait-badge {
     background: #2a2a2a;
     border: 1px solid #444;
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 16px 24px;
     color: #fff;
     font-size: 14px;
@@ -746,44 +618,15 @@
 
   /* SVG toilet icon */
   svg.toilet { width: 56px; height: 56px; }
-
-  @media (max-width: 520px) {
-    body {
-      padding: 0;
-      background: white;
-      align-items: stretch;
-    }
-
-    .phone {
-      width: 100vw;
-      min-height: 100dvh;
-      border-radius: 0;
-      box-shadow: none;
-    }
-
-    .screen {
-      min-height: 100dvh;
-    }
-
-    .phone::before {
-      display: none;
-    }
-
-    .toast {
-      bottom: 24px;
-    }
-  }
 </style>
 </head>
 <body>
 
 <div class="phone">
-  <div class="legal-tag">Parody app • internal chuckles only</div>
 
   <!-- SCREEN 1: SPLASH -->
   <div id="screen-splash" class="screen active">
     <div class="w-logo">W</div>
-    <div class="app-name">WalgreensGo</div>
     <div class="splash-hero">
       <div class="splash-icon">
         <!-- Toilet SVG (outline, clean) -->
@@ -799,33 +642,26 @@
         </svg>
       </div>
     </div>
-    <h1 class="splash-headline">Bathroom access,<br><span>made urgent.</span></h1>
-    <p class="splash-sub">Reserve the working bathroom, get a<br>one-time PIN, and preserve workplace harmony.</p>
-    <div class="feature-pills" aria-label="App features">
-      <div class="feature-pill">Reserve a stall</div>
-      <div class="feature-pill">Get your PIN</div>
-      <div class="feature-pill">Just go</div>
-    </div>
-    <button class="btn-primary" onclick="goto('home')">Begin bathroom journey</button>
-    <button class="btn-text" onclick="showToast('Sign-in is unavailable while Asset Protection checks the hallway.')">Sign in to myWalgreens</button>
-    <p class="fine-print">Not affiliated with actual Walgreens technology, plumbing, or dignity infrastructure.</p>
+    <h1 class="splash-headline">Bathroom access,<br><span>made simple.</span></h1>
+    <p class="splash-sub">Reserve a bathroom, get a<br>one-time PIN, and go.<br>Fast. Private. Convenient.</p>
+    <button class="btn-primary" onclick="goto('home')">Get started</button>
+    <button class="btn-text" onclick="showToast('Please hold — someone is already in there.')">Sign in to myWalgreens</button>
   </div>
 
   <!-- SCREEN 2: HOME -->
   <div id="screen-home" class="screen">
     <div class="home-header">
       <div class="home-header-top">
-        <div class="walgreens-wordmark">WalgreensGo</div>
-        <div class="bell-icon" onclick="showToast('1 alert: Bathroom morale is at Code Yellow.')">🔔</div>
+        <div class="walgreens-wordmark">Walgreens</div>
+        <div class="bell-icon">🔔</div>
       </div>
       <div class="home-greeting">Hi there!</div>
-      <div class="home-subtext">Reserve the bathroom and get your one-time PIN.</div>
-      <div class="store-status"><span class="pulse-dot"></span> 1 of 2 bathrooms operational</div>
+      <div class="home-subtext">Reserve a bathroom and get your one-time PIN.</div>
     </div>
     <div class="home-body">
 
       <!-- Flush Rewards balance -->
-      <div class="rewards-banner" onclick="showToast('47 pts = 0.47 flushes. Keep going. The math is intentionally upsetting.')">
+      <div class="rewards-banner" onclick="showToast('47 pts = 0.47 flushes. Keep going.')">
         <div class="rewards-icon">🏆</div>
         <div class="rewards-content">
           <div class="rewards-label">Flush Rewards™</div>
@@ -834,13 +670,11 @@
         <div class="rewards-cta">Redeem<br>points ›</div>
       </div>
 
-      <div class="micro-alert">Service update: Bathroom 2 is temporarily offline due to a plumbing event best described by corporate as “moisture-forward.”</div>
-
       <div class="card" onclick="goto('reserve')">
         <div class="card-icon">📍</div>
         <div class="card-content">
-          <div class="card-title">Store #04577 Bathroom A</div>
-          <div class="card-sub">Employee access • PIN required<br>Status: available, emotionally</div>
+          <div class="card-title">Store #04577</div>
+          <div class="card-sub">901 Legacy Dr<br>Plano, TX 75023</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
@@ -848,7 +682,7 @@
         <div class="card-icon">📅</div>
         <div class="card-content">
           <div class="card-title">Check availability</div>
-          <div class="card-sub">See stall availability before making eye contact with the keypad.</div>
+          <div class="card-sub">See bathroom availability before you reserve.</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
@@ -858,7 +692,7 @@
         <div class="card-icon">👑</div>
         <div class="card-content">
           <div class="card-title">Upgrade to Bathroom+</div>
-          <div class="card-sub">Priority access, heated seat preference, and a curated scent profile nobody asked for.</div>
+          <div class="card-sub">Priority access, heated seat preference, and a curated scent profile.</div>
           <div class="plus-price">$4.99 / month</div>
           <span class="plus-badge">New</span>
         </div>
@@ -871,27 +705,27 @@
         <div class="card-content">
           <div class="card-title">My Scent Profile</div>
           <div class="card-sub">*Bathroom+ members only</div>
-          <div class="upsell-promo">Now testing: Coastal Breeze, Receipt Paper, and Vague Lavender</div>
+          <div class="upsell-promo">Choose your ambient fragrance experience</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
 
       <!-- Extra flushes -->
-      <div class="card card-upsell" onclick="showToast('2 extra flushes added to cart. Bold choice.')">
+      <div class="card card-upsell" onclick="showToast('2 extra flushes added to cart. Bold choice. 🚽')">
         <div class="card-icon"><span class="sparkle">✦</span></div>
         <div class="card-content">
           <div class="card-title">Extra flushes</div>
           <div class="card-sub">*Free only for myWalgreens members</div>
-          <div class="upsell-promo">Buy two extra flushes, get one manager override</div>
+          <div class="upsell-promo">Buy two extra flushes, get one free</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
 
-      <div class="card" onclick="showToast('Step 1: Reserve. Step 2: PIN. Step 3: Go. Step 4: Pretend this was normal.')">
+      <div class="card" onclick="showToast('Step 1: Hope for the best. Step 2: Upgrade to Bathroom+.')">
         <div class="card-icon">❓</div>
         <div class="card-content">
           <div class="card-title">How it works</div>
-          <div class="card-sub">Learn more about tiers, fees, queue etiquette, and flush allocation.</div>
+          <div class="card-sub">Learn more about tiers, fees, and flush allocation.</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
@@ -910,7 +744,7 @@
         <div class="nav-icon">💳</div>
         Payment
       </div>
-      <div class="nav-item" onclick="showToast('Account under review for aggressive “Need more time” behavior.')">
+      <div class="nav-item" onclick="showToast('Account suspended for excessive flush requests.')">
         <div class="nav-icon">👤</div>
         Account
       </div>
@@ -948,16 +782,15 @@
       </div>
       <div class="good-news">
         <h2>Good news!</h2>
-        <p>The one working bathroom is currently accepting reservations.</p>
+        <p>A bathroom is available.</p>
       </div>
-      <div class="savings-pill">🎉 You're saving $2.00 with myWalgreens membership and patience</div>
+      <div class="savings-pill">🎉 You're saving $2.00 with myWalgreens membership</div>
       <div class="details-card">
         <div class="detail-row">
           <div class="detail-row-icon">📍</div>
           <div>
-            <div class="detail-label">Location</div>
-            <div class="detail-value">Store #04577 • Bathroom A</div>
-            <div class="detail-sub">Across from “please ask an associate,” spiritually</div>
+            <div class="detail-label">Store #04577</div>
+            <div class="detail-value">901 Legacy Dr, Plano, TX 75023</div>
           </div>
         </div>
         <div class="detail-row">
@@ -965,7 +798,6 @@
           <div>
             <div class="detail-label">Access window</div>
             <div class="detail-value">10 min</div>
-            <div class="detail-sub">Timer begins once your confidence does</div>
           </div>
         </div>
         <div class="detail-row">
@@ -977,7 +809,7 @@
           </div>
         </div>
       </div>
-      <div class="card card-plus" style="width:100%" onclick="showToast('Comfort Package includes: 2 extra flushes, 1 courtesy courtesy, and one warm affirmation.')">
+      <div class="card card-plus" style="width:100%" onclick="showToast('Comfort Package includes: 2 extra flushes, 1 courtesy courtesy, and a warm affirmation.')">
         <div class="card-icon">🛎️</div>
         <div class="card-content">
           <div class="card-title">Add Comfort Package</div>
@@ -986,19 +818,19 @@
         </div>
         <div class="card-arrow" style="color:#c9a84c">›</div>
       </div>
-      <div class="card card-upsell" style="width:100%" onclick="showToast('Bold. You never know.')">
+      <div class="card card-upsell" style="width:100%" onclick="showToast('Bold. You never know. 🚽')">
         <div class="card-icon"><span class="sparkle">✦</span></div>
         <div class="card-content">
-          <div class="card-title">Add Flex Flush</div>
-          <div class="card-sub">*Recommended for uncertain situations</div>
-          <div class="upsell-promo">Includes one manager-approved do-over</div>
+          <div class="card-title">Extra flushes</div>
+          <div class="card-sub">*Free only for myWalgreens members</div>
+          <div class="upsell-promo">Buy two extra flushes, get one free</div>
         </div>
         <div class="card-arrow">›</div>
       </div>
     </div>
     <div class="reserve-footer">
-      <button class="btn-primary" onclick="goto('pin')">Reserve and reveal PIN</button>
-      <button class="btn-cancel" onclick="showToast('Reservation canceled. The hallway remains tense.'); goto('home')">Cancel reservation</button>
+      <button class="btn-primary" onclick="goto('pin')">Continue</button>
+      <button class="btn-cancel" onclick="goto('home')">Cancel reservation</button>
     </div>
   </div>
 
@@ -1037,7 +869,7 @@
       </div>
       <div class="pin-headline">
         <h2>Your one-time PIN</h2>
-        <p>Use this PIN to unlock the<br>bathroom door. Do not laminate.</p>
+        <p>Use this PIN to unlock the<br>bathroom door.</p>
       </div>
       <div class="pin-display" id="pin-display">
         <!-- digits injected by JS -->
@@ -1053,14 +885,10 @@
           <div class="points-ticker-label">Flush Rewards™ earning now</div>
         </div>
       </div>
-      <p class="fine-print">PIN is valid for one entry, one exit, and one story told later in the break room.</p>
     </div>
     <div class="pin-footer">
-      <button class="btn-primary" onclick="showToast('Door mode activated. Walk with purpose.')">I'm at the door</button>
-      <div class="wallet-row">
-        <button class="btn-outline" onclick="addTime()">Need more time</button>
-        <button class="btn-outline" onclick="showToast('Added to Walgreens Wallet, which is legally just a screenshot.')">Add to Wallet</button>
-      </div>
+      <button class="btn-primary" onclick="showToast('Go! Go! Go! Points are counting!')">I'm at the door</button>
+      <button class="btn-outline" onclick="addTime()">Need more time</button>
     </div>
   </div>
 
@@ -1068,13 +896,13 @@
   <div id="screen-occupied" class="screen">
     <div class="occupied-icon">🚫</div>
     <div class="occupied-title">Bathroom is<br><span>occupied.</span></div>
-    <div class="occupied-sub">Someone beat you to it.<br>Please wait or check back in a moment.<br><br>Pro tip: next time, reserve before making eye contact with the door.</div>
+    <div class="occupied-sub">Someone beat you to it.<br>Please wait or check back in a moment.<br><br>Pro tip: next time, run.</div>
     <div class="wait-badge">
       Estimated wait time<br>
       <strong id="wait-time">3–5 min</strong>
     </div>
-    <button class="btn-primary" style="margin-top:16px" onclick="goto('home')">Return to dashboard</button>
-    <button class="btn-text" onclick="showToast('You will be notified when the coast is allegedly clear.')">Notify me when available</button>
+    <button class="btn-primary" style="margin-top:16px" onclick="goto('home')">Go back</button>
+    <button class="btn-text" onclick="showToast('Notifying you when the coast is clear.')">Notify me when available</button>
   </div>
 
 </div><!-- /phone -->
@@ -1082,15 +910,12 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-
   let countdownInterval = null;
   let seconds = 598;
 
   function goto(screen) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + screen).classList.add('active');
-    requestAnimationFrame(() => window.scrollTo(0, 0));
 
     if (screen === 'pin') {
       generatePin();
@@ -1171,8 +996,6 @@
     clearTimeout(toastTimeout);
     toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
   }
-
-  window.addEventListener('load', () => window.scrollTo(0, 0));
 </script>
 <!-- * lone wolf, own sky | Matt Livingston -->
 </body>
