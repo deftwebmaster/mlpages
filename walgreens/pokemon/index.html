@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07090f">
+<link rel="preload" as="image" href="pack1.jpg" fetchpriority="high">
+<title>PackQuest | Raikou Special Pack</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #05070c;
+  --panel: #0d111a;
+  --panel-2: #121824;
+  --line: rgba(255, 255, 255, .1);
+  --text: #f7fbff;
+  --muted: #9aa7b5;
+  --gold: #ffd83d;
+  --gold-2: #ffb11a;
+  --blue: #27d1ff;
+  --red: #ff334e;
+  --green: #38d987;
+  --shadow: 0 24px 80px rgba(0, 0, 0, .48);
+}
+
+* { box-sizing: border-box; }
+html { min-height: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(39, 209, 255, .18), transparent 30%),
+    radial-gradient(circle at 86% 18%, rgba(255, 51, 78, .16), transparent 28%),
+    linear-gradient(145deg, #05070c 0%, #0b0f17 52%, #05070c 100%);
+  color: var(--text);
+  font: 500 16px/1.45 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+
+#app {
+  width: min(100vw, 430px);
+  min-height: 100vh;
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  background: #07090f;
+  box-shadow: var(--shadow);
+}
+
+.screen {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: none;
+  flex-direction: column;
+}
+.screen.active { display: flex; }
+
+.topbar {
+  height: 58px;
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: rgba(7, 9, 15, .84);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 950;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+}
+.brand-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background:
+    linear-gradient(#f23442 0 47%, #10151d 47% 55%, #f9fafb 55%),
+    #fff;
+  box-shadow: inset 0 0 0 2px #f9fafb, 0 0 0 1px rgba(0, 0, 0, .55);
+  position: relative;
+}
+.brand-mark::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #f9fafb;
+  border: 2px solid #10151d;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.brand b { color: var(--gold); }
+
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--text);
+  background: rgba(255, 255, 255, .045);
+  cursor: pointer;
+}
+.icon-btn:active { transform: scale(.97); }
+.bag-count {
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  margin: -22px 0 0 24px;
+  background: var(--red);
+  color: white;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.hero {
+  padding: 16px 18px 114px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.drop {
+  min-height: 408px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  margin: -16px -18px 0;
+  padding: 24px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.drop::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(to bottom, rgba(7, 9, 15, .08), #07090f 86%),
+    url("pack1.jpg");
+  background-size: cover;
+  background-position: center top;
+  transform: scale(1.01);
+}
+.drop::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 54%;
+  z-index: -1;
+  background: linear-gradient(to bottom, transparent, rgba(7, 9, 15, .98));
+}
+.eyebrow {
+  width: fit-content;
+  padding: 7px 10px;
+  border: 1px solid rgba(255, 216, 61, .42);
+  border-radius: 999px;
+  color: #1d1600;
+  background: linear-gradient(135deg, var(--gold), var(--gold-2));
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  box-shadow: 0 12px 34px rgba(255, 177, 26, .2);
+}
+h1 {
+  max-width: 11ch;
+  margin: 12px 0 0;
+  font-size: clamp(42px, 13vw, 62px);
+  line-height: .88;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.subhead {
+  max-width: 31ch;
+  margin: 12px 0 0;
+  color: #dce8f3;
+  font-size: 15px;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.stat {
+  min-height: 72px;
+  padding: 11px 9px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, .045);
+}
+.stat strong {
+  display: block;
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.1;
+}
+.stat span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .035));
+}
+.deal {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  padding: 15px;
+}
+.deal h2 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.2;
+}
+.deal p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.price {
+  text-align: right;
+  color: var(--gold);
+  font-size: 28px;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: -.2px;
+}
+.price small {
+  display: block;
+  margin-top: 5px;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: .7px;
+  text-transform: uppercase;
+}
+
+.includes {
+  padding: 2px 15px 15px;
+  display: grid;
+  gap: 9px;
+}
+.include {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d6e2ee;
+  font-size: 13px;
+}
+.include svg {
+  flex: 0 0 auto;
+  color: var(--blue);
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 12px;
+}
+.qty {
+  height: 54px;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.qty button {
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 7px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  background: rgba(255, 255, 255, .08);
+  cursor: pointer;
+}
+#qty {
+  width: 22px;
+  text-align: center;
+  font-weight: 950;
+}
+
+.stock {
+  min-height: 54px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 216, 61, .2);
+  border-radius: 8px;
+  background: rgba(255, 216, 61, .07);
+  color: #fff3b2;
+  font-size: 12px;
+}
+.stock b { color: var(--gold); }
+
+.checkout-bar {
+  width: min(100vw, 430px);
+  padding: 12px 18px calc(14px + env(safe-area-inset-bottom));
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 10;
+  transform: translateX(-50%);
+  background: rgba(7, 9, 15, .88);
+  border-top: 1px solid var(--line);
+  backdrop-filter: blur(20px);
+}
+.primary {
+  width: 100%;
+  min-height: 58px;
+  border: 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #151002;
+  background: linear-gradient(135deg, var(--gold), var(--gold-2));
+  box-shadow: 0 18px 46px rgba(255, 177, 26, .26);
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 950;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+}
+.primary:active { transform: translateY(1px); }
+.fineprint {
+  margin-top: 8px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 11px;
+}
+
+.checkout {
+  padding: 16px 18px calc(110px + env(safe-area-inset-bottom));
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.headline {
+  margin: 4px 0 0;
+  font-size: 30px;
+  line-height: .95;
+  text-transform: uppercase;
+}
+.mini-cart {
+  padding: 13px;
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 13px;
+  align-items: center;
+}
+.mini-cart img {
+  width: 86px;
+  height: 79px;
+  border-radius: 7px;
+  object-fit: cover;
+  object-position: center;
+}
+.mini-cart h2 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.mini-cart p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+.line-items {
+  padding: 13px 15px;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, .07);
+  color: var(--muted);
+  font-size: 14px;
+}
+.row:last-child { border-bottom: 0; }
+.row.total {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 950;
+}
+.row .free { color: var(--green); font-weight: 900; }
+
+.field-grid {
+  display: grid;
+  gap: 10px;
+}
+.field {
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+.field label {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .6px;
+  text-transform: uppercase;
+}
+.field input {
+  width: 100%;
+  margin-top: 5px;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  background: transparent;
+  font-weight: 800;
+}
+.field input::placeholder { color: #617080; }
+
+.pay-method {
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.visa {
+  padding: 6px 9px;
+  border-radius: 6px;
+  background: #1746d2;
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 1px;
+}
+.pay-method span {
+  flex: 1;
+  color: #d7e0eb;
+  font-size: 14px;
+}
+
+.success {
+  padding: 22px 18px calc(28px + env(safe-area-inset-bottom));
+  flex: 1;
+  justify-content: space-between;
+  gap: 24px;
+}
+.success-hero {
+  min-height: 310px;
+  border-radius: 8px;
+  display: grid;
+  place-items: end center;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(to bottom, rgba(7, 9, 15, 0), #07090f),
+    url("pack1.jpg") center / cover;
+}
+.success-check {
+  width: 70px;
+  height: 70px;
+  margin-bottom: -16px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  color: #08100d;
+  background: linear-gradient(135deg, var(--green), #b7ff5b);
+  box-shadow: 0 18px 50px rgba(56, 217, 135, .35);
+}
+.success h1 {
+  max-width: none;
+  margin: 0;
+  font-size: 42px;
+}
+.success p {
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+.order-id {
+  color: var(--gold);
+  font-weight: 950;
+}
+
+@media (min-width: 431px) {
+  body { padding: 22px; }
+  #app {
+    min-height: min(860px, calc(100vh - 44px));
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 28px;
+  }
+  .screen {
+    min-height: min(860px, calc(100vh - 44px));
+  }
+  .checkout-bar {
+    bottom: 22px;
+    border: 1px solid var(--line);
+    border-radius: 0 0 28px 28px;
+  }
+}
+
+@media (max-width: 360px) {
+  .drop { min-height: 378px; }
+  .hero { padding-left: 14px; padding-right: 14px; }
+  .topbar, .checkout, .success { padding-left: 14px; padding-right: 14px; }
+  .checkout-bar { padding-left: 14px; padding-right: 14px; }
+  .price { font-size: 24px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .drop::before { animation: glow 7s ease-in-out infinite alternate; }
+  .success-check { animation: pop .5s cubic-bezier(.2, 1.2, .2, 1) both; }
+}
+@keyframes glow {
+  from { filter: saturate(1) brightness(.98); }
+  to { filter: saturate(1.1) brightness(1.06); }
+}
+@keyframes pop {
+  from { opacity: 0; transform: scale(.72); }
+  to { opacity: 1; transform: scale(1); }
+}
+</style>
+</head>
+<body>
+<main id="app">
+  <section id="shop" class="screen active" aria-label="Raikou Special Pack">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark"></span>Pack<b>Quest</b></div>
+      <button class="icon-btn" type="button" aria-label="View cart" onclick="goCheckout()">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+          <path d="M6 7h15l-2 9H8L6 3H3"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>
+        </svg>
+        <span class="bag-count" id="bag-count">1</span>
+      </button>
+    </header>
+
+    <div class="hero">
+      <section class="drop">
+        <div class="eyebrow">Raikou card included</div>
+        <h1>Special Thunder Pack</h1>
+        <p class="subhead">A sealed premium bundle with Raikou's special promo card, two booster packs, and fast tracked delivery.</p>
+      </section>
+
+      <div class="stat-grid" aria-label="Pack details">
+        <div class="stat"><strong>2x</strong><span>Booster packs</span></div>
+        <div class="stat"><strong>1x</strong><span>Raikou promo</span></div>
+        <div class="stat"><strong>6+</strong><span>Age rating</span></div>
+      </div>
+
+      <section class="panel deal">
+        <div>
+          <h2>Raikou Special Card Pack</h2>
+          <p>Ready to ship from today's drop.</p>
+        </div>
+        <div class="price">$59.95<small>Free shipping</small></div>
+      </section>
+
+      <section class="panel includes" aria-label="Included in the pack">
+        <div class="include">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Official Pokemon booster packs in sealed retail packaging
+        </div>
+        <div class="include">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Raikou special card displayed front and center
+        </div>
+        <div class="include">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+          Packed securely with tracking within 24 hours
+        </div>
+      </section>
+
+      <div class="controls">
+        <div class="qty" aria-label="Quantity selector">
+          <button type="button" aria-label="Decrease quantity" onclick="setQty(qty - 1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M5 12h14"/></svg>
+          </button>
+          <span id="qty">1</span>
+          <button type="button" aria-label="Increase quantity" onclick="setQty(qty + 1)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="stock"><b>18 left</b> from this batch. Limit 3 per order.</div>
+      </div>
+    </div>
+
+    <div class="checkout-bar">
+      <button class="primary" type="button" onclick="goCheckout()">
+        Checkout <span id="cta-total">$59.95</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </button>
+      <div class="fineprint">Apple Pay, Visa, Mastercard, and Shop Pay accepted</div>
+    </div>
+  </section>
+
+  <section id="checkout" class="screen" aria-label="Checkout">
+    <header class="topbar">
+      <button class="icon-btn" type="button" aria-label="Back to product" onclick="show('shop')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      </button>
+      <div class="brand">Secure <b>Checkout</b></div>
+      <span style="width:42px"></span>
+    </header>
+
+    <div class="checkout">
+      <h1 class="headline">Lock in your pack</h1>
+      <section class="panel mini-cart">
+        <img src="pack1.jpg" alt="Raikou Special Card Pack" width="86" height="79" loading="eager" decoding="async">
+        <div>
+          <h2>Raikou Special Card Pack</h2>
+          <p><span id="line-qty">1</span> pack at $59.95 each</p>
+        </div>
+      </section>
+
+      <section class="panel line-items" aria-label="Order summary">
+        <div class="row"><span>Subtotal</span><span id="subtotal">$59.95</span></div>
+        <div class="row"><span>Shipping</span><span class="free">Free</span></div>
+        <div class="row"><span>Estimated tax</span><span>Calculated next</span></div>
+        <div class="row total"><span>Total today</span><span id="checkout-total">$59.95</span></div>
+      </section>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com">
+        </div>
+        <div class="field">
+          <label for="zip">Shipping ZIP</label>
+          <input id="zip" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="10" placeholder="Enter ZIP code">
+        </div>
+      </div>
+
+      <section class="panel pay-method">
+        <div class="visa">VISA</div>
+        <span>Card ending in 4242</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9aa7b5" stroke-width="2.4" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </section>
+    </div>
+
+    <div class="checkout-bar">
+      <button class="primary" id="pay-btn" type="button" onclick="pay()">
+        Pay <span id="pay-total">$59.95</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+      </button>
+      <div class="fineprint">Encrypted checkout. No surprise shipping fees.</div>
+    </div>
+  </section>
+
+  <section id="success" class="screen success" aria-label="Order confirmed">
+    <div class="success-hero">
+      <div class="success-check">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+    </div>
+    <div>
+      <h1>Order confirmed</h1>
+      <p>Your Raikou Special Card Pack is queued for packing. Tracking will be sent as soon as the label prints.</p>
+      <p class="order-id" id="order-id">ORDER #PQ-00000</p>
+    </div>
+    <button class="primary" type="button" onclick="resetOrder()">Back to shop</button>
+  </section>
+</main>
+
+<script>
+var qty = 1;
+var price = 59.95;
+var money = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(function(screen) {
+    screen.classList.toggle('active', screen.id === id);
+  });
+  window.scrollTo(0, 0);
+}
+
+function total() {
+  return money.format(qty * price);
+}
+
+function setQty(next) {
+  qty = Math.max(1, Math.min(3, next));
+  document.getElementById('qty').textContent = qty;
+  document.getElementById('bag-count').textContent = qty;
+  document.getElementById('line-qty').textContent = qty;
+  ['cta-total', 'subtotal', 'checkout-total', 'pay-total'].forEach(function(id) {
+    document.getElementById(id).textContent = total();
+  });
+}
+
+function goCheckout() {
+  setQty(qty);
+  show('checkout');
+}
+
+function pay() {
+  var btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.style.opacity = '.72';
+  btn.textContent = 'Processing';
+  document.getElementById('order-id').textContent = 'ORDER #PQ-' + (Math.floor(Math.random() * 90000) + 10000);
+  window.setTimeout(function() {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.innerHTML = 'Pay <span id="pay-total">' + total() + '</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.7" aria-hidden="true"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+    show('success');
+  }, 650);
+}
+
+function resetOrder() {
+  setQty(1);
+  show('shop');
+}
+
+setQty(1);
+</script>
+</body>
+</html>
