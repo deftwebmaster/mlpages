@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- * lone wolf, quiet teeth | Matt Livingston -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Allure Solutions, LLC — Precision Talent. Proven Impact.</title>
+<meta name="description" content="Delivering engineering, executive, & technical talent for industries building America's infrastructure and future technologies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://upload.wikimedia.org">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #090a0d;
+    --surface: #101216;
+    --surface2: #171a20;
+    --surface3: #20242b;
+    --border: rgba(255,255,255,0.09);
+    --gold: #d1ad53;
+    --bronze: #9f7540;
+    --steel: #8f9ba8;
+    --gold-dim: rgba(201,168,76,0.15);
+    --gold-glow: rgba(201,168,76,0.06);
+    --purple: #2c0338;
+    --purple-soft: rgba(44,3,56,0.4);
+    --white: #f0ede8;
+    --white-dim: rgba(240,237,232,0.55);
+    --white-faint: rgba(240,237,232,0.25);
+    --display: 'Cormorant Garamond', Georgia, serif;
+    --body: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+    --max: 1160px;
+    --radius: 3px;
+    --nav-h: 72px;
+    --shadow: 0 28px 80px rgba(0,0,0,0.36);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  button,
+  input,
+  textarea,
+  select { font: inherit; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 clamp(18px, 4vw, 40px);
+    height: var(--nav-h);
+    background: rgba(9,10,13,0.84);
+    backdrop-filter: blur(18px) saturate(125%);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 16px 42px rgba(0,0,0,0.18);
+  }
+
+  .nav-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(154px, 16vw, 190px);
+    height: 44px;
+    padding: 6px 10px;
+    background: rgba(240,237,232,0.94);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.18);
+    text-decoration: none;
+    border-radius: 2px;
+  }
+
+  .nav-logo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  .nav-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(255,255,255,0.03);
+    color: var(--white);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .nav-toggle span {
+    width: 18px;
+    height: 1px;
+    background: currentColor;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  nav.open .nav-toggle span:first-child { transform: translateY(6px) rotate(45deg); }
+  nav.open .nav-toggle span:nth-child(2) { opacity: 0; }
+  nav.open .nav-toggle span:last-child { transform: translateY(-6px) rotate(-45deg); }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 9px 22px;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+    border-radius: var(--radius);
+  }
+
+  .nav-cta:hover { background: var(--gold); color: var(--bg); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: calc(var(--nav-h) + 68px) clamp(20px, 4vw, 40px) 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(115deg, rgba(9,10,13,0.94) 0%, rgba(9,10,13,0.82) 46%, rgba(9,10,13,0.98) 100%),
+      linear-gradient(180deg, #090a0d 0%, #0d0b12 100%);
+    z-index: 0;
+  }
+
+  .hero-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 0;
+    mask-image: linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%);
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    max-width: var(--max);
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.78fr);
+    gap: clamp(42px, 7vw, 88px);
+    align-items: center;
+  }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-headline {
+    font-family: var(--display);
+    font-size: clamp(3.2rem, 7vw, 6.8rem);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    margin-bottom: 32px;
+    max-width: 780px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.35s forwards;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    max-width: 580px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.65s forwards;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold);
+    color: var(--bg);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    min-height: 48px;
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: opacity 0.2s, transform 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--white-dim);
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    min-height: 48px;
+    text-decoration: none;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, color 0.2s;
+    cursor: pointer;
+  }
+
+  .btn-ghost:hover { border-color: var(--white-faint); color: var(--white); }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+    max-width: 620px;
+    margin-top: 48px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.035);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.85s forwards;
+  }
+
+  .hero-stat {
+    text-align: left;
+    padding: 18px 20px;
+  }
+
+  .hero-stat + .hero-stat { border-left: 1px solid var(--border); }
+
+  .hero-stat-num {
+    font-family: var(--display);
+    font-size: 2.4rem;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .hero-stat-num span { color: var(--gold); }
+
+  .hero-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-faint);
+    margin-top: 4px;
+  }
+
+  .hero-visual {
+    position: relative;
+    min-height: min(60vh, 560px);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 4px;
+    overflow: hidden;
+    background:
+      linear-gradient(180deg, rgba(9,10,13,0.04), rgba(9,10,13,0.76)),
+      linear-gradient(90deg, rgba(9,10,13,0.82), rgba(9,10,13,0.06) 56%),
+      url("https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Industrial_Manufacturing.jpg/1280px-Industrial_Manufacturing.jpg");
+    background-size: cover;
+    background-position: center;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    animation: fadeUp 0.8s 0.75s forwards;
+  }
+
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(180deg, black 0%, transparent 72%);
+    pointer-events: none;
+  }
+
+  .hero-visual::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(209,173,83,0.22);
+    pointer-events: none;
+  }
+
+  .hero-visual-card {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(9,10,13,0.72);
+    backdrop-filter: blur(18px);
+  }
+
+  .visual-kicker {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+
+  .hero-visual-card p {
+    color: var(--white);
+    font-size: 0.95rem;
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: clamp(72px, 10vw, 112px) clamp(20px, 4vw, 40px);
+  }
+
+  .section-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .section-title em { font-style: italic; color: var(--gold); }
+
+  .section-sub {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    max-width: 600px;
+    line-height: 1.75;
+  }
+
+  hr.section-rule {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--surface); }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+    align-items: start;
+  }
+
+  .about-left p {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .about-left p strong { color: var(--white); font-weight: 500; }
+
+  .about-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.3);
+    padding: 6px 14px;
+    border-radius: 2px;
+    background: var(--gold-glow);
+  }
+
+  .about-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .about-callout {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    padding: 28px 28px 28px 32px;
+    border-radius: var(--radius);
+  }
+
+  .about-callout h4 {
+    font-family: var(--display);
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .about-callout p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+
+  /* ── INDUSTRIES ── */
+  #industries { background: var(--bg); }
+
+  .industries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    margin-top: 60px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--border);
+  }
+
+  .industry-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)), var(--surface);
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: background 0.25s, transform 0.25s;
+    cursor: default;
+  }
+
+  .industry-card:hover {
+    background: linear-gradient(145deg, rgba(209,173,83,0.08), rgba(255,255,255,0.02)), var(--surface2);
+    transform: translateY(-2px);
+  }
+
+  .industry-icon {
+    width: fit-content;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    color: var(--gold);
+    border: 1px solid rgba(209,173,83,0.3);
+    background: rgba(209,173,83,0.07);
+    padding: 8px 9px;
+  }
+
+  .industry-card h4 {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--white);
+    line-height: 1.35;
+  }
+
+  /* ── TALENT ── */
+  #talent { background: var(--surface); }
+
+  .talent-tabs {
+    display: flex;
+    gap: 0;
+    margin-top: 50px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    scrollbar-width: none;
+  }
+
+  .talent-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    font-family: var(--body);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white-faint);
+    background: none;
+    border: none;
+    padding: 14px 22px;
+    min-height: 48px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .tab-btn:hover { color: var(--white-dim); }
+
+  .tab-btn.active {
+    color: var(--gold);
+    border-bottom-color: var(--gold);
+  }
+
+  .talent-panel {
+    display: none;
+    padding: 48px 0 0;
+  }
+
+  .talent-panel.active { display: block; }
+
+  .talent-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .talent-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.92rem;
+    color: var(--white-dim);
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .talent-item::before {
+    content: '';
+    display: block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── WHY ── */
+  #why { background: var(--bg); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .why-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)), var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px 32px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .why-card:hover {
+    border-color: rgba(201,168,76,0.25);
+    transform: translateY(-3px);
+  }
+
+  .why-card-num {
+    font-family: var(--display);
+    font-size: 3rem;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+    margin-bottom: 20px;
+  }
+
+  .why-card h4 {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 12px;
+    letter-spacing: 0.02em;
+  }
+
+  .why-card p {
+    font-size: 0.875rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.7;
+  }
+
+  /* ── PROCESS ── */
+  #process { background: var(--surface); }
+
+  .process-track {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 60px;
+    position: relative;
+  }
+
+  .process-track::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  .process-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,168,76,0.4);
+    background: var(--gold-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--display);
+    font-size: 1.3rem;
+    font-weight: 300;
+    color: var(--gold);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .process-step h4 {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 10px;
+    letter-spacing: 0.03em;
+  }
+
+  .process-step p {
+    font-size: 0.83rem;
+    font-weight: 300;
+    color: var(--white-faint);
+    line-height: 1.6;
+  }
+
+  /* ── MODEL ── */
+  #model {
+    background:
+      linear-gradient(135deg, rgba(44,3,56,0.74) 0%, rgba(20,15,22,0.94) 42%, #090a0d 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #model::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 600px;
+    height: 600px;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent 62%);
+    pointer-events: none;
+  }
+
+  .model-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .model-left .section-title { margin-bottom: 24px; }
+
+  .model-left p {
+    font-size: 0.96rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+
+  .model-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .model-point {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 24px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius);
+  }
+
+  .model-point-icon {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .model-point h4 {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .model-point p {
+    font-size: 0.83rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  /* ── TESTIMONIALS ── */
+  #testimonials { background: var(--bg); }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 60px;
+  }
+
+  .testimonial-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.012)), var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .testimonial-quote {
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gold);
+    opacity: 0.4;
+    line-height: 1;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.75;
+    font-style: italic;
+    flex: 1;
+  }
+
+  .testimonial-attr {
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
+
+  .testimonial-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--white);
+  }
+
+  .testimonial-role {
+    font-size: 0.77rem;
+    color: var(--white-faint);
+    margin-top: 2px;
+  }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--surface); }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 60px;
+  }
+
+  .contact-info h4 {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .contact-info p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--white-dim);
+    line-height: 1.75;
+    margin-bottom: 32px;
+  }
+
+  .contact-details {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .contact-detail {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 0.88rem;
+    color: var(--white-dim);
+  }
+
+  .contact-detail-label {
+    font-family: var(--mono);
+    font-size: 0.67rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--gold);
+    min-width: 60px;
+    padding-top: 2px;
+  }
+
+  .contact-detail a {
+    color: var(--white-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .contact-detail a:hover { color: var(--white); }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 7px; }
+
+  .form-group label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--white-faint);
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: var(--body);
+    font-size: 0.9rem;
+    font-weight: 300;
+    padding: 13px 16px;
+    min-height: 48px;
+    border-radius: var(--radius);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: rgba(201,168,76,0.4);
+  }
+
+  .form-group select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23c9a84c' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  .form-group textarea { resize: vertical; min-height: 120px; }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--white-faint);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-note::before {
+    content: 'Private';
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(209,173,83,0.28);
+    padding: 3px 6px;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    padding: 48px 40px;
+  }
+
+  .footer-inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    width: 180px;
+    padding: 7px 10px;
+    background: rgba(240,237,232,0.94);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 2px;
+  }
+
+  .footer-logo img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: var(--white-faint);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    font-size: 0.78rem;
+    color: var(--white-faint);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav {
+      padding: 0 18px;
+      gap: 12px;
+    }
+    .nav-logo { margin-right: auto; }
+    .nav-cta {
+      order: 2;
+      margin-left: auto;
+    }
+    .nav-toggle {
+      display: inline-flex;
+      order: 3;
+    }
+    .nav-links {
+      order: 4;
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 16px;
+      right: 16px;
+      display: grid;
+      gap: 0;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: rgba(9,10,13,0.96);
+      box-shadow: var(--shadow);
+      transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.2s ease;
+    }
+    nav.open .nav-links {
+      max-height: 420px;
+      opacity: 1;
+      pointer-events: auto;
+      padding: 10px;
+    }
+    .nav-links a {
+      display: block;
+      padding: 14px 12px;
+    }
+    .nav-links li + li { border-top: 1px solid var(--border); }
+    .hero {
+      min-height: auto;
+      padding-top: calc(var(--nav-h) + 48px);
+    }
+    .hero-inner { grid-template-columns: 1fr; }
+    .hero-visual { min-height: 360px; }
+    section { padding: 80px 24px; }
+    .about-grid,
+    .contact-grid,
+    .model-inner { grid-template-columns: 1fr; gap: 48px; }
+    .why-grid { grid-template-columns: 1fr 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .process-track { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .process-track::before { display: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-inner { flex-direction: column; align-items: flex-start; }
+    .talent-tabs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      margin-inline: -24px;
+      padding-inline: 24px;
+      scroll-snap-type: x proximity;
+    }
+    .tab-btn {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+    }
+  }
+
+  @media (max-width: 560px) {
+    :root { --nav-h: 66px; }
+    body { font-size: 15px; }
+    nav {
+      padding: 0 14px;
+    }
+    .nav-logo {
+      width: 132px;
+      height: 40px;
+      padding: 5px 8px;
+    }
+    .nav-cta {
+      padding: 8px 11px;
+      font-size: 0.66rem;
+      letter-spacing: 0.06em;
+    }
+    .hero { padding-inline: 18px; padding-bottom: 56px; }
+    .hero-eyebrow {
+      align-items: flex-start;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+    .hero-eyebrow::before { margin-top: 8px; }
+    .hero-headline {
+      font-size: clamp(2.85rem, 17vw, 4.1rem);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+    .hero-sub { font-size: 1rem; margin-bottom: 34px; }
+    .hero-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .btn-primary,
+    .btn-ghost {
+      width: 100%;
+      padding-inline: 18px;
+    }
+    .hero-stats {
+      grid-template-columns: 1fr;
+      margin-top: 34px;
+    }
+    .hero-stat {
+      padding: 16px 18px;
+    }
+    .hero-stat + .hero-stat {
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+    .hero-visual {
+      min-height: 300px;
+    }
+    .hero-visual-card {
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      padding: 16px;
+    }
+    section { padding: 68px 18px; }
+    .section-title { font-size: clamp(2rem, 11vw, 2.7rem); }
+    .about-grid,
+    .contact-grid,
+    .model-inner { gap: 36px; }
+    .industries-grid,
+    .talent-list {
+      grid-template-columns: 1fr;
+    }
+    .why-grid { grid-template-columns: 1fr; }
+    .process-track { grid-template-columns: 1fr; }
+    .process-step {
+      align-items: flex-start;
+      text-align: left;
+      padding: 0;
+    }
+    .contact-detail {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+    .footer-links { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo" aria-label="Allure Solutions home">
+    <img src="assets/allure-logo-transparent.png" alt="Allure Solutions, LLC">
+  </a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#industries">Industries</a></li>
+    <li><a href="#talent">Talent</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#model">Our Model</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Talent</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-eyebrow">Executive &amp; Technical Search · DFW &amp; Nationwide</div>
+      <h1 class="hero-headline">Precision Talent.<br><em>Proven Impact.</em></h1>
+      <p class="hero-sub">Engineering, executive, and technical talent for the industries building America's infrastructure and future technologies.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Request Talent Support</a>
+        <a href="#about" class="btn-ghost">Learn More</a>
+      </div>
+      <div class="hero-stats" aria-label="Allure Solutions highlights">
+        <div class="hero-stat">
+          <div class="hero-stat-num">20<span>+</span></div>
+          <div class="hero-stat-label">Years in Business</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">25<span>+</span></div>
+          <div class="hero-stat-label">Years Combined Experience</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">10<span>+</span></div>
+          <div class="hero-stat-label">Sectors Served</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" role="img" aria-label="Industrial manufacturing facility representing mission-critical search environments">
+      <div class="hero-visual-card">
+        <div class="visual-kicker">Regulated · Technical · Mission-Critical</div>
+        <p>Built for discreet searches in environments where production, compliance, and leadership continuity all matter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-title">A boutique search firm built<br>for <em>mission-critical</em> environments.</h2>
+    <div class="about-grid reveal">
+      <div class="about-left">
+        <p>Allure Solutions is a national professional and technical recruiting firm headquartered in the <strong>Greater Dallas–Fort Worth area</strong>. Since 2005, we've delivered high-impact talent to organizations operating in regulated, security-sensitive, and safety-critical environments.</p>
+        <p>We are <strong>clearance-aware</strong> and experienced supporting government-contracted operations, export-controlled environments, infrastructure projects, and complex industrial builds. We understand the discretion, urgency, and precision required when hiring leaders who directly impact mission readiness and production performance.</p>
+        <div class="about-badges">
+          <span class="badge">Founded 2005</span>
+          <span class="badge">Minority Woman-Owned</span>
+          <span class="badge">Nationwide Reach</span>
+          <span class="badge">Clearance-Aware</span>
+        </div>
+      </div>
+      <div class="about-right">
+        <div class="about-callout">
+          <h4>Relationship-Driven Search</h4>
+          <p>We don't work from databases. We work from relationships — with deep, industry-specific networks built over two decades of active recruiting.</p>
+        </div>
+        <div class="about-callout">
+          <h4>Confidential by Default</h4>
+          <p>All inquiries are handled with the discretion that regulated, competitive industries require. We protect both client and candidate alike.</p>
+        </div>
+        <div class="about-callout">
+          <h4>Precision over Volume</h4>
+          <p>Every candidate presented is technically qualified and culturally aligned. We don't flood pipelines — we deliver the right person.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- INDUSTRIES -->
+<section id="industries">
+  <div class="section-inner">
+    <div class="section-label">Where We Work</div>
+    <h2 class="section-title">Industries We <em>Serve</em></h2>
+    <p class="section-sub">We support clients across high-performance industrial and infrastructure environments where precision hiring is non-negotiable.</p>
+    <div class="industries-grid reveal">
+      <div class="industry-card">
+        <div class="industry-icon">DEF</div>
+        <h4>Defense &amp; Government Contracting</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">AERO</div>
+        <h4>Aerospace &amp; Aviation</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">MFG</div>
+        <h4>Advanced Manufacturing &amp; Production</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">EPC</div>
+        <h4>General Contracting &amp; EPC Firms</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">PWR</div>
+        <h4>Energy, Utilities &amp; Industrial Facilities</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">DATA</div>
+        <h4>Data Center Development &amp; Operations</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">CIVIL</div>
+        <h4>Infrastructure &amp; Heavy Civil Construction</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">SUP</div>
+        <h4>Building Materials &amp; Industrial Supply Chains</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">GOV</div>
+        <h4>Federal, State &amp; Municipal Projects</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">ENG</div>
+        <h4>Design-Build &amp; Engineering Organizations</h4>
+      </div>
+      <div class="industry-card">
+        <div class="industry-icon">CAPEX</div>
+        <h4>Plant Expansions &amp; Capital Projects</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- TALENT -->
+<section id="talent">
+  <div class="section-inner">
+    <div class="section-label">Who We Place</div>
+    <h2 class="section-title">Executive &amp; Specialized<br><em>Talent</em></h2>
+    <p class="section-sub">From senior leadership to specialized technical contributors — we deliver professionals who drive performance from day one.</p>
+    <div class="talent-tabs">
+      <button class="tab-btn active" data-tab="executive">Executive &amp; Leadership</button>
+      <button class="tab-btn" data-tab="engineering">Engineering &amp; Technical</button>
+      <button class="tab-btn" data-tab="manufacturing">Manufacturing &amp; Ops</button>
+      <button class="tab-btn" data-tab="construction">Construction &amp; EPC</button>
+      <button class="tab-btn" data-tab="corporate">Corporate &amp; Professional</button>
+      <button class="tab-btn" data-tab="skilled">Skilled Technical</button>
+    </div>
+
+    <div class="talent-panel active" id="tab-executive">
+      <div class="talent-list">
+        <div class="talent-item">C-Suite Executives</div>
+        <div class="talent-item">Vice Presidents — Operations, Manufacturing, Engineering</div>
+        <div class="talent-item">Plant &amp; Operations Leaders</div>
+        <div class="talent-item">General Managers</div>
+        <div class="talent-item">Directors of Engineering &amp; Operations</div>
+      </div>
+    </div>
+
+    <div class="talent-panel" id="tab-engineering">
+      <div class="talent-list">
+        <div class="talent-item">Mechanical &amp; Electrical Engineers</div>
+        <div class="talent-item">Controls &amp; Automation Engineers</div>
+        <div class="talent-item">Process &amp; Manufacturing Engineers</div>
+        <div class="talent-item">Project &amp; Design Engineers</div>
+        <div class="talent-item">Program &amp; Project Management</div>
+        <div class="talent-item">Reliability &amp; Quality Leaders</div>
+        <div class="talent-item">Maintenance Engineering Management</div>
+      </div>
+    </div>
+
+    <div class="talent-panel" id="tab-manufacturing">
+      <div class="talent-list">
+        <div class="talent-item">Production &amp; Plant Managers</div>
+        <div class="talent-item">Continuous Improvement — Lean / Six Sigma</div>
+        <div class="talent-item">Supply Chain &amp; Procurement Leaders</div>
+        <div class="talent-item">Warehouse &amp; Logistics Leadership</div>
+        <div class="talent-item">Maintenance Management</div>
+      </div>
+    </div>
+
+    <div class="talent-panel" id="tab-construction">
+      <div class="talent-list">
+        <div class="talent-item">Project &amp; Construction Managers</div>
+        <div class="talent-item">Superintendents</div>
+        <div class="talent-item">Estimating &amp; Scheduling Professionals</div>
+        <div class="talent-item">Field &amp; Commissioning Engineers</div>
+        <div class="talent-item">Safety &amp; Compliance Leadership</div>
+      </div>
+    </div>
+
+    <div class="talent-panel" id="tab-corporate">
+      <div class="talent-list">
+        <div class="talent-item">HR Leadership — HR, HRBP, Talent Acquisition</div>
+        <div class="talent-item">Finance &amp; Accounting Professionals</div>
+        <div class="talent-item">Controllers &amp; Cost Accounting Leaders</div>
+        <div class="talent-item">Financial Planning &amp; Analysis (FP&amp;A)</div>
+        <div class="talent-item">Sales &amp; Business Development Leadership</div>
+        <div class="talent-item">Customer Experience &amp; Operations Support</div>
+      </div>
+    </div>
+
+    <div class="talent-panel" id="tab-skilled">
+      <div class="talent-list">
+        <div class="talent-item">Controls &amp; PLC Technicians</div>
+        <div class="talent-item">Maintenance &amp; Reliability Technicians</div>
+        <div class="talent-item">Electricians &amp; Millwrights</div>
+        <div class="talent-item">CNC &amp; Precision Machining Professionals</div>
+        <div class="talent-item">Field Service Specialists</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- WHY -->
+<section id="why">
+  <div class="section-inner">
+    <div class="section-label">Why Partner With Us</div>
+    <h2 class="section-title">What sets our search<br>practice <em>apart</em></h2>
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <div class="why-card-num">01</div>
+        <h4>Clearance-Aware Recruiting</h4>
+        <p>We understand clearance levels, export-controlled environments, and the discretion required in regulated sectors. No learning curve on your time.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-num">02</div>
+        <h4>Industry-Specific Expertise</h4>
+        <p>We don't recruit broadly. Our focus on defense, aerospace, manufacturing, and industrial construction means we speak the language of your environment.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-num">03</div>
+        <h4>Nationwide Network</h4>
+        <p>Two decades of relationship-building across the U.S. gives us access to passive candidates who never apply through traditional channels.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-num">04</div>
+        <h4>Confidential Searches</h4>
+        <p>Sensitive roles require discreet execution. We protect your organization's interests at every stage of the engagement.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-num">05</div>
+        <h4>Hard-to-Fill Specialists</h4>
+        <p>The roles that have been open for months. The technical profiles that don't respond to job boards. That's our wheelhouse.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-card-num">06</div>
+        <h4>Relationship-Driven Approach</h4>
+        <p>We don't send resumes — we deliver vetted professionals we'd stake our reputation on. Every placement is a long-term relationship, not a transaction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-inner">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">A focused, four-step<br><em>search process</em></h2>
+    <div class="process-track reveal">
+      <div class="process-step">
+        <div class="step-circle">1</div>
+        <h4>Discovery &amp; Strategy</h4>
+        <p>We learn your environment, culture, technical requirements, and the real cost of the open seat.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">2</div>
+        <h4>Talent Identification</h4>
+        <p>Market mapping, targeted outreach, and network activation — reaching candidates others can't.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">3</div>
+        <h4>Candidate Evaluation</h4>
+        <p>Technical screening, cultural fit assessment, and reference validation before we present anyone.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-circle">4</div>
+        <h4>Placement &amp; Follow-Up</h4>
+        <p>We support the offer, transition, and onboarding process — and stay engaged post-hire.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- MODEL -->
+<section id="model">
+  <div class="model-inner section-inner">
+    <div class="model-left reveal">
+      <div class="section-label">Our Engagement Model</div>
+      <h2 class="section-title">Performance-driven.<br><em>No upfront fees.</em></h2>
+      <p>Our contingency-based executive search model is built to align our success directly with yours. We invest heavily in market mapping, targeted outreach, and candidate evaluation — and we only engage financially when we successfully place the right candidate.</p>
+      <p>If the right match isn't delivered, there is no cost. Simple, transparent, and performance-driven.</p>
+    </div>
+    <div class="model-right reveal">
+      <div class="model-point">
+        <div class="model-point-icon">$0</div>
+        <div>
+          <h4>No Upfront Fees</h4>
+          <p>No retainer. No hourly billing. We're engaged to deliver outcomes, not activity.</p>
+        </div>
+      </div>
+      <div class="model-point">
+        <div class="model-point-icon">✓</div>
+        <div>
+          <h4>Pay Only on Success</h4>
+          <p>You engage financially only when we successfully place the right candidate in your organization.</p>
+        </div>
+      </div>
+      <div class="model-point">
+        <div class="model-point-icon">⟳</div>
+        <div>
+          <h4>Aligned Incentives</h4>
+          <p>Our success is your success. We have as much stake in getting it right as you do.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-inner">
+    <div class="section-label">Client Voices</div>
+    <h2 class="section-title">Our clients <em>speak for us</em></h2>
+    <div class="testimonials-grid reveal">
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">Allure Solutions found us a Controls Engineering Manager in under three weeks — a role we'd been trying to fill for five months. The candidate was technically excellent and an immediate culture fit.</p>
+        <div class="testimonial-attr">
+          <div class="testimonial-name">VP of Operations</div>
+          <div class="testimonial-role">Advanced Manufacturing · Texas</div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">They understood our clearance requirements and regulatory environment from day one. No hand-holding needed. That alone saved us weeks of explaining the role to other firms.</p>
+        <div class="testimonial-attr">
+          <div class="testimonial-name">Director of HR</div>
+          <div class="testimonial-role">Defense Contracting · Southeast</div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote">"</div>
+        <p class="testimonial-text">We've worked with several recruiting firms over the years. Allure is the only one that consistently brings us candidates we'd actually hire — not just candidates who hit keyword checkboxes.</p>
+        <div class="testimonial-attr">
+          <div class="testimonial-name">General Manager</div>
+          <div class="testimonial-role">EPC &amp; Heavy Construction · Midwest</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-rule">
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-label">Get in Touch</div>
+    <h2 class="section-title">Let's build your<br><em>next team</em></h2>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <p>We partner with organizations across engineering, manufacturing, construction, aerospace, defense, and industrial sectors. Reach out to discuss your hiring needs — or to explore career opportunities.</p>
+        <div class="contact-details">
+          <div class="contact-detail">
+            <span class="contact-detail-label">Phone</span>
+            <div>
+              <a href="tel:14695868806">(469) 586-8806</a><br>
+              <a href="tel:14693949583">(469) 394-9583</a>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <span class="contact-detail-label">Email</span>
+            <div>
+              <a href="mailto:snicole@allure-solutions.com">snicole@allure-solutions.com</a><br>
+              <a href="mailto:mtucker@allure-solutions.com">mtucker@allure-solutions.com</a>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <span class="contact-detail-label">Location</span>
+            <span>Greater Dallas–Fort Worth Area · Nationwide</span>
+          </div>
+          <div class="contact-detail">
+            <span class="contact-detail-label">LinkedIn</span>
+            <a href="https://www.linkedin.com/in/shanthomas/" target="_blank" rel="noopener">linkedin.com/in/shanthomas</a>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" id="name" placeholder="Your name">
+            </div>
+            <div class="form-group">
+              <label for="company">Company</label>
+              <input type="text" id="company" placeholder="Organization">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="you@company.com">
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" placeholder="(000) 000-0000">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="inquiry">Inquiry Type</label>
+            <select id="inquiry">
+              <option value="">Select one...</option>
+              <option>I'm hiring — I need talent</option>
+              <option>I'm a candidate — submit my resume</option>
+              <option>General inquiry</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" placeholder="Tell us about the role or opportunity..."></textarea>
+          </div>
+          <p class="form-note">All inquiries are handled with complete confidentiality.</p>
+          <button type="submit" class="btn-primary" style="align-self:flex-start;">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <img src="assets/allure-logo-transparent.png" alt="Allure Solutions, LLC">
+    </div>
+    <div class="footer-copy">© 2026 Allure Solutions, LLC · All rights reserved · Greater DFW · Nationwide</div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/shanthomas/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#contact">Contact</a>
+      <a href="#about">About</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile navigation
+  const nav = document.querySelector('nav');
+  const navToggle = document.querySelector('.nav-toggle');
+  const closeNav = () => {
+    nav.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+  };
+
+  navToggle.addEventListener('click', () => {
+    const isOpen = !nav.classList.contains('open');
+    nav.classList.toggle('open', isOpen);
+    navToggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  document.querySelectorAll('.nav-links a, .nav-cta').forEach(link => {
+    link.addEventListener('click', closeNav);
+  });
+
+  window.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeNav();
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Talent tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.talent-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+    });
+  });
+
+  // Nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 100) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current
+        ? 'var(--gold)'
+        : '';
+    });
+  });
+</script>
+</body>
+</html>
