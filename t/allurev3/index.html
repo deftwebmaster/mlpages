@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- * lone wolf, quiet teeth | Matt Livingston -->
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Delivering engineering, executive, & technical talent for industries building America's infrastructure & future technologies." />
+<title>Allure Solutions, LLC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --purple-deep:   #2c0338;
+    --purple-mid:    #4a0860;
+    --purple-light:  #7b2d96;
+    --gold:          #c9a44e;
+    --gold-light:    #e8c97a;
+    --cream:         #f8f4ef;
+    --cream-dark:    #ede8e1;
+    --white:         #ffffff;
+    --text-dark:     #1a0820;
+    --text-mid:      #3d1a4f;
+    --text-muted:    #7a5a88;
+    --border:        rgba(44,3,56,0.12);
+    --border-gold:   rgba(201,164,78,0.3);
+    --font-serif:    'Cormorant Garamond', Georgia, serif;
+    --font-sans:     'DM Sans', sans-serif;
+    --radius:        6px;
+    --radius-lg:     12px;
+    --shadow:        0 2px 16px rgba(44,3,56,0.08);
+    --shadow-lg:     0 8px 40px rgba(44,3,56,0.14);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-dark);
+    background: var(--cream);
+  }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    background: var(--purple-deep);
+    color: rgba(255,255,255,0.75);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    padding: 6px 0;
+    text-align: center;
+  }
+  .topbar a { color: var(--gold-light); text-decoration: none; }
+  .topbar-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  /* ─── NAV ─── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 12px rgba(44,3,56,0.07);
+  }
+  .nav-inner {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .nav-logo {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+  }
+  .nav-logo-main {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--purple-deep);
+    line-height: 1;
+    letter-spacing: 0.01em;
+  }
+  .nav-logo-sub {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 3px;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-mid);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--purple-light); }
+  .nav-cta {
+    background: var(--purple-deep);
+    color: var(--white) !important;
+    padding: 8px 20px;
+    border-radius: var(--radius);
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--purple-mid) !important; color: var(--white) !important; }
+
+  /* Hamburger */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: var(--radius);
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--purple-deep);
+    border-radius: 2px;
+    transition: transform 0.25s, opacity 0.25s;
+    transform-origin: center;
+  }
+  .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu {
+    display: none;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px 24px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    box-shadow: var(--shadow-lg);
+    z-index: 99;
+  }
+  .mobile-menu.open { display: block; }
+  .mobile-menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .mobile-menu a {
+    display: block;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-mid);
+    text-decoration: none;
+    border-radius: var(--radius);
+    transition: background 0.15s;
+  }
+  .mobile-menu a:hover { background: var(--cream); }
+  .mobile-menu .mobile-cta {
+    margin-top: 12px;
+    display: block;
+    background: var(--purple-deep);
+    color: var(--white);
+    text-align: center;
+    padding: 14px;
+    border-radius: var(--radius);
+    font-weight: 500;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: var(--purple-deep);
+    color: var(--white);
+    padding: 96px 24px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(123,45,150,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,164,78,0.15);
+    border: 1px solid rgba(201,164,78,0.4);
+    color: var(--gold-light);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 40px;
+    margin-bottom: 28px;
+  }
+  .hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(42px, 6vw, 72px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    margin-bottom: 24px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .hero-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.72);
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.65;
+  }
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .btn-primary {
+    background: var(--gold);
+    color: var(--purple-deep);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    border: 1px solid rgba(255,255,255,0.3);
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+  .btn-ghost:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.06); }
+  .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+  }
+  .hero-stat-num {
+    font-family: var(--font-serif);
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+  .hero-stat-label {
+    font-size: 12px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-top: 5px;
+  }
+
+  /* ─── SECTIONS ─── */
+  section { padding: 80px 24px; }
+  .section-inner { max-width: 1140px; margin: 0 auto; }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--purple-light);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600;
+    color: var(--purple-deep);
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .section-lead {
+    font-size: 17px;
+    color: var(--text-muted);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+
+  /* ─── MISSION ─── */
+  .mission { background: var(--white); }
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+    margin-top: 56px;
+  }
+  .mission-text p {
+    color: var(--text-mid);
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+  .mission-callout {
+    background: var(--cream);
+    border-left: 3px solid var(--gold);
+    padding: 28px 32px;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  }
+  .mission-callout blockquote {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-style: italic;
+    color: var(--purple-deep);
+    line-height: 1.6;
+  }
+  .mission-callout cite {
+    display: block;
+    margin-top: 16px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-style: normal;
+    font-family: var(--font-sans);
+  }
+
+  /* ─── INDUSTRIES ─── */
+  .industries { background: var(--cream-dark); }
+  .industries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 48px;
+  }
+  .industry-item {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-mid);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .industry-item::before {
+    content: '';
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  /* ─── TALENT ─── */
+  .talent { background: var(--white); }
+  .talent-intro {
+    max-width: 680px;
+    margin-bottom: 56px;
+  }
+  .talent-cats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .talent-cat {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .talent-cat:hover {
+    border-color: var(--border-gold);
+    box-shadow: var(--shadow);
+  }
+  .talent-cat-title {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--purple-deep);
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .talent-cat ul { list-style: none; }
+  .talent-cat li {
+    font-size: 14px;
+    color: var(--text-mid);
+    padding: 5px 0;
+    padding-left: 14px;
+    position: relative;
+  }
+  .talent-cat li::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  /* ─── WHY ─── */
+  .why { background: var(--purple-deep); color: var(--white); }
+  .why .section-heading { color: var(--white); }
+  .why .section-label { color: var(--gold-light); }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 48px;
+  }
+  .why-item {
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    transition: border-color 0.2s;
+  }
+  .why-item:hover { border-color: rgba(201,164,78,0.4); }
+  .why-check {
+    font-size: 20px;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .why-item h4 {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .why-item p { font-size: 14px; color: rgba(255,255,255,0.6); line-height: 1.65; }
+
+  /* ─── PROCESS ─── */
+  .process { background: var(--cream); }
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 48px;
+    position: relative;
+  }
+  .step {
+    text-align: center;
+    padding: 32px 20px;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+  }
+  .step-num {
+    font-family: var(--font-serif);
+    font-size: 48px;
+    font-weight: 600;
+    color: var(--cream-dark);
+    line-height: 1;
+    margin-bottom: 12px;
+  }
+  .step h4 {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--purple-deep);
+    margin-bottom: 8px;
+  }
+  .step p { font-size: 14px; color: var(--text-muted); }
+  .model-note {
+    margin-top: 48px;
+    background: var(--white);
+    border: 1px solid var(--border-gold);
+    border-radius: var(--radius-lg);
+    padding: 40px 48px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .model-note-left { flex: 1; min-width: 200px; }
+  .model-note-left .section-label { margin-bottom: 8px; }
+  .model-note-left h3 {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--purple-deep);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .model-note-right { flex: 2; min-width: 260px; }
+  .model-note-right p {
+    font-size: 15px;
+    color: var(--text-mid);
+    margin-bottom: 12px;
+    line-height: 1.75;
+  }
+
+  /* ─── APPLY ─── */
+  .apply { background: var(--white); }
+  .apply-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    margin-top: 56px;
+    align-items: flex-start;
+  }
+  .apply-copy p {
+    font-size: 16px;
+    color: var(--text-mid);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .apply-note {
+    margin-top: 24px;
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .apply-note::before {
+    content: '🔒';
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  form { display: flex; flex-direction: column; gap: 14px; }
+  form label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: block;
+    margin-bottom: 4px;
+  }
+  form input, form textarea {
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    color: var(--text-dark);
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  form input:focus, form textarea:focus { border-color: var(--purple-light); }
+  form textarea { min-height: 80px; resize: vertical; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ─── CONTACT ─── */
+  .contact { background: var(--cream-dark); }
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    margin-top: 48px;
+  }
+  .contact-info { display: flex; flex-direction: column; gap: 20px; }
+  .contact-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .contact-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--purple-deep);
+    color: var(--gold-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .contact-item-text strong {
+    display: block;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+  }
+  .contact-item-text a, .contact-item-text span {
+    font-size: 15px;
+    color: var(--text-mid);
+    text-decoration: none;
+  }
+  .contact-item-text a:hover { color: var(--purple-light); }
+  .hours-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .hours-table tr td { padding: 7px 0; font-size: 14px; color: var(--text-mid); border-bottom: 1px solid var(--border); }
+  .hours-table tr:last-child td { border-bottom: none; }
+  .hours-table td:last-child { text-align: right; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--purple-deep);
+    color: rgba(255,255,255,0.55);
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 13px;
+  }
+  footer a { color: var(--gold-light); text-decoration: none; }
+  footer p + p { margin-top: 6px; }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+
+    .mission-grid,
+    .apply-grid,
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+
+    .form-row { grid-template-columns: 1fr; }
+    .model-note { padding: 28px 24px; gap: 24px; }
+
+    section { padding: 60px 20px; }
+    .hero { padding: 72px 20px 60px; }
+    .hero-stats { gap: 32px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 36px; }
+    .hero-stats { flex-direction: column; gap: 24px; }
+    .talent-cats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>Founded 2005 &nbsp;·&nbsp; Minority Woman-Owned &nbsp;·&nbsp; Nationwide Recruiting</span>
+    <a href="tel:14695868806">(469) 586-8806</a>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-main">Allure Solutions</span>
+      <span class="nav-logo-sub">Executive &amp; Technical Search</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#industries">Industries</a></li>
+      <li><a href="#talent">Talent</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#apply" class="nav-cta">Submit Resume</a></li>
+    </ul>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <ul>
+      <li><a href="#about" class="mobile-link">About</a></li>
+      <li><a href="#industries" class="mobile-link">Industries</a></li>
+      <li><a href="#talent" class="mobile-link">Talent We Place</a></li>
+      <li><a href="#process" class="mobile-link">Our Process</a></li>
+      <li><a href="#contact" class="mobile-link">Contact</a></li>
+    </ul>
+    <a href="#apply" class="mobile-cta mobile-link">Submit Resume</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Precision Talent · Proven Impact</div>
+  <h1>Engineering &amp; Executive<br><em>Talent That Performs</em></h1>
+  <p class="hero-sub">Delivering specialized talent for defense, aerospace, manufacturing, construction, and infrastructure industries building America's future.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Request Talent</a>
+    <a href="#apply" class="btn-ghost">Submit Your Resume</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num">20+</div>
+      <div class="hero-stat-label">Years Founded</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">DFW</div>
+      <div class="hero-stat-label">Headquartered</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">Nationwide</div>
+      <div class="hero-stat-label">Recruiting Reach</div>
+    </div>
+    <div>
+      <div class="hero-stat-num">MWBE</div>
+      <div class="hero-stat-label">Certified Firm</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / MISSION -->
+<section class="mission" id="about">
+  <div class="section-inner">
+    <div class="section-label">Who We Are</div>
+    <h2 class="section-heading">Built on Relationships.<br>Driven by Results.</h2>
+    <div class="mission-grid">
+      <div class="mission-text">
+        <p>Allure Solutions, LLC is a national professional and technical recruiting firm headquartered in the Greater Dallas–Fort Worth area, specializing in Defense, Aerospace, Advanced Manufacturing, and Commercial &amp; Industrial Construction talent acquisition.</p>
+        <p>Founded in 2005, we are a minority, woman-owned search firm with over 25 years of combined industry experience. We support organizations operating in regulated, security-sensitive, safety-driven, and mission-critical environments.</p>
+        <p>Our team is clearance-aware and experienced supporting government-contracted operations, export-controlled environments, infrastructure projects, and complex industrial builds.</p>
+      </div>
+      <div class="mission-callout">
+        <blockquote>"From executive leadership to highly specialized technical talent, we help companies build teams that drive operational excellence and long-term growth."</blockquote>
+        <cite>— Allure Solutions, LLC</cite>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section class="industries" id="industries">
+  <div class="section-inner">
+    <div class="section-label">Where We Work</div>
+    <h2 class="section-heading">Industries We Serve</h2>
+    <p class="section-lead">We support clients across high-performance industrial and infrastructure environments.</p>
+    <div class="industries-grid">
+      <div class="industry-item">Defense &amp; Government Contracting</div>
+      <div class="industry-item">Aerospace &amp; Aviation</div>
+      <div class="industry-item">Manufacturing &amp; Production</div>
+      <div class="industry-item">General Contracting &amp; EPC Firms</div>
+      <div class="industry-item">Design-Build &amp; Engineering</div>
+      <div class="industry-item">Infrastructure &amp; Heavy Civil</div>
+      <div class="industry-item">Data Center Development</div>
+      <div class="industry-item">Energy, Utilities &amp; Industrial</div>
+      <div class="industry-item">Plant Expansions &amp; Capital Projects</div>
+      <div class="industry-item">Building Materials &amp; Supply Chains</div>
+      <div class="industry-item">Federal, State &amp; Municipal Projects</div>
+    </div>
+  </div>
+</section>
+
+<!-- TALENT -->
+<section class="talent" id="talent">
+  <div class="section-inner">
+    <div class="talent-intro">
+      <div class="section-label">What We Deliver</div>
+      <h2 class="section-heading">Executive &amp; Specialized Talent</h2>
+      <p class="section-lead">We partner with organizations across engineering, industrial, construction, and corporate environments to deliver high-impact professionals — from technical contributors to senior leadership.</p>
+    </div>
+    <div class="talent-cats">
+      <div class="talent-cat">
+        <div class="talent-cat-title">Executive &amp; Leadership</div>
+        <ul>
+          <li>C-Suite Executives</li>
+          <li>Vice Presidents (Ops, Mfg, Eng)</li>
+          <li>Plant &amp; Operations Leaders</li>
+          <li>General Managers</li>
+          <li>Directors of Engineering</li>
+        </ul>
+      </div>
+      <div class="talent-cat">
+        <div class="talent-cat-title">Engineering &amp; Technical</div>
+        <ul>
+          <li>Mechanical &amp; Electrical Engineers</li>
+          <li>Controls &amp; Automation Engineers</li>
+          <li>Process &amp; Manufacturing Engineers</li>
+          <li>Project &amp; Design Engineers</li>
+          <li>Reliability &amp; Quality Leaders</li>
+        </ul>
+      </div>
+      <div class="talent-cat">
+        <div class="talent-cat-title">Manufacturing &amp; Operations</div>
+        <ul>
+          <li>Production &amp; Plant Managers</li>
+          <li>Lean / Six Sigma Leaders</li>
+          <li>Supply Chain &amp; Procurement</li>
+          <li>Warehouse &amp; Logistics Leadership</li>
+          <li>Maintenance Management</li>
+        </ul>
+      </div>
+      <div class="talent-cat">
+        <div class="talent-cat-title">Construction &amp; Capital Projects</div>
+        <ul>
+          <li>Project &amp; Construction Managers</li>
+          <li>Superintendents</li>
+          <li>Estimating &amp; Scheduling</li>
+          <li>Field &amp; Commissioning Engineers</li>
+          <li>Safety &amp; Compliance Leadership</li>
+        </ul>
+      </div>
+      <div class="talent-cat">
+        <div class="talent-cat-title">Corporate &amp; Professional</div>
+        <ul>
+          <li>HR Leadership &amp; Talent Acquisition</li>
+          <li>Finance, Accounting &amp; FP&amp;A</li>
+          <li>Controllers &amp; Cost Accounting</li>
+          <li>Sales &amp; Business Development</li>
+          <li>Customer Experience &amp; Ops Support</li>
+        </ul>
+      </div>
+      <div class="talent-cat">
+        <div class="talent-cat-title">Skilled Technical Talent</div>
+        <ul>
+          <li>Controls &amp; PLC Technicians</li>
+          <li>Maintenance &amp; Reliability Techs</li>
+          <li>Electricians &amp; Millwrights</li>
+          <li>CNC &amp; Precision Machining</li>
+          <li>Field Service Specialists</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="why">
+  <div class="section-inner">
+    <div class="section-label">Why Allure</div>
+    <h2 class="section-heading">Why Partner With Us</h2>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Clearance-Aware Recruiting</h4>
+        <p>Deep familiarity with regulated, security-sensitive environments including government-contracted and export-controlled operations.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Industry-Specific Expertise</h4>
+        <p>25+ years of combined experience across the sectors we serve — we speak the language of your industry.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Nationwide Network</h4>
+        <p>Active relationships with engineering, operations, and executive talent across the entire country.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Confidential Searches</h4>
+        <p>All inquiries and searches handled with professional discretion in competitive and regulated industries.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Relationship-Driven</h4>
+        <p>Consultative partnerships, not transactional placements. We invest in understanding your organization's culture and goals.</p>
+      </div>
+      <div class="why-item">
+        <div class="why-check">✔</div>
+        <h4>Hard-to-Fill Specialists</h4>
+        <p>Skilled at identifying niche technical talent and passive candidates who aren't actively searching.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="section-inner">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-heading">The Process</h2>
+    <p class="section-lead">A simple, transparent four-step approach built around delivering outcomes — not activity.</p>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h4>Discovery &amp; Strategy</h4>
+        <p>We learn your organization, culture, and exact talent requirements.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h4>Talent Identification</h4>
+        <p>Market mapping, targeted outreach, and sourcing from our active national network.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h4>Candidate Evaluation</h4>
+        <p>Thorough vetting for technical fit, compliance alignment, and cultural match.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <h4>Placement &amp; Follow-Up</h4>
+        <p>We support through offer, onboarding, and retention to ensure long-term success.</p>
+      </div>
+    </div>
+    <div class="model-note">
+      <div class="model-note-left">
+        <div class="section-label">Our Model</div>
+        <h3>Contingency-Based Executive Search</h3>
+      </div>
+      <div class="model-note-right">
+        <p>Our approach is built on a contingency-based model designed to align our success directly with yours. There are no upfront fees or retained costs — we are engaged to deliver outcomes, not activity.</p>
+        <p>You only engage financially when we successfully place the right candidate. If the right match is not delivered, there is no cost. Simple, transparent, and performance-driven.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPLY -->
+<section class="apply" id="apply">
+  <div class="section-inner">
+    <div class="section-label">Join Our Network</div>
+    <h2 class="section-heading">We're Hiring</h2>
+    <div class="apply-grid">
+      <div class="apply-copy">
+        <p>Looking for your next opportunity in engineering, manufacturing, construction, or technical roles? We work with candidates nationwide across a broad range of disciplines and seniority levels.</p>
+        <p>Submit your resume for confidential consideration. A member of our team will reach out if a relevant opportunity becomes available.</p>
+        <div class="apply-note">All candidate inquiries are handled with complete confidentiality and professional discretion.</div>
+      </div>
+      <form name="apply" onsubmit="handleForm(event, this)">
+        <div class="form-row">
+          <div>
+            <label for="apply-name">Full Name</label>
+            <input type="text" id="apply-name" name="name" placeholder="Jane Smith" required />
+          </div>
+          <div>
+            <label for="apply-phone">Phone</label>
+            <input type="tel" id="apply-phone" name="phone" placeholder="(469) 000-0000" />
+          </div>
+        </div>
+        <div>
+          <label for="apply-email">Email Address</label>
+          <input type="email" id="apply-email" name="email" placeholder="jane@example.com" required />
+        </div>
+        <div>
+          <label for="apply-role">Current Role / Discipline</label>
+          <input type="text" id="apply-role" name="role" placeholder="e.g. Mechanical Engineer, Plant Manager" />
+        </div>
+        <button type="submit" class="btn-primary" style="align-self:flex-start;">Submit Application</button>
+        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">This site is protected by reCAPTCHA.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-inner">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-heading">Let's Build Your Next Team</h2>
+    <p class="section-lead">Reach out to discuss your hiring needs or opportunities. All inquiries are handled with professionalism and discretion.</p>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div class="contact-item-text">
+            <strong>Location</strong>
+            <span>Greater Dallas–Fort Worth Area<br>Nationwide Recruiting Firm</span>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div class="contact-item-text">
+            <strong>Phone</strong>
+            <a href="tel:4695868806">(469) 586-8806</a><br>
+            <a href="tel:4693949583">(469) 394-9583</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div class="contact-item-text">
+            <strong>Email</strong>
+            <a href="mailto:snicole@allure-solutions.com">snicole@allure-solutions.com</a><br>
+            <a href="mailto:mtucker@allure-solutions.com">mtucker@allure-solutions.com</a>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">🔗</div>
+          <div class="contact-item-text">
+            <strong>LinkedIn</strong>
+            <a href="https://www.linkedin.com/in/shanthomas/" target="_blank" rel="noopener">linkedin.com/in/shanthomas</a><br>
+            <a href="https://www.linkedin.com/in/alluresolutions/" target="_blank" rel="noopener">linkedin.com/in/alluresolutions</a>
+          </div>
+        </div>
+        <div>
+          <table class="hours-table">
+            <thead><tr><td colspan="2" style="font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); padding-bottom:8px;">Business Hours</td></tr></thead>
+            <tbody>
+              <tr><td>Monday – Friday</td><td>9:00 am – 5:00 pm</td></tr>
+              <tr><td>Saturday</td><td style="color:var(--text-muted)">Closed</td></tr>
+              <tr><td>Sunday</td><td style="color:var(--text-muted)">Closed</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <form name="contact" onsubmit="handleForm(event, this)">
+        <div class="form-row">
+          <div>
+            <label for="c-name">Name</label>
+            <input type="text" id="c-name" name="name" placeholder="Your name" required />
+          </div>
+          <div>
+            <label for="c-company">Company</label>
+            <input type="text" id="c-company" name="company" placeholder="Your company" />
+          </div>
+        </div>
+        <div>
+          <label for="c-email">Email</label>
+          <input type="email" id="c-email" name="email" placeholder="you@company.com" required />
+        </div>
+        <div>
+          <label for="c-phone">Phone</label>
+          <input type="tel" id="c-phone" name="phone" placeholder="(469) 000-0000" />
+        </div>
+        <div>
+          <label for="c-message">How can we help?</label>
+          <textarea id="c-message" name="message" placeholder="Tell us about your hiring needs or inquiry..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="align-self:flex-start;">Request Talent Support</button>
+        <p style="font-size:12px; color:var(--text-muted); margin-top:4px;">This site is protected by reCAPTCHA.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Copyright &copy; 2026 Allure Solutions, LLC — All Rights Reserved.</p>
+  <p>Greater Dallas–Fort Worth &nbsp;·&nbsp; <a href="tel:4695868806">(469) 586-8806</a> &nbsp;·&nbsp; <a href="mailto:snicole@allure-solutions.com">snicole@allure-solutions.com</a></p>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+    mobileMenu.setAttribute('aria-hidden', !isOpen);
+  });
+
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', false);
+      mobileMenu.setAttribute('aria-hidden', true);
+    });
+  });
+
+  function handleForm(e, form) {
+    e.preventDefault();
+    const btn = form.querySelector('button[type="submit"]');
+    btn.textContent = 'Sent ✓';
+    btn.style.background = '#3B6D11';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = form.name === 'apply' ? 'Submit Application' : 'Request Talent Support';
+      btn.style.background = '';
+      btn.disabled = false;
+      form.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
