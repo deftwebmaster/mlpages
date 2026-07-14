@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Quantity Calculator — Minecraft Tools</title>
+<meta name="description" content="Calculate how many blocks a wall, floor, solid, or hollow build needs — with stack and shulker box breakdowns.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .shape-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .shape-tab {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    background: var(--panel); color: var(--text-dim); border: var(--border-w) solid var(--panel-border);
+    min-height: 44px; padding: 9px 14px; cursor: pointer;
+  }
+  .shape-tab.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--text-faint); margin: -8px 0 20px; line-height: 1.5; }
+  .opening-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) 44px;
+    gap: 8px;
+    align-items: end;
+    margin-bottom: 8px;
+  }
+  .opening-mini {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 6px;
+    align-items: center;
+  }
+  .opening-mini span {
+    color: var(--text-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .opening-mini input { width: 100%; min-width: 0; }
+  .opening-row .remove-opening {
+    background: none; border: var(--border-w) solid var(--panel-border); color: var(--text-faint);
+    cursor: pointer; width: 44px; height: 44px; padding: 0; font-family: 'JetBrains Mono', monospace; line-height: 1;
+  }
+  .opening-row .remove-opening:hover { color: var(--redstone); border-color: var(--redstone); }
+  .opening-subtotal { font-size: 12px; color: var(--text-faint); margin: 6px 0 0; font-family: 'JetBrains Mono', monospace; }
+  @media (max-width: 560px) {
+    .shape-tab { flex: 1 1 100%; }
+    .opening-row { grid-template-columns: 1fr; }
+    .opening-row .remove-opening { width: 100%; }
+  }
+</style>
+
+</head>
+<body data-tool="blocks">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/" aria-current="page">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Build Planning</p>
+  <h1>Block Quantity<br>Calculator</h1>
+  <p class="subtitle">Pick a shape, enter dimensions in blocks, get the total plus a stack and shulker-box breakdown.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="shape-tabs" id="shapeTabs">
+      <button class="shape-tab active" data-shape="wall">Wall</button>
+      <button class="shape-tab" data-shape="floor">Floor / Ceiling</button>
+      <button class="shape-tab" data-shape="solid">Solid Cube</button>
+      <button class="shape-tab" data-shape="hollow">Hollow Box</button>
+    </div>
+
+    <div id="wallFields">
+      <div class="row">
+        <div class="field"><label for="wLength">Footprint Length</label><input type="number" id="wLength" min="1" value="10"></div>
+        <div class="field"><label for="wWidth">Footprint Width</label><input type="number" id="wWidth" min="1" value="8"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="wHeight">Wall Height</label><input type="number" id="wHeight" min="1" value="4"></div>
+        <div class="field"><label for="wThick">Thickness</label><input type="number" id="wThick" min="1" value="1"></div>
+      </div>
+      <p class="hint">Outer footprint ring × height, minus any openings below. Corners are counted once.</p>
+
+      <div class="openings-label">Doors &amp; Windows</div>
+      <div id="openingsList"></div>
+      <button class="btn btn-ghost" id="addOpeningBtn" type="button">+ Add Opening</button>
+      <p class="opening-subtotal" id="openingSubtotal">Subtracting 0 blocks for openings</p>
+    </div>
+
+    <div id="floorFields" style="display:none">
+      <div class="row">
+        <div class="field"><label for="fLength">Length</label><input type="number" id="fLength" min="1" value="10"></div>
+        <div class="field"><label for="fWidth">Width</label><input type="number" id="fWidth" min="1" value="8"></div>
+      </div>
+      <div class="field"><label for="fLayers">Layers</label><input type="number" id="fLayers" min="1" value="1"></div>
+      <p class="hint">Length × width × layers. Use 2 layers for a floor you also want a ceiling below.</p>
+    </div>
+
+    <div id="solidFields" style="display:none">
+      <div class="row">
+        <div class="field"><label for="sLength">Length</label><input type="number" id="sLength" min="1" value="5"></div>
+        <div class="field"><label for="sWidth">Width</label><input type="number" id="sWidth" min="1" value="5"></div>
+      </div>
+      <div class="field"><label for="sHeight">Height</label><input type="number" id="sHeight" min="1" value="5"></div>
+      <p class="hint">Length × width × height — every block filled solid.</p>
+    </div>
+
+    <div id="hollowFields" style="display:none">
+      <div class="row">
+        <div class="field"><label for="hLength">Outer Length</label><input type="number" id="hLength" min="1" value="10"></div>
+        <div class="field"><label for="hWidth">Outer Width</label><input type="number" id="hWidth" min="1" value="10"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label for="hHeight">Outer Height</label><input type="number" id="hHeight" min="1" value="6"></div>
+        <div class="field"><label for="hThick">Wall Thickness</label><input type="number" id="hThick" min="1" value="1"></div>
+      </div>
+      <p class="hint">Outer volume minus the hollow interior. Walls, floor, and ceiling all included at the given thickness.</p>
+    </div>
+
+    <button class="btn" id="calcBtn">Calculate</button>
+
+    <div class="slots-row">
+      <div class="output-slot"><div class="n" id="outTotal">—</div><div class="label">Blocks</div></div>
+      <div class="output-slot"><div class="n" id="outStacks">—</div><div class="label">Stacks (64)</div></div>
+      <div class="output-slot"><div class="n" id="outShulkers">—</div><div class="label">Shulkers (1728)</div></div>
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../palette/">Palette Builder</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Great for gathering runs: totals, stacks, shulkers, and opening-aware wall counts.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+let currentShape = 'wall';
+const fieldSets = { wall: 'wallFields', floor: 'floorFields', solid: 'solidFields', hollow: 'hollowFields' };
+
+document.querySelectorAll('.shape-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.shape-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentShape = tab.dataset.shape;
+    Object.values(fieldSets).forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById(fieldSets[currentShape]).style.display = 'block';
+  });
+});
+
+function num(id) {
+  const v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+// --- Openings (doors/windows) ---
+let openings = [
+  { width: 1, height: 2, qty: 1 }, // one standard door by default
+];
+let openingIdSeq = 0;
+
+function renderOpenings() {
+  const list = document.getElementById('openingsList');
+  list.innerHTML = '';
+  openings.forEach((o, i) => {
+    const row = document.createElement('div');
+    row.className = 'opening-row';
+    row.innerHTML = `
+      <label class="opening-mini"><span>W</span><input type="number" min="1" value="${o.width}" data-field="width" data-idx="${i}" aria-label="Opening width"></label>
+      <label class="opening-mini"><span>H</span><input type="number" min="1" value="${o.height}" data-field="height" data-idx="${i}" aria-label="Opening height"></label>
+      <label class="opening-mini"><span>Qty</span><input type="number" min="1" value="${o.qty}" data-field="qty" data-idx="${i}" aria-label="Opening quantity"></label>
+      <button class="remove-opening" data-idx="${i}" title="Remove" type="button">✕</button>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      const field = e.target.dataset.field;
+      const v = parseInt(e.target.value, 10);
+      openings[idx][field] = isNaN(v) || v < 0 ? 0 : v;
+      calculate();
+    });
+  });
+  list.querySelectorAll('.remove-opening').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      openings.splice(idx, 1);
+      renderOpenings();
+      calculate();
+    });
+  });
+}
+
+document.getElementById('addOpeningBtn').addEventListener('click', () => {
+  openings.push({ width: 1, height: 2, qty: 1 });
+  renderOpenings();
+  calculate();
+});
+
+function openingsArea() {
+  return openings.reduce((sum, o) => sum + (o.width * o.height * o.qty), 0);
+}
+
+function calculate() {
+  let total = 0;
+  if (currentShape === 'wall') {
+    const l = num('wLength'), w = num('wWidth'), h = num('wHeight'), t = num('wThick');
+    const outerArea = l * w;
+    const innerArea = Math.max(l - 2 * t, 0) * Math.max(w - 2 * t, 0);
+    const gross = (outerArea - innerArea) * h;
+    const openingBlocks = openingsArea() * t; // openings punch through full thickness
+    total = Math.max(gross - openingBlocks, 0);
+    document.getElementById('openingSubtotal').textContent =
+      `Subtracting ${openingBlocks.toLocaleString()} blocks for openings`;
+  } else if (currentShape === 'floor') {
+    total = num('fLength') * num('fWidth') * num('fLayers');
+  } else if (currentShape === 'solid') {
+    total = num('sLength') * num('sWidth') * num('sHeight');
+  } else if (currentShape === 'hollow') {
+    const l = num('hLength'), w = num('hWidth'), h = num('hHeight'), t = num('hThick');
+    const outer = l * w * h;
+    const innerL = Math.max(l - 2 * t, 0);
+    const innerW = Math.max(w - 2 * t, 0);
+    const innerH = Math.max(h - 2 * t, 0);
+    const inner = innerL * innerW * innerH;
+    total = outer - inner;
+  }
+  total = Math.round(total);
+  const stacks = Math.floor(total / 64);
+  const stackRemainder = total % 64;
+  const shulkers = Math.floor(total / 1728);
+  const shulkerRemainder = total % 1728;
+
+  document.getElementById('outTotal').textContent = total.toLocaleString();
+  document.getElementById('outStacks').textContent = stackRemainder > 0 ? `${stacks} + ${stackRemainder}` : `${stacks}`;
+  document.getElementById('outShulkers').textContent = shulkerRemainder > 0
+    ? `${shulkers} + ${Math.floor(shulkerRemainder/64)}st`
+    : `${shulkers}`;
+}
+
+document.getElementById('calcBtn').addEventListener('click', calculate);
+renderOpenings();
+calculate();
+</script>
+</body>
+</html>

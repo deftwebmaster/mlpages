@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block Palette Builder — Minecraft Tools</title>
+<meta name="description" content="Pick a Minecraft build vibe and get primary, accent, trim, lighting, and detail block palettes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .palette-preview { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 0 0 20px; }
+  .swatch { min-height: 74px; border: var(--border-w) solid var(--panel-border); display: flex; align-items: end; padding: 8px; background: var(--swatch); color: #111; text-shadow: 0 1px 0 rgba(255,255,255,.25); font-family: 'JetBrains Mono', monospace; font-size: 10px; line-height: 1.2; text-transform: uppercase; }
+  .role-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .role-card { border: var(--border-w) solid var(--panel-border); background: var(--bg); padding: 16px; }
+  .role-card h2 { margin: 0 0 10px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+  .block-list { margin: 0; padding-left: 18px; color: var(--text); font-size: 14px; line-height: 1.65; }
+  .tip { color: var(--text-faint); font-size: 12px; line-height: 1.5; margin: 18px 0 0; }
+  @media (max-width: 640px) {
+    .palette-preview { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-tool="palette">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/" aria-current="page">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Build Planning</p>
+  <h1>Block Palette<br>Builder</h1>
+  <p class="subtitle">Pick a build vibe and get a practical palette broken into structure, roof, trim, lighting, and detail blocks.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="row">
+      <div class="field">
+        <label for="vibe">Build vibe</label>
+        <select id="vibe"></select>
+      </div>
+      <div class="field">
+        <label for="contrast">Contrast</label>
+        <select id="contrast">
+          <option value="balanced">Balanced</option>
+          <option value="soft">Softer / blended</option>
+          <option value="bold">Bolder accents</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="palette-preview" id="palettePreview"></div>
+    <div class="role-grid" id="roleGrid"></div>
+    <p class="tip" id="paletteTip"></p>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../challenge/">Challenge Generator</a>
+      <a href="../blocks/">Block Calculator</a>
+      <a href="../coords/">Coordinate Notebook</a>
+    </div>
+    <div class="footer-note">Pick the mood first, then let the block list keep the build from wandering.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const PALETTES = {
+  cottagecore: {
+    name: 'Cottagecore Farmstead',
+    colors: ['#9b6b3d','#6f8f45','#d2bd86','#5f4a32','#f0c56d'],
+    roles: {
+      Structure: ['Stripped Oak Log', 'Oak Planks', 'Spruce Planks', 'Barrel'],
+      Roof: ['Spruce Stairs', 'Dark Oak Stairs', 'Moss Block', 'Moss Carpet'],
+      Trim: ['Stripped Spruce Log', 'Oak Trapdoor', 'Spruce Fence', 'Composter'],
+      Lighting: ['Lantern', 'Campfire', "Jack o'Lantern"],
+      Detail: ['Azalea Leaves', 'Flower Pot', 'Hay Bale', 'Beehive']
+    },
+    tip: 'Use warm wood as the base, then break up flat walls with leaves, barrels, trapdoors, and flower boxes.'
+  },
+  nether: {
+    name: 'Nether Bastion',
+    colors: ['#22181b','#5a2430','#893a21','#d86d32','#7247a6'],
+    roles: {
+      Structure: ['Blackstone', 'Polished Blackstone Bricks', 'Basalt', 'Polished Basalt'],
+      Roof: ['Nether Brick Stairs', 'Blackstone Stairs', 'Crimson Slabs'],
+      Trim: ['Crimson Stem', 'Chains', 'Iron Bars', 'Gilded Blackstone'],
+      Lighting: ['Shroomlight', 'Soul Lantern', 'Lava behind glass'],
+      Detail: ['Crying Obsidian', 'Nether Wart Block', 'Crimson Roots', 'Gold Block accents']
+    },
+    tip: 'Keep the main mass dark, then use lava-orange and purple sparingly so the build still has readable shapes.'
+  },
+  deepslate: {
+    name: 'Deepslate Keep',
+    colors: ['#2c2d31','#4a4b50','#77736a','#9a917f','#3f5e73'],
+    roles: {
+      Structure: ['Cobbled Deepslate', 'Deepslate Bricks', 'Deepslate Tiles', 'Tuff'],
+      Roof: ['Dark Prismarine', 'Deepslate Tile Stairs', 'Polished Blackstone Slabs'],
+      Trim: ['Polished Andesite', 'Stone Brick Wall', 'Iron Bars', 'Chain'],
+      Lighting: ['Soul Lantern', 'Lantern', 'End Rod hidden behind trapdoors'],
+      Detail: ['Cracked Deepslate Bricks', 'Calcite', 'Copper Grate', 'Water channels']
+    },
+    tip: 'Mix deepslate variants in clusters rather than random noise; it reads more intentional from a distance.'
+  },
+  desert: {
+    name: 'Desert Oasis',
+    colors: ['#d3b26f','#c88f4f','#f1de9a','#4a8d7b','#3a5f3a'],
+    roles: {
+      Structure: ['Sandstone', 'Smooth Sandstone', 'Cut Sandstone', 'Terracotta'],
+      Roof: ['Acacia Stairs', 'Orange Terracotta', 'Sandstone Slabs'],
+      Trim: ['Stripped Acacia Log', 'Jungle Trapdoor', 'Chiseled Sandstone'],
+      Lighting: ['Lantern', 'Sea Lantern under carpet', 'Campfire smoke'],
+      Detail: ['Cactus', 'Dead Bush', 'Leaves around water', 'Decorated Pot']
+    },
+    tip: 'Add teal water and green plant pockets; desert builds come alive when the oasis color is protected and rare.'
+  },
+  mossy: {
+    name: 'Mossy Ruin',
+    colors: ['#64685c','#8b8b7e','#56703e','#314123','#b8b08b'],
+    roles: {
+      Structure: ['Stone Bricks', 'Cracked Stone Bricks', 'Mossy Stone Bricks', 'Cobblestone'],
+      Roof: ['Stone Brick Slabs', 'Moss Carpet', 'Overgrown Leaves'],
+      Trim: ['Andesite Wall', 'Cobblestone Wall', 'Spruce Trapdoor'],
+      Lighting: ['Lantern', 'Glow Lichen', 'Candles'],
+      Detail: ['Vines', 'Moss Block', 'Azalea Leaves', 'Rooted Dirt']
+    },
+    tip: 'Put the most moss on lower edges, corners, and broken surfaces so the overgrowth feels physically grounded.'
+  },
+  wizard: {
+    name: 'Wizard Tower',
+    colors: ['#67558b','#b18cd9','#ddd6f2','#3f2f57','#d4af37'],
+    roles: {
+      Structure: ['Calcite', 'Smooth Stone', 'Amethyst Block', 'Purple Terracotta'],
+      Roof: ['Warped Planks', 'Purple Concrete', 'Amethyst Cluster accents'],
+      Trim: ['Dark Oak', 'Polished Blackstone', 'Gold Blocks'],
+      Lighting: ['End Rod', 'Lantern', 'Froglight'],
+      Detail: ['Bookshelf', 'Enchanting Table', 'Tinted Glass', 'Lightning Rod']
+    },
+    tip: 'Use pale stone for height, dark trim for silhouette, and tiny gold/amethyst highlights for the magical read.'
+  }
+};
+
+const vibe = document.getElementById('vibe');
+Object.entries(PALETTES).forEach(([key, value]) => {
+  const option = document.createElement('option');
+  option.value = key;
+  option.textContent = value.name;
+  vibe.appendChild(option);
+});
+
+function renderPalette() {
+  const palette = PALETTES[vibe.value];
+  const contrast = document.getElementById('contrast').value;
+  const colors = contrast === 'soft'
+    ? palette.colors.slice(0, 4)
+    : contrast === 'bold'
+      ? [...palette.colors, '#f2efe2']
+      : palette.colors;
+  document.getElementById('palettePreview').innerHTML = colors.map((color, i) =>
+    `<div class="swatch" style="--swatch:${color}">Tone ${i + 1}</div>`
+  ).join('');
+  document.getElementById('roleGrid').innerHTML = Object.entries(palette.roles).map(([role, blocks]) => `
+    <div class="role-card">
+      <h2>${role}</h2>
+      <ul class="block-list">${blocks.map(block => `<li>${block}</li>`).join('')}</ul>
+    </div>
+  `).join('');
+  document.getElementById('paletteTip').textContent = palette.tip;
+}
+
+['vibe','contrast'].forEach(id => document.getElementById(id).addEventListener('input', renderPalette));
+renderPalette();
+</script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Villager Trade Tracker — Minecraft Tools</title>
+<meta name="description" content="Log your villagers and their trades, flag the good deals, and find them again fast.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+  .toolbar .btn-ghost { font-size: 11px; padding: 8px 12px; }
+  .find-row { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 10px; margin-bottom: 28px; }
+
+  .best-trades {
+    border: var(--border-w) solid var(--accent);
+    background: var(--panel);
+    padding: 18px 20px;
+    margin-bottom: 28px;
+  }
+  .best-trades h2 {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 12px;
+  }
+  .best-trades .empty { color: var(--text-faint); font-size: 13px; }
+  .best-trade-item {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text);
+    padding: 6px 0; border-bottom: 1px solid var(--panel-border);
+  }
+  .best-trade-item:last-child { border-bottom: none; }
+  .best-trade-item .from { color: var(--text-faint); font-size: 11px; }
+
+  .add-villager { margin-bottom: 32px; }
+  .add-villager h2 {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-dim); margin: 0 0 14px;
+  }
+
+  .villager-card { margin-bottom: 18px; }
+  .villager-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
+  .villager-name { font-family: 'Big Shoulders Display', sans-serif; font-size: 22px; text-transform: uppercase; line-height: 1; }
+  .villager-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-faint); margin-top: 6px; }
+  .badge {
+    display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
+    border: 1px solid var(--accent-dim); padding: 3px 8px; margin-right: 8px;
+  }
+  .icon-btn {
+    background: none; border: none; color: var(--text-faint); cursor: pointer; font-size: 14px; padding: 4px 6px;
+  }
+  .icon-btn:hover { color: var(--redstone); }
+
+  .trades { margin: 14px 0 10px; }
+  .trade-row {
+    display: flex; align-items: center; gap: 10px; padding: 8px 0;
+    border-top: 1px solid var(--panel-border); font-size: 13px;
+  }
+  .trade-row .flow { flex: 1; font-family: 'JetBrains Mono', monospace; }
+  .trade-row .flow .arrow { color: var(--accent); margin: 0 6px; }
+  .star-btn { background: none; border: none; cursor: pointer; font-size: 15px; color: var(--panel-border); padding: 2px 4px; }
+  .star-btn.on { color: var(--accent); }
+
+  .add-trade-row { display: flex; gap: 8px; margin-top: 10px; }
+  .add-trade-row input { width: auto; flex: 1; }
+  .add-trade-row .btn { padding: 10px 14px; font-size: 12px; }
+
+  .no-villagers { color: var(--text-faint); font-size: 14px; padding: 20px 0; }
+  #importFile { display: none; }
+  @media (max-width: 560px) {
+    .toolbar .btn-ghost { width: 100%; min-height: 44px; }
+    .find-row { grid-template-columns: 1fr; }
+    .villager-head { align-items: stretch; }
+    .icon-btn { min-width: 44px; min-height: 44px; border: 1px solid var(--panel-border); }
+    .trade-row { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: stretch; }
+    .star-btn { border: 1px solid var(--panel-border); min-height: 44px; }
+    .trade-row .flow { align-self: center; overflow-wrap: anywhere; }
+    .add-trade-row { flex-direction: column; }
+    .add-trade-row input { width: 100%; }
+  }
+</style>
+</head>
+<body data-tool="villagers">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/" aria-current="page">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">World Navigation</p>
+  <h1>Villager Trade<br>Tracker</h1>
+  <p class="subtitle">Trades are rolled per-villager, so this logs what yours actually have — not a fixed lookup table. Flag the good ones so you can find them again.</p>
+
+  <div class="toolbar">
+    <button class="btn btn-ghost" id="exportBtn">Export JSON</button>
+    <button class="btn btn-ghost" id="importBtn">Import JSON</button>
+    <input type="file" id="importFile" accept="application/json">
+    <button class="btn btn-ghost" id="clearBtn">Clear All</button>
+  </div>
+
+  <div class="best-trades">
+    <h2>★ Best Trades</h2>
+    <div id="bestTradesList"><p class="empty">Star a trade below and it'll show up here.</p></div>
+  </div>
+
+  <div class="find-row" aria-label="Find villagers">
+    <div class="field">
+      <label for="villagerSearch">Search villagers and trades</label>
+      <input type="text" id="villagerSearch" placeholder="e.g. mending, emeralds, spawn village">
+    </div>
+    <div class="field">
+      <label for="professionFilter">Profession</label>
+      <select id="professionFilter">
+        <option value="">All</option>
+        <option>Farmer</option><option>Fisherman</option><option>Fletcher</option><option>Shepherd</option>
+        <option>Librarian</option><option>Cartographer</option><option>Cleric</option><option>Armorer</option>
+        <option>Weaponsmith</option><option>Toolsmith</option><option>Butcher</option><option>Leatherworker</option>
+        <option>Mason</option><option>Nitwit</option><option>Unemployed</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card add-villager">
+    <h2>Add Villager</h2>
+    <div class="row">
+      <div class="field"><label for="vName">Name / Label</label><input type="text" id="vName" placeholder="e.g. Blue Robe #3"></div>
+      <div class="field"><label for="vProfession">Profession</label>
+        <select id="vProfession">
+          <option>Farmer</option><option>Fisherman</option><option>Fletcher</option><option>Shepherd</option>
+          <option>Librarian</option><option>Cartographer</option><option>Cleric</option><option>Armorer</option>
+          <option>Weaponsmith</option><option>Toolsmith</option><option>Butcher</option><option>Leatherworker</option>
+          <option>Mason</option><option>Nitwit</option><option>Unemployed</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label for="vLocation">Location note</label><input type="text" id="vLocation" placeholder="e.g. Spawn village, 3rd house"></div>
+    <button class="btn" id="addVillagerBtn">Add Villager</button>
+  </div>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div id="villagerList"></div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../enchant/">Enchant Optimizer</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Trades are saved only in this browser. Export JSON when you want a backup.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const STORAGE_KEY = 'mc-villager-tracker-v1';
+let villagers = [];
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    villagers = raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    villagers = [];
+  }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(villagers));
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function renderBestTrades() {
+  const el = document.getElementById('bestTradesList');
+  const starred = [];
+  villagers.forEach(v => {
+    v.trades.filter(t => t.good).forEach(t => starred.push({ villager: v.name || v.profession, trade: t }));
+  });
+  if (starred.length === 0) {
+    el.innerHTML = '<p class="empty">Star a trade below and it\'ll show up here.</p>';
+    return;
+  }
+  el.innerHTML = starred.map(s => `
+    <div class="best-trade-item">
+      ${escapeHtml(s.trade.gives)} <span class="from">gives</span> → ${escapeHtml(s.trade.wants)}
+      <div class="from">${escapeHtml(s.villager)}</div>
+    </div>
+  `).join('');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function renderVillagers() {
+  const list = document.getElementById('villagerList');
+  if (villagers.length === 0) {
+    list.innerHTML = '<p class="no-villagers">No villagers logged yet. Add one above.</p>';
+    return;
+  }
+  const query = document.getElementById('villagerSearch').value.trim().toLowerCase();
+  const profession = document.getElementById('professionFilter').value;
+  const visibleVillagers = villagers.filter(v => {
+    const haystack = [
+      v.name,
+      v.profession,
+      v.location,
+      ...v.trades.flatMap(t => [t.gives, t.wants])
+    ].join(' ').toLowerCase();
+    const matchesQuery = !query || haystack.includes(query);
+    const matchesProfession = !profession || v.profession === profession;
+    return matchesQuery && matchesProfession;
+  });
+
+  if (visibleVillagers.length === 0) {
+    list.innerHTML = '<p class="no-villagers">No matching villagers. Clear the search or profession filter.</p>';
+    return;
+  }
+
+  list.innerHTML = visibleVillagers.map(v => `
+    <div class="card villager-card" data-id="${v.id}">
+      <div class="villager-head">
+        <div>
+          <div class="villager-name">${escapeHtml(v.name) || 'Unnamed'}</div>
+          <div class="villager-meta">
+            <span class="badge">${escapeHtml(v.profession)}</span>
+            ${v.location ? escapeHtml(v.location) : ''}
+          </div>
+        </div>
+        <button class="icon-btn remove-villager" data-id="${v.id}" title="Remove villager">✕</button>
+      </div>
+      <div class="trades">
+        ${v.trades.length === 0 ? '<p class="empty" style="color:var(--text-faint);font-size:13px;">No trades logged yet.</p>' : v.trades.map(t => `
+          <div class="trade-row">
+            <button class="star-btn ${t.good ? 'on' : ''}" data-villager="${v.id}" data-trade="${t.id}" title="Flag as good deal">★</button>
+            <div class="flow">${escapeHtml(t.gives)}<span class="arrow">→</span>${escapeHtml(t.wants)}</div>
+            <button class="icon-btn remove-trade" data-villager="${v.id}" data-trade="${t.id}" title="Remove trade">✕</button>
+          </div>
+        `).join('')}
+      </div>
+      <div class="add-trade-row">
+        <input type="text" placeholder="Player gives (e.g. 12 Emeralds)" class="tradeGives" data-villager="${v.id}">
+        <input type="text" placeholder="Villager gives (e.g. Diamond Pickaxe)" class="tradeWants" data-villager="${v.id}">
+        <button class="btn add-trade-btn" data-villager="${v.id}">Add</button>
+      </div>
+    </div>
+  `).join('');
+
+  bindVillagerEvents();
+}
+
+function bindVillagerEvents() {
+  document.querySelectorAll('.remove-villager').forEach(btn => {
+    btn.addEventListener('click', () => {
+      villagers = villagers.filter(v => v.id !== btn.dataset.id);
+      save(); renderAll();
+    });
+  });
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = villagers.find(v => v.id === btn.dataset.villager);
+      const t = v.trades.find(t => t.id === btn.dataset.trade);
+      t.good = !t.good;
+      save(); renderAll();
+    });
+  });
+  document.querySelectorAll('.remove-trade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = villagers.find(v => v.id === btn.dataset.villager);
+      v.trades = v.trades.filter(t => t.id !== btn.dataset.trade);
+      save(); renderAll();
+    });
+  });
+  document.querySelectorAll('.add-trade-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const vid = btn.dataset.villager;
+      const givesInput = document.querySelector(`.tradeGives[data-villager="${vid}"]`);
+      const wantsInput = document.querySelector(`.tradeWants[data-villager="${vid}"]`);
+      const gives = givesInput.value.trim();
+      const wants = wantsInput.value.trim();
+      if (!gives || !wants) return;
+      const v = villagers.find(v => v.id === vid);
+      v.trades.push({ id: uid(), gives, wants, good: false });
+      save(); renderAll();
+    });
+  });
+}
+
+function renderAll() {
+  renderBestTrades();
+  renderVillagers();
+}
+
+document.getElementById('addVillagerBtn').addEventListener('click', () => {
+  const name = document.getElementById('vName').value.trim();
+  const profession = document.getElementById('vProfession').value;
+  const location = document.getElementById('vLocation').value.trim();
+  villagers.push({ id: uid(), name, profession, location, trades: [] });
+  document.getElementById('vName').value = '';
+  document.getElementById('vLocation').value = '';
+  save(); renderAll();
+});
+
+['villagerSearch', 'professionFilter'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderVillagers);
+});
+
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(villagers, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'villager-trades.json';
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+
+document.getElementById('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (Array.isArray(parsed)) {
+        villagers = parsed;
+        save(); renderAll();
+      }
+    } catch (err) {
+      alert('That file isn\'t valid villager tracker JSON.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (confirm('Delete all logged villagers and trades? This can\'t be undone — export first if you want a backup.')) {
+    villagers = [];
+    save(); renderAll();
+  }
+});
+
+load();
+renderAll();
+</script>
+</body>
+</html>

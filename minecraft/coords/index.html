@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base Coordinate Notebook — Minecraft Tools</title>
+<meta name="description" content="Save Minecraft bases, portals, farms, villages, biomes, and other coordinates locally in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 10px; margin: 24px 0; }
+  .coord-card { margin-bottom: 12px; }
+  .coord-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+  .coord-name { font-family: 'Big Shoulders Display', sans-serif; font-size: 24px; text-transform: uppercase; line-height: 1; }
+  .coord-meta { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
+  .tag { display: inline-block; color: var(--accent); border: 1px solid var(--accent-dim); padding: 3px 7px; margin: 0 6px 6px 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+  .coord-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .coord-actions .btn { padding: 8px 10px; font-size: 11px; }
+  .empty { color: var(--text-faint); font-size: 14px; }
+  .icon-btn { background: none; border: var(--border-w) solid var(--panel-border); color: var(--text-faint); cursor: pointer; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; line-height: 1; }
+  .icon-btn:hover { color: var(--redstone); border-color: var(--redstone); }
+  @media (max-width: 620px) {
+    .toolbar { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-tool="coords">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/" aria-current="page">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">World Navigation</p>
+  <h1>Base Coordinate<br>Notebook</h1>
+  <p class="subtitle">Save important places locally: bases, portals, farms, villages, biomes, mines, and anything you do not want to lose.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="row">
+      <div class="field"><label for="name">Name</label><input type="text" id="name" placeholder="Starter Base"></div>
+      <div class="field">
+        <label for="kind">Type</label>
+        <select id="kind">
+          <option>Base</option><option>Portal</option><option>Farm</option><option>Village</option>
+          <option>Biome</option><option>Mine</option><option>Structure</option><option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="x">X</label><input type="number" id="x" value="0"></div>
+      <div class="field"><label for="y">Y</label><input type="number" id="y" value="64"></div>
+      <div class="field"><label for="z">Z</label><input type="number" id="z" value="0"></div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="dimension">Dimension</label><select id="dimension"><option>Overworld</option><option>Nether</option><option>End</option></select></div>
+      <div class="field"><label for="tags">Tags</label><input type="text" id="tags" placeholder="iron, spawn, safe"></div>
+    </div>
+    <div class="field"><label for="notes">Notes</label><input type="text" id="notes" placeholder="Entrance under the hill, bed and food inside"></div>
+    <button class="btn" id="saveBtn">Save Coordinate</button>
+  </div>
+
+  <div class="toolbar">
+    <div class="field"><label for="search">Search</label><input type="text" id="search" placeholder="portal, farm, desert, mending"></div>
+    <div class="field"><label for="filterKind">Filter</label><select id="filterKind"><option value="">All Types</option><option>Base</option><option>Portal</option><option>Farm</option><option>Village</option><option>Biome</option><option>Mine</option><option>Structure</option><option>Other</option></select></div>
+  </div>
+
+  <div id="coordList"></div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../highway/">Highway Planner</a>
+      <a href="../villagers/">Villager Tracker</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Saved only in this browser. Copy coordinates before switching devices or clearing site data.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const STORAGE_KEY = 'mc-coordinate-notebook-v1';
+let coords = [];
+
+function load() {
+  try { coords = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch (e) { coords = []; }
+}
+
+function save() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(coords));
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str || '';
+  return div.innerHTML;
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text);
+}
+
+function render() {
+  const query = document.getElementById('search').value.trim().toLowerCase();
+  const kind = document.getElementById('filterKind').value;
+  const list = document.getElementById('coordList');
+  const filtered = coords.filter(c => {
+    const haystack = [c.name, c.kind, c.dimension, c.tags, c.notes, c.x, c.y, c.z].join(' ').toLowerCase();
+    return (!query || haystack.includes(query)) && (!kind || c.kind === kind);
+  });
+  if (filtered.length === 0) {
+    list.innerHTML = '<p class="empty">No coordinates saved yet, or nothing matches the current filter.</p>';
+    return;
+  }
+  list.innerHTML = filtered.map(c => {
+    const tags = (c.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    return `
+      <div class="card coord-card" data-id="${c.id}">
+        <div class="coord-head">
+          <div>
+            <div class="coord-name">${escapeHtml(c.name || c.kind)}</div>
+            <div class="coord-meta">${escapeHtml(c.dimension)} · X ${c.x}, Y ${c.y}, Z ${c.z}</div>
+          </div>
+          <button class="icon-btn remove" data-id="${c.id}" title="Remove" type="button">✕</button>
+        </div>
+        <div class="coord-meta"><span class="tag">${escapeHtml(c.kind)}</span>${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+        ${c.notes ? `<p class="coord-meta">${escapeHtml(c.notes)}</p>` : ''}
+        <div class="coord-actions">
+          <button class="btn btn-ghost copy" data-copy="/tp ${c.x} ${c.y} ${c.z}" type="button">Copy /tp</button>
+          <button class="btn btn-ghost copy" data-copy="${c.x}, ${c.y}, ${c.z}" type="button">Copy XYZ</button>
+          <button class="btn btn-ghost copy" data-copy="${c.name || c.kind}: ${c.dimension} ${c.x}, ${c.y}, ${c.z}" type="button">Copy Note</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  list.querySelectorAll('.remove').forEach(btn => {
+    btn.addEventListener('click', () => {
+      coords = coords.filter(c => c.id !== btn.dataset.id);
+      save(); render();
+    });
+  });
+  list.querySelectorAll('.copy').forEach(btn => {
+    btn.addEventListener('click', () => copyText(btn.dataset.copy));
+  });
+}
+
+document.getElementById('saveBtn').addEventListener('click', () => {
+  coords.unshift({
+    id: uid(),
+    name: document.getElementById('name').value.trim(),
+    kind: document.getElementById('kind').value,
+    x: parseInt(document.getElementById('x').value, 10) || 0,
+    y: parseInt(document.getElementById('y').value, 10) || 0,
+    z: parseInt(document.getElementById('z').value, 10) || 0,
+    dimension: document.getElementById('dimension').value,
+    tags: document.getElementById('tags').value.trim(),
+    notes: document.getElementById('notes').value.trim(),
+  });
+  ['name','tags','notes'].forEach(id => document.getElementById(id).value = '');
+  save(); render();
+});
+
+['search','filterKind'].forEach(id => document.getElementById(id).addEventListener('input', render));
+load();
+render();
+</script>
+</body>
+</html>

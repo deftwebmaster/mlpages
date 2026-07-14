@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potion Brew Sheet — Minecraft Tools</title>
+<meta name="description" content="Choose a Minecraft potion and get the brewing path, ingredients, modifiers, splash, and lingering steps.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .brew-grid { display: grid; grid-template-columns: minmax(220px, .75fr) minmax(0, 1fr); gap: 18px; }
+  .step-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .step-list li { border: var(--border-w) solid var(--panel-border); background: var(--bg); padding: 14px 16px; }
+  .step-list b { display: block; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
+  .step-list span { color: var(--text); font-size: 14px; line-height: 1.45; }
+  .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+  .mini-card { border: 1px solid var(--panel-border); background: var(--bg); padding: 12px; }
+  .mini-card .k { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+  .mini-card .v { margin-top: 7px; font-size: 13px; line-height: 1.35; color: var(--text); }
+  .note { color: var(--text-faint); font-size: 12px; line-height: 1.5; margin: 18px 0 0; }
+  @media (max-width: 680px) {
+    .brew-grid { grid-template-columns: 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-tool="potion">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/" aria-current="page">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Survival Systems</p>
+  <h1>Potion Brew<br>Sheet</h1>
+  <p class="subtitle">Choose a result and get the exact brewing order, useful modifiers, and how to make splash or lingering versions.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="brew-grid">
+      <div>
+        <div class="field">
+          <label for="potionSelect">Potion result</label>
+          <select id="potionSelect"></select>
+        </div>
+        <div class="field">
+          <label for="batchSize">Bottles in batch</label>
+          <input type="number" id="batchSize" min="1" max="3" value="3">
+        </div>
+        <p class="note">One brewing ingredient affects up to three bottles. Put 1-3 Water Bottles in the bottom slots before starting.</p>
+      </div>
+      <div>
+        <ol class="step-list" id="brewSteps"></ol>
+      </div>
+    </div>
+
+    <div class="detail-grid">
+      <div class="mini-card"><div class="k">Effect</div><div class="v" id="effectText">-</div></div>
+      <div class="mini-card"><div class="k">Modifiers</div><div class="v" id="modifierText">-</div></div>
+      <div class="mini-card"><div class="k">Splash / Lingering</div><div class="v">Add Gunpowder for Splash. Then add Dragon's Breath to a Splash potion for Lingering.</div></div>
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../enchant/">Enchant Optimizer</a>
+      <a href="../farm/">Farm Calculator</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Java-focused brewing paths with modifiers, splash, and lingering steps.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const POTIONS = [
+  { name: 'Swiftness', ingredient: 'Sugar', effect: 'Speed boost. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Glowstone makes Speed II for 1:30.' },
+  { name: 'Leaping', ingredient: 'Rabbit Foot', effect: 'Jump Boost. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Glowstone makes Jump Boost II for 1:30.' },
+  { name: 'Strength', ingredient: 'Blaze Powder', effect: 'Increases melee damage. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Glowstone makes Strength II for 1:30.' },
+  { name: 'Regeneration', ingredient: 'Ghast Tear', effect: 'Regenerates health over time. Base duration 0:45.', modifiers: 'Redstone extends to 1:30. Glowstone makes Regeneration II for 0:22.' },
+  { name: 'Healing', ingredient: 'Glistering Melon Slice', effect: 'Instantly restores health.', modifiers: 'Glowstone makes Healing II. Redstone does not apply.' },
+  { name: 'Fire Resistance', ingredient: 'Magma Cream', effect: 'Prevents fire and lava damage. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Glowstone does not apply.' },
+  { name: 'Water Breathing', ingredient: 'Pufferfish', effect: 'Lets you breathe underwater. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Glowstone does not apply.' },
+  { name: 'Night Vision', ingredient: 'Golden Carrot', effect: 'Improves vision in darkness and underwater. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Fermented Spider Eye corrupts into Invisibility.' },
+  { name: 'Invisibility', ingredient: 'Fermented Spider Eye after Night Vision', effect: 'Makes the player invisible. Base duration 3:00.', modifiers: 'Redstone extends to 8:00. Brew Night Vision first, then corrupt it.' },
+  { name: 'Slow Falling', ingredient: 'Phantom Membrane', effect: 'Prevents fall damage and slows falling. Base duration 1:30.', modifiers: 'Redstone extends to 4:00. Glowstone does not apply.' },
+  { name: 'Turtle Master', ingredient: 'Turtle Shell', effect: 'Slowness plus Resistance. Base duration 0:20.', modifiers: 'Redstone extends to 0:40. Glowstone makes a stronger 0:20 version.' },
+  { name: 'Poison', ingredient: 'Spider Eye', effect: 'Damages over time but does not kill. Base duration 0:45.', modifiers: 'Redstone extends to 1:30. Glowstone makes Poison II for 0:21.' },
+  { name: 'Harming', ingredient: 'Fermented Spider Eye after Healing or Poison', effect: 'Instant damage.', modifiers: 'Glowstone makes Harming II. Brew Healing or Poison first, then corrupt it.' },
+  { name: 'Slowness', ingredient: 'Fermented Spider Eye after Swiftness or Leaping', effect: 'Slows movement. Base duration 1:30.', modifiers: 'Redstone extends to 4:00. Brew Swiftness or Leaping first, then corrupt it.' },
+  { name: 'Weakness', ingredient: 'Fermented Spider Eye', effect: 'Reduces melee damage. Base duration 1:30.', modifiers: 'Redstone extends to 4:00. Can be brewed directly from a Water Bottle.' },
+  { name: 'Wind Charged', ingredient: 'Breeze Rod', effect: 'Affected mobs release a wind burst on death.', modifiers: 'Splash versions are usually the practical choice.' },
+  { name: 'Weaving', ingredient: 'Cobweb', effect: 'Affected mobs create cobwebs on death.', modifiers: 'Splash versions are usually the practical choice.' },
+  { name: 'Oozing', ingredient: 'Slime Block', effect: 'Affected mobs spawn slimes on death.', modifiers: 'Splash versions are usually the practical choice.' },
+  { name: 'Infestation', ingredient: 'Stone', effect: 'Affected mobs may spawn silverfish when hurt.', modifiers: 'Splash versions are usually the practical choice.' },
+];
+
+const select = document.getElementById('potionSelect');
+POTIONS.forEach((p, i) => {
+  const option = document.createElement('option');
+  option.value = i;
+  option.textContent = p.name;
+  select.appendChild(option);
+});
+
+function renderPotion() {
+  const potion = POTIONS[parseInt(select.value, 10)];
+  const batch = Math.min(Math.max(parseInt(document.getElementById('batchSize').value, 10) || 1, 1), 3);
+  const isCorrupted = potion.ingredient.includes(' after ');
+  const [corruptIngredient, corruptBase] = isCorrupted ? potion.ingredient.split(' after ') : [potion.ingredient, ''];
+  const baseStep = potion.name === 'Weakness'
+    ? 'Add Fermented Spider Eye directly to Water Bottle(s).'
+    : isCorrupted
+      ? `First brew ${corruptBase}, then add ${corruptIngredient}.`
+      : 'Add Nether Wart to make Awkward Potion(s).';
+  const finishStep = potion.name === 'Weakness' || isCorrupted
+    ? 'Collect the finished potion, or continue with modifiers.'
+    : `Add ${potion.ingredient} to the Awkward Potion(s).`;
+  const steps = [
+    `Fuel the Brewing Stand with Blaze Powder.`,
+    `Place ${batch} Water Bottle${batch === 1 ? '' : 's'} in the bottom slot${batch === 1 ? '' : 's'}.`,
+    baseStep,
+    finishStep,
+    'Optional: add Redstone or Glowstone if the modifier panel says it applies.',
+    'Optional: add Gunpowder for Splash, then Dragon\'s Breath for Lingering.'
+  ];
+  document.getElementById('brewSteps').innerHTML = steps.map((step, i) => `<li><b>Step ${i + 1}</b><span>${step}</span></li>`).join('');
+  document.getElementById('effectText').textContent = potion.effect;
+  document.getElementById('modifierText').textContent = potion.modifiers;
+}
+
+select.addEventListener('change', renderPotion);
+document.getElementById('batchSize').addEventListener('input', renderPotion);
+renderPotion();
+</script>
+</body>
+</html>

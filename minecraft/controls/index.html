@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Controls Guide — Minecraft Tools</title>
+<meta name="description" content="A quick Java Edition desktop controls guide for mouse, movement, inventory, chat, screenshots, and debug keybinds.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .control-toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 10px; margin-bottom: 22px; }
+  .control-section { margin-top: 22px; }
+  .control-section h2 { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+  .control-list { display: grid; gap: 8px; }
+  .control-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; align-items: center; border: 1px solid var(--panel-border); background: var(--bg); padding: 12px; }
+  .key { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--bg); background: var(--accent); padding: 7px 9px; text-align: center; text-transform: uppercase; }
+  .action { font-size: 14px; color: var(--text); line-height: 1.35; }
+  .action span { display: block; color: var(--text-faint); font-size: 12px; margin-top: 4px; }
+  .empty { color: var(--text-faint); font-size: 14px; }
+  @media (max-width: 620px) {
+    .control-toolbar { grid-template-columns: 1fr; }
+    .control-row { grid-template-columns: 1fr; }
+    .key { text-align: left; }
+  }
+</style>
+</head>
+<body data-tool="controls">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/" aria-current="page">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Reference</p>
+  <h1>Minecraft Controls<br>Guide</h1>
+  <p class="subtitle">A Java Edition desktop cheat sheet for mouse controls, movement, inventory, chat, screenshots, and the F3 debug shortcuts you will actually use.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="control-toolbar">
+      <div class="field"><label for="search">Search controls</label><input type="text" id="search" placeholder="jump, screenshot, hitboxes, inventory"></div>
+      <div class="field"><label for="category">Category</label><select id="category"><option value="">All</option></select></div>
+    </div>
+    <div id="controlsList"></div>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../highway/">Highway Planner</a>
+      <a href="../challenge/">Challenge Generator</a>
+    </div>
+    <div class="footer-note">Java desktop defaults. Anything customized in Options -> Controls may differ.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const CONTROLS = [
+  { cat: 'Mouse', key: 'Move Mouse', action: 'Look around', note: 'Your view direction controls where you mine, place, attack, and interact.' },
+  { cat: 'Mouse', key: 'Left Click', action: 'Attack / break block', note: 'Hold to mine blocks. Tap to attack.' },
+  { cat: 'Mouse', key: 'Right Click', action: 'Use item / place block', note: 'Also opens doors, chests, crafting tables, furnaces, and villager trades.' },
+  { cat: 'Mouse', key: 'Mouse Wheel', action: 'Cycle hotbar slot', note: 'Scroll through the nine hotbar slots.' },
+  { cat: 'Mouse', key: 'Middle Click', action: 'Pick block', note: 'In Creative, copies the targeted block to your hotbar.' },
+  { cat: 'Movement', key: 'W A S D', action: 'Move forward, left, back, right', note: 'Double-tap W or hold Sprint to run.' },
+  { cat: 'Movement', key: 'Space', action: 'Jump / swim upward / fly upward', note: 'Double-tap Space toggles Creative flying.' },
+  { cat: 'Movement', key: 'Left Shift', action: 'Sneak / descend while flying', note: 'Prevents walking off edges and lowers you in Creative flight.' },
+  { cat: 'Movement', key: 'Left Ctrl', action: 'Sprint', note: 'Sprint-jump is faster but uses hunger.' },
+  { cat: 'Inventory', key: 'E', action: 'Open inventory', note: 'Your main crafting grid and carried items.' },
+  { cat: 'Inventory', key: '1-9', action: 'Select hotbar slot', note: 'Also moves hovered inventory items into that hotbar slot.' },
+  { cat: 'Inventory', key: 'Q', action: 'Drop selected item', note: 'Ctrl + Q drops the whole stack.' },
+  { cat: 'Inventory', key: 'F', action: 'Swap item with offhand', note: 'Useful for shields, torches, maps, and food.' },
+  { cat: 'Inventory', key: 'Shift + Click', action: 'Quick move stack', note: 'Moves items between inventory and chest/crafting/container slots.' },
+  { cat: 'Inventory', key: 'Double Click', action: 'Collect matching items', note: 'Double-click an item to gather matching stacks from the open inventory.' },
+  { cat: 'Interface', key: 'Esc', action: 'Pause / game menu', note: 'Single-player pauses; multiplayer opens the menu but the world keeps moving.' },
+  { cat: 'Interface', key: 'T', action: 'Open chat', note: 'Use for server chat and messages.' },
+  { cat: 'Interface', key: '/', action: 'Open command prompt', note: 'Starts chat with a slash already entered.' },
+  { cat: 'Interface', key: 'Tab', action: 'Player list / command completion', note: 'Shows players in multiplayer or completes command text.' },
+  { cat: 'Interface', key: 'L', action: 'Open advancements', note: 'Shows advancement progress.' },
+  { cat: 'Interface', key: 'P', action: 'Social interactions', note: 'Multiplayer player visibility and social screen.' },
+  { cat: 'Interface', key: 'Ctrl + B', action: 'Toggle narrator', note: 'Useful to know if it turns on accidentally.' },
+  { cat: 'Interface', key: 'F1', action: 'Hide HUD', note: 'Great for screenshots.' },
+  { cat: 'Interface', key: 'F2', action: 'Take screenshot', note: 'Saved to the Minecraft screenshots folder.' },
+  { cat: 'Interface', key: 'F5', action: 'Change camera view', note: 'First person, third person back, third person front.' },
+  { cat: 'Interface', key: 'F11', action: 'Toggle fullscreen', note: 'May depend on keyboard/system settings.' },
+  { cat: 'Debug', key: 'F3', action: 'Show debug screen', note: 'Coordinates, facing direction, biome, FPS, light, and more.' },
+  { cat: 'Debug', key: 'F3 + G', action: 'Show chunk borders', note: 'Helpful for farms, slime chunks, and base planning.' },
+  { cat: 'Debug', key: 'F3 + B', action: 'Show hitboxes', note: 'Useful for mobs, boats, item frames, and aiming.' },
+  { cat: 'Debug', key: 'F3 + H', action: 'Advanced tooltips', note: 'Shows item durability and IDs.' },
+  { cat: 'Debug', key: 'F3 + A', action: 'Reload chunks', note: 'Can help with visual chunk glitches.' },
+  { cat: 'Debug', key: 'F3 + D', action: 'Clear chat', note: 'Clears the visible chat history.' },
+  { cat: 'Debug', key: 'F3 + T', action: 'Reload resource packs', note: 'Also reloads sounds and textures; may freeze briefly.' },
+  { cat: 'Debug', key: 'F3 + C', action: 'Copy current position', note: 'Copies a teleport command for your current coordinates.' },
+  { cat: 'Debug', key: 'F3 + N', action: 'Cycle Creative/Spectator', note: 'Requires permission and the right game mode context.' },
+  { cat: 'Debug', key: 'F3 + F4', action: 'Open game mode switcher', note: 'Requires permission to change game mode.' }
+];
+
+const category = document.getElementById('category');
+[...new Set(CONTROLS.map(c => c.cat))].forEach(cat => {
+  const option = document.createElement('option');
+  option.value = cat;
+  option.textContent = cat;
+  category.appendChild(option);
+});
+
+function renderControls() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const cat = category.value;
+  const filtered = CONTROLS.filter(c => {
+    const text = [c.cat, c.key, c.action, c.note].join(' ').toLowerCase();
+    return (!cat || c.cat === cat) && (!q || text.includes(q));
+  });
+  if (filtered.length === 0) {
+    document.getElementById('controlsList').innerHTML = '<p class="empty">No controls match that search.</p>';
+    return;
+  }
+  const grouped = {};
+  filtered.forEach(control => {
+    if (!grouped[control.cat]) grouped[control.cat] = [];
+    grouped[control.cat].push(control);
+  });
+  document.getElementById('controlsList').innerHTML = Object.entries(grouped).map(([catName, controls]) => `
+    <section class="control-section">
+      <h2>${catName}</h2>
+      <div class="control-list">
+        ${controls.map(c => `
+          <div class="control-row">
+            <div class="key">${c.key}</div>
+            <div class="action">${c.action}<span>${c.note}</span></div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+  `).join('');
+}
+
+['search','category'].forEach(id => document.getElementById(id).addEventListener('input', renderControls));
+renderControls();
+</script>
+</body>
+</html>

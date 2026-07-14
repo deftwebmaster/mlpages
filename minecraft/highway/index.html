@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nether Highway Planner — Minecraft Tools</title>
+<meta name="description" content="Convert Overworld coordinates to Nether coordinates and estimate tunnel, ice, and rail materials.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .coord-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .subhead { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+  .result-card { border: var(--border-w) solid var(--panel-border); background: var(--bg); padding: 16px; }
+  .result-card .n { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent); line-height: 1.1; }
+  .result-card .label { margin-top: 7px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+  .route-note { color: var(--text-faint); font-size: 12px; line-height: 1.5; margin: 16px 0 0; }
+  @media (max-width: 640px) {
+    .coord-grid, .result-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body data-tool="highway">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/" aria-current="page">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">World Navigation</p>
+  <h1>Nether Highway<br>Planner</h1>
+  <p class="subtitle">Enter Overworld start and destination coordinates. The planner converts both portals and estimates Nether tunnel distance, ice, rail, and lining blocks.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="coord-grid">
+      <div>
+        <p class="subhead">Start Overworld</p>
+        <div class="row">
+          <div class="field"><label for="startX">X</label><input type="number" id="startX" value="0"></div>
+          <div class="field"><label for="startZ">Z</label><input type="number" id="startZ" value="0"></div>
+        </div>
+        <div class="field"><label for="startY">Y note</label><input type="number" id="startY" value="64"></div>
+      </div>
+      <div>
+        <p class="subhead">Destination Overworld</p>
+        <div class="row">
+          <div class="field"><label for="endX">X</label><input type="number" id="endX" value="800"></div>
+          <div class="field"><label for="endZ">Z</label><input type="number" id="endZ" value="-400"></div>
+        </div>
+        <div class="field"><label for="endY">Y note</label><input type="number" id="endY" value="64"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="roadType">Road type</label>
+        <select id="roadType">
+          <option value="ice">Packed/Blue Ice boat road</option>
+          <option value="rail">Minecart rail line</option>
+          <option value="walk">Walking tunnel</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="width">Tunnel width</label>
+        <input type="number" id="width" min="1" value="3">
+      </div>
+      <div class="field">
+        <label for="height">Tunnel height</label>
+        <input type="number" id="height" min="2" value="3">
+      </div>
+    </div>
+
+    <div class="result-grid">
+      <div class="result-card"><div class="n" id="startNether">-</div><div class="label">Start Nether X, Z</div></div>
+      <div class="result-card"><div class="n" id="endNether">-</div><div class="label">Destination Nether X, Z</div></div>
+      <div class="result-card"><div class="n" id="straightDistance">-</div><div class="label">Straight distance</div></div>
+      <div class="result-card"><div class="n" id="tunnelDistance">-</div><div class="label">X/Z tunnel length</div></div>
+      <div class="result-card"><div class="n" id="floorBlocks">-</div><div class="label" id="floorLabel">Road blocks</div></div>
+      <div class="result-card"><div class="n" id="liningBlocks">-</div><div class="label">Approx. tunnel lining</div></div>
+      <div class="result-card"><div class="n" id="railBlocks">-</div><div class="label">Rails / powered rails</div></div>
+      <div class="result-card"><div class="n" id="owDistance">-</div><div class="label">Overworld distance saved</div></div>
+    </div>
+
+    <p class="route-note" id="routeNote"></p>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../blocks/">Block Calculator</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Overworld to Nether scale is 8:1. Portal linking still snaps to the nearest valid portal.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const ids = ['startX','startZ','startY','endX','endZ','endY','roadType','width','height'];
+
+function val(id) {
+  return parseFloat(document.getElementById(id).value) || 0;
+}
+
+function fmt(n) {
+  return Math.round(n).toLocaleString();
+}
+
+function netherCoord(n) {
+  return Math.floor(n / 8);
+}
+
+function calculate() {
+  const sx = val('startX'), sz = val('startZ'), ex = val('endX'), ez = val('endZ');
+  const nsx = netherCoord(sx), nsz = netherCoord(sz), nex = netherCoord(ex), nez = netherCoord(ez);
+  const dx = Math.abs(nex - nsx);
+  const dz = Math.abs(nez - nsz);
+  const straight = Math.hypot(dx, dz);
+  const tunnel = dx + dz;
+  const width = Math.max(Math.round(val('width')), 1);
+  const height = Math.max(Math.round(val('height')), 2);
+  const roadType = document.getElementById('roadType').value;
+  const floor = Math.max(tunnel, 1) * width;
+  const lining = Math.max(tunnel, 1) * ((width * 2) + (height * 2));
+  const overworldStraight = Math.hypot(ex - sx, ez - sz);
+  const poweredRails = roadType === 'rail' ? Math.ceil(Math.max(tunnel, 1) / 38) : 0;
+  const normalRails = roadType === 'rail' ? Math.max(tunnel + 1 - poweredRails, 0) : 0;
+
+  document.getElementById('startNether').textContent = `${nsx}, ${nsz}`;
+  document.getElementById('endNether').textContent = `${nex}, ${nez}`;
+  document.getElementById('straightDistance').textContent = fmt(straight);
+  document.getElementById('tunnelDistance').textContent = fmt(tunnel);
+  document.getElementById('floorBlocks').textContent = fmt(floor);
+  document.getElementById('liningBlocks').textContent = fmt(lining);
+  document.getElementById('railBlocks').textContent = roadType === 'rail' ? `${fmt(normalRails)} / ${fmt(poweredRails)}` : '0 / 0';
+  document.getElementById('owDistance').textContent = `${fmt(overworldStraight - straight)} blocks`;
+  document.getElementById('floorLabel').textContent = roadType === 'ice' ? 'Ice blocks' : 'Road floor blocks';
+  document.getElementById('routeNote').textContent =
+    `Build from Nether (${nsx}, ${nsz}) to (${nex}, ${nez}). A practical right-angle tunnel is ${fmt(dx)} blocks along X and ${fmt(dz)} blocks along Z. Y does not scale, but portal linking still depends on the nearest valid portal position.`;
+}
+
+ids.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+calculate();
+</script>
+</body>
+</html>

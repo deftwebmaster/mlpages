@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Farm Calculator — Minecraft Tools</title>
+<meta name="description" content="Crop growth timing, hopper transfer timing, and mob spawn range checking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .shape-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .shape-tab {
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    background: var(--panel); color: var(--text-dim); border: var(--border-w) solid var(--panel-border);
+    min-height: 44px; padding: 9px 14px; cursor: pointer;
+  }
+  .shape-tab.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+  .hint { font-size: 12px; color: var(--text-faint); margin: 4px 0 20px; line-height: 1.5; }
+
+  .zone-result {
+    border: var(--border-w) solid var(--panel-border); padding: 16px; margin-top: 20px;
+  }
+  .zone-result.spawn { border-color: var(--accent); }
+  .zone-result .verdict {
+    font-family: 'Big Shoulders Display', sans-serif; font-size: 22px; text-transform: uppercase;
+    color: var(--accent); line-height: 1; margin-bottom: 8px;
+  }
+  .zone-result p { font-size: 13px; color: var(--text-dim); margin: 4px 0; line-height: 1.5; }
+  .zone-bands { display: flex; font-family: 'JetBrains Mono', monospace; font-size: 10px; margin-top: 14px; border: 1px solid var(--panel-border); }
+  .zone-bands .band { flex: 1; padding: 8px 4px; text-align: center; color: var(--text-faint); border-right: 1px solid var(--panel-border); }
+  .zone-bands .band:last-child { border-right: none; }
+  .zone-bands .band.active { color: var(--bg); background: var(--accent); }
+  @media (max-width: 560px) {
+    .shape-tab { flex: 1 1 100%; }
+    .zone-bands { display: grid; grid-template-columns: 1fr; }
+    .zone-bands .band { border-right: none; border-bottom: 1px solid var(--panel-border); }
+    .zone-bands .band:last-child { border-bottom: none; }
+  }
+</style>
+</head>
+<body data-tool="farm">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/" aria-current="page">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">World Navigation</p>
+  <h1>Farm<br>Calculator</h1>
+  <p class="subtitle">Crop timing, hopper throughput, and mob spawn range — three different mechanics, three different confidence levels. See the note on each tab.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="shape-tabs" id="farmTabs">
+      <button class="shape-tab active" data-tab="crops">Crop Growth</button>
+      <button class="shape-tab" data-tab="hoppers">Hopper Transfer</button>
+      <button class="shape-tab" data-tab="mobs">Mob Spawn Range</button>
+    </div>
+
+    <!-- CROPS -->
+    <div id="cropsPanel">
+      <div class="field">
+        <label for="cropType">Crop</label>
+        <select id="cropType">
+          <option value="wheat">Wheat</option>
+          <option value="carrots">Carrots</option>
+          <option value="potatoes">Potatoes</option>
+          <option value="beetroot">Beetroot</option>
+          <option value="netherwart">Nether Wart</option>
+        </select>
+      </div>
+      <div class="field" id="conditionField">
+        <label for="cropCondition">Field Condition</label>
+        <select id="cropCondition">
+          <option value="wateredAlt">Watered + alternating crop rows (fastest)</option>
+          <option value="wateredSolid">Watered + solid same-crop field</option>
+          <option value="dryAlt">Unwatered + alternating crop rows</option>
+          <option value="drySolid">Unwatered + solid same-crop field</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="plotCount">Number of plants in plot</label>
+        <input type="number" id="plotCount" min="1" value="32">
+      </div>
+      <p class="hint">Growth is driven by random ticks, not a fixed timer — these are statistical averages, not guarantees. Assumes you harvest and replant each plant the moment it matures. Nether wart ignores farmland/water and always grows at the same fixed rate.</p>
+
+      <div class="slots-row">
+        <div class="output-slot"><div class="n" id="cropCycleTime">—</div><div class="label">Min / Cycle</div></div>
+        <div class="output-slot"><div class="n" id="cropCyclesHr">—</div><div class="label">Cycles / Hr</div></div>
+        <div class="output-slot"><div class="n" id="cropPlantsHr">—</div><div class="label">Plants Harvested / Hr</div></div>
+      </div>
+    </div>
+
+    <!-- HOPPERS -->
+    <div id="hoppersPanel" style="display:none">
+      <div class="field">
+        <label for="itemCount">Items to move through the hopper chain</label>
+        <input type="number" id="itemCount" min="1" value="640">
+      </div>
+      <p class="hint">Standard unlocked hopper: 1 item transfers every 8 game ticks (0.4s), regardless of stack size. This is per link in the chain — parallel hopper lines multiply throughput, this calculates a single line.</p>
+
+      <div class="slots-row">
+        <div class="output-slot"><div class="n" id="hopperTime">—</div><div class="label">Total Time</div></div>
+        <div class="output-slot"><div class="n" id="hopperRate">2.5</div><div class="label">Items / Sec</div></div>
+        <div class="output-slot"><div class="n" id="hopperPerHr">—</div><div class="label">Items / Hr</div></div>
+      </div>
+    </div>
+
+    <!-- MOBS -->
+    <div id="mobsPanel" style="display:none">
+      <div class="row">
+        <div class="field"><label for="nearDist">Nearest platform edge (blocks from AFK point)</label><input type="number" id="nearDist" min="0" value="28"></div>
+        <div class="field"><label for="farDist">Farthest platform edge (blocks from AFK point)</label><input type="number" id="farDist" min="0" value="90"></div>
+      </div>
+      <p class="hint">Java Edition rules: nothing spawns closer than 24 blocks. 24–32 blocks spawns and never distance-despawns. 32–128 blocks is the normal farm zone — spawns, with a slow random despawn chance while idle. Past 128 blocks, mobs can't spawn and despawn instantly. Since 1.18, hostile mobs also need block light level exactly 0 to spawn.</p>
+
+      <div class="zone-result spawn" id="mobResult">
+        <div class="verdict" id="mobVerdict">—</div>
+        <p id="mobDetail"></p>
+        <div class="zone-bands">
+          <div class="band" id="band0">0–24<br>no spawn</div>
+          <div class="band" id="band1">24–32<br>spawn, no despawn</div>
+          <div class="band" id="band2">32–128<br>farm zone</div>
+          <div class="band" id="band3">128+<br>despawns</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../blocks/">Block Calculator</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../highway/">Highway Planner</a>
+    </div>
+    <div class="footer-note">Farm placement checks are honest estimates; real rates still depend on design, mob caps, and simulation distance.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+// --- Tab switching ---
+const panels = { crops: 'cropsPanel', hoppers: 'hoppersPanel', mobs: 'mobsPanel' };
+document.querySelectorAll('.shape-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.shape-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    Object.values(panels).forEach(id => document.getElementById(id).style.display = 'none');
+    document.getElementById(panels[tab.dataset.tab]).style.display = 'block';
+  });
+});
+
+// --- Crop growth ---
+// Base times in minutes for a full growth cycle (seed to mature), sourced from documented
+// random-tick growth mechanics. Wheat/carrots/potatoes share timing (same 7 growth-stage advances).
+const CROP_BASE = {
+  wateredAlt: 24,
+  wateredSolid: 48,
+  dryAlt: 56,
+  drySolid: 112,
+};
+// Beetroot needs only 3 advances vs 7 for wheat/carrots/potatoes -> scales by 3/7
+const BEETROOT_SCALE = 3 / 7;
+const NETHER_WART_FIXED = 34.13; // fixed rate regardless of soil/water, ignores farmland entirely
+
+function calculateCrops() {
+  const crop = document.getElementById('cropType').value;
+  const condition = document.getElementById('cropCondition').value;
+  const plotCount = Math.max(parseInt(document.getElementById('plotCount').value, 10) || 0, 0);
+
+  document.getElementById('conditionField').style.display = crop === 'netherwart' ? 'none' : 'block';
+
+  let cycleMinutes;
+  if (crop === 'netherwart') {
+    cycleMinutes = NETHER_WART_FIXED;
+  } else if (crop === 'beetroot') {
+    cycleMinutes = CROP_BASE[condition] * BEETROOT_SCALE;
+  } else {
+    cycleMinutes = CROP_BASE[condition];
+  }
+
+  const cyclesPerHour = 60 / cycleMinutes;
+  const plantsPerHour = cyclesPerHour * plotCount;
+
+  document.getElementById('cropCycleTime').textContent = cycleMinutes.toFixed(1);
+  document.getElementById('cropCyclesHr').textContent = cyclesPerHour.toFixed(2);
+  document.getElementById('cropPlantsHr').textContent = Math.round(plantsPerHour).toLocaleString();
+}
+
+['cropType', 'cropCondition', 'plotCount'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculateCrops);
+});
+
+// --- Hoppers ---
+const HOPPER_RATE_PER_SEC = 2.5; // 1 item per 8 game ticks (0.4s) = 2.5 items/sec
+
+function calculateHoppers() {
+  const items = Math.max(parseInt(document.getElementById('itemCount').value, 10) || 0, 0);
+  const totalSeconds = items / HOPPER_RATE_PER_SEC;
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = Math.round(totalSeconds % 60);
+  const perHour = HOPPER_RATE_PER_SEC * 3600;
+
+  document.getElementById('hopperTime').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+  document.getElementById('hopperPerHr').textContent = Math.round(perHour).toLocaleString();
+}
+
+document.getElementById('itemCount').addEventListener('input', calculateHoppers);
+
+// --- Mob spawn range ---
+function calculateMobs() {
+  const near = Math.max(parseFloat(document.getElementById('nearDist').value) || 0, 0);
+  const far = Math.max(parseFloat(document.getElementById('farDist').value) || 0, near);
+
+  document.querySelectorAll('.zone-bands .band').forEach(b => b.classList.remove('active'));
+
+  let verdict, detail;
+  if (near < 24) {
+    verdict = 'Too Close';
+    detail = `The nearest edge (${near} blocks) is inside the no-spawn zone. Nothing will spawn there — move the AFK point back or the platform further out.`;
+    document.getElementById('band0').classList.add('active');
+  } else if (far > 128) {
+    if (near >= 24 && near <= 128) {
+      verdict = 'Partially Out of Range';
+      detail = `The near edge (${near}) is inside the valid spawn band, but the far edge (${far}) is past 128 blocks and won't spawn or hold mobs. Shrink the platform or move the AFK point closer to center it.`;
+    } else {
+      verdict = 'Too Far';
+      detail = `Both edges are past the 128-block cutoff. Nothing will spawn here from this AFK point.`;
+    }
+    document.getElementById('band3').classList.add('active');
+  } else if (far <= 32) {
+    verdict = 'Valid — No Despawn Zone';
+    detail = `Both edges sit within 24–32 blocks. Mobs will spawn and won't distance-despawn — good for capacity, but the platform can get crowded if not cleared regularly.`;
+    document.getElementById('band1').classList.add('active');
+  } else {
+    verdict = 'Valid — Farm Zone';
+    detail = `The platform sits within the 24–128 block band. This is the normal working range for a spawn farm — mobs will spawn and funnel through as expected.`;
+    document.getElementById('band2').classList.add('active');
+  }
+
+  document.getElementById('mobVerdict').textContent = verdict;
+  document.getElementById('mobDetail').textContent = detail;
+}
+
+['nearDist', 'farDist'].forEach(id => {
+  document.getElementById(id).addEventListener('input', calculateMobs);
+});
+
+calculateCrops();
+calculateHoppers();
+calculateMobs();
+</script>
+</body>
+</html>

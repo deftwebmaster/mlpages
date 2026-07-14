@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enchant / Anvil Cost Optimizer — Minecraft Tools</title>
+<meta name="description" content="Calculate the exact XP-level cost of an anvil operation — prior work penalty, enchantment multipliers, repair, and rename.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .mode-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .mode-tab {
+    flex: 1 1 180px; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    background: var(--panel); color: var(--text-dim); border: var(--border-w) solid var(--panel-border);
+    min-height: 44px; padding: 10px; cursor: pointer; text-align: center;
+  }
+  .mode-tab.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+
+  .penalty-select { display: flex; align-items: center; gap: 10px; }
+  .penalty-select select { width: auto; flex: 1; }
+  .penalty-hint { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-faint); min-width: 90px; text-align: right; }
+
+  .checkbox-row { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+  .checkbox-row input { width: auto; accent-color: var(--accent); }
+  .checkbox-row label { font-size: 13px; color: var(--text); margin: 0; text-transform: none; font-family: 'Inter', sans-serif; }
+
+  .enchant-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  .enchant-row select:first-child { flex: 2; }
+  .enchant-row select:nth-child(2) { flex: 1; }
+  .enchant-row .row-cost { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); min-width: 44px; text-align: right; }
+  .enchant-row .remove-enchant {
+    background: none; border: var(--border-w) solid var(--panel-border); color: var(--text-faint);
+    cursor: pointer; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; line-height: 1;
+  }
+  .enchant-row .remove-enchant:hover { color: var(--redstone); border-color: var(--redstone); }
+
+  .breakdown { margin-top: 20px; border-top: 1px solid var(--panel-border); padding-top: 16px; }
+  .breakdown-row {
+    display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--text-dim); padding: 4px 0;
+  }
+  .breakdown-row.total { color: var(--text); font-weight: 700; font-size: 15px; border-top: 1px solid var(--panel-border); margin-top: 6px; padding-top: 10px; }
+
+  .too-expensive {
+    background: rgba(193,68,14,0.15); border: var(--border-w) solid var(--redstone);
+    color: var(--redstone); padding: 12px 16px; margin-top: 16px; font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; text-transform: uppercase; letter-spacing: .04em; display: none;
+  }
+  .too-expensive.show { display: block; }
+
+  .penalty-ref {
+    margin-top: 28px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-faint);
+    display: flex; gap: 14px; flex-wrap: wrap;
+  }
+  .penalty-ref span b { color: var(--text-dim); }
+  @media (max-width: 560px) {
+    .mode-tab { flex-basis: 100%; }
+    .penalty-select { align-items: stretch; }
+    .penalty-hint { min-width: 72px; padding-top: 14px; }
+    .checkbox-row { align-items: flex-start; }
+    .checkbox-row input { margin-top: 2px; }
+    .enchant-row { display: grid; grid-template-columns: minmax(0, 1fr) 76px 44px; gap: 8px; align-items: stretch; }
+    .enchant-row select:first-child { grid-column: 1 / -1; }
+    .enchant-row .row-cost {
+      min-width: 0;
+      border: 1px solid var(--panel-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .enchant-row .remove-enchant { width: 44px; }
+  }
+</style>
+</head>
+<body data-tool="enchant">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/" aria-current="page">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Build Planning</p>
+  <h1>Enchant / Anvil<br>Cost Optimizer</h1>
+  <p class="subtitle">Prior work penalty doubles every anvil use — this adds it up correctly so you know the real cost before you commit levels.</p>
+
+  <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+  <div class="card">
+    <div class="mode-tabs" id="modeTabs">
+      <button class="mode-tab active" data-mode="book">Sacrifice: Enchanted Book</button>
+      <button class="mode-tab" data-mode="item">Sacrifice: Same Item</button>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="targetUses">Target item — prior anvil uses</label>
+        <div class="penalty-select">
+          <select id="targetUses">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          </select>
+          <span class="penalty-hint" id="targetPenaltyHint">+0 lvl</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="sacrificeUses">Sacrifice — prior anvil uses</label>
+        <div class="penalty-select">
+          <select id="sacrificeUses">
+            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+            <option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
+          </select>
+          <span class="penalty-hint" id="sacrificePenaltyHint">+0 lvl</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkbox-row" id="repairRow" style="display:none">
+      <input type="checkbox" id="repairing">
+      <label for="repairing">Target is damaged and being repaired (+2 levels)</label>
+    </div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="renaming">
+      <label for="renaming">Also renaming (+1 level)</label>
+    </div>
+
+    <div class="openings-label" style="margin-top:22px">Enchantments Being Applied</div>
+    <div id="enchantList"></div>
+    <button class="btn btn-ghost" id="addEnchantBtn" type="button">+ Add Enchantment</button>
+
+    <div class="breakdown">
+      <div class="breakdown-row"><span>Enchantment cost</span><span id="bdEnchant">0</span></div>
+      <div class="breakdown-row"><span>Target penalty</span><span id="bdTargetPenalty">0</span></div>
+      <div class="breakdown-row"><span>Sacrifice penalty</span><span id="bdSacrificePenalty">0</span></div>
+      <div class="breakdown-row"><span>Repair</span><span id="bdRepair">0</span></div>
+      <div class="breakdown-row"><span>Rename</span><span id="bdRename">0</span></div>
+      <div class="breakdown-row total"><span>Total cost</span><span id="bdTotal">0 levels</span></div>
+    </div>
+
+    <div class="too-expensive" id="tooExpensive">⚠ Too Expensive! — exceeds the 39-level survival cap</div>
+
+    <p class="penalty-ref">
+      <span><b>Penalty by uses:</b></span>
+      <span>0→0</span><span>1→1</span><span>2→3</span><span>3→7</span><span>4→15</span><span>5→31</span><span>6→63</span>
+    </p>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../potion/">Potion Brew Sheet</a>
+      <a href="../coords/">Coordinate Notebook</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Covers standard enchantments. Mace-exclusive and Cleaving data can be added once multipliers are verified.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+// Verified against Minecraft Wiki "Anvil mechanics" — multiplier = [item, book]
+const ENCHANTMENTS = [
+  { name: "Protection", max: 4, item: 1, book: 1 },
+  { name: "Fire Protection", max: 4, item: 2, book: 1 },
+  { name: "Feather Falling", max: 4, item: 2, book: 1 },
+  { name: "Blast Protection", max: 4, item: 4, book: 2 },
+  { name: "Projectile Protection", max: 4, item: 2, book: 1 },
+  { name: "Thorns", max: 3, item: 8, book: 4 },
+  { name: "Respiration", max: 3, item: 4, book: 2 },
+  { name: "Depth Strider", max: 3, item: 4, book: 2 },
+  { name: "Aqua Affinity", max: 1, item: 4, book: 2 },
+  { name: "Frost Walker", max: 2, item: 4, book: 2 },
+  { name: "Curse of Binding", max: 1, item: 8, book: 4 },
+  { name: "Curse of Vanishing", max: 1, item: 8, book: 4 },
+  { name: "Soul Speed", max: 3, item: 4, book: 2 },
+  { name: "Swift Sneak", max: 3, item: 8, book: 4 },
+  { name: "Sharpness", max: 5, item: 1, book: 1 },
+  { name: "Smite", max: 5, item: 2, book: 1 },
+  { name: "Bane of Arthropods", max: 5, item: 2, book: 1 },
+  { name: "Knockback", max: 2, item: 2, book: 1 },
+  { name: "Fire Aspect", max: 2, item: 4, book: 2 },
+  { name: "Looting", max: 3, item: 4, book: 2 },
+  { name: "Sweeping Edge", max: 3, item: 4, book: 2 },
+  { name: "Efficiency", max: 5, item: 1, book: 1 },
+  { name: "Silk Touch", max: 1, item: 8, book: 4 },
+  { name: "Unbreaking", max: 3, item: 2, book: 1 },
+  { name: "Fortune", max: 3, item: 4, book: 2 },
+  { name: "Mending", max: 1, item: 4, book: 2 },
+  { name: "Power", max: 5, item: 1, book: 1 },
+  { name: "Punch", max: 2, item: 4, book: 2 },
+  { name: "Flame", max: 1, item: 4, book: 2 },
+  { name: "Infinity", max: 1, item: 8, book: 4 },
+  { name: "Quick Charge", max: 3, item: 2, book: 1 },
+  { name: "Multishot", max: 1, item: 4, book: 2 },
+  { name: "Piercing", max: 4, item: 1, book: 1 },
+  { name: "Luck of the Sea", max: 3, item: 4, book: 2 },
+  { name: "Lure", max: 3, item: 4, book: 2 },
+  { name: "Loyalty", max: 3, item: 1, book: 1 },
+  { name: "Impaling", max: 5, item: 4, book: 2 },
+  { name: "Riptide", max: 3, item: 4, book: 2 },
+  { name: "Channeling", max: 1, item: 8, book: 4 },
+];
+
+let currentMode = 'book';
+let rows = [{ enchant: 'Sharpness', level: 1 }];
+
+function penalty(uses) { return Math.pow(2, parseInt(uses, 10)) - 1; }
+
+document.querySelectorAll('.mode-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMode = tab.dataset.mode;
+    document.getElementById('repairRow').style.display = currentMode === 'item' ? 'flex' : 'none';
+    calculate();
+  });
+});
+
+function renderEnchantRows() {
+  const list = document.getElementById('enchantList');
+  list.innerHTML = '';
+  rows.forEach((row, i) => {
+    const def = ENCHANTMENTS.find(e => e.name === row.enchant);
+    const mult = currentMode === 'book' ? def.book : def.item;
+    const cost = mult * row.level;
+    const wrap = document.createElement('div');
+    wrap.className = 'enchant-row';
+    wrap.innerHTML = `
+      <select data-idx="${i}" data-field="enchant">
+        ${ENCHANTMENTS.map(e => `<option value="${e.name}" ${e.name === row.enchant ? 'selected' : ''}>${e.name}</option>`).join('')}
+      </select>
+      <select data-idx="${i}" data-field="level">
+        ${Array.from({ length: def.max }, (_, n) => n + 1).map(lvl =>
+          `<option value="${lvl}" ${lvl === row.level ? 'selected' : ''}>Lvl ${lvl}</option>`).join('')}
+      </select>
+      <span class="row-cost">${cost}</span>
+      <button class="remove-enchant" data-idx="${i}" title="Remove">✕</button>
+    `;
+    list.appendChild(wrap);
+  });
+
+  list.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.dataset.idx, 10);
+      const field = e.target.dataset.field;
+      if (field === 'enchant') {
+        rows[idx].enchant = e.target.value;
+        const def = ENCHANTMENTS.find(en => en.name === e.target.value);
+        if (rows[idx].level > def.max) rows[idx].level = def.max;
+      } else {
+        rows[idx].level = parseInt(e.target.value, 10);
+      }
+      renderEnchantRows();
+      calculate();
+    });
+  });
+  list.querySelectorAll('.remove-enchant').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      rows.splice(parseInt(e.target.dataset.idx, 10), 1);
+      renderEnchantRows();
+      calculate();
+    });
+  });
+}
+
+document.getElementById('addEnchantBtn').addEventListener('click', () => {
+  rows.push({ enchant: 'Unbreaking', level: 1 });
+  renderEnchantRows();
+  calculate();
+});
+
+function calculate() {
+  const targetUses = document.getElementById('targetUses').value;
+  const sacrificeUses = document.getElementById('sacrificeUses').value;
+  const targetPenalty = penalty(targetUses);
+  const sacrificePenalty = penalty(sacrificeUses);
+
+  document.getElementById('targetPenaltyHint').textContent = `+${targetPenalty} lvl`;
+  document.getElementById('sacrificePenaltyHint').textContent = `+${sacrificePenalty} lvl`;
+
+  const enchantCost = rows.reduce((sum, row) => {
+    const def = ENCHANTMENTS.find(e => e.name === row.enchant);
+    const mult = currentMode === 'book' ? def.book : def.item;
+    return sum + mult * row.level;
+  }, 0);
+
+  const repairing = currentMode === 'item' && document.getElementById('repairing').checked;
+  const repairCost = repairing ? 2 : 0;
+  const renaming = document.getElementById('renaming').checked;
+  const renameCost = renaming ? 1 : 0;
+
+  const total = enchantCost + targetPenalty + sacrificePenalty + repairCost + renameCost;
+
+  document.getElementById('bdEnchant').textContent = enchantCost;
+  document.getElementById('bdTargetPenalty').textContent = targetPenalty;
+  document.getElementById('bdSacrificePenalty').textContent = sacrificePenalty;
+  document.getElementById('bdRepair').textContent = repairCost;
+  document.getElementById('bdRename').textContent = renameCost;
+  document.getElementById('bdTotal').textContent = `${total} level${total === 1 ? '' : 's'}`;
+
+  document.getElementById('tooExpensive').classList.toggle('show', total >= 40);
+}
+
+['targetUses', 'sacrificeUses', 'repairing', 'renaming'].forEach(id => {
+  document.getElementById(id).addEventListener('change', calculate);
+});
+
+renderEnchantRows();
+calculate();
+</script>
+</body>
+</html>

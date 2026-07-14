@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Build Challenge Generator — Minecraft Tools</title>
+<meta name="description" content="Generate a random build challenge: theme, material restriction, scope, and a twist.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/styles.css">
+<style>
+  .recipe-cell {
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; padding: 6px; gap: 4px;
+  }
+  .recipe-cell .k { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.08em; text-transform:uppercase; color: var(--text-faint); }
+  .recipe-cell .v { font-size: 12px; line-height: 1.2; color: var(--text); }
+  .recipe-cell.filled { border-color: var(--accent); }
+  .recipe-cell.empty { opacity: 0.35; }
+  .recipe-cell .reroll {
+    position: absolute; top: 2px; right: 2px; background: none; border: none;
+    color: var(--text-faint); cursor: pointer; font-size: 12px; line-height: 1; padding: 4px;
+  }
+  .recipe-cell.filled .reroll:hover { color: var(--accent); }
+  .cell { position: relative; }
+  #copyNote { font-size: 12px; color: var(--accent); font-family:'JetBrains Mono',monospace; opacity:0; transition: opacity .2s; }
+  #copyNote.show { opacity: 1; }
+</style>
+</head>
+<body data-tool="challenge">
+<nav class="site-nav" aria-label="Minecraft tools">
+  <div class="site-nav-inner">
+    <a class="site-brand" href="../">Minecraft Tools</a>
+    <div class="site-links">
+      <a href="../challenge/" aria-current="page">Challenge</a>
+      <a href="../blocks/">Blocks</a>
+      <a href="../palette/">Palette</a>
+      <a href="../enchant/">Enchant</a>
+      <a href="../potion/">Potions</a>
+      <a href="../highway/">Highway</a>
+      <a href="../coords/">Coords</a>
+      <a href="../villagers/">Villagers</a>
+      <a href="../farm/">Farm</a>
+      <a href="../controls/">Controls</a>
+    </div>
+    <details class="mobile-tools-menu">
+      <summary>Tools</summary>
+      <div class="mobile-menu-panel">
+        <a data-tool="hub" href="../">Hub</a>
+        <a data-tool="challenge" href="../challenge/">Challenge</a>
+        <a data-tool="blocks" href="../blocks/">Blocks</a>
+        <a data-tool="palette" href="../palette/">Palette</a>
+        <a data-tool="enchant" href="../enchant/">Enchant</a>
+        <a data-tool="potion" href="../potion/">Potions</a>
+        <a data-tool="highway" href="../highway/">Highway</a>
+        <a data-tool="coords" href="../coords/">Coords</a>
+        <a data-tool="villagers" href="../villagers/">Villagers</a>
+        <a data-tool="farm" href="../farm/">Farm</a>
+        <a data-tool="controls" href="../controls/">Controls</a>
+      </div>
+    </details>
+  </div>
+</nav>
+<div class="shell">
+  <p class="eyebrow">Build Planning</p>
+  <h1>Challenge<br>Generator</h1>
+  <p class="subtitle">Roll a theme, a material restriction, a scope, and a twist. Reroll any single slot, or the whole recipe. Every result is a shareable link.</p>
+
+  <div class="grid3" id="grid">
+    <!-- 9 cells: 4 filled with data-slot, 5 decorative empty -->
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="generateBtn">Generate Challenge</button>
+    <button class="btn btn-ghost" id="copyBtn">Copy Link</button>
+    <span id="copyNote">Copied</span>
+  </div>
+
+  <footer class="tool-footer">
+    <div class="footer-title">Tool Bench</div>
+    <div class="footer-links">
+      <a href="../">All Tools</a>
+      <a href="../#estate-map">Farmstead Map</a>
+      <a href="../palette/">Palette Builder</a>
+      <a href="../blocks/">Block Calculator</a>
+      <a href="../controls/">Controls Guide</a>
+    </div>
+    <div class="footer-note">Roll a prompt, build the thing, then come back for materials and palettes.</div>
+    <div class="footer-credit">Built for fun by Matt Livingston</div>
+  </footer>
+</div>
+
+<script>
+const THEMES = ["Medieval Village","Sci-Fi Outpost","Underwater Base","Desert Oasis","Post-Apocalyptic Ruin","Fantasy Treehouse","Industrial Factory","Floating Sky Island","Volcanic Fortress","Arctic Research Station","Swamp Hideout","Mountain Monastery"];
+const MATERIALS = ["Only wool and stone","No crafting-table items","Only naturally-found blocks","One primary color palette","No glass allowed","Only Nether-found blocks","Scavenged/recycled look only","No redstone components","Only blocks you can dye"];
+const SCOPES = ["Starter shelter","Single statement room","Full base","Mega-build — go big","Micro-build, under 5×5×5","Multi-story tower"];
+const TWISTS = ["Must include a working farm","Build only using night-time lighting","No symmetry allowed","Must incorporate existing terrain","Include a hidden room","Must be built entirely underground","Must be visible from spawn","Include a redstone contraption","No two walls the same height"];
+
+const SLOT_DEFS = [
+  { key: 'theme', label: 'Theme', data: THEMES, cellIndex: 1 },
+  { key: 'material', label: 'Material', data: MATERIALS, cellIndex: 3 },
+  { key: 'scope', label: 'Scope', data: SCOPES, cellIndex: 5 },
+  { key: 'twist', label: 'Twist', data: TWISTS, cellIndex: 7 },
+];
+
+const grid = document.getElementById('grid');
+let state = {};
+
+function buildGrid() {
+  grid.innerHTML = '';
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    const slotDef = SLOT_DEFS.find(s => s.cellIndex === i);
+    if (slotDef) {
+      cell.classList.add('recipe-cell');
+      cell.dataset.key = slotDef.key;
+      cell.innerHTML = `<button class="reroll" title="Reroll ${slotDef.label}" data-key="${slotDef.key}">⟳</button>
+        <span class="k">${slotDef.label}</span><span class="v">—</span>`;
+      cell.querySelector('.reroll').addEventListener('click', () => rerollSlot(slotDef.key));
+    } else {
+      cell.classList.add('empty');
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function randIndex(arr) { return Math.floor(Math.random() * arr.length); }
+
+function rerollSlot(key, forceIndex) {
+  const def = SLOT_DEFS.find(s => s.key === key);
+  const idx = forceIndex !== undefined ? forceIndex : randIndex(def.data);
+  state[key] = idx;
+  renderSlot(key);
+  syncUrl();
+}
+
+function renderSlot(key) {
+  const def = SLOT_DEFS.find(s => s.key === key);
+  const cell = grid.querySelector(`.recipe-cell[data-key="${key}"]`);
+  const idx = state[key];
+  cell.classList.add('filled');
+  cell.querySelector('.v').textContent = def.data[idx];
+}
+
+function generateAll() {
+  SLOT_DEFS.forEach(def => { state[def.key] = randIndex(def.data); });
+  SLOT_DEFS.forEach(def => renderSlot(def.key));
+  syncUrl();
+}
+
+function syncUrl() {
+  const params = new URLSearchParams();
+  SLOT_DEFS.forEach(def => params.set(def.key, state[def.key]));
+  history.replaceState(null, '', '?' + params.toString());
+}
+
+function loadFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  let hasAll = SLOT_DEFS.every(def => params.has(def.key));
+  if (!hasAll) return false;
+  SLOT_DEFS.forEach(def => {
+    const idx = parseInt(params.get(def.key), 10);
+    if (!isNaN(idx) && idx >= 0 && idx < def.data.length) {
+      state[def.key] = idx;
+    } else {
+      hasAll = false;
+    }
+  });
+  if (hasAll) SLOT_DEFS.forEach(def => renderSlot(def.key));
+  return hasAll;
+}
+
+document.getElementById('generateBtn').addEventListener('click', generateAll);
+document.getElementById('copyBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const note = document.getElementById('copyNote');
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 1500);
+  });
+});
+
+buildGrid();
+if (!loadFromUrl()) generateAll();
+</script>
+</body>
+</html>
