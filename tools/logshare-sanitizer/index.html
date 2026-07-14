@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogShare Sanitizer | Local Log Redaction Tool</title>
+  <meta name="description" content="Sanitize logs, stack traces, headers, env dumps, and JSON payloads before sharing. Detects tokens, keys, emails, IPs, URLs, and connection strings locally.">
+  <link rel="canonical" href="https://mattlivingston.com/tools/logshare-sanitizer/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a1020;
+      --panel: #111a2d;
+      --panel-2: #182338;
+      --panel-3: #22314b;
+      --input: #0d1628;
+      --border: #31435f;
+      --border-strong: #4b5f7d;
+      --text: #f1f5f9;
+      --text-soft: #cbd5e1;
+      --text-muted: #8b9bb1;
+      --accent: #38bdf8;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #f43f5e;
+      --purple: #a78bfa;
+      --radius: 8px;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .page {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 28px 18px 54px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .back-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      color: #bae6fd;
+      background: rgba(56, 189, 248, 0.09);
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.15rem, 4.3vw, 4.8rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      max-width: 690px;
+      font-size: 1.02rem;
+    }
+
+    .notice {
+      background: rgba(245, 158, 11, 0.11);
+      border: 1px solid rgba(245, 158, 11, 0.36);
+      color: #fde68a;
+      border-radius: var(--radius);
+      padding: 15px 16px;
+      font-size: 0.9rem;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .options {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .check input {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent);
+    }
+
+    .btn {
+      min-height: 42px;
+      border-radius: var(--radius);
+      padding: 9px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: #03111f;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    .btn:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      background: var(--panel-3);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn.secondary:hover {
+      background: #2a3a57;
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    .btn:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 220px repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+
+    .score-card {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .score-ring {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--good) var(--score-angle), rgba(148, 163, 184, 0.16) 0), var(--input);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .score-ring::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: var(--panel);
+    }
+
+    .score-ring strong {
+      position: relative;
+      font-size: 1.25rem;
+    }
+
+    .score-card span,
+    .stat span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .score-card b {
+      display: block;
+      font-size: 0.94rem;
+    }
+
+    .stat {
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .stat.high strong { color: var(--bad); }
+    .stat.medium strong { color: var(--warn); }
+    .stat.low strong { color: var(--accent); }
+    .stat.good strong { color: var(--good); }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .editor-panel {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 510px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .panel-header p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .file-label {
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      padding: 7px 10px;
+      cursor: pointer;
+      background: var(--panel-3);
+      color: var(--text-soft);
+      border: 1px solid var(--border-strong);
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .file-label input {
+      display: none;
+    }
+
+    textarea {
+      flex: 1;
+      width: 100%;
+      min-height: 420px;
+      resize: vertical;
+      border: 0;
+      color: var(--text);
+      background: var(--input);
+      padding: 14px 16px;
+      font-family: var(--mono);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      tab-size: 2;
+    }
+
+    textarea::placeholder {
+      color: #617089;
+    }
+
+    .output {
+      flex: 1;
+      min-height: 420px;
+      background: var(--input);
+      color: var(--text-soft);
+      padding: 14px 0;
+      overflow: auto;
+      font-family: var(--mono);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      white-space: pre;
+    }
+
+    .line {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      min-width: 100%;
+    }
+
+    .line-no {
+      color: #64748b;
+      text-align: right;
+      padding-right: 12px;
+      user-select: none;
+      border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .line-text {
+      padding-left: 12px;
+    }
+
+    mark {
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.18);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 4px;
+      padding: 0 3px;
+    }
+
+    .findings-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+      gap: 16px;
+    }
+
+    .findings-list {
+      display: grid;
+    }
+
+    .empty-state {
+      padding: 32px 18px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .finding {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr) 90px;
+      gap: 13px;
+      align-items: start;
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .finding:last-child {
+      border-bottom: 0;
+    }
+
+    .severity {
+      width: fit-content;
+      min-width: 78px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+
+    .severity.high {
+      color: #fecdd3;
+      border-color: rgba(244, 63, 94, 0.46);
+      background: rgba(244, 63, 94, 0.13);
+    }
+
+    .severity.medium {
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.48);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .severity.low {
+      color: #bae6fd;
+      border-color: rgba(56, 189, 248, 0.42);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .finding h3 {
+      font-size: 0.9rem;
+      margin-bottom: 3px;
+    }
+
+    .finding p {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .finding code {
+      color: var(--text-soft);
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      word-break: break-all;
+    }
+
+    .line-ref {
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.76rem;
+      text-align: right;
+    }
+
+    .guide {
+      padding: 16px;
+    }
+
+    .guide h2 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .guide-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .token-chip {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(148, 163, 184, 0.08);
+      color: var(--text-soft);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 5px 8px;
+    }
+
+    @media (max-width: 980px) {
+      header,
+      .editor-grid,
+      .findings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .score-card {
+        grid-column: 1 / -1;
+      }
+
+      .pill-row {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding: 18px 12px 38px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .finding {
+        grid-template-columns: 1fr;
+      }
+
+      .line-ref {
+        text-align: left;
+      }
+
+      textarea,
+      .output {
+        min-height: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="back-link" href="/tools/">Tools</a>
+      <div class="pill-row" aria-label="Privacy guarantees">
+        <span class="pill">Local-only</span>
+        <span class="pill">Stable placeholders</span>
+        <span class="pill">No upload</span>
+      </div>
+    </div>
+
+    <header>
+      <div>
+        <h1>LogShare Sanitizer</h1>
+        <p class="subtitle">Clean logs, stack traces, request headers, JSON payloads, and env dumps before sharing them in issues, chats, tickets, or support threads.</p>
+      </div>
+      <div class="notice">
+        This catches common secret patterns, but it is still a safety net. Review the output before posting anything public.
+      </div>
+    </header>
+
+    <main>
+      <section class="toolbar" aria-label="Sanitizer controls">
+        <div class="options">
+          <label class="check">
+            <input id="redactEmails" type="checkbox" checked>
+            Redact emails
+          </label>
+          <label class="check">
+            <input id="redactIps" type="checkbox" checked>
+            Redact IPs
+          </label>
+          <label class="check">
+            <input id="redactUrls" type="checkbox" checked>
+            Redact sensitive URL params
+          </label>
+        </div>
+        <button class="btn secondary" id="demoBtn" type="button">Load demo</button>
+        <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+        <button class="btn" id="copyBtn" type="button" disabled>Copy safe log</button>
+      </section>
+
+      <section class="summary-grid" aria-label="Sanitization summary">
+        <article class="panel score-card">
+          <div class="score-ring" id="scoreRing" style="--score-angle: 0deg;">
+            <strong id="scoreValue">--</strong>
+          </div>
+          <div>
+            <span>Share score</span>
+            <b id="scoreLabel">Paste a log</b>
+          </div>
+        </article>
+        <article class="panel stat high">
+          <span>High risk</span>
+          <strong id="highCount">0</strong>
+        </article>
+        <article class="panel stat medium">
+          <span>Medium risk</span>
+          <strong id="mediumCount">0</strong>
+        </article>
+        <article class="panel stat low">
+          <span>Low risk</span>
+          <strong id="lowCount">0</strong>
+        </article>
+        <article class="panel stat good">
+          <span>Replacements</span>
+          <strong id="replacementCount">0</strong>
+        </article>
+      </section>
+
+      <section class="editor-grid" aria-label="Log input and safe output">
+        <article class="panel editor-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Original log</h2>
+              <p>Paste text or load a .log, .txt, .env, or .json file.</p>
+            </div>
+            <label class="file-label">
+              Load file
+              <input id="fileInput" type="file" accept=".log,.txt,.env,.json,.yaml,.yml,text/*,application/json">
+            </label>
+          </div>
+          <textarea id="inputText" spellcheck="false" placeholder="Paste logs, headers, stack traces, JSON payloads, or .env snippets here..."></textarea>
+        </article>
+
+        <article class="panel editor-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Share-safe output</h2>
+              <p>Secrets are replaced with stable placeholders.</p>
+            </div>
+            <button class="file-label" id="exportBtn" type="button" disabled>Export .txt</button>
+          </div>
+          <div class="output" id="outputText" aria-live="polite">
+            <div class="empty-state">Sanitized output will appear here.</div>
+          </div>
+        </article>
+      </section>
+
+      <section class="findings-grid">
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <h2>Findings</h2>
+              <p id="findingsSummary">No log scanned yet.</p>
+            </div>
+          </div>
+          <div class="findings-list" id="findingsList">
+            <div class="empty-state">Potential secrets and identifiers will be listed here.</div>
+          </div>
+        </article>
+
+        <aside class="panel guide">
+          <h2>Detection coverage</h2>
+          <div class="guide-list" aria-label="Detected pattern types">
+            <span class="token-chip">Bearer tokens</span>
+            <span class="token-chip">JWTs</span>
+            <span class="token-chip">OpenAI keys</span>
+            <span class="token-chip">GitHub tokens</span>
+            <span class="token-chip">AWS keys</span>
+            <span class="token-chip">Stripe keys</span>
+            <span class="token-chip">Slack tokens</span>
+            <span class="token-chip">Private keys</span>
+            <span class="token-chip">Database URLs</span>
+            <span class="token-chip">.env secrets</span>
+            <span class="token-chip">Emails</span>
+            <span class="token-chip">IP addresses</span>
+            <span class="token-chip">Sensitive URL params</span>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const els = {
+      input: document.getElementById('inputText'),
+      output: document.getElementById('outputText'),
+      fileInput: document.getElementById('fileInput'),
+      demoBtn: document.getElementById('demoBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      copyBtn: document.getElementById('copyBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      redactEmails: document.getElementById('redactEmails'),
+      redactIps: document.getElementById('redactIps'),
+      redactUrls: document.getElementById('redactUrls'),
+      scoreRing: document.getElementById('scoreRing'),
+      scoreValue: document.getElementById('scoreValue'),
+      scoreLabel: document.getElementById('scoreLabel'),
+      highCount: document.getElementById('highCount'),
+      mediumCount: document.getElementById('mediumCount'),
+      lowCount: document.getElementById('lowCount'),
+      replacementCount: document.getElementById('replacementCount'),
+      findingsList: document.getElementById('findingsList'),
+      findingsSummary: document.getElementById('findingsSummary')
+    };
+
+    const state = {
+      redacted: '',
+      findings: [],
+      placeholderMap: new Map()
+    };
+
+    const severityWeight = { high: 22, medium: 10, low: 4 };
+
+    const rules = [
+      {
+        id: 'PRIVATE_KEY',
+        label: 'Private key block',
+        severity: 'high',
+        placeholder: 'PRIVATE_KEY',
+        pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g
+      },
+      {
+        id: 'DATABASE_URL',
+        label: 'Database connection string',
+        severity: 'high',
+        placeholder: 'DATABASE_URL',
+        pattern: /\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|mssql):\/\/[^\s"'<>]+/gi
+      },
+      {
+        id: 'OPENAI_KEY',
+        label: 'OpenAI API key',
+        severity: 'high',
+        placeholder: 'OPENAI_KEY',
+        pattern: /\bsk-(?:proj-)?[A-Za-z0-9_-]{24,}\b/g
+      },
+      {
+        id: 'GITHUB_TOKEN',
+        label: 'GitHub token',
+        severity: 'high',
+        placeholder: 'GITHUB_TOKEN',
+        pattern: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{30,}\b/g
+      },
+      {
+        id: 'AWS_ACCESS_KEY',
+        label: 'AWS access key',
+        severity: 'high',
+        placeholder: 'AWS_ACCESS_KEY',
+        pattern: /\bA(?:KIA|SIA)[A-Z0-9]{16}\b/g
+      },
+      {
+        id: 'STRIPE_KEY',
+        label: 'Stripe key',
+        severity: 'high',
+        placeholder: 'STRIPE_KEY',
+        pattern: /\b(?:sk|rk|pk)_(?:live|test)_[A-Za-z0-9]{16,}\b/g
+      },
+      {
+        id: 'SLACK_TOKEN',
+        label: 'Slack token',
+        severity: 'high',
+        placeholder: 'SLACK_TOKEN',
+        pattern: /\bxox[baprs]-[A-Za-z0-9-]{10,}\b/g
+      },
+      {
+        id: 'SLACK_WEBHOOK',
+        label: 'Slack webhook URL',
+        severity: 'high',
+        placeholder: 'SLACK_WEBHOOK',
+        pattern: /https:\/\/hooks\.slack\.com\/services\/[A-Za-z0-9/_-]+/g
+      },
+      {
+        id: 'JWT',
+        label: 'JWT token',
+        severity: 'high',
+        placeholder: 'JWT',
+        pattern: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g
+      },
+      {
+        id: 'AUTH_HEADER',
+        label: 'Authorization header',
+        severity: 'high',
+        placeholder: 'AUTH_HEADER',
+        priority: 7.5,
+        pattern: /\bAuthorization\s*:\s*(?:Bearer|Basic|Token)\s+[A-Za-z0-9._~+/=-]{12,}/gi
+      },
+      {
+        id: 'ENV_SECRET',
+        label: '.env secret value',
+        severity: 'high',
+        placeholder: 'ENV_SECRET',
+        pattern: /\b[A-Z0-9_]*(?:SECRET|TOKEN|API_KEY|PASSWORD|PASS|PRIVATE_KEY|ACCESS_KEY)[A-Z0-9_]*\s*=\s*["']?[^"'\n\r\s]{8,}["']?/gi
+      },
+      {
+        id: 'GENERIC_SECRET',
+        label: 'Generic secret assignment',
+        severity: 'medium',
+        placeholder: 'SECRET_VALUE',
+        pattern: /\b(?:secret|token|api[_-]?key|password|passwd|pwd|client[_-]?secret)\s*[:=]\s*["']?[^"'\n\r\s,;]{8,}["']?/gi
+      },
+      {
+        id: 'EMAIL',
+        label: 'Email address',
+        severity: 'medium',
+        placeholder: 'EMAIL',
+        optional: 'emails',
+        pattern: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi
+      },
+      {
+        id: 'IP_ADDRESS',
+        label: 'IP address',
+        severity: 'low',
+        placeholder: 'IP_ADDRESS',
+        optional: 'ips',
+        pattern: /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g
+      },
+      {
+        id: 'SENSITIVE_URL_PARAM',
+        label: 'Sensitive URL parameter',
+        severity: 'medium',
+        placeholder: 'SENSITIVE_URL',
+        optional: 'urls',
+        priority: 9.5,
+        pattern: /https?:\/\/[^\s"'<>]*(?:[?&](?:token|key|secret|signature|sig|auth|access_token|refresh_token|code|password)=)[^\s"'<>]+/gi
+      }
+    ];
+
+    const demoLog = `2026-07-14T09:42:11Z ERROR request failed
+user=ava@example.com ip=203.0.113.42 route=/api/orders
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhdmEtMTIzIiwiYWRtaW4iOnRydWV9.VeryFakeSignature123456789
+OPENAI_API_KEY=sk-proj-demo1234567890abcdefghijklmnopqrstuvwxyz
+DATABASE_URL=postgres://orders_app:supersecret@db.internal:5432/orders
+github_token=ghp_demoTokenValue1234567890abcdefghijklmnop
+stripe=sk_live_51MockSecretKeyForDemoOnly123456
+callback=https://example.com/callback?token=abc123supersecret&user=42
+    at submitOrder (/app/src/orders.ts:42:11)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)`;
+
+    function getEnabledRules() {
+      return rules.filter(rule => {
+        if (rule.optional === 'emails') return els.redactEmails.checked;
+        if (rule.optional === 'ips') return els.redactIps.checked;
+        if (rule.optional === 'urls') return els.redactUrls.checked;
+        return true;
+      });
+    }
+
+    function scan() {
+      const source = els.input.value;
+      state.placeholderMap = new Map();
+      const rawFindings = [];
+
+      getEnabledRules().forEach((rule, ruleIndex) => {
+        const regex = new RegExp(rule.pattern.source, rule.pattern.flags);
+        let match;
+        while ((match = regex.exec(source)) !== null) {
+          const value = match[0];
+          rawFindings.push({
+            id: rule.id,
+            label: rule.label,
+            severity: rule.severity,
+            placeholderType: rule.placeholder,
+            value,
+            start: match.index,
+            end: match.index + value.length,
+            ruleIndex,
+            priority: rule.priority ?? ruleIndex,
+            line: lineNumberAt(source, match.index)
+          });
+          if (value.length === 0) regex.lastIndex += 1;
+        }
+      });
+
+      const findings = resolveOverlaps(rawFindings);
+      const redacted = applyRedactions(source, findings);
+      state.findings = findings;
+      state.redacted = redacted;
+      render();
+    }
+
+    function resolveOverlaps(findings) {
+      const accepted = findings
+        .sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          const lengthDiff = (b.end - b.start) - (a.end - a.start);
+          if (lengthDiff) return lengthDiff;
+          return a.start - b.start;
+        })
+        .reduce((items, finding) => {
+          const overlap = items.some(item => finding.start < item.end && finding.end > item.start);
+          if (!overlap) items.push(finding);
+          return items;
+        }, []);
+      return accepted.sort((a, b) => a.start - b.start);
+    }
+
+    function applyRedactions(source, findings) {
+      let output = '';
+      let cursor = 0;
+      findings.forEach(finding => {
+        output += source.slice(cursor, finding.start);
+        const placeholder = getPlaceholder(finding.placeholderType, finding.value);
+        finding.placeholder = placeholder;
+        output += placeholder;
+        cursor = finding.end;
+      });
+      output += source.slice(cursor);
+      return output;
+    }
+
+    function getPlaceholder(type, value) {
+      const key = `${type}:${value}`;
+      if (!state.placeholderMap.has(key)) {
+        const count = [...state.placeholderMap.values()].filter(item => item.type === type).length + 1;
+        state.placeholderMap.set(key, { type, placeholder: `[${type}_${count}]` });
+      }
+      return state.placeholderMap.get(key).placeholder;
+    }
+
+    function lineNumberAt(text, index) {
+      let line = 1;
+      for (let i = 0; i < index; i += 1) {
+        if (text[i] === '\n') line += 1;
+      }
+      return line;
+    }
+
+    function render() {
+      renderOutput();
+      renderFindings();
+      renderSummary();
+      const hasOutput = state.redacted.length > 0;
+      els.copyBtn.disabled = !hasOutput;
+      els.exportBtn.disabled = !hasOutput;
+    }
+
+    function renderOutput() {
+      if (!els.input.value) {
+        els.output.innerHTML = '<div class="empty-state">Sanitized output will appear here.</div>';
+        return;
+      }
+      const lines = state.redacted.split('\n');
+      els.output.innerHTML = lines.map((line, index) => `
+        <div class="line">
+          <span class="line-no">${index + 1}</span>
+          <span class="line-text">${highlightPlaceholders(escapeHtml(line))}</span>
+        </div>
+      `).join('');
+    }
+
+    function highlightPlaceholders(line) {
+      return line.replace(/\[(?:[A-Z_]+)_\d+\]/g, match => `<mark>${match}</mark>`);
+    }
+
+    function renderFindings() {
+      if (!els.input.value) {
+        els.findingsSummary.textContent = 'No log scanned yet.';
+        els.findingsList.innerHTML = '<div class="empty-state">Potential secrets and identifiers will be listed here.</div>';
+        return;
+      }
+      if (!state.findings.length) {
+        els.findingsSummary.textContent = 'No configured secret patterns were found.';
+        els.findingsList.innerHTML = '<div class="empty-state">No findings. Still review manually before sharing.</div>';
+        return;
+      }
+      els.findingsSummary.textContent = `${state.findings.length} finding${state.findings.length === 1 ? '' : 's'} replaced.`;
+      els.findingsList.innerHTML = state.findings.map(finding => `
+        <article class="finding">
+          <div><span class="severity ${finding.severity}">${finding.severity}</span></div>
+          <div>
+            <h3>${escapeHtml(finding.label)}</h3>
+            <p><code>${escapeHtml(finding.placeholder)}</code> replaced ${escapeHtml(truncate(finding.value, 80))}</p>
+          </div>
+          <div class="line-ref">line ${finding.line}</div>
+        </article>
+      `).join('');
+    }
+
+    function renderSummary() {
+      const high = state.findings.filter(item => item.severity === 'high').length;
+      const medium = state.findings.filter(item => item.severity === 'medium').length;
+      const low = state.findings.filter(item => item.severity === 'low').length;
+      const penalty = state.findings.reduce((sum, item) => sum + severityWeight[item.severity], 0);
+      const score = els.input.value ? Math.max(0, Math.min(100, 100 - penalty)) : null;
+      els.highCount.textContent = high;
+      els.mediumCount.textContent = medium;
+      els.lowCount.textContent = low;
+      els.replacementCount.textContent = state.findings.length;
+      if (score === null) {
+        els.scoreValue.textContent = '--';
+        els.scoreLabel.textContent = 'Paste a log';
+        els.scoreRing.style.background = 'conic-gradient(var(--good) 0deg, rgba(148, 163, 184, 0.16) 0), var(--input)';
+        return;
+      }
+      const angle = score * 3.6;
+      const color = score < 55 ? 'var(--bad)' : score < 84 ? 'var(--warn)' : 'var(--good)';
+      els.scoreValue.textContent = score;
+      els.scoreLabel.textContent = high ? 'Secrets found' : medium ? 'Review redactions' : 'Looks cleaner';
+      els.scoreRing.style.background = `conic-gradient(${color} ${angle}deg, rgba(148, 163, 184, 0.16) 0), var(--input)`;
+    }
+
+    function truncate(value, max) {
+      return value.length > max ? `${value.slice(0, max - 3)}...` : value;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    async function copyOutput() {
+      await navigator.clipboard.writeText(state.redacted);
+      const original = els.copyBtn.textContent;
+      els.copyBtn.textContent = 'Copied';
+      setTimeout(() => {
+        els.copyBtn.textContent = original;
+      }, 1200);
+    }
+
+    function exportOutput() {
+      const blob = new Blob([state.redacted], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'safe-log.txt';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearAll() {
+      els.input.value = '';
+      state.redacted = '';
+      state.findings = [];
+      state.placeholderMap = new Map();
+      render();
+    }
+
+    els.input.addEventListener('input', scan);
+    els.redactEmails.addEventListener('change', scan);
+    els.redactIps.addEventListener('change', scan);
+    els.redactUrls.addEventListener('change', scan);
+    els.demoBtn.addEventListener('click', () => {
+      els.input.value = demoLog;
+      scan();
+    });
+    els.clearBtn.addEventListener('click', clearAll);
+    els.copyBtn.addEventListener('click', copyOutput);
+    els.exportBtn.addEventListener('click', exportOutput);
+    els.fileInput.addEventListener('change', async event => {
+      const file = event.target.files[0];
+      if (!file) return;
+      els.input.value = await file.text();
+      scan();
+    });
+
+    render();
+  </script>
+</body>
+</html>
