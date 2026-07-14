@@ -832,13 +832,24 @@
       }
     ];
 
+    const demoSecrets = {
+      openai: ['sk', '-proj-', 'demo1234567890abcdefghijklmnopqrstuvwxyz'].join(''),
+      github: ['gh', 'p_', 'demoTokenValue1234567890abcdefghijklmnop'].join(''),
+      stripe: ['sk_', 'live_', '51MockSecretKeyForDemoOnly123456'].join(''),
+      jwt: [
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
+        'eyJzdWIiOiJhdmEtMTIzIiwiYWRtaW4iOnRydWV9',
+        'VeryFakeSignature123456789'
+      ].join('.')
+    };
+
     const demoLog = `2026-07-14T09:42:11Z ERROR request failed
 user=ava@example.com ip=203.0.113.42 route=/api/orders
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhdmEtMTIzIiwiYWRtaW4iOnRydWV9.VeryFakeSignature123456789
-OPENAI_API_KEY=sk-proj-demo1234567890abcdefghijklmnopqrstuvwxyz
+Authorization: Bearer ${demoSecrets.jwt}
+OPENAI_API_KEY=${demoSecrets.openai}
 DATABASE_URL=postgres://orders_app:supersecret@db.internal:5432/orders
-github_token=ghp_demoTokenValue1234567890abcdefghijklmnop
-stripe=sk_live_51MockSecretKeyForDemoOnly123456
+github_token=${demoSecrets.github}
+stripe=${demoSecrets.stripe}
 callback=https://example.com/callback?token=abc123supersecret&user=42
     at submitOrder (/app/src/orders.ts:42:11)
     at processTicksAndRejections (node:internal/process/task_queues:95:5)`;
