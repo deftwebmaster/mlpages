@@ -1,0 +1,1435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSV Schema Guard | Data Quality Drift Checker</title>
+  <meta name="description" content="Compare a trusted CSV against a new CSV to catch schema changes, type drift, missing columns, null spikes, duplicate keys, and risky data shifts locally.">
+  <link rel="canonical" href="https://mattlivingston.com/tools/csv-schema-guard/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b1020;
+      --panel: #121a2b;
+      --panel-2: #182235;
+      --panel-3: #22304a;
+      --input: #0f172a;
+      --border: #334155;
+      --border-strong: #4b5f7d;
+      --text: #f1f5f9;
+      --text-soft: #cbd5e1;
+      --text-muted: #8b9bb1;
+      --accent: #38bdf8;
+      --accent-strong: #0ea5e9;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #f43f5e;
+      --info: #a78bfa;
+      --radius: 8px;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .page {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 28px 18px 54px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .back-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid rgba(56, 189, 248, 0.32);
+      color: #bae6fd;
+      background: rgba(56, 189, 248, 0.09);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4.5vw, 4.9rem);
+      line-height: 0.95;
+      letter-spacing: 0;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      color: var(--text-soft);
+      max-width: 680px;
+      font-size: 1.02rem;
+    }
+
+    .callout {
+      background: rgba(167, 139, 250, 0.1);
+      border: 1px solid rgba(167, 139, 250, 0.34);
+      color: #ddd6fe;
+      border-radius: var(--radius);
+      padding: 15px 16px;
+      font-size: 0.9rem;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .control-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px;
+    }
+
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    select,
+    input[type="number"] {
+      min-height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--input);
+      color: var(--text);
+      padding: 7px 10px;
+    }
+
+    input[type="number"] {
+      width: 86px;
+    }
+
+    .btn {
+      min-height: 42px;
+      border-radius: var(--radius);
+      padding: 9px 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: #03111f;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    .btn:hover {
+      background: #7dd3fc;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      background: var(--panel-3);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn.secondary:hover {
+      background: #2a3a57;
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      transform: none;
+    }
+
+    .btn:focus-visible,
+    .drop-zone:focus-visible,
+    select:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .upload-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+
+    .upload-card {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 250px;
+    }
+
+    .upload-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .upload-header h2 {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+
+    .upload-header p {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .file-badge {
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 4px 7px;
+      white-space: nowrap;
+    }
+
+    .drop-zone {
+      min-height: 145px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border: 2px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(34, 197, 94, 0.05)), var(--input);
+      cursor: pointer;
+      transition: border-color 0.18s ease, transform 0.18s ease, background 0.18s ease;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(34, 197, 94, 0.08)), var(--input);
+    }
+
+    .drop-zone input {
+      display: none;
+    }
+
+    .drop-zone strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+
+    .drop-zone span {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .file-summary {
+      min-height: 68px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--input);
+      padding: 11px 12px;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .file-summary strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 220px repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .score-card {
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .score-ring {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--good) var(--score-angle), rgba(148, 163, 184, 0.16) 0), var(--input);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .score-ring::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: var(--panel);
+    }
+
+    .score-ring strong {
+      position: relative;
+      font-size: 1.28rem;
+    }
+
+    .score-card span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      margin-bottom: 3px;
+    }
+
+    .score-card b {
+      display: block;
+      font-size: 0.95rem;
+    }
+
+    .stat {
+      padding: 14px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 7px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .stat.good strong { color: var(--good); }
+    .stat.warn strong { color: var(--warn); }
+    .stat.bad strong { color: var(--bad); }
+    .stat.info strong { color: var(--accent); }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+      gap: 16px;
+    }
+
+    .results-panel {
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-header h2 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .panel-header p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .issue-list {
+      display: grid;
+    }
+
+    .empty-state {
+      padding: 34px 18px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .issue {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1fr);
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .issue:last-child {
+      border-bottom: 0;
+    }
+
+    .severity {
+      width: fit-content;
+      min-width: 82px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: 1px solid;
+    }
+
+    .severity.high {
+      color: #fecdd3;
+      border-color: rgba(244, 63, 94, 0.46);
+      background: rgba(244, 63, 94, 0.13);
+    }
+
+    .severity.medium {
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.48);
+      background: rgba(245, 158, 11, 0.12);
+    }
+
+    .severity.low {
+      color: #bae6fd;
+      border-color: rgba(56, 189, 248, 0.42);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .issue h3 {
+      font-size: 0.92rem;
+      margin-bottom: 4px;
+    }
+
+    .issue p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .issue code {
+      font-family: var(--mono);
+      color: var(--text-soft);
+      font-size: 0.78rem;
+    }
+
+    .schema-panel {
+      overflow: hidden;
+    }
+
+    .schema-table-wrap {
+      overflow: auto;
+      max-height: 560px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 12px;
+      font-size: 0.78rem;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: 0.68rem;
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 1;
+    }
+
+    td {
+      color: var(--text-soft);
+    }
+
+    td code {
+      font-family: var(--mono);
+      color: var(--text);
+    }
+
+    .status-chip {
+      display: inline-flex;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 3px 7px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-ok {
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.38);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .status-warn {
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.42);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .status-bad {
+      color: #fecdd3;
+      border-color: rgba(244, 63, 94, 0.44);
+      background: rgba(244, 63, 94, 0.1);
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .preview-panel {
+      overflow: hidden;
+    }
+
+    .preview-scroll {
+      overflow: auto;
+      max-height: 300px;
+    }
+
+    .preview-scroll table {
+      min-width: 520px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      header,
+      .upload-grid,
+      .content-grid,
+      .preview-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .score-card {
+        grid-column: 1 / -1;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-row {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding: 18px 12px 38px;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .issue {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .panel-header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a href="/tools/" class="back-link">Tools</a>
+      <div class="trust-row" aria-label="Privacy and workflow notes">
+        <span class="pill">Local-only</span>
+        <span class="pill">No upload</span>
+        <span class="pill">Exportable report</span>
+      </div>
+    </div>
+
+    <header>
+      <div>
+        <h1>CSV Schema Guard</h1>
+        <p class="subtitle">Compare a trusted CSV against a new file before it enters a workflow. Catch missing columns, type drift, null spikes, duplicate keys, row-count swings, and suspicious value shifts.</p>
+      </div>
+      <div class="callout">
+        Use this as a preflight check for recurring exports, vendor feeds, analytics drops, ops reports, or any CSV that can quietly change shape.
+      </div>
+    </header>
+
+    <main>
+      <section class="toolbar" aria-label="Schema guard controls">
+        <div class="control-panel">
+          <label class="field">
+            Key column
+            <select id="keyColumnSelect">
+              <option value="">Auto detect after loading</option>
+            </select>
+          </label>
+          <label class="field">
+            Null spike threshold
+            <input id="nullThreshold" type="number" value="15" min="1" max="100">
+            pct
+          </label>
+          <label class="field">
+            Row swing threshold
+            <input id="rowThreshold" type="number" value="20" min="1" max="500">
+            pct
+          </label>
+        </div>
+        <button class="btn secondary" id="sampleBtn" type="button">Load sample</button>
+        <button class="btn" id="exportBtn" type="button" disabled>Export report</button>
+      </section>
+
+      <section class="upload-grid" aria-label="CSV uploads">
+        <article class="panel upload-card">
+          <div class="upload-header">
+            <div>
+              <h2>Trusted baseline</h2>
+              <p>The known-good CSV shape you expect future files to follow.</p>
+            </div>
+            <span class="file-badge">BASELINE</span>
+          </div>
+          <label class="drop-zone" id="baselineDrop" tabindex="0">
+            <input id="baselineInput" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values">
+            <span>
+              <strong>Drop baseline CSV</strong>
+              <span>or click to choose a file</span>
+            </span>
+          </label>
+          <div class="file-summary" id="baselineSummary">No baseline loaded.</div>
+        </article>
+
+        <article class="panel upload-card">
+          <div class="upload-header">
+            <div>
+              <h2>Incoming file</h2>
+              <p>The new CSV you want to validate before trusting it.</p>
+            </div>
+            <span class="file-badge">CANDIDATE</span>
+          </div>
+          <label class="drop-zone" id="candidateDrop" tabindex="0">
+            <input id="candidateInput" type="file" accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values">
+            <span>
+              <strong>Drop incoming CSV</strong>
+              <span>or click to choose a file</span>
+            </span>
+          </label>
+          <div class="file-summary" id="candidateSummary">No incoming file loaded.</div>
+        </article>
+      </section>
+
+      <section class="summary-grid" aria-label="Validation summary">
+        <article class="panel score-card">
+          <div class="score-ring" id="scoreRing" style="--score-angle: 0deg;">
+            <strong id="scoreValue">--</strong>
+          </div>
+          <div>
+            <span>Guard score</span>
+            <b id="scoreLabel">Load two files</b>
+          </div>
+        </article>
+        <article class="panel stat bad">
+          <span>High risk</span>
+          <strong id="highCount">0</strong>
+        </article>
+        <article class="panel stat warn">
+          <span>Medium risk</span>
+          <strong id="mediumCount">0</strong>
+        </article>
+        <article class="panel stat info">
+          <span>Columns checked</span>
+          <strong id="columnCount">0</strong>
+        </article>
+        <article class="panel stat good">
+          <span>Rows compared</span>
+          <strong id="rowCount">0</strong>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel results-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Findings</h2>
+              <p id="findingsSummary">Load a baseline and incoming CSV to run the guard.</p>
+            </div>
+          </div>
+          <div class="issue-list" id="issueList">
+            <div class="empty-state">No comparison has run yet.</div>
+          </div>
+        </article>
+
+        <article class="panel schema-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Schema contract</h2>
+              <p>Column-by-column comparison of expected and incoming shape.</p>
+            </div>
+          </div>
+          <div class="schema-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Column</th>
+                  <th>Status</th>
+                  <th>Baseline</th>
+                  <th>Incoming</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="schemaBody">
+                <tr><td colspan="5">No schema loaded.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="preview-grid" aria-label="Data previews">
+        <article class="panel preview-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Baseline preview</h2>
+              <p>First five parsed rows.</p>
+            </div>
+          </div>
+          <div class="preview-scroll" id="baselinePreview">
+            <div class="empty-state">No baseline preview.</div>
+          </div>
+        </article>
+        <article class="panel preview-panel">
+          <div class="panel-header">
+            <div>
+              <h2>Incoming preview</h2>
+              <p>First five parsed rows.</p>
+            </div>
+          </div>
+          <div class="preview-scroll" id="candidatePreview">
+            <div class="empty-state">No incoming preview.</div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      baseline: null,
+      candidate: null,
+      issues: [],
+      schemaRows: [],
+      score: null
+    };
+
+    const els = {
+      baselineDrop: document.getElementById('baselineDrop'),
+      candidateDrop: document.getElementById('candidateDrop'),
+      baselineInput: document.getElementById('baselineInput'),
+      candidateInput: document.getElementById('candidateInput'),
+      baselineSummary: document.getElementById('baselineSummary'),
+      candidateSummary: document.getElementById('candidateSummary'),
+      keyColumnSelect: document.getElementById('keyColumnSelect'),
+      nullThreshold: document.getElementById('nullThreshold'),
+      rowThreshold: document.getElementById('rowThreshold'),
+      sampleBtn: document.getElementById('sampleBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      scoreRing: document.getElementById('scoreRing'),
+      scoreValue: document.getElementById('scoreValue'),
+      scoreLabel: document.getElementById('scoreLabel'),
+      highCount: document.getElementById('highCount'),
+      mediumCount: document.getElementById('mediumCount'),
+      columnCount: document.getElementById('columnCount'),
+      rowCount: document.getElementById('rowCount'),
+      findingsSummary: document.getElementById('findingsSummary'),
+      issueList: document.getElementById('issueList'),
+      schemaBody: document.getElementById('schemaBody'),
+      baselinePreview: document.getElementById('baselinePreview'),
+      candidatePreview: document.getElementById('candidatePreview')
+    };
+
+    const TYPE_ORDER = ['empty', 'boolean', 'integer', 'decimal', 'date', 'datetime', 'text'];
+    const severityWeight = { high: 24, medium: 11, low: 4 };
+
+    function parseCsv(text, fileName = 'CSV') {
+      const delimiter = detectDelimiter(text);
+      const rows = [];
+      let row = [];
+      let field = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i += 1) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            field += '"';
+            i += 1;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === delimiter && !inQuotes) {
+          row.push(field);
+          field = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (char === '\r' && next === '\n') i += 1;
+          row.push(field);
+          if (row.some(value => value.trim() !== '')) rows.push(row);
+          row = [];
+          field = '';
+        } else {
+          field += char;
+        }
+      }
+      row.push(field);
+      if (row.some(value => value.trim() !== '')) rows.push(row);
+      if (!rows.length) throw new Error(`${fileName} is empty.`);
+
+      const headers = rows[0].map((header, index) => {
+        const cleaned = header.trim().replace(/^\uFEFF/, '');
+        return cleaned || `Column ${index + 1}`;
+      });
+      const seen = new Map();
+      const uniqueHeaders = headers.map(header => {
+        const count = seen.get(header) || 0;
+        seen.set(header, count + 1);
+        return count ? `${header}_${count + 1}` : header;
+      });
+
+      const records = rows.slice(1).map(rawRow => {
+        const record = {};
+        uniqueHeaders.forEach((header, index) => {
+          record[header] = rawRow[index] === undefined ? '' : rawRow[index];
+        });
+        return record;
+      });
+
+      return {
+        fileName,
+        delimiter,
+        headers: uniqueHeaders,
+        records,
+        rowCount: records.length,
+        duplicateHeaders: headers.length - new Set(headers).size,
+        schema: inferSchema(uniqueHeaders, records)
+      };
+    }
+
+    function detectDelimiter(text) {
+      const sample = text.split(/\r?\n/).slice(0, 8).join('\n');
+      const candidates = [',', '\t', ';', '|'];
+      let best = ',';
+      let bestScore = -1;
+      candidates.forEach(delimiter => {
+        const counts = sample.split(/\r?\n/).map(line => countDelimiter(line, delimiter));
+        const nonzero = counts.filter(count => count > 0);
+        if (!nonzero.length) return;
+        const avg = nonzero.reduce((sum, count) => sum + count, 0) / nonzero.length;
+        const variance = nonzero.reduce((sum, count) => sum + Math.abs(count - avg), 0);
+        const score = avg * 10 - variance;
+        if (score > bestScore) {
+          bestScore = score;
+          best = delimiter;
+        }
+      });
+      return best;
+    }
+
+    function countDelimiter(line, delimiter) {
+      let count = 0;
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i += 1) {
+        if (line[i] === '"') inQuotes = !inQuotes;
+        else if (line[i] === delimiter && !inQuotes) count += 1;
+      }
+      return count;
+    }
+
+    function inferSchema(headers, records) {
+      const totalRows = records.length;
+      return headers.map(header => {
+        const values = records.map(row => String(row[header] ?? ''));
+        const nonEmpty = values.map(value => value.trim()).filter(value => value !== '');
+        const types = countTypes(nonEmpty);
+        const inferred = pickType(types, nonEmpty.length);
+        const distinct = new Set(nonEmpty).size;
+        const nullRate = totalRows ? (totalRows - nonEmpty.length) / totalRows : 0;
+        const samples = [...new Set(nonEmpty)].slice(0, 5);
+        const numericValues = nonEmpty.map(toNumber).filter(value => Number.isFinite(value));
+        const dates = nonEmpty.map(value => Date.parse(value)).filter(value => Number.isFinite(value));
+        const topValues = topFrequencies(nonEmpty, 5);
+        return {
+          name: header,
+          type: inferred,
+          nullRate,
+          nonEmpty: nonEmpty.length,
+          distinct,
+          uniqueRate: totalRows ? distinct / totalRows : 0,
+          samples,
+          topValues,
+          min: numericValues.length ? Math.min(...numericValues) : null,
+          max: numericValues.length ? Math.max(...numericValues) : null,
+          earliest: dates.length ? Math.min(...dates) : null,
+          latest: dates.length ? Math.max(...dates) : null,
+          pattern: inferPattern(nonEmpty),
+          avgLength: nonEmpty.length ? nonEmpty.reduce((sum, value) => sum + value.length, 0) / nonEmpty.length : 0
+        };
+      });
+    }
+
+    function countTypes(values) {
+      const counts = Object.fromEntries(TYPE_ORDER.map(type => [type, 0]));
+      values.forEach(value => {
+        counts[classifyValue(value)] += 1;
+      });
+      return counts;
+    }
+
+    function classifyValue(value) {
+      const trimmed = value.trim();
+      if (trimmed === '') return 'empty';
+      if (/^(true|false|yes|no|y|n)$/i.test(trimmed)) return 'boolean';
+      if (/^[+-]?\d+$/.test(trimmed)) return 'integer';
+      if (/^[+-]?(?:\d+\.\d+|\d+\.|\.\d+)$/.test(trimmed)) return 'decimal';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed) || /^\d{1,2}\/\d{1,2}\/\d{2,4}$/.test(trimmed)) return 'date';
+      if (/^\d{4}-\d{2}-\d{2}[T\s]\d{1,2}:\d{2}/.test(trimmed) || /^\d{1,2}\/\d{1,2}\/\d{2,4}\s+\d{1,2}:\d{2}/.test(trimmed)) return 'datetime';
+      return 'text';
+    }
+
+    function pickType(counts, total) {
+      if (!total) return 'empty';
+      const nonTextTypes = TYPE_ORDER.filter(type => type !== 'empty' && type !== 'text');
+      for (const type of nonTextTypes) {
+        if (counts[type] / total >= 0.88) {
+          if (type === 'integer' && counts.decimal > 0) return 'decimal';
+          return type;
+        }
+      }
+      if ((counts.integer + counts.decimal) / total >= 0.88) return 'decimal';
+      if ((counts.date + counts.datetime) / total >= 0.88) return 'datetime';
+      return 'text';
+    }
+
+    function inferPattern(values) {
+      if (!values.length) return 'empty';
+      const sample = values.slice(0, 50);
+      if (sample.every(value => /^[A-Z]{2,5}-?\d{2,8}$/i.test(value))) return 'code-like';
+      if (sample.every(value => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(value))) return 'email';
+      if (sample.every(value => /^https?:\/\//i.test(value))) return 'url';
+      if (sample.every(value => /^[0-9a-f]{8,}$/i.test(value))) return 'hex/id';
+      if (sample.every(value => /^\d{5}(?:-\d{4})?$/.test(value))) return 'postal';
+      return 'mixed';
+    }
+
+    function topFrequencies(values, limit) {
+      const map = new Map();
+      values.forEach(value => map.set(value, (map.get(value) || 0) + 1));
+      return [...map.entries()]
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([value, count]) => ({ value, count }));
+    }
+
+    function toNumber(value) {
+      return Number(String(value).replace(/[$,%]/g, '').trim());
+    }
+
+    function compare() {
+      if (!state.baseline || !state.candidate) {
+        state.issues = [];
+        state.schemaRows = [];
+        state.score = null;
+        render();
+        return;
+      }
+
+      const issues = [];
+      const baselineMap = new Map(state.baseline.schema.map(column => [column.name, column]));
+      const candidateMap = new Map(state.candidate.schema.map(column => [column.name, column]));
+      const allColumns = [...new Set([...state.baseline.headers, ...state.candidate.headers])];
+      const nullThreshold = Number(els.nullThreshold.value || 15) / 100;
+      const rowThreshold = Number(els.rowThreshold.value || 20) / 100;
+      const schemaRows = [];
+
+      const rowDelta = state.baseline.rowCount ? (state.candidate.rowCount - state.baseline.rowCount) / state.baseline.rowCount : 0;
+      if (Math.abs(rowDelta) > rowThreshold) {
+        issues.push(makeIssue('medium', 'Row count swing', 'Dataset size changed more than your configured threshold.', `Baseline ${state.baseline.rowCount} rows, incoming ${state.candidate.rowCount} rows (${formatPercent(rowDelta, true)}).`));
+      }
+
+      if (state.baseline.duplicateHeaders || state.candidate.duplicateHeaders) {
+        issues.push(makeIssue('medium', 'Duplicate header names', 'One file contained duplicate headers that were auto-renamed for analysis.', `Baseline duplicates: ${state.baseline.duplicateHeaders}. Incoming duplicates: ${state.candidate.duplicateHeaders}.`));
+      }
+
+      allColumns.forEach(column => {
+        const base = baselineMap.get(column);
+        const cand = candidateMap.get(column);
+        const notes = [];
+        let status = 'ok';
+        if (!base) {
+          status = 'warn';
+          notes.push('New column in incoming file');
+          issues.push(makeIssue('low', 'New column', 'Incoming file contains a column not found in the baseline.', column));
+        } else if (!cand) {
+          status = 'bad';
+          notes.push('Missing from incoming file');
+          issues.push(makeIssue('high', 'Missing required column', 'Incoming file is missing a baseline column.', column));
+        } else {
+          if (base.type !== cand.type && base.type !== 'empty') {
+            status = 'bad';
+            notes.push(`Type changed from ${base.type} to ${cand.type}`);
+            issues.push(makeIssue('high', 'Type drift', 'A column changed inferred data type.', `${column}: ${base.type} -> ${cand.type}`));
+          }
+          const nullDelta = cand.nullRate - base.nullRate;
+          if (nullDelta > nullThreshold) {
+            status = status === 'bad' ? 'bad' : 'warn';
+            notes.push(`Null rate increased by ${formatPercent(nullDelta)}`);
+            issues.push(makeIssue('medium', 'Null spike', 'A column has materially more blanks than the baseline.', `${column}: ${formatPercent(base.nullRate)} -> ${formatPercent(cand.nullRate)}`));
+          }
+          if (base.type === 'text' && cand.type === 'text') {
+            const newValues = findNewTopValues(base, cand);
+            if (newValues.length) {
+              status = status === 'bad' ? 'bad' : 'warn';
+              notes.push(`New frequent values: ${newValues.join(', ')}`);
+              issues.push(makeIssue('low', 'New categorical values', 'Incoming file has frequent values not seen in the baseline sample.', `${column}: ${newValues.join(', ')}`));
+            }
+          }
+          if (['integer', 'decimal'].includes(base.type) && ['integer', 'decimal'].includes(cand.type)) {
+            const rangeIssue = compareRange(column, base, cand);
+            if (rangeIssue) {
+              status = status === 'bad' ? 'bad' : 'warn';
+              notes.push(rangeIssue.detail);
+              issues.push(rangeIssue.issue);
+            }
+          }
+          if (base.pattern !== 'mixed' && cand.pattern !== 'mixed' && base.pattern !== cand.pattern) {
+            status = status === 'bad' ? 'bad' : 'warn';
+            notes.push(`Pattern changed from ${base.pattern} to ${cand.pattern}`);
+            issues.push(makeIssue('medium', 'Pattern drift', 'Column values no longer match the baseline shape.', `${column}: ${base.pattern} -> ${cand.pattern}`));
+          }
+        }
+        schemaRows.push({ column, base, cand, status, notes });
+      });
+
+      const keyColumn = els.keyColumnSelect.value || guessKeyColumn();
+      if (keyColumn && state.candidate.headers.includes(keyColumn)) {
+        const duplicateCount = countDuplicates(state.candidate.records, keyColumn);
+        if (duplicateCount > 0) {
+          issues.push(makeIssue('high', 'Duplicate key values', 'Incoming file has duplicate values in the selected key column.', `${keyColumn}: ${duplicateCount} duplicate row${duplicateCount === 1 ? '' : 's'}.`));
+        }
+      }
+
+      const penalty = issues.reduce((sum, issue) => sum + severityWeight[issue.severity], 0);
+      state.issues = issues.sort((a, b) => severityWeight[b.severity] - severityWeight[a.severity]);
+      state.schemaRows = schemaRows;
+      state.score = Math.max(0, Math.min(100, 100 - penalty));
+      render();
+    }
+
+    function makeIssue(severity, title, description, detail) {
+      return { severity, title, description, detail };
+    }
+
+    function findNewTopValues(base, cand) {
+      const baselineValues = new Set(base.topValues.map(item => item.value));
+      return cand.topValues
+        .filter(item => item.count >= 2 && !baselineValues.has(item.value))
+        .map(item => item.value)
+        .slice(0, 3);
+    }
+
+    function compareRange(column, base, cand) {
+      if (base.min === null || cand.min === null || base.max === null || cand.max === null) return null;
+      const span = Math.max(1, base.max - base.min);
+      if (cand.min < base.min - span * 0.25 || cand.max > base.max + span * 0.25) {
+        return {
+          detail: `Range shifted from ${base.min}-${base.max} to ${cand.min}-${cand.max}`,
+          issue: makeIssue('medium', 'Numeric range drift', 'Incoming values moved outside the expected baseline range.', `${column}: ${base.min}-${base.max} -> ${cand.min}-${cand.max}`)
+        };
+      }
+      return null;
+    }
+
+    function countDuplicates(records, key) {
+      const seen = new Set();
+      let duplicates = 0;
+      records.forEach(row => {
+        const value = String(row[key] || '').trim();
+        if (!value) return;
+        if (seen.has(value)) duplicates += 1;
+        seen.add(value);
+      });
+      return duplicates;
+    }
+
+    function guessKeyColumn() {
+      if (!state.baseline) return '';
+      const likely = state.baseline.schema.find(column => column.uniqueRate > 0.9 && /(id|sku|key|number|email)$/i.test(column.name));
+      return likely?.name || '';
+    }
+
+    function updateKeyOptions() {
+      const columns = [...new Set([...(state.baseline?.headers || []), ...(state.candidate?.headers || [])])];
+      const current = els.keyColumnSelect.value;
+      els.keyColumnSelect.innerHTML = '<option value="">No key column</option>' + columns.map(column => `<option value="${escapeHtml(column)}">${escapeHtml(column)}</option>`).join('');
+      const guess = current && columns.includes(current) ? current : guessKeyColumn();
+      if (guess) els.keyColumnSelect.value = guess;
+    }
+
+    async function loadFile(file, side) {
+      const text = await file.text();
+      const parsed = parseCsv(text, file.name);
+      state[side] = parsed;
+      updateKeyOptions();
+      compare();
+    }
+
+    function loadSample() {
+      state.baseline = parseCsv(sampleBaseline, 'trusted-orders-baseline.csv');
+      state.candidate = parseCsv(sampleCandidate, 'incoming-orders-feed.csv');
+      updateKeyOptions();
+      els.keyColumnSelect.value = 'order_id';
+      compare();
+    }
+
+    function render() {
+      renderFileSummary('baseline');
+      renderFileSummary('candidate');
+      renderPreviews();
+      renderSummary();
+      renderIssues();
+      renderSchema();
+      els.exportBtn.disabled = !state.baseline || !state.candidate;
+    }
+
+    function renderFileSummary(side) {
+      const data = state[side];
+      const el = side === 'baseline' ? els.baselineSummary : els.candidateSummary;
+      if (!data) {
+        el.textContent = side === 'baseline' ? 'No baseline loaded.' : 'No incoming file loaded.';
+        return;
+      }
+      el.innerHTML = `
+        <strong>${escapeHtml(data.fileName)}</strong>
+        ${data.rowCount} rows, ${data.headers.length} columns, delimiter ${formatDelimiter(data.delimiter)}
+      `;
+    }
+
+    function renderSummary() {
+      const high = state.issues.filter(issue => issue.severity === 'high').length;
+      const medium = state.issues.filter(issue => issue.severity === 'medium').length;
+      const columns = state.schemaRows.length;
+      const rows = state.baseline && state.candidate ? `${state.baseline.rowCount}/${state.candidate.rowCount}` : '0';
+      els.highCount.textContent = high;
+      els.mediumCount.textContent = medium;
+      els.columnCount.textContent = columns;
+      els.rowCount.textContent = rows;
+      if (state.score === null) {
+        els.scoreValue.textContent = '--';
+        els.scoreLabel.textContent = 'Load two files';
+        els.scoreRing.style.setProperty('--score-angle', '0deg');
+        els.scoreRing.style.background = 'conic-gradient(var(--good) 0deg, rgba(148, 163, 184, 0.16) 0), var(--input)';
+        return;
+      }
+      const angle = state.score * 3.6;
+      const color = state.score < 50 ? 'var(--bad)' : state.score < 80 ? 'var(--warn)' : 'var(--good)';
+      els.scoreValue.textContent = state.score;
+      els.scoreLabel.textContent = state.score >= 90 ? 'Ready to trust' : state.score >= 70 ? 'Review warnings' : 'Block and fix';
+      els.scoreRing.style.setProperty('--score-angle', `${angle}deg`);
+      els.scoreRing.style.background = `conic-gradient(${color} ${angle}deg, rgba(148, 163, 184, 0.16) 0), var(--input)`;
+    }
+
+    function renderIssues() {
+      if (!state.baseline || !state.candidate) {
+        els.findingsSummary.textContent = 'Load a baseline and incoming CSV to run the guard.';
+        els.issueList.innerHTML = '<div class="empty-state">No comparison has run yet.</div>';
+        return;
+      }
+      if (!state.issues.length) {
+        els.findingsSummary.textContent = 'No material schema drift detected.';
+        els.issueList.innerHTML = '<div class="empty-state">The incoming file matches the baseline contract.</div>';
+        return;
+      }
+      els.findingsSummary.textContent = `${state.issues.length} finding${state.issues.length === 1 ? '' : 's'} need review.`;
+      els.issueList.innerHTML = state.issues.map(issue => `
+        <article class="issue">
+          <div><span class="severity ${issue.severity}">${issue.severity}</span></div>
+          <div>
+            <h3>${escapeHtml(issue.title)}</h3>
+            <p>${escapeHtml(issue.description)}</p>
+            <p><code>${escapeHtml(issue.detail)}</code></p>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderSchema() {
+      if (!state.schemaRows.length) {
+        els.schemaBody.innerHTML = '<tr><td colspan="5">No schema loaded.</td></tr>';
+        return;
+      }
+      els.schemaBody.innerHTML = state.schemaRows.map(row => {
+        const statusClass = row.status === 'bad' ? 'status-bad' : row.status === 'warn' ? 'status-warn' : 'status-ok';
+        const base = row.base ? describeColumn(row.base) : 'Not in baseline';
+        const cand = row.cand ? describeColumn(row.cand) : 'Missing';
+        const notes = row.notes.length ? row.notes.join('; ') : 'Matches expected shape';
+        return `
+          <tr>
+            <td><code>${escapeHtml(row.column)}</code></td>
+            <td><span class="status-chip ${statusClass}">${row.status}</span></td>
+            <td>${base}</td>
+            <td>${cand}</td>
+            <td>${escapeHtml(notes)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function describeColumn(column) {
+      return `
+        <code>${column.type}</code><br>
+        null ${formatPercent(column.nullRate)}<br>
+        distinct ${column.distinct}
+      `;
+    }
+
+    function renderPreviews() {
+      renderPreview(els.baselinePreview, state.baseline);
+      renderPreview(els.candidatePreview, state.candidate);
+    }
+
+    function renderPreview(container, data) {
+      if (!data) {
+        container.innerHTML = '<div class="empty-state">No preview.</div>';
+        return;
+      }
+      const rows = data.records.slice(0, 5);
+      const headers = data.headers.slice(0, 8);
+      container.innerHTML = `
+        <table>
+          <thead><tr>${headers.map(header => `<th>${escapeHtml(header)}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${rows.map(row => `<tr>${headers.map(header => `<td>${escapeHtml(row[header] ?? '')}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function exportReport() {
+      if (!state.baseline || !state.candidate) return;
+      const lines = [
+        ['severity', 'title', 'description', 'detail'],
+        ...state.issues.map(issue => [issue.severity, issue.title, issue.description, issue.detail]),
+        [],
+        ['column', 'status', 'baseline_type', 'incoming_type', 'notes'],
+        ...state.schemaRows.map(row => [
+          row.column,
+          row.status,
+          row.base?.type || '',
+          row.cand?.type || '',
+          row.notes.join('; ')
+        ])
+      ];
+      const csv = lines.map(row => row.map(csvEscape).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'csv-schema-guard-report.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? '');
+      return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+    }
+
+    function formatPercent(value, signed = false) {
+      const number = value * 100;
+      const prefix = signed && number > 0 ? '+' : '';
+      return `${prefix}${number.toFixed(Math.abs(number) >= 10 ? 0 : 1)}%`;
+    }
+
+    function formatDelimiter(delimiter) {
+      if (delimiter === '\t') return 'tab';
+      if (delimiter === ',') return 'comma';
+      return delimiter;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    function setupDrop(drop, input, side) {
+      drop.addEventListener('keydown', event => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          input.click();
+        }
+      });
+      drop.addEventListener('dragover', event => {
+        event.preventDefault();
+        drop.classList.add('dragover');
+      });
+      drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+      drop.addEventListener('drop', event => {
+        event.preventDefault();
+        drop.classList.remove('dragover');
+        const file = event.dataTransfer.files[0];
+        if (file) loadFile(file, side).catch(showError);
+      });
+      input.addEventListener('change', event => {
+        const file = event.target.files[0];
+        if (file) loadFile(file, side).catch(showError);
+      });
+    }
+
+    function showError(error) {
+      els.issueList.innerHTML = `
+        <article class="issue">
+          <div><span class="severity high">error</span></div>
+          <div>
+            <h3>Could not parse file</h3>
+            <p>${escapeHtml(error.message || 'Unknown CSV parsing error.')}</p>
+          </div>
+        </article>
+      `;
+    }
+
+    const sampleBaseline = `order_id,sku,quantity,unit_price,status,ship_date,customer_email,warehouse
+1001,SKU-100,2,19.99,shipped,2026-07-01,ava@example.com,DAL
+1002,SKU-101,1,29.50,shipped,2026-07-01,ben@example.com,DAL
+1003,SKU-102,4,8.25,pending,2026-07-02,cam@example.com,ATL
+1004,SKU-103,3,14.00,cancelled,2026-07-02,dia@example.com,DAL
+1005,SKU-104,8,5.75,shipped,2026-07-03,eli@example.com,PHX
+1006,SKU-105,1,99.00,pending,2026-07-03,fay@example.com,ATL`;
+
+    const sampleCandidate = `order_id,sku,quantity,unit_price,status,ship_date,customer_email,facility,discount_code
+1001,SKU-100,2,19.99,shipped,2026-07-01,ava@example.com,DAL,
+1002,SKU-101,,29.50,shipped,2026-07-01,ben@example.com,DAL,SUMMER
+1003,SKU-102,4,8.25,returned,2026-07-02,cam@example.com,ATL,
+1003,SKU-102,4,8.25,returned,2026-07-02,cam@example.com,ATL,
+1005,SKU-104,8,505.75,shipped,2026-07-03,eli@example.com,PHX,VIP
+1007,SKU-200,,11.00,backorder,2026-07-04,,LAX,NEW`;
+
+    setupDrop(els.baselineDrop, els.baselineInput, 'baseline');
+    setupDrop(els.candidateDrop, els.candidateInput, 'candidate');
+    els.sampleBtn.addEventListener('click', loadSample);
+    els.exportBtn.addEventListener('click', exportReport);
+    els.keyColumnSelect.addEventListener('change', compare);
+    els.nullThreshold.addEventListener('change', compare);
+    els.rowThreshold.addEventListener('change', compare);
+    render();
+  </script>
+</body>
+</html>

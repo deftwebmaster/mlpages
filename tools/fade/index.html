@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FADE — Flow-State Writer</title>
+    <meta name="description" content="A private, local-first writing tool that fades completed paragraphs so you keep drafting forward.">
+    <link rel="canonical" href="https://mattlivingston.com/tools/fade/">
     <!-- * lone wolf, quiet teeth | Matt Livingston -->
     <style>
         * {
@@ -105,6 +107,29 @@
             color: #666;
         }
 
+        .home-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: #999;
+            font-family: system-ui, sans-serif;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .home-link:hover,
+        .home-link:focus-visible {
+            color: #666;
+            text-decoration: underline;
+        }
+
+        .clear-btn:focus-visible,
+        .export-btn:focus-visible {
+            outline: 2px solid #999;
+            outline-offset: 3px;
+        }
+
         /* Clear button */
         .clear-btn {
             position: fixed;
@@ -174,11 +199,52 @@
             margin: 0 8px;
             color: #ddd;
         }
+
+        @media (max-width: 560px) {
+            body {
+                padding-top: 96px;
+                padding-bottom: 220px;
+                font-size: 18px;
+            }
+
+            .home-link {
+                top: 16px;
+                left: 16px;
+            }
+
+            .clear-btn,
+            .export-btn {
+                top: 14px;
+                padding: 8px 12px;
+            }
+
+            .clear-btn {
+                right: 92px;
+            }
+
+            .export-btn {
+                right: 16px;
+            }
+
+            .word-count {
+                bottom: 56px;
+            }
+
+            .save-indicator {
+                bottom: 56px;
+            }
+
+            .footer {
+                width: calc(100% - 32px);
+                bottom: 16px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="hint" id="hint">Just write. Press Enter to move forward.</div>
     
+    <a class="home-link" href="/tools/">Tools</a>
     <button class="clear-btn" id="clearBtn">Clear</button>
     <button class="export-btn" id="exportBtn">Export</button>
     
@@ -211,6 +277,9 @@
             const p = document.createElement('div');
             p.className = 'paragraph' + (isActive ? ' active' : '');
             p.contentEditable = isActive;
+            p.setAttribute('role', 'textbox');
+            p.setAttribute('aria-label', isActive ? 'Active writing paragraph' : 'Completed paragraph');
+            p.setAttribute('aria-multiline', 'true');
             p.classList.add('editor');
             p.textContent = text;
             
@@ -235,6 +304,7 @@
                     // Fade current paragraph
                     currentParagraph.classList.remove('active');
                     currentParagraph.contentEditable = false;
+                    currentParagraph.setAttribute('aria-label', 'Completed paragraph');
                     currentParagraph.removeEventListener('keydown', handleKeydown);
                     currentParagraph.removeEventListener('input', handleInput);
                     
@@ -273,6 +343,13 @@
         // Save current state to localStorage
         function saveState() {
             const paragraphs = container.querySelectorAll('.paragraph');
+            const hasText = Array.from(paragraphs).some(p => p.textContent.trim().length > 0);
+
+            if (!hasText) {
+                localStorage.removeItem(STORAGE_KEY);
+                return;
+            }
+
             const data = {
                 paragraphs: Array.from(paragraphs).map(p => ({
                     text: p.textContent,
@@ -406,6 +483,7 @@
         // Event listeners
         exportBtn.addEventListener('click', exportText);
         clearBtn.addEventListener('click', clearContent);
+        window.addEventListener('beforeunload', saveState);
 
         // Initialize
         loadState();

@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screenshot Metadata Cleaner | Private Image Scrubber</title>
+  <meta name="description" content="Inspect and remove hidden metadata from screenshots and images locally in your browser. No uploads, no tracking, no accounts.">
+  <link rel="canonical" href="https://mattlivingston.com/tools/screenshot-cleaner/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b1120;
+      --panel: #121a2b;
+      --panel-2: #182235;
+      --panel-3: #202b40;
+      --input: #0f172a;
+      --border: #334155;
+      --border-strong: #475569;
+      --text: #eef2ff;
+      --text-soft: #cbd5e1;
+      --text-muted: #8b9bb1;
+      --accent: #38bdf8;
+      --accent-2: #14b8a6;
+      --good: #22c55e;
+      --warn: #f59e0b;
+      --bad: #f43f5e;
+      --purple: #a78bfa;
+      --shadow: rgba(0, 0, 0, 0.28);
+      --radius: 8px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 52px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .back-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .privacy-line {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+    }
+
+    .privacy-pill {
+      border: 1px solid rgba(20, 184, 166, 0.35);
+      color: #9ff5e7;
+      background: rgba(20, 184, 166, 0.1);
+      border-radius: 999px;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .title-block h1 {
+      font-size: clamp(2rem, 4vw, 4.6rem);
+      letter-spacing: 0;
+      line-height: 0.95;
+      margin-bottom: 12px;
+    }
+
+    .title-block p {
+      color: var(--text-soft);
+      max-width: 640px;
+      font-size: 1.02rem;
+    }
+
+    .warning-note {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.38);
+      color: #fde68a;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      font-size: 0.9rem;
+    }
+
+    .workbench {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 18px 48px var(--shadow);
+    }
+
+    .drop-panel {
+      padding: 18px;
+      min-height: 390px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .drop-zone {
+      flex: 1;
+      min-height: 230px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border: 2px dashed var(--border-strong);
+      background:
+        linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(20, 184, 166, 0.05)),
+        var(--input);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: var(--accent);
+      background:
+        linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(20, 184, 166, 0.08)),
+        var(--input);
+      transform: translateY(-1px);
+    }
+
+    .drop-zone input {
+      display: none;
+    }
+
+    .drop-inner {
+      max-width: 430px;
+    }
+
+    .drop-icon {
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 14px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      font-weight: 800;
+      letter-spacing: 0;
+      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.22);
+    }
+
+    .drop-zone h2 {
+      font-size: 1.25rem;
+      margin-bottom: 8px;
+    }
+
+    .drop-zone p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .format-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .format-chip {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 5px;
+      padding: 4px 7px;
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .option-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .toggle {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: var(--text-soft);
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 11px 12px;
+      font-size: 0.86rem;
+      min-height: 64px;
+    }
+
+    .toggle input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--accent);
+      margin-top: 2px;
+      flex: 0 0 auto;
+    }
+
+    .toggle span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 2px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #03111f;
+      background: var(--accent);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: #7dd3fc;
+      text-decoration: none;
+    }
+
+    .btn.secondary {
+      background: var(--panel-3);
+      color: var(--text);
+      border: 1px solid var(--border-strong);
+    }
+
+    .btn.secondary:hover {
+      background: #29364d;
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.46;
+      transform: none;
+    }
+
+    .btn:focus-visible,
+    .drop-zone:focus-visible,
+    .chip-button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    .summary-panel {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .summary-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .summary-top h2 {
+      font-size: 1.05rem;
+    }
+
+    .summary-top p {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      margin-top: 3px;
+    }
+
+    .score-ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background:
+        conic-gradient(var(--good) var(--score-angle), rgba(148, 163, 184, 0.18) 0),
+        var(--input);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .score-ring::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: var(--panel);
+    }
+
+    .score-ring strong {
+      position: relative;
+      font-size: 1.35rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px;
+      min-height: 82px;
+    }
+
+    .stat span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.55rem;
+      line-height: 1.1;
+    }
+
+    .risk-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .risk-tile {
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 10px;
+      background: var(--input);
+      min-height: 74px;
+    }
+
+    .risk-tile span {
+      display: block;
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      margin-bottom: 5px;
+    }
+
+    .risk-tile strong {
+      font-size: 1.3rem;
+    }
+
+    .risk-high strong { color: var(--bad); }
+    .risk-medium strong { color: var(--warn); }
+    .risk-low strong { color: var(--good); }
+
+    .detail-panel {
+      background: var(--input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      min-height: 124px;
+    }
+
+    .detail-panel h3 {
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+
+    .detail-empty {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .meta-tag {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(148, 163, 184, 0.08);
+      color: var(--text-soft);
+      font-size: 0.72rem;
+      padding: 5px 8px;
+      font-family: var(--mono);
+    }
+
+    .meta-tag.high {
+      color: #fecdd3;
+      border-color: rgba(244, 63, 94, 0.44);
+      background: rgba(244, 63, 94, 0.12);
+    }
+
+    .meta-tag.medium {
+      color: #fde68a;
+      border-color: rgba(245, 158, 11, 0.42);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .results-panel {
+      overflow: hidden;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .results-header h2 {
+      font-size: 1.02rem;
+    }
+
+    .results-header p {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 0;
+    }
+
+    .empty-state {
+      padding: 34px 18px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .file-row {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr) 150px 190px;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .file-row:last-child {
+      border-bottom: 0;
+    }
+
+    .thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--input);
+      display: grid;
+      place-items: center;
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .file-main {
+      min-width: 0;
+    }
+
+    .file-name {
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 5px;
+    }
+
+    .file-sub {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .risk-badge {
+      display: inline-flex;
+      justify-content: center;
+      width: fit-content;
+      min-width: 92px;
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .risk-badge.high {
+      color: #fecdd3;
+      background: rgba(244, 63, 94, 0.14);
+      border: 1px solid rgba(244, 63, 94, 0.44);
+    }
+
+    .risk-badge.medium {
+      color: #fde68a;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.44);
+    }
+
+    .risk-badge.low {
+      color: #bbf7d0;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.38);
+    }
+
+    .risk-badge.error {
+      color: #e2e8f0;
+      background: rgba(148, 163, 184, 0.14);
+      border: 1px solid rgba(148, 163, 184, 0.34);
+    }
+
+    .file-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip-button {
+      min-height: 34px;
+      padding: 7px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: var(--panel-3);
+      color: var(--text-soft);
+      border: 1px solid var(--border-strong);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .chip-button:hover {
+      background: #29364d;
+    }
+
+    .chip-button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .insight {
+      padding: 16px;
+    }
+
+    .insight h3 {
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .insight p {
+      color: var(--text-muted);
+      font-size: 0.86rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      header,
+      .workbench {
+        grid-template-columns: 1fr;
+      }
+
+      .privacy-line {
+        justify-content: flex-start;
+      }
+
+      .file-row {
+        grid-template-columns: 56px minmax(0, 1fr);
+      }
+
+      .file-risk,
+      .file-actions {
+        grid-column: 2;
+        justify-content: flex-start;
+      }
+
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding: 18px 12px 36px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .drop-panel,
+      .summary-panel {
+        padding: 14px;
+      }
+
+      .controls,
+      .option-row,
+      .stats-grid,
+      .risk-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .file-row {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 10px;
+        padding: 13px;
+      }
+
+      .thumb {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="back-link" href="/tools/">Tools</a>
+      <div class="privacy-line" aria-label="Privacy guarantees">
+        <span class="privacy-pill">Local-only</span>
+        <span class="privacy-pill">No uploads</span>
+        <span class="privacy-pill">Batch safe</span>
+      </div>
+    </div>
+
+    <header>
+      <div class="title-block">
+        <h1>Screenshot Metadata Cleaner</h1>
+        <p>Inspect and strip hidden metadata from screenshots and images before you share them. It reads image bytes locally, flags privacy risks, then creates clean copies in your browser.</p>
+      </div>
+      <div class="warning-note">
+        This removes hidden metadata, not visible information inside the pixels. Crop or blur sensitive on-screen text before cleaning.
+      </div>
+    </header>
+
+    <main>
+      <section class="workbench" aria-label="Metadata cleaner workbench">
+        <div class="panel drop-panel">
+          <label class="drop-zone" id="dropZone" tabindex="0">
+            <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+            <span class="drop-inner">
+              <span class="drop-icon" aria-hidden="true">IMG</span>
+              <h2>Drop screenshots or images here</h2>
+              <p>JPEG, PNG, and WebP are inspected and cleaned locally. Multiple files are welcome.</p>
+              <span class="format-row" aria-hidden="true">
+                <span class="format-chip">JPG</span>
+                <span class="format-chip">PNG</span>
+                <span class="format-chip">WEBP</span>
+                <span class="format-chip">ZIP EXPORT</span>
+              </span>
+            </span>
+          </label>
+
+          <div class="controls">
+            <button class="btn" id="cleanAllBtn" type="button" disabled>Clean images</button>
+            <button class="btn secondary" id="downloadAllBtn" type="button" disabled>Download ZIP</button>
+            <div class="option-row">
+              <label class="toggle">
+                <input id="stripColorProfiles" type="checkbox">
+                <span>
+                  <strong>Strip color profiles</strong>
+                  <span>Removes ICC/profile chunks too. Leave off for closest visual fidelity.</span>
+                </span>
+              </label>
+              <label class="toggle">
+                <input id="addSuffix" type="checkbox" checked>
+                <span>
+                  <strong>Add clean suffix</strong>
+                  <span>Exports files as filename-clean.ext so originals are never overwritten.</span>
+                </span>
+              </label>
+            </div>
+            <button class="btn secondary" id="clearBtn" type="button" disabled>Clear list</button>
+            <button class="btn secondary" id="demoBtn" type="button">Load demo file</button>
+          </div>
+        </div>
+
+        <aside class="panel summary-panel" aria-label="Batch summary">
+          <div class="summary-top">
+            <div>
+              <h2>Privacy score</h2>
+              <p id="summaryText">Add images to scan for hidden metadata.</p>
+            </div>
+            <div class="score-ring" id="scoreRing" style="--score-angle: 0deg;">
+              <strong id="scoreValue">--</strong>
+            </div>
+          </div>
+
+          <div class="stats-grid">
+            <div class="stat">
+              <span>Files scanned</span>
+              <strong id="filesScanned">0</strong>
+            </div>
+            <div class="stat">
+              <span>Metadata fields</span>
+              <strong id="fieldsFound">0</strong>
+            </div>
+            <div class="stat">
+              <span>Cleaned files</span>
+              <strong id="cleanedFiles">0</strong>
+            </div>
+            <div class="stat">
+              <span>Bytes removed</span>
+              <strong id="bytesRemoved">0 B</strong>
+            </div>
+          </div>
+
+          <div class="risk-strip">
+            <div class="risk-tile risk-high">
+              <span>High risk</span>
+              <strong id="highRisk">0</strong>
+            </div>
+            <div class="risk-tile risk-medium">
+              <span>Medium risk</span>
+              <strong id="mediumRisk">0</strong>
+            </div>
+            <div class="risk-tile risk-low">
+              <span>Low risk</span>
+              <strong id="lowRisk">0</strong>
+            </div>
+          </div>
+
+          <div class="detail-panel" id="detailPanel">
+            <h3>Inspection details</h3>
+            <p class="detail-empty">Select a scanned file to see metadata groups and cleanup notes.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="panel results-panel" aria-label="Scanned files">
+        <div class="results-header">
+          <div>
+            <h2>Batch queue</h2>
+            <p id="queueText">No files added yet.</p>
+          </div>
+        </div>
+        <div class="file-list" id="fileList">
+          <div class="empty-state">Drop files above to start an inspection.</div>
+        </div>
+      </section>
+
+      <section class="insight-grid" aria-label="How the cleaner works">
+        <article class="panel insight">
+          <h3>Format-aware cleaning</h3>
+          <p>JPEG, PNG, and WebP files are cleaned by removing metadata chunks or segments while preserving image data whenever possible.</p>
+        </article>
+        <article class="panel insight">
+          <h3>Risk-focused inspection</h3>
+          <p>GPS, author, device, software, timestamps, embedded thumbnails, comments, and app metadata are grouped into readable privacy signals.</p>
+        </article>
+        <article class="panel insight">
+          <h3>Local export workflow</h3>
+          <p>Cleaned copies and ZIP archives are generated in memory. Your originals stay on your device and are never uploaded.</p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      files: [],
+      selectedId: null
+    };
+
+    const els = {
+      dropZone: document.getElementById('dropZone'),
+      fileInput: document.getElementById('fileInput'),
+      cleanAllBtn: document.getElementById('cleanAllBtn'),
+      downloadAllBtn: document.getElementById('downloadAllBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      demoBtn: document.getElementById('demoBtn'),
+      stripColorProfiles: document.getElementById('stripColorProfiles'),
+      addSuffix: document.getElementById('addSuffix'),
+      fileList: document.getElementById('fileList'),
+      queueText: document.getElementById('queueText'),
+      summaryText: document.getElementById('summaryText'),
+      scoreRing: document.getElementById('scoreRing'),
+      scoreValue: document.getElementById('scoreValue'),
+      filesScanned: document.getElementById('filesScanned'),
+      fieldsFound: document.getElementById('fieldsFound'),
+      cleanedFiles: document.getElementById('cleanedFiles'),
+      bytesRemoved: document.getElementById('bytesRemoved'),
+      highRisk: document.getElementById('highRisk'),
+      mediumRisk: document.getElementById('mediumRisk'),
+      lowRisk: document.getElementById('lowRisk'),
+      detailPanel: document.getElementById('detailPanel')
+    };
+
+    const RISK_LABELS = {
+      high: 'High risk',
+      medium: 'Medium risk',
+      low: 'Low risk',
+      error: 'Needs fallback'
+    };
+
+    const textDecoder = new TextDecoder('latin1');
+    const utf8Decoder = new TextDecoder('utf-8', { fatal: false });
+    const textEncoder = new TextEncoder();
+    const crcTable = makeCrcTable();
+
+    function bytesToText(bytes, start = 0, length = bytes.length - start) {
+      return textDecoder.decode(bytes.slice(start, start + length));
+    }
+
+    function readAscii(bytes, start, length) {
+      return Array.from(bytes.slice(start, start + length)).map(b => String.fromCharCode(b)).join('');
+    }
+
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes)) return '--';
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+    }
+
+    function getExtension(name, fallback = 'jpg') {
+      const match = name.match(/\.([a-z0-9]+)$/i);
+      return match ? match[1].toLowerCase() : fallback;
+    }
+
+    function cleanName(name) {
+      const suffix = els.addSuffix.checked ? '-clean' : '';
+      const dot = name.lastIndexOf('.');
+      if (dot === -1) return `${name}${suffix}`;
+      return `${name.slice(0, dot)}${suffix}${name.slice(dot)}`;
+    }
+
+    function makeId() {
+      return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    }
+
+    function detectType(bytes, fileType) {
+      if (bytes[0] === 0xff && bytes[1] === 0xd8) return 'jpeg';
+      if (bytes[0] === 0x89 && readAscii(bytes, 1, 3) === 'PNG') return 'png';
+      if (readAscii(bytes, 0, 4) === 'RIFF' && readAscii(bytes, 8, 4) === 'WEBP') return 'webp';
+      if (fileType.includes('jpeg')) return 'jpeg';
+      if (fileType.includes('png')) return 'png';
+      if (fileType.includes('webp')) return 'webp';
+      return 'unknown';
+    }
+
+    function addFinding(metadata, group, label, value = '', risk = 'medium') {
+      metadata.findings.push({
+        group,
+        label,
+        value: String(value || '').trim(),
+        risk
+      });
+    }
+
+    function summarizeRisk(metadata, type) {
+      const high = metadata.findings.some(f => f.risk === 'high');
+      const medium = metadata.findings.some(f => f.risk === 'medium');
+      const fields = metadata.findings.length;
+      if (metadata.error) return 'error';
+      if (high) return 'high';
+      if (medium || fields > 0) return 'medium';
+      if (type === 'unknown') return 'error';
+      return 'low';
+    }
+
+    function inspectBytes(bytes, file) {
+      const type = detectType(bytes, file.type || '');
+      let metadata;
+      try {
+        if (type === 'jpeg') metadata = inspectJpeg(bytes);
+        else if (type === 'png') metadata = inspectPng(bytes);
+        else if (type === 'webp') metadata = inspectWebp(bytes);
+        else {
+          metadata = {
+            type,
+            findings: [],
+            cleanupNotes: ['Unsupported image type for binary metadata cleaning.'],
+            error: 'Unsupported format'
+          };
+        }
+      } catch (error) {
+        metadata = {
+          type,
+          findings: [],
+          cleanupNotes: ['The file could not be parsed safely.'],
+          error: error.message
+        };
+      }
+      metadata.risk = summarizeRisk(metadata, type);
+      return metadata;
+    }
+
+    function inspectJpeg(bytes) {
+      const metadata = {
+        type: 'jpeg',
+        findings: [],
+        cleanupNotes: []
+      };
+      let i = 2;
+      while (i + 3 < bytes.length) {
+        if (bytes[i] !== 0xff) {
+          i += 1;
+          continue;
+        }
+        while (bytes[i] === 0xff) i += 1;
+        const marker = bytes[i++];
+        if (marker === 0xda || marker === 0xd9) break;
+        if (marker >= 0xd0 && marker <= 0xd7) continue;
+        const length = (bytes[i] << 8) | bytes[i + 1];
+        if (length < 2 || i + length > bytes.length) break;
+        const payloadStart = i + 2;
+        const payloadLength = length - 2;
+        const payload = bytes.slice(payloadStart, payloadStart + payloadLength);
+
+        if (marker === 0xe1 && startsWith(payload, [0x45, 0x78, 0x69, 0x66, 0, 0])) {
+          addFinding(metadata, 'EXIF', 'EXIF block', `${payloadLength} bytes`, 'medium');
+          parseExif(payload.slice(6), metadata);
+        } else if (marker === 0xe1 && bytesToText(payload, 0, Math.min(payload.length, 80)).includes('http://ns.adobe.com/xap/1.0/')) {
+          addFinding(metadata, 'XMP', 'XMP packet', `${payloadLength} bytes`, 'medium');
+          findTextSignals(payload, metadata, 'XMP');
+        } else if (marker === 0xe2 && startsWithText(payload, 'ICC_PROFILE')) {
+          addFinding(metadata, 'Color', 'ICC color profile', `${payloadLength} bytes`, 'low');
+        } else if (marker === 0xed) {
+          addFinding(metadata, 'IPTC', 'Photoshop/IPTC block', `${payloadLength} bytes`, 'medium');
+          findTextSignals(payload, metadata, 'IPTC');
+        } else if (marker === 0xfe) {
+          const comment = printable(bytesToText(payload, 0, Math.min(payload.length, 120)));
+          addFinding(metadata, 'Comment', 'JPEG comment', comment || `${payloadLength} bytes`, 'medium');
+        } else if (marker >= 0xe0 && marker <= 0xef && marker !== 0xe0) {
+          addFinding(metadata, 'Application', `APP${marker - 0xe0} segment`, `${payloadLength} bytes`, 'medium');
+        }
+        i += length;
+      }
+      metadata.cleanupNotes.push('Removes EXIF, XMP, IPTC/Photoshop metadata, comments, and nonessential application segments.');
+      metadata.cleanupNotes.push('Preserves encoded JPEG image data without canvas re-encoding.');
+      return metadata;
+    }
+
+    function inspectPng(bytes) {
+      const metadata = {
+        type: 'png',
+        findings: [],
+        cleanupNotes: []
+      };
+      if (!isPng(bytes)) throw new Error('Invalid PNG signature');
+      let i = 8;
+      while (i + 12 <= bytes.length) {
+        const length = readUint32(bytes, i);
+        const type = readAscii(bytes, i + 4, 4);
+        const dataStart = i + 8;
+        const next = dataStart + length + 4;
+        if (next > bytes.length) break;
+        const payload = bytes.slice(dataStart, dataStart + length);
+        if (['tEXt', 'zTXt', 'iTXt'].includes(type)) {
+          const text = printable(bytesToText(payload, 0, Math.min(payload.length, 180)));
+          addFinding(metadata, 'Text', `${type} text chunk`, text || `${length} bytes`, 'medium');
+          findTextSignals(payload, metadata, type);
+        } else if (type === 'eXIf') {
+          addFinding(metadata, 'EXIF', 'PNG EXIF chunk', `${length} bytes`, 'medium');
+          parseExif(payload, metadata);
+        } else if (type === 'tIME') {
+          addFinding(metadata, 'Timestamp', 'PNG modification time', parsePngTime(payload), 'medium');
+        } else if (type === 'iCCP') {
+          addFinding(metadata, 'Color', 'ICC color profile', `${length} bytes`, 'low');
+        } else if (type === 'pHYs') {
+          addFinding(metadata, 'Technical', 'Pixel density chunk', parsePhys(payload), 'low');
+        }
+        i = next;
+        if (type === 'IEND') break;
+      }
+      metadata.cleanupNotes.push('Removes PNG text, compressed text, international text, EXIF, and timestamp chunks.');
+      metadata.cleanupNotes.push('Preserves critical PNG chunks and image pixels.');
+      return metadata;
+    }
+
+    function inspectWebp(bytes) {
+      const metadata = {
+        type: 'webp',
+        findings: [],
+        cleanupNotes: []
+      };
+      if (readAscii(bytes, 0, 4) !== 'RIFF' || readAscii(bytes, 8, 4) !== 'WEBP') {
+        throw new Error('Invalid WebP container');
+      }
+      let i = 12;
+      while (i + 8 <= bytes.length) {
+        const type = readAscii(bytes, i, 4);
+        const size = readUint32LE(bytes, i + 4);
+        const dataStart = i + 8;
+        const dataEnd = dataStart + size;
+        if (dataEnd > bytes.length) break;
+        const payload = bytes.slice(dataStart, dataEnd);
+        if (type === 'EXIF') {
+          addFinding(metadata, 'EXIF', 'WebP EXIF chunk', `${size} bytes`, 'medium');
+          parseExif(payload, metadata);
+        } else if (type === 'XMP ') {
+          addFinding(metadata, 'XMP', 'WebP XMP chunk', `${size} bytes`, 'medium');
+          findTextSignals(payload, metadata, 'XMP');
+        } else if (type === 'ICCP') {
+          addFinding(metadata, 'Color', 'ICC color profile', `${size} bytes`, 'low');
+        }
+        i = dataEnd + (size % 2);
+      }
+      metadata.cleanupNotes.push('Removes WebP EXIF and XMP chunks, with optional ICC profile stripping.');
+      metadata.cleanupNotes.push('Updates the RIFF container size after cleaning.');
+      return metadata;
+    }
+
+    function parseExif(bytes, metadata) {
+      if (bytes.length < 12) return;
+      const endian = readAscii(bytes, 0, 2);
+      const little = endian === 'II';
+      if (!little && endian !== 'MM') return;
+      const magic = read16(bytes, 2, little);
+      if (magic !== 42) return;
+      const firstIfd = read32(bytes, 4, little);
+      const visited = new Set();
+      parseIfd(bytes, firstIfd, little, metadata, visited, 'IFD0');
+    }
+
+    function parseIfd(bytes, offset, little, metadata, visited, name) {
+      if (!offset || offset + 2 > bytes.length || visited.has(offset)) return;
+      visited.add(offset);
+      const count = read16(bytes, offset, little);
+      let exifOffset = 0;
+      let gpsOffset = 0;
+      for (let n = 0; n < count; n += 1) {
+        const entry = offset + 2 + n * 12;
+        if (entry + 12 > bytes.length) break;
+        const tag = read16(bytes, entry, little);
+        const type = read16(bytes, entry + 2, little);
+        const itemCount = read32(bytes, entry + 4, little);
+        const valueOffset = read32(bytes, entry + 8, little);
+        const value = readExifValue(bytes, entry + 8, valueOffset, type, itemCount, little);
+
+        if (tag === 0x8769) exifOffset = valueOffset;
+        if (tag === 0x8825) gpsOffset = valueOffset;
+        if (name === 'GPS') readGpsTag(metadata, tag, value);
+        else readCommonExifTag(metadata, tag, value);
+      }
+      if (exifOffset) parseIfd(bytes, exifOffset, little, metadata, visited, 'EXIF');
+      if (gpsOffset) {
+        addFinding(metadata, 'GPS', 'GPS metadata pointer', 'Location metadata present', 'high');
+        parseIfd(bytes, gpsOffset, little, metadata, visited, 'GPS');
+      }
+    }
+
+    function readCommonExifTag(metadata, tag, value) {
+      const tagMap = {
+        0x010e: ['EXIF', 'Image description', 'medium'],
+        0x010f: ['Device', 'Camera/device make', 'medium'],
+        0x0110: ['Device', 'Camera/device model', 'medium'],
+        0x0112: ['Technical', 'Orientation', 'low'],
+        0x0131: ['Software', 'Software/app name', 'medium'],
+        0x0132: ['Timestamp', 'File date/time', 'medium'],
+        0x013b: ['Author', 'Artist/author', 'medium'],
+        0x8298: ['Author', 'Copyright', 'medium'],
+        0x9003: ['Timestamp', 'Original date/time', 'medium'],
+        0x9004: ['Timestamp', 'Digitized date/time', 'medium'],
+        0xa420: ['Device', 'Image unique ID', 'medium']
+      };
+      const entry = tagMap[tag];
+      if (entry && value !== undefined && value !== '') {
+        addFinding(metadata, entry[0], entry[1], value, entry[2]);
+      }
+    }
+
+    function readGpsTag(metadata, tag, value) {
+      const tagMap = {
+        1: 'Latitude reference',
+        2: 'Latitude',
+        3: 'Longitude reference',
+        4: 'Longitude',
+        5: 'Altitude reference',
+        6: 'Altitude',
+        7: 'GPS timestamp',
+        29: 'GPS date stamp'
+      };
+      if (tagMap[tag] && value !== undefined && value !== '') {
+        addFinding(metadata, 'GPS', tagMap[tag], value, 'high');
+      }
+    }
+
+    function readExifValue(bytes, inlineOffset, valueOffset, type, count, little) {
+      const sizes = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 7: 1, 9: 4, 10: 8 };
+      const size = (sizes[type] || 1) * count;
+      const start = size <= 4 ? inlineOffset : valueOffset;
+      if (start < 0 || start + size > bytes.length) return '';
+      if (type === 2) {
+        return printable(bytesToText(bytes, start, size).replace(/\0+$/, ''));
+      }
+      if (type === 3) {
+        const values = [];
+        for (let i = 0; i < Math.min(count, 4); i += 1) values.push(read16(bytes, start + i * 2, little));
+        return values.join(', ');
+      }
+      if (type === 4 || type === 9) {
+        const values = [];
+        for (let i = 0; i < Math.min(count, 4); i += 1) values.push(read32(bytes, start + i * 4, little));
+        return values.join(', ');
+      }
+      if (type === 5 || type === 10) {
+        const values = [];
+        for (let i = 0; i < Math.min(count, 3); i += 1) {
+          const num = read32(bytes, start + i * 8, little);
+          const den = read32(bytes, start + i * 8 + 4, little) || 1;
+          values.push((num / den).toFixed(5).replace(/\.?0+$/, ''));
+        }
+        return values.join(', ');
+      }
+      if (type === 1 || type === 7) {
+        if (count === 1) return String(bytes[start]);
+        return `${count} bytes`;
+      }
+      return '';
+    }
+
+    function findTextSignals(payload, metadata, group) {
+      const text = printable(bytesToText(payload, 0, Math.min(payload.length, 4000))).toLowerCase();
+      const signals = [
+        ['creator', 'Creator field', 'medium'],
+        ['author', 'Author field', 'medium'],
+        ['photoshop', 'Editing software', 'medium'],
+        ['lightroom', 'Editing software', 'medium'],
+        ['screenshot', 'Screenshot source text', 'low'],
+        ['gps', 'GPS text marker', 'high'],
+        ['latitude', 'Latitude text marker', 'high'],
+        ['longitude', 'Longitude text marker', 'high'],
+        ['create date', 'Create date field', 'medium'],
+        ['modify date', 'Modify date field', 'medium']
+      ];
+      signals.forEach(([needle, label, risk]) => {
+        if (text.includes(needle) && !metadata.findings.some(f => f.group === group && f.label === label)) {
+          addFinding(metadata, group, label, needle, risk);
+        }
+      });
+    }
+
+    function cleanBytes(item) {
+      const stripColor = els.stripColorProfiles.checked;
+      let cleaned;
+      if (item.type === 'jpeg') cleaned = cleanJpeg(item.bytes, stripColor);
+      else if (item.type === 'png') cleaned = cleanPng(item.bytes, stripColor);
+      else if (item.type === 'webp') cleaned = cleanWebp(item.bytes, stripColor);
+      else throw new Error('Unsupported format');
+      return cleaned;
+    }
+
+    function cleanJpeg(bytes, stripColor) {
+      const chunks = [bytes.slice(0, 2)];
+      let i = 2;
+      while (i + 3 < bytes.length) {
+        if (bytes[i] !== 0xff) {
+          chunks.push(bytes.slice(i));
+          break;
+        }
+        let markerStart = i;
+        while (bytes[i] === 0xff) i += 1;
+        const marker = bytes[i++];
+        if (marker === 0xda || marker === 0xd9) {
+          chunks.push(bytes.slice(markerStart));
+          break;
+        }
+        if (marker >= 0xd0 && marker <= 0xd7) {
+          chunks.push(bytes.slice(markerStart, i));
+          continue;
+        }
+        const length = (bytes[i] << 8) | bytes[i + 1];
+        if (length < 2 || i + length > bytes.length) {
+          chunks.push(bytes.slice(markerStart));
+          break;
+        }
+        const payloadStart = i + 2;
+        const payload = bytes.slice(payloadStart, payloadStart + length - 2);
+        const remove =
+          marker === 0xe1 ||
+          marker === 0xed ||
+          marker === 0xfe ||
+          marker === 0xec ||
+          (marker >= 0xe3 && marker <= 0xef) ||
+          (stripColor && marker === 0xe2 && startsWithText(payload, 'ICC_PROFILE'));
+        if (!remove) chunks.push(bytes.slice(markerStart, i + length));
+        i += length;
+      }
+      return concatBytes(chunks);
+    }
+
+    function cleanPng(bytes, stripColor) {
+      if (!isPng(bytes)) throw new Error('Invalid PNG signature');
+      const chunks = [bytes.slice(0, 8)];
+      let i = 8;
+      const removable = new Set(['tEXt', 'zTXt', 'iTXt', 'eXIf', 'tIME']);
+      if (stripColor) removable.add('iCCP');
+      while (i + 12 <= bytes.length) {
+        const length = readUint32(bytes, i);
+        const type = readAscii(bytes, i + 4, 4);
+        const next = i + 12 + length;
+        if (next > bytes.length) break;
+        if (!removable.has(type)) chunks.push(bytes.slice(i, next));
+        i = next;
+        if (type === 'IEND') break;
+      }
+      return concatBytes(chunks);
+    }
+
+    function cleanWebp(bytes, stripColor) {
+      const chunks = [];
+      let i = 12;
+      while (i + 8 <= bytes.length) {
+        const type = readAscii(bytes, i, 4);
+        const size = readUint32LE(bytes, i + 4);
+        const fullSize = 8 + size + (size % 2);
+        if (i + fullSize > bytes.length) break;
+        const remove = type === 'EXIF' || type === 'XMP ' || (stripColor && type === 'ICCP');
+        let chunk = bytes.slice(i, i + fullSize);
+        if (!remove) {
+          if (type === 'VP8X') {
+            chunk = new Uint8Array(chunk);
+            chunk[8] = chunk[8] & ~0x0c;
+            if (stripColor) chunk[8] = chunk[8] & ~0x20;
+          }
+          chunks.push(chunk);
+        }
+        i += fullSize;
+      }
+      const bodySize = 4 + chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+      const out = new Uint8Array(8 + bodySize);
+      out.set(textEncoder.encode('RIFF'), 0);
+      writeUint32LE(out, 4, bodySize);
+      out.set(textEncoder.encode('WEBP'), 8);
+      let offset = 12;
+      chunks.forEach(chunk => {
+        out.set(chunk, offset);
+        offset += chunk.length;
+      });
+      return out;
+    }
+
+    async function fallbackCanvasClean(item) {
+      const image = await loadImage(item.url);
+      const canvas = document.createElement('canvas');
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0);
+      const ext = getExtension(item.file.name, 'png');
+      const mime = ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : ext === 'webp' ? 'image/webp' : 'image/png';
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, mime, 0.94));
+      if (!blob) throw new Error('Canvas export failed');
+      return new Uint8Array(await blob.arrayBuffer());
+    }
+
+    async function addFiles(fileList) {
+      const imageFiles = Array.from(fileList).filter(file => file.type.startsWith('image/') || /\.(jpe?g|png|webp)$/i.test(file.name));
+      const additions = await Promise.all(imageFiles.map(async file => {
+        const buffer = await file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        const url = URL.createObjectURL(file);
+        const dimensions = await getImageDimensions(url).catch(() => ({ width: 0, height: 0 }));
+        const metadata = inspectBytes(bytes, file);
+        return {
+          id: makeId(),
+          file,
+          bytes,
+          url,
+          dimensions,
+          type: metadata.type,
+          metadata,
+          cleanedBytes: null,
+          cleanedName: cleanName(file.name),
+          cleanedAt: null,
+          cleanError: null
+        };
+      }));
+      state.files.push(...additions);
+      if (!state.selectedId && additions[0]) state.selectedId = additions[0].id;
+      render();
+    }
+
+    async function cleanItem(item) {
+      try {
+        item.cleanError = null;
+        let cleaned = cleanBytes(item);
+        if (cleaned.length >= item.bytes.length && item.metadata.findings.length > 0) {
+          cleaned = await fallbackCanvasClean(item);
+          item.metadata.cleanupNotes.push('Canvas fallback was used because binary cleaning did not reduce this file.');
+        }
+        item.cleanedBytes = cleaned;
+        item.cleanedName = cleanName(item.file.name);
+        item.cleanedAt = Date.now();
+      } catch (error) {
+        try {
+          item.cleanedBytes = await fallbackCanvasClean(item);
+          item.cleanedName = cleanName(item.file.name);
+          item.cleanedAt = Date.now();
+          item.cleanError = null;
+          item.metadata.cleanupNotes.push('Canvas fallback was used for this file.');
+        } catch (fallbackError) {
+          item.cleanError = fallbackError.message || error.message;
+        }
+      }
+    }
+
+    async function cleanAll() {
+      els.cleanAllBtn.disabled = true;
+      els.cleanAllBtn.textContent = 'Cleaning...';
+      for (const item of state.files) {
+        await cleanItem(item);
+      }
+      els.cleanAllBtn.textContent = 'Clean images';
+      render();
+    }
+
+    function downloadItem(id) {
+      const item = state.files.find(file => file.id === id);
+      if (!item || !item.cleanedBytes) return;
+      downloadBytes(item.cleanedBytes, item.cleanedName, item.file.type || 'application/octet-stream');
+    }
+
+    async function downloadAllZip() {
+      const cleaned = state.files.filter(item => item.cleanedBytes);
+      if (!cleaned.length) return;
+      const zipBytes = createZip(cleaned.map(item => ({
+        name: item.cleanedName,
+        bytes: item.cleanedBytes
+      })));
+      downloadBytes(zipBytes, 'cleaned-images.zip', 'application/zip');
+    }
+
+    function downloadBytes(bytes, filename, type) {
+      const blob = new Blob([bytes], { type });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function clearList() {
+      state.files.forEach(item => URL.revokeObjectURL(item.url));
+      state.files = [];
+      state.selectedId = null;
+      render();
+    }
+
+    function removeItem(id) {
+      const index = state.files.findIndex(item => item.id === id);
+      if (index === -1) return;
+      URL.revokeObjectURL(state.files[index].url);
+      state.files.splice(index, 1);
+      if (state.selectedId === id) state.selectedId = state.files[0]?.id || null;
+      render();
+    }
+
+    function selectItem(id) {
+      state.selectedId = id;
+      render();
+    }
+
+    function render() {
+      renderList();
+      renderSummary();
+      renderDetails();
+      const hasFiles = state.files.length > 0;
+      const hasCleaned = state.files.some(item => item.cleanedBytes);
+      els.cleanAllBtn.disabled = !hasFiles;
+      els.downloadAllBtn.disabled = !hasCleaned;
+      els.clearBtn.disabled = !hasFiles;
+    }
+
+    function renderList() {
+      if (!state.files.length) {
+        els.fileList.innerHTML = '<div class="empty-state">Drop files above to start an inspection.</div>';
+        els.queueText.textContent = 'No files added yet.';
+        return;
+      }
+      els.queueText.textContent = `${state.files.length} file${state.files.length === 1 ? '' : 's'} scanned.`;
+      els.fileList.innerHTML = state.files.map(item => {
+        const fields = item.metadata.findings.length;
+        const removed = item.cleanedBytes ? Math.max(0, item.bytes.length - item.cleanedBytes.length) : 0;
+        const dimensions = item.dimensions.width ? `${item.dimensions.width}x${item.dimensions.height}` : 'Dimensions unavailable';
+        const cleanText = item.cleanedBytes ? `Cleaned, ${formatBytes(removed)} removed` : 'Not cleaned yet';
+        return `
+          <article class="file-row" data-id="${item.id}">
+            <div class="thumb"><img src="${item.url}" alt=""></div>
+            <div class="file-main">
+              <div class="file-name" title="${escapeHtml(item.file.name)}">${escapeHtml(item.file.name)}</div>
+              <div class="file-sub">
+                <span>${item.type.toUpperCase()}</span>
+                <span>${formatBytes(item.file.size)}</span>
+                <span>${dimensions}</span>
+                <span>${fields} metadata field${fields === 1 ? '' : 's'}</span>
+                <span>${cleanText}</span>
+              </div>
+            </div>
+            <div class="file-risk">
+              <span class="risk-badge ${item.metadata.risk}">${RISK_LABELS[item.metadata.risk]}</span>
+            </div>
+            <div class="file-actions">
+              <button class="chip-button" type="button" data-action="inspect" data-id="${item.id}">Inspect</button>
+              <button class="chip-button" type="button" data-action="download" data-id="${item.id}" ${item.cleanedBytes ? '' : 'disabled'}>Download</button>
+              <button class="chip-button" type="button" data-action="remove" data-id="${item.id}">Remove</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function renderSummary() {
+      const total = state.files.length;
+      const fields = state.files.reduce((sum, item) => sum + item.metadata.findings.length, 0);
+      const cleaned = state.files.filter(item => item.cleanedBytes).length;
+      const removed = state.files.reduce((sum, item) => sum + (item.cleanedBytes ? Math.max(0, item.bytes.length - item.cleanedBytes.length) : 0), 0);
+      const high = state.files.filter(item => item.metadata.risk === 'high').length;
+      const medium = state.files.filter(item => item.metadata.risk === 'medium').length;
+      const low = state.files.filter(item => item.metadata.risk === 'low').length;
+      let score = '--';
+      let angle = 0;
+      let color = 'var(--good)';
+      if (total) {
+        const penalty = high * 35 + medium * 17 + fields * 2;
+        const numeric = Math.max(0, Math.min(100, 100 - penalty));
+        score = String(numeric);
+        angle = numeric * 3.6;
+        color = numeric < 45 ? 'var(--bad)' : numeric < 76 ? 'var(--warn)' : 'var(--good)';
+      }
+      els.filesScanned.textContent = total;
+      els.fieldsFound.textContent = fields;
+      els.cleanedFiles.textContent = cleaned;
+      els.bytesRemoved.textContent = formatBytes(removed);
+      els.highRisk.textContent = high;
+      els.mediumRisk.textContent = medium;
+      els.lowRisk.textContent = low;
+      els.scoreValue.textContent = score;
+      els.scoreRing.style.setProperty('--score-angle', `${angle}deg`);
+      els.scoreRing.style.background = `conic-gradient(${color} ${angle}deg, rgba(148, 163, 184, 0.18) 0), var(--input)`;
+      if (!total) els.summaryText.textContent = 'Add images to scan for hidden metadata.';
+      else if (high) els.summaryText.textContent = `${high} file${high === 1 ? '' : 's'} contain high-risk location metadata.`;
+      else if (medium) els.summaryText.textContent = `${medium} file${medium === 1 ? '' : 's'} contain shareable metadata worth cleaning.`;
+      else els.summaryText.textContent = 'No sensitive metadata was found in this batch.';
+    }
+
+    function renderDetails() {
+      const item = state.files.find(file => file.id === state.selectedId);
+      if (!item) {
+        els.detailPanel.innerHTML = `
+          <h3>Inspection details</h3>
+          <p class="detail-empty">Select a scanned file to see metadata groups and cleanup notes.</p>
+        `;
+        return;
+      }
+      const tags = item.metadata.findings.length
+        ? item.metadata.findings.map(finding => `
+            <span class="meta-tag ${finding.risk}" title="${escapeHtml(finding.value)}">
+              ${escapeHtml(finding.group)}: ${escapeHtml(finding.label)}
+            </span>
+          `).join('')
+        : '<span class="meta-tag low">No hidden metadata found</span>';
+      const notes = item.metadata.cleanupNotes.map(note => `<span class="meta-tag">${escapeHtml(note)}</span>`).join('');
+      els.detailPanel.innerHTML = `
+        <h3>${escapeHtml(item.file.name)}</h3>
+        <div class="tag-list">${tags}</div>
+        <h3 style="margin-top: 14px;">Cleanup notes</h3>
+        <div class="tag-list">${notes}</div>
+      `;
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;');
+    }
+
+    function printable(value) {
+      return String(value || '')
+        .replace(/[^\x20-\x7e]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function startsWith(bytes, sequence) {
+      return sequence.every((value, index) => bytes[index] === value);
+    }
+
+    function startsWithText(bytes, text) {
+      return readAscii(bytes, 0, text.length) === text;
+    }
+
+    function isPng(bytes) {
+      return bytes[0] === 0x89 && readAscii(bytes, 1, 3) === 'PNG' && bytes[4] === 0x0d && bytes[5] === 0x0a;
+    }
+
+    function readUint32(bytes, offset) {
+      return ((bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0;
+    }
+
+    function readUint32LE(bytes, offset) {
+      return (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0;
+    }
+
+    function writeUint32LE(bytes, offset, value) {
+      bytes[offset] = value & 0xff;
+      bytes[offset + 1] = (value >>> 8) & 0xff;
+      bytes[offset + 2] = (value >>> 16) & 0xff;
+      bytes[offset + 3] = (value >>> 24) & 0xff;
+    }
+
+    function writeUint32BE(bytes, offset, value) {
+      bytes[offset] = (value >>> 24) & 0xff;
+      bytes[offset + 1] = (value >>> 16) & 0xff;
+      bytes[offset + 2] = (value >>> 8) & 0xff;
+      bytes[offset + 3] = value & 0xff;
+    }
+
+    function writeUint16LE(bytes, offset, value) {
+      bytes[offset] = value & 0xff;
+      bytes[offset + 1] = (value >>> 8) & 0xff;
+    }
+
+    function read16(bytes, offset, little) {
+      if (offset + 2 > bytes.length) return 0;
+      return little ? bytes[offset] | (bytes[offset + 1] << 8) : (bytes[offset] << 8) | bytes[offset + 1];
+    }
+
+    function read32(bytes, offset, little) {
+      if (offset + 4 > bytes.length) return 0;
+      return little ? readUint32LE(bytes, offset) : readUint32(bytes, offset);
+    }
+
+    function parsePngTime(payload) {
+      if (payload.length < 7) return 'Timestamp present';
+      const year = (payload[0] << 8) | payload[1];
+      return `${year}-${String(payload[2]).padStart(2, '0')}-${String(payload[3]).padStart(2, '0')} ${String(payload[4]).padStart(2, '0')}:${String(payload[5]).padStart(2, '0')}:${String(payload[6]).padStart(2, '0')} UTC`;
+    }
+
+    function parsePhys(payload) {
+      if (payload.length < 9) return 'Pixel density present';
+      const x = readUint32(payload, 0);
+      const y = readUint32(payload, 4);
+      const unit = payload[8] === 1 ? 'pixels per meter' : 'unitless';
+      return `${x} x ${y} ${unit}`;
+    }
+
+    function concatBytes(chunks) {
+      const total = chunks.reduce((sum, chunk) => sum + chunk.length, 0);
+      const out = new Uint8Array(total);
+      let offset = 0;
+      chunks.forEach(chunk => {
+        out.set(chunk, offset);
+        offset += chunk.length;
+      });
+      return out;
+    }
+
+    function getImageDimensions(url) {
+      return loadImage(url).then(image => ({
+        width: image.naturalWidth,
+        height: image.naturalHeight
+      }));
+    }
+
+    function loadImage(url) {
+      return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error('Image preview failed'));
+        image.src = url;
+      });
+    }
+
+    function makeCrcTable() {
+      const table = new Uint32Array(256);
+      for (let i = 0; i < 256; i += 1) {
+        let c = i;
+        for (let k = 0; k < 8; k += 1) {
+          c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        }
+        table[i] = c >>> 0;
+      }
+      return table;
+    }
+
+    function crc32(bytes) {
+      let crc = 0xffffffff;
+      for (let i = 0; i < bytes.length; i += 1) {
+        crc = crcTable[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+      }
+      return (crc ^ 0xffffffff) >>> 0;
+    }
+
+    function createZip(files) {
+      const localChunks = [];
+      const centralChunks = [];
+      let offset = 0;
+      const now = new Date();
+      const dosTime = (now.getHours() << 11) | (now.getMinutes() << 5) | Math.floor(now.getSeconds() / 2);
+      const dosDate = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+
+      files.forEach(file => {
+        const nameBytes = textEncoder.encode(file.name);
+        const data = file.bytes;
+        const crc = crc32(data);
+        const local = new Uint8Array(30 + nameBytes.length);
+        writeUint32LE(local, 0, 0x04034b50);
+        writeUint16LE(local, 4, 20);
+        writeUint16LE(local, 6, 0x0800);
+        writeUint16LE(local, 8, 0);
+        writeUint16LE(local, 10, dosTime);
+        writeUint16LE(local, 12, dosDate);
+        writeUint32LE(local, 14, crc);
+        writeUint32LE(local, 18, data.length);
+        writeUint32LE(local, 22, data.length);
+        writeUint16LE(local, 26, nameBytes.length);
+        writeUint16LE(local, 28, 0);
+        local.set(nameBytes, 30);
+        localChunks.push(local, data);
+
+        const central = new Uint8Array(46 + nameBytes.length);
+        writeUint32LE(central, 0, 0x02014b50);
+        writeUint16LE(central, 4, 20);
+        writeUint16LE(central, 6, 20);
+        writeUint16LE(central, 8, 0x0800);
+        writeUint16LE(central, 10, 0);
+        writeUint16LE(central, 12, dosTime);
+        writeUint16LE(central, 14, dosDate);
+        writeUint32LE(central, 16, crc);
+        writeUint32LE(central, 20, data.length);
+        writeUint32LE(central, 24, data.length);
+        writeUint16LE(central, 28, nameBytes.length);
+        writeUint16LE(central, 30, 0);
+        writeUint16LE(central, 32, 0);
+        writeUint16LE(central, 34, 0);
+        writeUint16LE(central, 36, 0);
+        writeUint32LE(central, 38, 0);
+        writeUint32LE(central, 42, offset);
+        central.set(nameBytes, 46);
+        centralChunks.push(central);
+        offset += local.length + data.length;
+      });
+
+      const centralOffset = offset;
+      const centralSize = centralChunks.reduce((sum, chunk) => sum + chunk.length, 0);
+      const end = new Uint8Array(22);
+      writeUint32LE(end, 0, 0x06054b50);
+      writeUint16LE(end, 8, files.length);
+      writeUint16LE(end, 10, files.length);
+      writeUint32LE(end, 12, centralSize);
+      writeUint32LE(end, 16, centralOffset);
+      return concatBytes([...localChunks, ...centralChunks, end]);
+    }
+
+    function makeDemoPng() {
+      const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=';
+      const binary = atob(pngBase64);
+      const base = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) base[i] = binary.charCodeAt(i);
+      const iendOffset = findPngChunk(base, 'IEND');
+      const chunks = [
+        makePngTextChunk('Software', 'Portfolio Metadata Cleaner Demo'),
+        makePngTextChunk('Author', 'Matt Livingston demo metadata'),
+        makePngTextChunk('Creation Time', '2026:07:14 09:15:00')
+      ];
+      const demoBytes = concatBytes([base.slice(0, iendOffset), ...chunks, base.slice(iendOffset)]);
+      return new File([demoBytes], 'demo-screenshot-with-metadata.png', { type: 'image/png' });
+    }
+
+    function findPngChunk(bytes, chunkType) {
+      let i = 8;
+      while (i + 12 <= bytes.length) {
+        const length = readUint32(bytes, i);
+        const type = readAscii(bytes, i + 4, 4);
+        if (type === chunkType) return i;
+        i += 12 + length;
+      }
+      return bytes.length;
+    }
+
+    function makePngTextChunk(keyword, value) {
+      const type = textEncoder.encode('tEXt');
+      const data = textEncoder.encode(`${keyword}\0${value}`);
+      const chunk = new Uint8Array(12 + data.length);
+      const crcInput = concatBytes([type, data]);
+      writeUint32BE(chunk, 0, data.length);
+      chunk.set(type, 4);
+      chunk.set(data, 8);
+      writeUint32BE(chunk, 8 + data.length, crc32(crcInput));
+      return chunk;
+    }
+
+    els.fileInput.addEventListener('change', event => addFiles(event.target.files));
+    els.dropZone.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        els.fileInput.click();
+      }
+    });
+    els.dropZone.addEventListener('dragover', event => {
+      event.preventDefault();
+      els.dropZone.classList.add('dragover');
+    });
+    els.dropZone.addEventListener('dragleave', () => els.dropZone.classList.remove('dragover'));
+    els.dropZone.addEventListener('drop', event => {
+      event.preventDefault();
+      els.dropZone.classList.remove('dragover');
+      addFiles(event.dataTransfer.files);
+    });
+    els.cleanAllBtn.addEventListener('click', cleanAll);
+    els.downloadAllBtn.addEventListener('click', downloadAllZip);
+    els.clearBtn.addEventListener('click', clearList);
+    els.demoBtn.addEventListener('click', () => addFiles([makeDemoPng()]));
+    els.fileList.addEventListener('click', event => {
+      const button = event.target.closest('button[data-action]');
+      if (!button) return;
+      const id = button.dataset.id;
+      if (button.dataset.action === 'inspect') selectItem(id);
+      if (button.dataset.action === 'download') downloadItem(id);
+      if (button.dataset.action === 'remove') removeItem(id);
+    });
+    els.stripColorProfiles.addEventListener('change', () => {
+      state.files.forEach(item => {
+        item.cleanedBytes = null;
+        item.cleanedAt = null;
+      });
+      render();
+    });
+  </script>
+</body>
+</html>

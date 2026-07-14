@@ -151,6 +151,12 @@ a:hover {
   box-shadow: 0 0 20px var(--accent-glow);
 }
 
+.button:focus-visible,
+.filter-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .button:active {
   transform: translateY(0);
 }
@@ -264,7 +270,7 @@ a:hover {
 .tool-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 8px;
   padding: var(--space-md);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   display: flex;
@@ -282,6 +288,11 @@ a:hover {
 .tool-card h3 {
   margin-bottom: var(--space-xs);
   color: var(--text);
+  padding-right: 0;
+}
+
+.tool-card.featured h3,
+.tool-card .privacy-badge + h3 {
   padding-right: 5rem;
 }
 
