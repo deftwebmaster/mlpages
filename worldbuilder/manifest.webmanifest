@@ -1,0 +1,10 @@
+{
+  "name": "Sci-Fi Worldbuilder",
+  "short_name": "Sci-Fi WB",
+  "description": "A deterministic client-side science-fiction worldbuilding suite.",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0b0d0f",
+  "theme_color": "#101316",
+  "icons": []
+}
