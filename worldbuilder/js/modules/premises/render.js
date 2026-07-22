@@ -1,4 +1,5 @@
 import { esc, formatNumber, titleCase } from "../../shared/dom.js";
+import { renderMetricBars } from "../../shared/metrics.js";
 import { PREMISE_GENRES, PREMISE_TONES, STORY_SCALES, STORY_STATUSES, CANON_STATUSES, NARRATIVE_MODES, storyPremiseMarkdown } from "./generate.js";
 
 const PREMISE_TABS = ["Overview", "Logline", "Extended", "Source", "Protagonist", "Opposition", "Stakes", "Choice", "Escalation", "Relationships", "Evaluation", "Continuity", "Additions", "Export"];
@@ -334,9 +335,9 @@ function renderRelationships(premise) {
 
 function renderEvaluation(premise) {
   const scores = premise.evaluation?.scores || {};
-  return `<section class="panel"><h2>Premise Evaluation</h2><div class="metric-grid">
-    ${Object.entries(scores).map(([key, value]) => metric(titleCase(key), `${value}/100`)).join("")}
-  </div></section>
+  return `<section class="panel"><h2>Premise Evaluation</h2>
+    ${renderMetricBars(scores, { columns: 2 })}
+  </section>
   <section class="panel"><h2>Warnings</h2><div class="entry-list">${(premise.evaluation?.warnings || []).map(item => `<article class="data-card warning-card"><p>${esc(item)}</p></article>`).join("") || `<div class="empty-state">No evaluation warnings.</div>`}</div></section>
   <section class="panel"><h2>Novelty</h2><div class="entry-grid">
     ${card("Classification", titleCase(premise.novelty?.classification || "distinct-enough"))}

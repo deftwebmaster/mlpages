@@ -1,4 +1,6 @@
 import { esc, formatNumber, titleCase } from "../../shared/dom.js";
+import { renderMetricBars } from "../../shared/metrics.js";
+import { fitText } from "../../shared/svg.js";
 import { overviewText, settlementMarkdown } from "./generate.js";
 
 const SETTLEMENT_TABS = ["Overview", "Map", "Districts", "Population", "Government", "Economy", "Infrastructure", "Culture", "Transit", "Housing", "Security", "Environment", "History", "Tensions", "Story Hooks", "Network"];
@@ -173,29 +175,34 @@ export function renderSettlementTab(settlement, tab) {
 export function settlementMapSvg(settlement) {
   const districts = settlement.districts;
   const accent = esc(settlement.presentation.accentColor);
+  const ring = settlement.presentation.mapStyle === "ring-habitat";
   const nodes = districts.map((district, index) => {
-    const ring = settlement.presentation.mapStyle === "ring-habitat";
     const angle = (Math.PI * 2 * index) / Math.max(1, districts.length);
-    const radius = ring ? 112 : 55 + (index % 3) * 38;
+    const radius = ring ? 118 : 55 + (index % 3) * 38;
+    const w = ring ? 108 : 138;
+    const h = ring ? 42 : 54;
     return {
       district,
-      x: ring ? 350 + Math.cos(angle) * radius : 110 + (index % 4) * 145 + (index % 2) * 18,
-      y: ring ? 180 + Math.sin(angle) * radius : 75 + Math.floor(index / 4) * 88,
-      w: ring ? 52 : 112,
-      h: ring ? 32 : 54
+      // Ring nodes are centred on their point; grid nodes anchor top-left.
+      x: ring ? 350 + Math.cos(angle) * radius - w / 2 : 40 + (index % 4) * 160,
+      y: ring ? 180 + Math.sin(angle) * radius - h / 2 : 70 + Math.floor(index / 4) * 88,
+      w,
+      h
     };
   });
-  return `<svg class="system-map settlement-map" viewBox="0 0 700 360" role="img" aria-label="District map of ${esc(settlement.name)}">
+  const pad = 8;
+  const labelWidth = node => node.w - pad * 2;
+  return `<svg class="system-map settlement-map" viewBox="0 0 700 360" role="img" aria-label="District map of ${esc(settlement.name)}. ${esc(districts.map(district => district.name).join(", "))}">
     <rect x="18" y="18" width="664" height="324" fill="rgba(255,255,255,.018)" stroke="rgba(255,255,255,.14)"/>
-    ${settlement.presentation.mapStyle === "ring-habitat" ? `<circle cx="350" cy="180" r="132" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="18"/><circle cx="350" cy="180" r="36" fill="${accent}" opacity=".7"/>` : ""}
+    ${ring ? `<circle cx="350" cy="180" r="132" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="18"/><circle cx="350" cy="180" r="36" fill="${accent}" opacity=".7"/>` : ""}
     ${nodes.slice(1).map(node => `<line x1="${nodes[0].x + nodes[0].w / 2}" y1="${nodes[0].y + nodes[0].h / 2}" x2="${node.x + node.w / 2}" y2="${node.y + node.h / 2}" stroke="rgba(255,255,255,.14)"/>`).join("")}
     ${nodes.map((node, index) => `<g class="district-node" tabindex="0">
       <rect x="${node.x}" y="${node.y}" width="${node.w}" height="${node.h}" fill="${index === 0 ? accent : "rgba(255,255,255,.07)"}" stroke="${accent}" opacity="${index === 0 ? ".85" : "1"}"/>
-      <text x="${node.x + 8}" y="${node.y + 20}" fill="#f2eee6" font-size="11">${esc(node.district.name.slice(0, 16))}</text>
-      <text x="${node.x + 8}" y="${node.y + 38}" fill="#a7adb0" font-size="9">${esc(node.district.districtType.slice(0, 18))}</text>
+      <text x="${node.x + pad}" y="${node.y + 20}" fill="#f2eee6" font-size="11">${esc(fitText(node.district.name, labelWidth(node), 11))}</text>
+      <text x="${node.x + pad}" y="${node.y + 36}" fill="#a7adb0" font-size="9">${esc(fitText(node.district.districtType.replace(/-/g, " "), labelWidth(node), 9))}</text>
       <title>${esc(node.district.name)}: ${esc(node.district.localProblem)}</title>
     </g>`).join("")}
-    ${settlement.environment.hazards.slice(0, 3).map((hazard, index) => `<circle cx="${610 - index * 36}" cy="${55 + index * 38}" r="13" fill="#d86a5d" opacity=".55"><title>${esc(hazard.name)}</title></circle>`).join("")}
+    ${settlement.environment.hazards.slice(0, 3).map((hazard, index) => `<circle cx="${648 - index * 34}" cy="${44 + index * 34}" r="11" fill="#d86a5d" opacity=".55"><title>${esc(hazard.name)}</title></circle>`).join("")}
   </svg>`;
 }
 
@@ -206,15 +213,27 @@ function renderOverview(settlement) {
         <p class="eyebrow">Settlement synopsis</p>
         <h2>${esc(settlement.classification.developmentLevel.replace(/-/g, " "))}</h2>
         <p class="lede">${esc(overviewText(settlement))}</p>
-        <div class="metric-grid">${Object.entries(settlement.metrics).map(([label, value]) => `
-          <article class="data-card"><span class="meta-label">${esc(titleCase(label.replace(/([A-Z])/g, " $1")))}</span><strong>${value}/100</strong></article>
-        `).join("")}</div>
+        ${renderMetricBars(settlement.metrics)}
       </section>
       <aside class="panel">
-        <h2>Civic Map</h2>
-        ${settlementMapSvg(settlement)}
+        <h2>At a Glance</h2>
+        <dl class="fact-list">
+          <div><dt>Settlement type</dt><dd>${esc(titleCase(settlement.classification.settlementType.replace(/-/g, " ")))}</dd></div>
+          <div><dt>Population</dt><dd>${formatNumber(settlement.population.permanent)}</dd></div>
+          <div><dt>Government</dt><dd>${esc(titleCase(settlement.government.structure.replace(/-/g, " ")))}</dd></div>
+          <div><dt>Legal status</dt><dd>${esc(titleCase(settlement.classification.legalStatus.replace(/-/g, " ")))}</dd></div>
+          <div><dt>Founded</dt><dd>${esc(String(settlement.founding.year))}</dd></div>
+          <div><dt>Districts</dt><dd>${settlement.districts.length}</dd></div>
+        </dl>
       </aside>
     </div>
+    <section class="panel map-panel">
+      <div class="panel-head">
+        <h2>Civic Map</h2>
+        <p class="meta-label">${settlement.districts.length} districts &middot; ${esc(settlement.presentation.mapStyle.replace(/-/g, " "))}</p>
+      </div>
+      ${settlementMapSvg(settlement)}
+    </section>
   `;
 }
 

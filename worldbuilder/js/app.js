@@ -8,28 +8,8 @@ import {
   makeSeed as makeSharedSeed,
   slug as sharedSlug
 } from "./shared/random.js";
-import { generateStarSystem } from "./modules/systems/generate.js";
-import { renderSystemsHome, renderSystemDossier, systemMarkdown } from "./modules/systems/render.js";
-import { generateSettlement } from "./modules/settlements/generate.js";
-import { renderSettlementsHome, renderSettlementDossier, settlementMarkdown, settlementMapSvg } from "./modules/settlements/render.js";
-import { generateCharacter } from "./modules/characters/generate.js";
-import { renderCharactersHome, renderCharacterDossier, characterMarkdown } from "./modules/characters/render.js";
-import { generateConflict } from "./modules/conflicts/generate.js";
-import { renderConflictsHome, renderConflictDossier, conflictMarkdown } from "./modules/conflicts/render.js";
-import { generateDocument, validateDocument } from "./modules/documents/generate.js";
-import { renderDocumentsHome, renderDocumentDossier, documentMarkdown, documentPlainText, documentPrintableHtml } from "./modules/documents/render.js";
-import { generateTimeline, extractTimelineEvents, validateTimeline } from "./modules/timeline/generate.js";
-import { renderTimelineHome, renderTimelineDossier, renderEventDetail, timelineMarkdown } from "./modules/timeline/render.js";
-import { generateFaction, validateFaction } from "./modules/factions/generate.js";
-import { renderFactionsHome, renderFactionDossier, factionMarkdown } from "./modules/factions/render.js";
-import { buildRelationshipGraph, findRelationshipPath, validateRelationshipData, relationshipMarkdown } from "./modules/relationships/generate.js";
-import { renderRelationshipsHome, renderRelationshipExplorer, renderRelationshipDetail } from "./modules/relationships/render.js";
-import { generateStoryPremise, collectNarrativePressureSignals, validateStoryPremise, evaluateStoryPremise, analyzePremiseCoverage, storyPremiseMarkdown, storySeedPackage } from "./modules/premises/generate.js";
-import { renderPremisesHome, renderPremiseDossier } from "./modules/premises/render.js";
-import { buildAtlas, buildAtlasArticle, buildWorldBible, createUniverseProfile, buildAtlasIndex, searchAtlas, atlasContinuityAudit, atlasCoverageAudit, atlasMarkdown, atlasArticleMarkdown, worldBibleMarkdown } from "./modules/atlas/generate.js";
-import { renderAtlasHome, renderAtlasExplore, renderAtlasIndex, renderAtlasCategory, renderAtlasArticle, renderAtlasMaps, renderAtlasTimeline, renderAtlasCollections, renderAtlasGlossary, renderWorldBible, atlasHtml, articleHtml, worldBibleHtml } from "./modules/atlas/render.js";
-import { generateTechnology, generateInfrastructure, generateTechnicalStandard, generateResearchProgram, generateTechnicalFacility, validateTechnologyEntity, analyzeTechnologyDependencies, traceFailureCascade, analyzeTechnologyCoverage, suggestTechnologies, generateTechnologyEcosystem, technologyMarkdown, technologyPrintableHtml, technologyCsv } from "./modules/technology/generate.js";
-import { renderTechnologyHome, renderTechnologyDossier, renderTechnologyComparison, registryHtml } from "./modules/technology/render.js";
+import { renderMetricBars } from "./shared/metrics.js";
+import { M, loadModule, loadAllModules, isModuleLoaded } from "./modules/registry.js";
 
 const STORAGE_KEY = "icr.registry.v1";
 const SCHEMA_VERSION = 1;
@@ -97,6 +77,29 @@ const FIRST_NAMES = "Ada Arden Mina Cassian Juno Selene Omar Nia Talia Soren Val
 const LAST_NAMES = "Voss Bellamy Chen Okoye Idris Kwan Sato Moreau Rios Kepler Serrano Armitage Banerjee El-Masri Dumas Havel Renaud Singh Mbeki Orlov Yarrow Vale Noakes Toma Farrow Quade Lorca Ames Ware".split(" ");
 const ROLES = ["Chief Executive", "Director General", "Chief Operations Officer", "Chief Scientist", "Chief Security Officer", "Fleet Marshal", "Archivist", "Founder", "Regional Director", "Ethics Officer", "Former Executive", "Whistleblower", "Union Representative", "Chief Legal Officer"];
 const TABS = ["Overview", "History", "Operations", "Culture", "Personnel", "Equipment", "Incidents", "Locations", "Documents", "Network"];
+
+/**
+ * Single source of truth for module identity: drives the header nav, the
+ * command palette, the `go-*` actions, and route-to-module highlighting.
+ * `collection` names the universe array the palette searches for saved entries.
+ */
+const MODULES = [
+  { id: "home", label: "Home", route: "#/home", blurb: "Suite overview and local archive" },
+  { id: "systems", label: "Systems", route: "#/systems", blurb: "Stellar Cartography Archive", collection: "systems" },
+  { id: "settlements", label: "Settlements", route: "#/settlements", blurb: "Colonial Settlement Archive", collection: "settlements" },
+  { id: "organizations", label: "Organizations", route: "#/organizations", blurb: "Interstellar Corporate Registry", collection: "organizations" },
+  { id: "characters", label: "Characters", route: "#/characters", blurb: "Character Dossier Archive", collection: "characters" },
+  { id: "conflicts", label: "Conflicts", route: "#/conflicts", blurb: "Conflict and Crisis Generator", collection: "conflicts" },
+  { id: "documents", label: "Documents", route: "#/documents", blurb: "Document Forge", collection: "documents" },
+  { id: "timeline", label: "Timeline", route: "#/timeline", blurb: "Historical Timeline Engine", collection: "timelines" },
+  { id: "factions", label: "Factions", route: "#/factions", blurb: "Faction Generator", collection: "factions" },
+  { id: "relationships", label: "Relationships", route: "#/relationships", blurb: "Relationship Explorer" },
+  { id: "premises", label: "Premises", route: "#/premises", blurb: "Story Premise Engine", collection: "storyPremises" },
+  { id: "atlas", label: "Atlas", route: "#/atlas", blurb: "Universe Atlas & Encyclopedia" },
+  { id: "technology", label: "Technology", route: "#/technology", blurb: "Technology & Infrastructure Registry", collection: "technologies" }
+];
+
+const MODULE_ROUTES = Object.fromEntries(MODULES.map(module => [module.id, module.route]));
 
 const state = {
   current: null,
@@ -198,8 +201,75 @@ function loadStore() {
   return { schemaVersion: SCHEMA_VERSION, organizations: [] };
 }
 
+/**
+ * Every persistence path funnels through here, so this is where a full archive
+ * gets reported. Returns false when the write failed and the caller's change
+ * exists only in memory.
+ */
 function saveStore() {
-  SuiteStorage.saveSuite(state.suite);
+  try {
+    SuiteStorage.saveSuite(state.suite);
+    updateStorageMeter();
+    return true;
+  } catch (error) {
+    if (error instanceof SuiteStorage.StorageQuotaError) {
+      toast(`${error.message} Your work is still on screen — export it now.`, "danger", 12000);
+    } else {
+      toast(`Could not write to local storage: ${error.message}`, "danger", 12000);
+    }
+    updateStorageMeter();
+    return false;
+  }
+}
+
+/** Full-suite escape hatch: everything in localStorage, restorable from Settings. */
+function exportUniverseBackup() {
+  const name = state.universe?.name || "universe";
+  Exporters.download(
+    `${sharedSlug(name)}-backup-${new Date().toISOString().slice(0, 10)}.json`,
+    "application/json",
+    JSON.stringify(state.suite, null, 2)
+  );
+  toast("Archive backup downloaded.", "good");
+}
+
+const toastRegion = document.querySelector("#toastRegion");
+
+function toast(message, variant = "info", duration = 4000) {
+  if (!toastRegion) return;
+  const node = document.createElement("output");
+  node.className = `toast toast-${variant}`;
+  node.textContent = message;
+  toastRegion.append(node);
+  const remove = () => node.remove();
+  node.addEventListener("click", remove);
+  setTimeout(remove, duration);
+}
+
+const storagePill = document.querySelector("#storagePill");
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function updateStorageMeter() {
+  if (!storagePill) return;
+  const { bytes, budget, ratio, available } = SuiteStorage.estimateStorage();
+  if (!available) {
+    storagePill.hidden = true;
+    return;
+  }
+  const level = ratio >= 0.9 ? "danger" : ratio >= 0.7 ? "warn" : "ok";
+  storagePill.dataset.level = level;
+  storagePill.style.setProperty("--fill", `${Math.round(ratio * 100)}%`);
+  storagePill.querySelector(".storage-label").textContent =
+    `${formatBytes(bytes)} / ${formatBytes(budget)}`;
+  storagePill.title = level === "ok"
+    ? "Local archive usage. Click to export a full backup."
+    : "Local archive is filling up. Click to export a full backup before you lose room to save.";
+  storagePill.setAttribute("aria-label", `Local archive ${Math.round(ratio * 100)} percent full. Export a backup.`);
 }
 
 function loadSettings() {
@@ -784,7 +854,7 @@ function renderSuiteHome() {
           <article class="data-card"><span class="meta-label">Factions</span><strong>${state.universe.factions.length}</strong></article>
           <article class="data-card"><span class="meta-label">Relationships</span><strong>${state.universe.relationships.length}</strong></article>
           <article class="data-card"><span class="meta-label">Story Premises</span><strong>${state.universe.storyPremises.length}</strong></article>
-          <article class="data-card"><span class="meta-label">Atlas Entries</span><strong>${buildAtlasIndex(state.universe).items.length}</strong></article>
+          <article class="data-card"><span class="meta-label">Atlas Entries</span><strong>${M.buildAtlasIndex(state.universe).items.length}</strong></article>
           <article class="data-card"><span class="meta-label">Technologies</span><strong>${state.universe.technologies.length + state.universe.infrastructureSystems.length + state.universe.technicalStandards.length + state.universe.researchPrograms.length + state.universe.technicalFacilities.length}</strong></article>
           <article class="data-card"><span class="meta-label">Schema</span><strong>v${state.universe.schemaVersion}</strong></article>
         </div>
@@ -1185,15 +1255,7 @@ function renderLibraryNotes(org) {
   </div>`;
 }
 
-function renderBars(stats) {
-  return `<div class="stat-bars">${Object.entries(stats).map(([label, value]) => `
-    <div class="bar-row">
-      <span>${esc(label)}</span>
-      <span class="bar-track"><span class="bar-fill" style="width:${value}%"></span></span>
-      <span>${value}</span>
-    </div>
-  `).join("")}</div>`;
-}
+const renderBars = renderMetricBars;
 
 function renderHistory(org) {
   return `<section class="panel"><h2>Chronological File</h2><div class="timeline">${org.history.map(item => `
@@ -1475,7 +1537,7 @@ function renderSystemsIndex() {
   state.currentDocument = null;
   state.activeSystemTab = "Overview";
   setAccent("#d6b45e", "#76d5d7");
-  app.innerHTML = renderSystemsHome(state.universe.systems);
+  app.innerHTML = M.renderSystemsHome(state.universe.systems);
 }
 
 function openSystem(seed, push = true, constraints = {}) {
@@ -1486,7 +1548,7 @@ function openSystem(seed, push = true, constraints = {}) {
   state.currentConflict = null;
   state.currentDocument = null;
   const saved = getSavedSystem(seed);
-  state.currentSystem = saved?.system || saved?.entity || generateStarSystem(seed || makeSharedSeed("system"), constraints);
+  state.currentSystem = saved?.system || saved?.entity || M.generateStarSystem(seed || makeSharedSeed("system"), constraints);
   state.activeSystemTab = "Overview";
   setAccent(state.currentSystem.presentation.accentColor, "#76d5d7");
   if (push) navigateTo(`#/systems/${encodeURIComponent(state.currentSystem.seed)}`);
@@ -1496,7 +1558,7 @@ function openSystem(seed, push = true, constraints = {}) {
 function renderSystem() {
   if (!state.currentSystem) return renderSystemsIndex();
   const saved = getSavedSystem(state.currentSystem.seed);
-  app.innerHTML = renderSystemDossier(state.currentSystem, state.activeSystemTab, Boolean(saved), Boolean(saved?.favorite));
+  app.innerHTML = M.renderSystemDossier(state.currentSystem, state.activeSystemTab, Boolean(saved), Boolean(saved?.favorite));
 }
 
 function saveCurrentSystem() {
@@ -1548,7 +1610,7 @@ function exportSystemJson() {
 }
 
 function exportSystemMarkdown() {
-  download(`${sharedSlug(state.currentSystem.name)}.md`, "text/markdown", systemMarkdown(state.currentSystem));
+  download(`${sharedSlug(state.currentSystem.name)}.md`, "text/markdown", M.systemMarkdown(state.currentSystem));
 }
 
 function settlementConstraintsFromForm() {
@@ -1577,7 +1639,7 @@ function renderSettlementsIndex() {
   state.currentDocument = null;
   state.activeSettlementTab = "Overview";
   setAccent("#c99e63", "#76d5d7");
-  app.innerHTML = renderSettlementsHome(state.universe.settlements, availableSettlementSummaries());
+  app.innerHTML = M.renderSettlementsHome(state.universe.settlements, availableSettlementSummaries());
 }
 
 function openSettlement(seed, push = true, constraints = {}) {
@@ -1588,7 +1650,7 @@ function openSettlement(seed, push = true, constraints = {}) {
   state.currentConflict = null;
   state.currentDocument = null;
   const saved = getSavedSettlement(seed);
-  state.currentSettlement = saved?.settlement || saved?.entity || generateSettlement(seed || makeSharedSeed("settlement"), constraints);
+  state.currentSettlement = saved?.settlement || saved?.entity || M.generateSettlement(seed || makeSharedSeed("settlement"), constraints);
   state.activeSettlementTab = "Overview";
   setAccent(state.currentSettlement.presentation.accentColor, "#76d5d7");
   if (push) navigateTo(`#/settlements/${encodeURIComponent(state.currentSettlement.seed)}`);
@@ -1598,7 +1660,7 @@ function openSettlement(seed, push = true, constraints = {}) {
 function renderSettlement() {
   if (!state.currentSettlement) return renderSettlementsIndex();
   const saved = getSavedSettlement(state.currentSettlement.seed);
-  app.innerHTML = renderSettlementDossier(state.currentSettlement, state.activeSettlementTab, Boolean(saved), Boolean(saved?.favorite), state.universe.systems);
+  app.innerHTML = M.renderSettlementDossier(state.currentSettlement, state.activeSettlementTab, Boolean(saved), Boolean(saved?.favorite), state.universe.systems);
 }
 
 function saveCurrentSettlement() {
@@ -1648,7 +1710,7 @@ function expandSystemSettlement(systemSeed, summaryId) {
     return openSettlement(existing.seed);
   }
   const body = system.orbitalBodies.find(item => item.id === summary.bodyId || item.name === summary.location);
-  const settlement = generateSettlement(summary.seed, {
+  const settlement = M.generateSettlement(summary.seed, {
     summary,
     context: {
       system,
@@ -1762,11 +1824,11 @@ function exportSettlementJson() {
 }
 
 function exportSettlementMarkdown() {
-  download(`${sharedSlug(state.currentSettlement.name)}.md`, "text/markdown", settlementMarkdown(state.currentSettlement));
+  download(`${sharedSlug(state.currentSettlement.name)}.md`, "text/markdown", M.settlementMarkdown(state.currentSettlement));
 }
 
 function exportSettlementMapSvg() {
-  download(`${sharedSlug(state.currentSettlement.name)}-map.svg`, "image/svg+xml", settlementMapSvg(state.currentSettlement));
+  download(`${sharedSlug(state.currentSettlement.name)}-map.svg`, "image/svg+xml", M.settlementMapSvg(state.currentSettlement));
 }
 
 function characterConstraintsFromForm() {
@@ -1796,7 +1858,7 @@ function renderCharactersIndex() {
   state.currentConflict = null;
   state.activeCharacterTab = "Overview";
   setAccent("#f0a1b2", "#76d5d7");
-  app.innerHTML = renderCharactersHome(state.universe.characters, availableCharacterSummaries(), state.universe.settlements, state.universe.organizations);
+  app.innerHTML = M.renderCharactersHome(state.universe.characters, availableCharacterSummaries(), state.universe.settlements, state.universe.organizations);
 }
 
 function openCharacter(seed, push = true, constraints = {}) {
@@ -1807,7 +1869,7 @@ function openCharacter(seed, push = true, constraints = {}) {
   state.currentConflict = null;
   state.currentDocument = null;
   const saved = getSavedCharacter(seed);
-  state.currentCharacter = saved?.character || saved?.entity || generateCharacter(seed || makeSharedSeed("character"), constraints);
+  state.currentCharacter = saved?.character || saved?.entity || M.generateCharacter(seed || makeSharedSeed("character"), constraints);
   state.activeCharacterTab = "Overview";
   setAccent(state.currentCharacter.presentation.accentColor, "#76d5d7");
   if (push) navigateTo(`#/characters/${encodeURIComponent(state.currentCharacter.seed)}`);
@@ -1817,7 +1879,7 @@ function openCharacter(seed, push = true, constraints = {}) {
 function renderCharacter() {
   if (!state.currentCharacter) return renderCharactersIndex();
   const saved = getSavedCharacter(state.currentCharacter.seed);
-  app.innerHTML = renderCharacterDossier(state.currentCharacter, state.activeCharacterTab, Boolean(saved), Boolean(saved?.favorite));
+  app.innerHTML = M.renderCharacterDossier(state.currentCharacter, state.activeCharacterTab, Boolean(saved), Boolean(saved?.favorite));
 }
 
 function saveCurrentCharacter() {
@@ -1873,7 +1935,7 @@ function expandPersonCharacter(orgSeed, personId) {
     saveStore();
     return openCharacter(existing.seed);
   }
-  const character = generateCharacter(person.seed, {
+  const character = M.generateCharacter(person.seed, {
     summary: person,
     context: {
       organization,
@@ -1898,7 +1960,7 @@ function exportCharacterJson() {
 }
 
 function exportCharacterMarkdown() {
-  download(`${sharedSlug(state.currentCharacter.name.full)}.md`, "text/markdown", characterMarkdown(state.currentCharacter));
+  download(`${sharedSlug(state.currentCharacter.name.full)}.md`, "text/markdown", M.characterMarkdown(state.currentCharacter));
 }
 
 function renderConflictsIndex() {
@@ -1911,7 +1973,7 @@ function renderConflictsIndex() {
   state.currentDocument = null;
   state.activeConflictTab = "Overview";
   setAccent("#d86a5d", "#d8b45c");
-  app.innerHTML = renderConflictsHome(
+  app.innerHTML = M.renderConflictsHome(
     state.universe.conflicts,
     availablePressurePoints(),
     state.universe.settlements,
@@ -1928,7 +1990,7 @@ function openConflict(seed, push = true, constraints = {}) {
   state.currentSettlement = null;
   state.currentCharacter = null;
   const saved = getSavedConflict(seed);
-  state.currentConflict = saved?.conflict || saved?.entity || generateConflict(seed || makeSharedSeed("conflict"), constraints);
+  state.currentConflict = saved?.conflict || saved?.entity || M.generateConflict(seed || makeSharedSeed("conflict"), constraints);
   state.activeConflictTab = "Overview";
   setAccent(state.currentConflict.presentation.accentColor, "#d8b45c");
   if (push) navigateTo(`#/conflicts/${encodeURIComponent(state.currentConflict.seed)}`);
@@ -1938,7 +2000,7 @@ function openConflict(seed, push = true, constraints = {}) {
 function renderConflict() {
   if (!state.currentConflict) return renderConflictsIndex();
   const saved = getSavedConflict(state.currentConflict.seed);
-  app.innerHTML = renderConflictDossier(state.currentConflict, state.activeConflictTab, Boolean(saved), Boolean(saved?.favorite));
+  app.innerHTML = M.renderConflictDossier(state.currentConflict, state.activeConflictTab, Boolean(saved), Boolean(saved?.favorite));
 }
 
 function saveCurrentConflict() {
@@ -2111,7 +2173,7 @@ function expandPressureConflict(sourceType, parentSeed, sourceId) {
     saveStore();
     return openConflict(existing.seed);
   }
-  const conflict = generateConflict(seed, {
+  const conflict = M.generateConflict(seed, {
     context: {
       ...context,
       summary: source,
@@ -2176,7 +2238,7 @@ function exportConflictJson() {
 }
 
 function exportConflictMarkdown() {
-  download(`${sharedSlug(state.currentConflict.name)}.md`, "text/markdown", conflictMarkdown(state.currentConflict));
+  download(`${sharedSlug(state.currentConflict.name)}.md`, "text/markdown", M.conflictMarkdown(state.currentConflict));
 }
 
 function renderDocumentsIndex() {
@@ -2190,7 +2252,7 @@ function renderDocumentsIndex() {
   state.activeDocumentTab = "Preview";
   state.revealDocumentRedactions = false;
   setAccent("#e8edf0", "#d8b45c");
-  app.innerHTML = renderDocumentsHome(state.universe.documents, availableDocumentSuggestions(), {
+  app.innerHTML = M.renderDocumentsHome(state.universe.documents, availableDocumentSuggestions(), {
     systems: state.universe.systems,
     settlements: state.universe.settlements,
     organizations: state.universe.organizations,
@@ -2207,7 +2269,7 @@ function openDocument(seed, push = true, constraints = {}) {
   state.currentCharacter = null;
   state.currentConflict = null;
   const saved = getSavedDocument(seed);
-  state.currentDocument = saved?.document || saved?.entity || generateDocument(seed || makeSharedSeed("document"), constraints);
+  state.currentDocument = saved?.document || saved?.entity || M.generateDocument(seed || makeSharedSeed("document"), constraints);
   state.activeDocumentTab = "Preview";
   state.revealDocumentRedactions = false;
   setAccent("#e8edf0", "#d8b45c");
@@ -2218,7 +2280,7 @@ function openDocument(seed, push = true, constraints = {}) {
 function renderDocument() {
   if (!state.currentDocument) return renderDocumentsIndex();
   const saved = getSavedDocument(state.currentDocument.seed);
-  app.innerHTML = renderDocumentDossier(state.currentDocument, state.activeDocumentTab, Boolean(saved), Boolean(saved?.favorite), state.revealDocumentRedactions);
+  app.innerHTML = M.renderDocumentDossier(state.currentDocument, state.activeDocumentTab, Boolean(saved), Boolean(saved?.favorite), state.revealDocumentRedactions);
 }
 
 function saveCurrentDocument() {
@@ -2425,7 +2487,7 @@ function generateSuggestedDocument(sourceType, parentSeed, sourceId, documentTyp
     return openDocument(existing.seed);
   }
   const source = found.source || { id: sourceId, title: found.parent.name || found.parent.identity?.name || found.parent.id, documentType };
-  const document = generateDocument(seed, {
+  const document = M.generateDocument(seed, {
     documentType: documentType || source.documentType || documentTypeFromSummary(source),
     title: source.title,
     context: {
@@ -2503,19 +2565,19 @@ function exportDocumentJson() {
 }
 
 function exportDocumentMarkdown(redacted = true) {
-  download(`${sharedSlug(state.currentDocument.title)}${redacted ? "" : "-full"}.md`, "text/markdown", documentMarkdown(state.currentDocument, { redacted }));
+  download(`${sharedSlug(state.currentDocument.title)}${redacted ? "" : "-full"}.md`, "text/markdown", M.documentMarkdown(state.currentDocument, { redacted }));
 }
 
 function exportDocumentText() {
-  download(`${sharedSlug(state.currentDocument.title)}.txt`, "text/plain", documentPlainText(state.currentDocument, { redacted: true }));
+  download(`${sharedSlug(state.currentDocument.title)}.txt`, "text/plain", M.documentPlainText(state.currentDocument, { redacted: true }));
 }
 
 function exportDocumentHtml() {
-  download(`${sharedSlug(state.currentDocument.title)}-print.html`, "text/html", documentPrintableHtml(state.currentDocument, { redacted: true }));
+  download(`${sharedSlug(state.currentDocument.title)}-print.html`, "text/html", M.documentPrintableHtml(state.currentDocument, { redacted: true }));
 }
 
 function printCurrentDocument() {
-  const html = documentPrintableHtml(state.currentDocument, { redacted: !state.revealDocumentRedactions });
+  const html = M.documentPrintableHtml(state.currentDocument, { redacted: !state.revealDocumentRedactions });
   const printWindow = window.open("", "_blank");
   if (!printWindow) return exportDocumentHtml();
   printWindow.document.write(html);
@@ -2536,8 +2598,8 @@ function renderTimelineIndex() {
   state.activeTimelineTab = "Overview";
   state.selectedTimelineBranch = "";
   setAccent("#76d5d7", "#d8b45c");
-  const overviewTimeline = generateTimeline(sharedDerivedSeed(state.universe.seed || "local-archive", "timeline-overview"), { universe: state.universe });
-  const extractedEvents = extractTimelineEvents(state.universe);
+  const overviewTimeline = M.generateTimeline(sharedDerivedSeed(state.universe.seed || "local-archive", "timeline-overview"), { universe: state.universe });
+  const extractedEvents = M.extractTimelineEvents(state.universe);
   const overview = extractedEvents.length ? overviewTimeline.health : {
     totalEvents: 0,
     earliestYear: null,
@@ -2549,7 +2611,7 @@ function renderTimelineIndex() {
     gaps: 0,
     alternateBranches: state.universe.timelineBranches.length
   };
-  app.innerHTML = renderTimelineHome(state.universe.timelines, overview, availableTimelineSuggestions());
+  app.innerHTML = M.renderTimelineHome(state.universe.timelines, overview, availableTimelineSuggestions());
 }
 
 function openTimeline(seed, push = true, constraints = {}) {
@@ -2561,7 +2623,7 @@ function openTimeline(seed, push = true, constraints = {}) {
   state.currentConflict = null;
   state.currentDocument = null;
   const saved = getSavedTimeline(seed);
-  state.currentTimeline = saved?.timeline || saved?.entity || generateTimeline(seed || makeSharedSeed("timeline"), { ...constraints, universe: state.universe });
+  state.currentTimeline = saved?.timeline || saved?.entity || M.generateTimeline(seed || makeSharedSeed("timeline"), { ...constraints, universe: state.universe });
   state.activeTimelineTab = "Overview";
   state.selectedTimelineBranch = constraints.branchId || "";
   setAccent(state.currentTimeline.presentation.accentColor, "#d8b45c");
@@ -2575,7 +2637,7 @@ function openTimeline(seed, push = true, constraints = {}) {
 function renderTimeline() {
   if (!state.currentTimeline) return renderTimelineIndex();
   const saved = getSavedTimeline(state.currentTimeline.seed);
-  app.innerHTML = renderTimelineDossier(state.currentTimeline, state.activeTimelineTab, Boolean(saved), Boolean(saved?.favorite), state.selectedTimelineBranch);
+  app.innerHTML = M.renderTimelineDossier(state.currentTimeline, state.activeTimelineTab, Boolean(saved), Boolean(saved?.favorite), state.selectedTimelineBranch);
 }
 
 function saveCurrentTimeline() {
@@ -2678,11 +2740,11 @@ function openSuggestedTimeline(collectionName, id, seed) {
 
 function renderTimelineEventRoute(eventId) {
   state.currentModule = "timeline";
-  const timeline = state.currentTimeline || generateTimeline(sharedDerivedSeed(state.universe.seed || "local-archive", "event-route"), { universe: state.universe });
+  const timeline = state.currentTimeline || M.generateTimeline(sharedDerivedSeed(state.universe.seed || "local-archive", "event-route"), { universe: state.universe });
   const event = [...timeline.events, ...extractTimelineEvents(state.universe)].find(item => item.id === eventId || item.seed === eventId);
   state.currentTimeline = timeline;
   setAccent(timeline.presentation.accentColor, "#d8b45c");
-  app.innerHTML = renderEventDetail(event, timeline);
+  app.innerHTML = M.renderEventDetail(event, timeline);
 }
 
 function createTimelineBranch() {
@@ -2697,7 +2759,7 @@ function exportTimelineJson() {
 }
 
 function exportTimelineMarkdown() {
-  download(`${sharedSlug(state.currentTimeline.name)}.md`, "text/markdown", timelineMarkdown(state.currentTimeline));
+  download(`${sharedSlug(state.currentTimeline.name)}.md`, "text/markdown", M.timelineMarkdown(state.currentTimeline));
 }
 
 function exportTimelineHtml() {
@@ -2717,7 +2779,7 @@ function renderFactionsIndex(filters = {}) {
   state.currentFaction = null;
   state.activeFactionTab = "Overview";
   setAccent("#9ecf8f", "#d8b45c");
-  app.innerHTML = renderFactionsHome(state.universe.factions, availableFactionSuggestions(), factionMetrics(), filters);
+  app.innerHTML = M.renderFactionsHome(state.universe.factions, availableFactionSuggestions(), factionMetrics(), filters);
 }
 
 function openFaction(seed, push = true, constraints = {}) {
@@ -2730,7 +2792,7 @@ function openFaction(seed, push = true, constraints = {}) {
   state.currentDocument = null;
   state.currentTimeline = null;
   const saved = getSavedFaction(seed);
-  state.currentFaction = saved?.faction || saved?.entity || generateFaction(seed || makeSharedSeed("faction"), { ...constraints, context: { ...(constraints.context || {}), universe: state.universe } });
+  state.currentFaction = saved?.faction || saved?.entity || M.generateFaction(seed || makeSharedSeed("faction"), { ...constraints, context: { ...(constraints.context || {}), universe: state.universe } });
   state.activeFactionTab = "Overview";
   setAccent(state.currentFaction.presentation.accentColor, "#d8b45c");
   if (push) navigateTo(`#/factions/${encodeURIComponent(state.currentFaction.seed)}`);
@@ -2740,7 +2802,7 @@ function openFaction(seed, push = true, constraints = {}) {
 function renderFaction() {
   if (!state.currentFaction) return renderFactionsIndex();
   const saved = getSavedFaction(state.currentFaction.seed);
-  app.innerHTML = renderFactionDossier(state.currentFaction, state.activeFactionTab, Boolean(saved), Boolean(saved?.favorite));
+  app.innerHTML = M.renderFactionDossier(state.currentFaction, state.activeFactionTab, Boolean(saved), Boolean(saved?.favorite));
 }
 
 function saveCurrentFaction() {
@@ -2897,7 +2959,7 @@ function exportFactionJson() {
 }
 
 function exportFactionMarkdown() {
-  download(`${sharedSlug(state.currentFaction.name)}.md`, "text/markdown", factionMarkdown(state.currentFaction));
+  download(`${sharedSlug(state.currentFaction.name)}.md`, "text/markdown", M.factionMarkdown(state.currentFaction));
 }
 
 function generateFactionConflict() {
@@ -2963,14 +3025,14 @@ function renderRelationshipsIndex(options = {}) {
   state.currentRelationshipPath = [];
   state.activeRelationshipTab = "Overview";
   setAccent("#a6b7ff", "#d8b45c");
-  state.currentRelationshipGraph = buildRelationshipGraph(state.universe, options);
+  state.currentRelationshipGraph = M.buildRelationshipGraph(state.universe, options);
   if (options.openExplorer) return renderRelationshipExplorerView();
-  app.innerHTML = renderRelationshipsHome(state.currentRelationshipGraph, state.universe.relationshipViews, relationshipEntityOptions());
+  app.innerHTML = M.renderRelationshipsHome(state.currentRelationshipGraph, state.universe.relationshipViews, relationshipEntityOptions());
 }
 
 function openRelationshipExplorer(options = {}, push = true) {
   state.currentModule = "relationships";
-  state.currentRelationshipGraph = buildRelationshipGraph(state.universe, options);
+  state.currentRelationshipGraph = M.buildRelationshipGraph(state.universe, options);
   state.currentRelationship = null;
   state.currentRelationshipPath = [];
   state.activeRelationshipTab = "Overview";
@@ -2980,16 +3042,16 @@ function openRelationshipExplorer(options = {}, push = true) {
 }
 
 function renderRelationshipExplorerView() {
-  if (!state.currentRelationshipGraph) state.currentRelationshipGraph = buildRelationshipGraph(state.universe);
-  app.innerHTML = renderRelationshipExplorer(state.currentRelationshipGraph, state.activeRelationshipTab, state.currentRelationshipPath);
+  if (!state.currentRelationshipGraph) state.currentRelationshipGraph = M.buildRelationshipGraph(state.universe);
+  app.innerHTML = M.renderRelationshipExplorer(state.currentRelationshipGraph, state.activeRelationshipTab, state.currentRelationshipPath);
 }
 
 function openRelationshipDetail(id) {
   state.currentModule = "relationships";
-  state.currentRelationshipGraph ||= buildRelationshipGraph(state.universe);
+  state.currentRelationshipGraph ||= M.buildRelationshipGraph(state.universe);
   state.currentRelationship = state.currentRelationshipGraph.allRelationships.find(item => item.id === id || item.seed === id);
   setAccent("#a6b7ff", "#d8b45c");
-  app.innerHTML = renderRelationshipDetail(state.currentRelationship, state.currentRelationshipGraph);
+  app.innerHTML = M.renderRelationshipDetail(state.currentRelationship, state.currentRelationshipGraph);
 }
 
 function saveRelationshipView() {
@@ -3031,8 +3093,8 @@ function relationshipPathFromForm() {
 
 function openRelationshipPath(from, to, push = true) {
   state.currentModule = "relationships";
-  state.currentRelationshipGraph = buildRelationshipGraph(state.universe);
-  state.currentRelationshipPath = findRelationshipPath(state.currentRelationshipGraph, from, to);
+  state.currentRelationshipGraph = M.buildRelationshipGraph(state.universe);
+  state.currentRelationshipPath = M.findRelationshipPath(state.currentRelationshipGraph, from, to);
   state.activeRelationshipTab = "Path";
   setAccent("#a6b7ff", "#d8b45c");
   if (push) navigateTo(`#/relationships/path?from=${encodeURIComponent(from || "")}&to=${encodeURIComponent(to || "")}`);
@@ -3040,13 +3102,13 @@ function openRelationshipPath(from, to, push = true) {
 }
 
 function validateCurrentRelationships() {
-  state.currentRelationshipGraph ||= buildRelationshipGraph(state.universe);
+  state.currentRelationshipGraph ||= M.buildRelationshipGraph(state.universe);
   state.activeRelationshipTab = "Warnings";
   renderRelationshipExplorerView();
 }
 
 function relationshipEntityOptions() {
-  const graph = state.currentRelationshipGraph || buildRelationshipGraph(state.universe);
+  const graph = state.currentRelationshipGraph || M.buildRelationshipGraph(state.universe);
   return graph.nodes.slice().sort((a, b) => a.label.localeCompare(b.label));
 }
 
@@ -3055,11 +3117,11 @@ function exportRelationshipsJson() {
 }
 
 function exportRelationshipsMarkdown() {
-  download("sci-fi-worldbuilder-relationships.md", "text/markdown", relationshipMarkdown(state.currentRelationshipGraph));
+  download("sci-fi-worldbuilder-relationships.md", "text/markdown", M.relationshipMarkdown(state.currentRelationshipGraph));
 }
 
 function exportRelationshipsHtml() {
-  const graph = state.currentRelationshipGraph || buildRelationshipGraph(state.universe);
+  const graph = state.currentRelationshipGraph || M.buildRelationshipGraph(state.universe);
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>Relationship Explorer</title><style>body{font:16px Georgia,serif;background:#f4f0e8;color:#111;margin:0;padding:32px}.page{max-width:920px;margin:auto}.rel{border-left:3px solid #333;padding:0 0 16px 16px;margin-bottom:16px}.meta{font:12px monospace;text-transform:uppercase}@media print{body{padding:0}.page{max-width:none;padding:24px}}</style></head><body><article class="page"><h1>Relationship Explorer</h1><p>${graph.metrics.totalRelationships} relationships / ${graph.warnings.length} warnings / ${graph.suggestions.length} suggestions</p>${graph.relationships.map(rel => `<section class="rel"><p class="meta">${esc(rel.relationshipFamily)} / ${esc(rel.visibility)} / ${esc(rel.confidence)}</p><h2>${esc(rel.label)}</h2><p>${esc(rel.summary)}</p></section>`).join("")}</article></body></html>`;
   download("sci-fi-worldbuilder-relationships-print.html", "text/html", html);
 }
@@ -3091,9 +3153,9 @@ function renderPremisesIndex(filters = {}) {
   state.currentPremise = null;
   state.activePremiseTab = "Overview";
   setAccent("#d8b45c", "#76d5d7");
-  const signals = collectNarrativePressureSignals(state.universe, filters);
+  const signals = M.collectNarrativePressureSignals(state.universe, filters);
   state.universe.narrativePressureSignals = signals.slice(0, 40);
-  app.innerHTML = renderPremisesHome(state.universe.storyPremises, signals, analyzePremiseCoverage(state.universe), filters, premiseEntityOptions());
+  app.innerHTML = M.renderPremisesHome(state.universe.storyPremises, signals, M.analyzePremiseCoverage(state.universe), filters, premiseEntityOptions());
 }
 
 function openPremise(seed, push = true, constraints = {}) {
@@ -3110,7 +3172,7 @@ function openPremise(seed, push = true, constraints = {}) {
   state.currentRelationship = null;
   state.currentRelationshipPath = [];
   const saved = getSavedPremise(seed);
-  state.currentPremise = saved?.storyPremise || saved?.entity || generateStoryPremise(seed || makeSharedSeed("premise"), { ...constraints, universe: state.universe });
+  state.currentPremise = saved?.storyPremise || saved?.entity || M.generateStoryPremise(seed || makeSharedSeed("premise"), { ...constraints, universe: state.universe });
   state.activePremiseTab = "Overview";
   setAccent(state.currentPremise.presentation?.accentColor || "#d8b45c", "#76d5d7");
   if (push) navigateTo(premiseHash(state.currentPremise.seed, constraints));
@@ -3120,14 +3182,14 @@ function openPremise(seed, push = true, constraints = {}) {
 function renderPremise() {
   if (!state.currentPremise) return renderPremisesIndex();
   const saved = getSavedPremise(state.currentPremise.seed);
-  app.innerHTML = renderPremiseDossier(state.currentPremise, state.activePremiseTab, Boolean(saved), Boolean(saved?.favorite || state.currentPremise.favorite));
+  app.innerHTML = M.renderPremiseDossier(state.currentPremise, state.activePremiseTab, Boolean(saved), Boolean(saved?.favorite || state.currentPremise.favorite));
 }
 
 function saveCurrentPremise() {
   if (!state.currentPremise) return;
   SuiteStorage.upsertEntity(state.universe, "storyPremises", state.currentPremise);
   state.currentPremise.sourceContext.generatedAdditions ||= [];
-  state.universe.narrativePressureSignals = collectNarrativePressureSignals(state.universe).slice(0, 40);
+  state.universe.narrativePressureSignals = M.collectNarrativePressureSignals(state.universe).slice(0, 40);
   saveStore();
   renderPremise();
 }
@@ -3161,7 +3223,7 @@ function regeneratePremiseVariant() {
     scale: state.currentPremise.classification.storyScale,
     tone: state.currentPremise.classification.tone[0]
   };
-  const variant = generateStoryPremise(variantSeed, { ...constraints, universe: state.universe });
+  const variant = M.generateStoryPremise(variantSeed, { ...constraints, universe: state.universe });
   variant.variantOfPremiseId = state.currentPremise.id;
   state.currentPremise.variants.push({
     id: variant.id,
@@ -3219,7 +3281,7 @@ function premiseHash(seed, constraints = {}) {
 }
 
 function premiseEntityOptions() {
-  const relationshipGraph = buildRelationshipGraph(state.universe);
+  const relationshipGraph = M.buildRelationshipGraph(state.universe);
   return relationshipGraph.nodes.slice().sort((a, b) => a.label.localeCompare(b.label));
 }
 
@@ -3228,7 +3290,7 @@ function exportPremiseJson() {
 }
 
 function exportPremiseMarkdown() {
-  download(`${sharedSlug(state.currentPremise.title)}.md`, "text/markdown", storyPremiseMarkdown(state.currentPremise));
+  download(`${sharedSlug(state.currentPremise.title)}.md`, "text/markdown", M.storyPremiseMarkdown(state.currentPremise));
 }
 
 function exportPremiseHtml() {
@@ -3256,7 +3318,7 @@ function exportPremiseBrief() {
 }
 
 function exportPremiseSeedPackage() {
-  download(`${sharedSlug(state.currentPremise.title)}-story-seed-package.json`, "application/json", JSON.stringify(storySeedPackage(state.currentPremise, state.universe), null, 2));
+  download(`${sharedSlug(state.currentPremise.title)}-story-seed-package.json`, "application/json", JSON.stringify(M.storySeedPackage(state.currentPremise, state.universe), null, 2));
 }
 
 function renderAtlasIndexPage(filters = {}) {
@@ -3277,69 +3339,69 @@ function renderAtlasIndexPage(filters = {}) {
   state.currentWorldBible = null;
   state.activeAtlasView = "home";
   setAccent("#76d5d7", "#d8b45c");
-  state.currentAtlas = buildAtlas(state.universe, filters);
+  state.currentAtlas = M.buildAtlas(state.universe, filters);
   state.universe.universeProfile = state.currentAtlas.profile;
-  app.innerHTML = renderAtlasHome(state.currentAtlas, filters);
+  app.innerHTML = M.renderAtlasHome(state.currentAtlas, filters);
 }
 
 function openAtlasExplore(filters = {}, push = true) {
   prepareAtlas("explore", filters);
   if (push) navigateTo(atlasHash("explore", filters));
-  app.innerHTML = renderAtlasExplore(state.currentAtlas, filters);
+  app.innerHTML = M.renderAtlasExplore(state.currentAtlas, filters);
 }
 
 function openAtlasAtoZ(filters = {}, push = true) {
   prepareAtlas("index", filters);
   if (push) navigateTo(atlasHash("index", filters));
-  app.innerHTML = renderAtlasIndex(state.currentAtlas, filters);
+  app.innerHTML = M.renderAtlasIndex(state.currentAtlas, filters);
 }
 
 function openAtlasCategory(categoryId, filters = {}) {
   prepareAtlas("category", filters);
-  app.innerHTML = renderAtlasCategory(state.currentAtlas, categoryId);
+  app.innerHTML = M.renderAtlasCategory(state.currentAtlas, categoryId);
 }
 
 function openAtlasArticle(entityId, filters = {}, push = false) {
   prepareAtlas("article", filters);
-  state.currentAtlasArticle = buildAtlasArticle(state.universe, entityId, filters);
+  state.currentAtlasArticle = M.buildAtlasArticle(state.universe, entityId, filters);
   if (push && state.currentAtlasArticle) navigateTo(state.currentAtlasArticle.item.route);
-  app.innerHTML = renderAtlasArticle(state.currentAtlasArticle);
+  app.innerHTML = M.renderAtlasArticle(state.currentAtlasArticle);
 }
 
 function openAtlasMaps(filters = {}, push = true) {
   prepareAtlas("maps", filters);
   if (push) navigateTo(atlasHash("maps", filters));
-  app.innerHTML = renderAtlasMaps(state.currentAtlas);
+  app.innerHTML = M.renderAtlasMaps(state.currentAtlas);
 }
 
 function openAtlasTimelineView(filters = {}, year = "", push = true) {
   prepareAtlas("timeline", filters);
   if (push) navigateTo(year ? `#/atlas/year/${encodeURIComponent(year)}` : atlasHash("timeline", filters));
-  app.innerHTML = renderAtlasTimeline(state.currentAtlas, year);
+  app.innerHTML = M.renderAtlasTimeline(state.currentAtlas, year);
 }
 
 function openAtlasCollections(filters = {}, push = true) {
   prepareAtlas("collections", filters);
   if (push) navigateTo(atlasHash("collections", filters));
-  app.innerHTML = renderAtlasCollections(state.currentAtlas);
+  app.innerHTML = M.renderAtlasCollections(state.currentAtlas);
 }
 
 function openAtlasGlossary(filters = {}, push = true) {
   prepareAtlas("glossary", filters);
   if (push) navigateTo(atlasHash("glossary", filters));
-  app.innerHTML = renderAtlasGlossary(state.currentAtlas);
+  app.innerHTML = M.renderAtlasGlossary(state.currentAtlas);
 }
 
 function openWorldBible(filters = {}, push = true) {
   prepareAtlas("world-bible", filters);
-  state.currentWorldBible = buildWorldBible(state.universe, filters);
+  state.currentWorldBible = M.buildWorldBible(state.universe, filters);
   if (push) navigateTo(atlasHash("world-bible", filters));
-  app.innerHTML = renderWorldBible(state.currentWorldBible);
+  app.innerHTML = M.renderWorldBible(state.currentWorldBible);
 }
 
 function prepareAtlas(view, filters = {}) {
   state.currentModule = "atlas";
-  state.currentAtlas = buildAtlas(state.universe, filters);
+  state.currentAtlas = M.buildAtlas(state.universe, filters);
   state.activeAtlasView = view;
   setAccent("#76d5d7", "#d8b45c");
 }
@@ -3377,7 +3439,7 @@ function atlasHash(section = "", filters = {}) {
 }
 
 function saveAtlasView() {
-  const atlas = state.currentAtlas || buildAtlas(state.universe);
+  const atlas = state.currentAtlas || M.buildAtlas(state.universe);
   const view = {
     id: `atlasView_${sharedHashString(`${state.activeAtlasView}:${location.hash}:${Date.now()}`).toString(36)}`,
     entityType: "atlasView",
@@ -3400,43 +3462,43 @@ function saveAtlasView() {
 }
 
 function exportAtlasJson() {
-  const atlas = state.currentAtlas || buildAtlas(state.universe);
+  const atlas = state.currentAtlas || M.buildAtlas(state.universe);
   download(`${sharedSlug(atlas.profile.name)}-atlas.json`, "application/json", JSON.stringify(atlas, null, 2));
 }
 
 function exportAtlasMarkdown() {
-  const atlas = state.currentAtlas || buildAtlas(state.universe);
-  download(`${sharedSlug(atlas.profile.name)}-atlas.md`, "text/markdown", atlasMarkdown(atlas));
+  const atlas = state.currentAtlas || M.buildAtlas(state.universe);
+  download(`${sharedSlug(atlas.profile.name)}-atlas.md`, "text/markdown", M.atlasMarkdown(atlas));
 }
 
 function exportAtlasHtml() {
-  const atlas = state.currentAtlas || buildAtlas(state.universe);
-  download(`${sharedSlug(atlas.profile.name)}-atlas.html`, "text/html", atlasHtml(atlas));
+  const atlas = state.currentAtlas || M.buildAtlas(state.universe);
+  download(`${sharedSlug(atlas.profile.name)}-atlas.html`, "text/html", M.atlasHtml(atlas));
 }
 
 function exportAtlasArticleMarkdown(entityId) {
-  const article = state.currentAtlasArticle?.item?.entityId === entityId ? state.currentAtlasArticle : buildAtlasArticle(state.universe, entityId);
-  if (article) download(`${sharedSlug(article.item.title)}-atlas-article.md`, "text/markdown", atlasArticleMarkdown(article));
+  const article = state.currentAtlasArticle?.item?.entityId === entityId ? state.currentAtlasArticle : M.buildAtlasArticle(state.universe, entityId);
+  if (article) download(`${sharedSlug(article.item.title)}-atlas-article.md`, "text/markdown", M.atlasArticleMarkdown(article));
 }
 
 function exportAtlasArticleHtml(entityId) {
-  const article = state.currentAtlasArticle?.item?.entityId === entityId ? state.currentAtlasArticle : buildAtlasArticle(state.universe, entityId);
-  if (article) download(`${sharedSlug(article.item.title)}-atlas-article.html`, "text/html", articleHtml(article));
+  const article = state.currentAtlasArticle?.item?.entityId === entityId ? state.currentAtlasArticle : M.buildAtlasArticle(state.universe, entityId);
+  if (article) download(`${sharedSlug(article.item.title)}-atlas-article.html`, "text/html", M.articleHtml(article));
 }
 
 function exportWorldBibleJson() {
-  const bible = state.currentWorldBible || buildWorldBible(state.universe);
+  const bible = state.currentWorldBible || M.buildWorldBible(state.universe);
   download(`${sharedSlug(bible.title)}.json`, "application/json", JSON.stringify(bible, null, 2));
 }
 
 function exportWorldBibleMarkdown() {
-  const bible = state.currentWorldBible || buildWorldBible(state.universe);
-  download(`${sharedSlug(bible.title)}.md`, "text/markdown", worldBibleMarkdown(bible));
+  const bible = state.currentWorldBible || M.buildWorldBible(state.universe);
+  download(`${sharedSlug(bible.title)}.md`, "text/markdown", M.worldBibleMarkdown(bible));
 }
 
 function exportWorldBibleHtml() {
-  const bible = state.currentWorldBible || buildWorldBible(state.universe);
-  download(`${sharedSlug(bible.title)}.html`, "text/html", worldBibleHtml(bible));
+  const bible = state.currentWorldBible || M.buildWorldBible(state.universe);
+  download(`${sharedSlug(bible.title)}.html`, "text/html", M.worldBibleHtml(bible));
 }
 
 function copyAtlasLink(route) {
@@ -3463,7 +3525,7 @@ function renderTechnologyIndex(filters = {}) {
   state.currentTechnology = null;
   state.activeTechnologyTab = "Overview";
   setAccent("#9ecf8f", "#d8b45c");
-  app.innerHTML = renderTechnologyHome(state.universe, suggestTechnologies(state.universe), filters);
+  app.innerHTML = M.renderTechnologyHome(state.universe, M.suggestTechnologies(state.universe), filters);
 }
 
 function openTechnology(seedOrId, push = true, constraints = {}) {
@@ -3485,7 +3547,7 @@ function openTechnology(seedOrId, push = true, constraints = {}) {
   state.currentWorldBible = null;
   const saved = getSavedTechnology(seedOrId);
   state.currentTechnology = saved ? recordEntity(saved) : createTechnologyEntity(seedOrId || makeSharedSeed("technology"), constraints);
-  state.currentTechnology.validation = validateTechnologyEntity(state.currentTechnology, state.universe);
+  state.currentTechnology.validation = M.validateTechnologyEntity(state.currentTechnology, state.universe);
   state.activeTechnologyTab = "Overview";
   setAccent("#9ecf8f", "#d8b45c");
   if (push) navigateTo(technologyHash(state.currentTechnology, constraints));
@@ -3494,18 +3556,18 @@ function openTechnology(seedOrId, push = true, constraints = {}) {
 
 function renderTechnology() {
   if (!state.currentTechnology) return renderTechnologyIndex();
-  state.currentTechnology.validation = validateTechnologyEntity(state.currentTechnology, state.universe);
+  state.currentTechnology.validation = M.validateTechnologyEntity(state.currentTechnology, state.universe);
   const saved = getSavedTechnology(state.currentTechnology.id) || getSavedTechnology(state.currentTechnology.seed);
-  app.innerHTML = renderTechnologyDossier(state.currentTechnology, state.activeTechnologyTab, Boolean(saved), Boolean(saved?.favorite || state.currentTechnology.favorite), state.universe);
+  app.innerHTML = M.renderTechnologyDossier(state.currentTechnology, state.activeTechnologyTab, Boolean(saved), Boolean(saved?.favorite || state.currentTechnology.favorite), state.universe);
 }
 
 function createTechnologyEntity(seed, constraints = {}) {
   const options = { ...constraints, context: technologyContextFromConstraints(seed, constraints) };
-  if (constraints.entityType === "infrastructureSystem") return generateInfrastructure(seed, options);
-  if (constraints.entityType === "technicalStandard") return generateTechnicalStandard(seed, options);
-  if (constraints.entityType === "researchProgram") return generateResearchProgram(seed, options);
-  if (constraints.entityType === "technicalFacility") return generateTechnicalFacility(seed, options);
-  return generateTechnology(seed, options);
+  if (constraints.entityType === "infrastructureSystem") return M.generateInfrastructure(seed, options);
+  if (constraints.entityType === "technicalStandard") return M.generateTechnicalStandard(seed, options);
+  if (constraints.entityType === "researchProgram") return M.generateResearchProgram(seed, options);
+  if (constraints.entityType === "technicalFacility") return M.generateTechnicalFacility(seed, options);
+  return M.generateTechnology(seed, options);
 }
 
 function technologyContextFromConstraints(seed, constraints = {}) {
@@ -3635,7 +3697,7 @@ function technologyFiltersFromParams(params) {
 
 function saveCurrentTechnology() {
   if (!state.currentTechnology) return;
-  state.currentTechnology.validation = validateTechnologyEntity(state.currentTechnology, state.universe);
+  state.currentTechnology.validation = M.validateTechnologyEntity(state.currentTechnology, state.universe);
   const collection = technologyCollectionFor(state.currentTechnology.entityType);
   SuiteStorage.upsertEntity(state.universe, collection, state.currentTechnology);
   saveStore();
@@ -3695,20 +3757,20 @@ function exportTechnologyJson() {
 }
 
 function exportTechnologyMarkdown() {
-  download(`${sharedSlug(state.currentTechnology.name)}.md`, "text/markdown", technologyMarkdown(state.currentTechnology, analyzeTechnologyDependencies(state.currentTechnology, state.universe)));
+  download(`${sharedSlug(state.currentTechnology.name)}.md`, "text/markdown", M.technologyMarkdown(state.currentTechnology, M.analyzeTechnologyDependencies(state.currentTechnology, state.universe)));
 }
 
 function exportTechnologyHtml() {
-  download(`${sharedSlug(state.currentTechnology.name)}.html`, "text/html", technologyPrintableHtml(state.currentTechnology));
+  download(`${sharedSlug(state.currentTechnology.name)}.html`, "text/html", M.technologyPrintableHtml(state.currentTechnology));
 }
 
 function exportTechnologyCsv() {
   const records = ["technologies", "infrastructureSystems", "technicalStandards", "researchPrograms", "technicalFacilities"].flatMap(key => state.universe[key]);
-  download("technology-registry.csv", "text/csv", technologyCsv(records));
+  download("technology-registry.csv", "text/csv", M.technologyCsv(records));
 }
 
 function exportTechnologySvg() {
-  const analysis = analyzeTechnologyDependencies(state.currentTechnology, state.universe);
+  const analysis = M.analyzeTechnologyDependencies(state.currentTechnology, state.universe);
   const rows = analysis.critical.slice(0, 8);
   const height = Math.max(220, 80 + rows.length * 32);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 ${height}" role="img" aria-label="Dependency diagram for ${esc(state.currentTechnology.name)}"><rect width="760" height="${height}" fill="#0b0d0f"/><rect x="260" y="24" width="240" height="54" fill="#171b1f" stroke="#9ecf8f"/><text x="380" y="56" text-anchor="middle" fill="#f2eee6" font-size="14">${esc(state.currentTechnology.name.slice(0, 34))}</text>${rows.map((item, index) => { const y = 110 + index * 32; return `<line x1="380" y1="78" x2="148" y2="${y - 6}" stroke="#343c43"/><rect x="24" y="${y - 24}" width="248" height="28" fill="#171b1f" stroke="#343c43"/><text x="34" y="${y - 6}" fill="#a7adb0" font-size="12">${esc(String(item).slice(0, 34))}</text>`; }).join("")}</svg>`;
@@ -3717,7 +3779,7 @@ function exportTechnologySvg() {
 
 function exportTechnologyRegistryHtml() {
   const records = ["technologies", "infrastructureSystems", "technicalStandards", "researchPrograms", "technicalFacilities"].flatMap(key => state.universe[key]);
-  download("technology-registry.html", "text/html", registryHtml(records));
+  download("technology-registry.html", "text/html", M.registryHtml(records));
 }
 
 function entityLabel(entity) {
@@ -3987,12 +4049,43 @@ function valueOrRandom(selector) {
   return value === "random" ? undefined : value;
 }
 
+/**
+ * pushState does not fire `hashchange`, so navigateTo renders the new route
+ * itself. Callers must not also call renderRoute.
+ */
 function navigateTo(hash) {
   if (window.location.hash === hash) return;
   history.pushState({}, "", `${window.location.pathname}${window.location.search}${hash}`);
+  renderRoute();
 }
 
+/**
+ * Loads the modules the current route needs, then dispatches. Synchronous when
+ * the module is already cached, so navigating inside a module does not flash.
+ */
 function renderRoute() {
+  const moduleId = activeModuleId();
+  syncModuleNav();
+  if (isModuleLoaded(moduleId)) return dispatchRoute();
+  showRouteLoading();
+  return loadModule(moduleId).then(() => {
+    // A fast second navigation may have superseded this one.
+    if (activeModuleId() !== moduleId) return;
+    dispatchRoute();
+  }).catch(error => {
+    console.error(error);
+    app.innerHTML = `<section class="panel"><h2>Could not load this module</h2>
+      <p class="lede">${esc(error.message)}</p>
+      <div class="action-row"><button class="ghost-button" data-action="go-home" type="button">Back to Home</button></div>
+    </section>`;
+  });
+}
+
+function showRouteLoading() {
+  app.innerHTML = `<section class="panel route-loading" aria-busy="true"><p class="eyebrow">Loading module</p></section>`;
+}
+
+function dispatchRoute() {
   const hash = window.location.hash || "#/home";
   const [path, hashQuery = ""] = hash.slice(1).split("?");
   const params = new URLSearchParams(hashQuery);
@@ -4071,7 +4164,7 @@ function renderRoute() {
   if (parts[0] === "atlas" && parts[1] === "year" && parts[2]) return openAtlasTimelineView(atlasFiltersFromParams(params), decodeURIComponent(parts[2]), false);
   if (parts[0] === "atlas" && hashQuery) return renderAtlasIndexPage(atlasFiltersFromParams(params));
   if (parts[0] === "atlas") return renderAtlasIndexPage();
-  if (parts[0] === "technology" && parts[1] === "compare") return app.innerHTML = renderTechnologyComparison(["technologies", "infrastructureSystems", "technicalStandards", "researchPrograms", "technicalFacilities"].flatMap(key => state.universe[key]));
+  if (parts[0] === "technology" && parts[1] === "compare") return app.innerHTML = M.renderTechnologyComparison(["technologies", "infrastructureSystems", "technicalStandards", "researchPrograms", "technicalFacilities"].flatMap(key => state.universe[key]));
   if (parts[0] === "technology" && parts[1] === "new") return openTechnology(params.get("seed") || makeSharedSeed("technology"), false, technologyConstraintsFromParams(params));
   if (parts[0] === "technology" && parts[1]) return openTechnology(decodeURIComponent(parts[1]), false, { entityType: "technology" });
   if (parts[0] === "technology" && hashQuery) return renderTechnologyIndex(technologyFiltersFromParams(params));
@@ -4091,58 +4184,7 @@ app.addEventListener("click", event => {
   const target = event.target.closest("[data-action]");
   if (!target) return;
   const action = target.dataset.action;
-  if (action === "go-home") {
-    navigateTo("#/home");
-    renderSuiteHome();
-  }
-  if (action === "go-systems") {
-    navigateTo("#/systems");
-    renderSystemsIndex();
-  }
-  if (action === "go-settlements") {
-    navigateTo("#/settlements");
-    renderSettlementsIndex();
-  }
-  if (action === "go-organizations") {
-    navigateTo("#/organizations");
-    renderHome();
-  }
-  if (action === "go-characters") {
-    navigateTo("#/characters");
-    renderCharactersIndex();
-  }
-  if (action === "go-conflicts") {
-    navigateTo("#/conflicts");
-    renderConflictsIndex();
-  }
-  if (action === "go-documents") {
-    navigateTo("#/documents");
-    renderDocumentsIndex();
-  }
-  if (action === "go-timeline") {
-    navigateTo("#/timeline");
-    renderTimelineIndex();
-  }
-  if (action === "go-factions") {
-    navigateTo("#/factions");
-    renderFactionsIndex();
-  }
-  if (action === "go-relationships") {
-    navigateTo("#/relationships");
-    renderRelationshipsIndex();
-  }
-  if (action === "go-premises") {
-    navigateTo("#/premises");
-    renderPremisesIndex();
-  }
-  if (action === "go-atlas") {
-    navigateTo("#/atlas");
-    renderAtlasIndexPage();
-  }
-  if (action === "go-technology") {
-    navigateTo("#/technology");
-    renderTechnologyIndex();
-  }
+  if (action.startsWith("go-")) return navigateTo(MODULE_ROUTES[action.slice(3)] || "#/home");
   if (action === "generate") openSeed(makeSeed());
   if (action === "seed") openSeed(document.querySelector("#seedInput")?.value.trim() || makeSeed());
   if (action === "open") openSeed(target.dataset.seed);
@@ -4513,18 +4555,245 @@ document.addEventListener("keydown", event => {
   }
 });
 
-document.querySelector("#homeButton").addEventListener("click", () => {
-  navigateTo("#/home");
-  renderSuiteHome();
-});
+document.querySelector("#homeButton").addEventListener("click", () => navigateTo("#/home"));
 document.querySelectorAll("[data-route]").forEach(button => {
-  button.addEventListener("click", () => {
-    navigateTo(button.dataset.route);
-    renderRoute();
-  });
+  button.addEventListener("click", () => navigateTo(button.dataset.route));
 });
 document.querySelector("#settingsButton").addEventListener("click", renderSettings);
 document.querySelector("#aboutButton").addEventListener("click", renderAbout);
+
+/* ---------------------------------------------------------------- module nav */
+
+const moduleNav = document.querySelector("#moduleNav");
+const shellHeader = document.querySelector(".shell-header");
+
+/**
+ * Sticky offsets used to be hardcoded per breakpoint, which broke whenever the
+ * header wrapped to another row. Measure instead and publish the result so the
+ * module nav and tab strips stack correctly at any width.
+ */
+function syncChromeHeights() {
+  const headerHeight = shellHeader?.offsetHeight || 0;
+  const navSticky = moduleNav && getComputedStyle(moduleNav).position === "sticky";
+  const navHeight = navSticky ? moduleNav.offsetHeight : 0;
+  const root = document.documentElement.style;
+  root.setProperty("--header-height", `${headerHeight}px`);
+  root.setProperty("--chrome-height", `${headerHeight + navHeight}px`);
+}
+
+if (shellHeader && typeof ResizeObserver === "function") {
+  const observer = new ResizeObserver(syncChromeHeights);
+  observer.observe(shellHeader);
+  if (moduleNav) observer.observe(moduleNav);
+}
+window.addEventListener("resize", syncChromeHeights);
+
+/** Routes that belong to a module but do not share its path prefix. */
+const ROUTE_ALIASES = {
+  events: "timeline",
+  infrastructure: "technology",
+  standards: "technology",
+  research: "technology",
+  facilities: "technology",
+  library: "home"
+};
+
+function activeModuleId() {
+  const path = (window.location.hash || "#/home").slice(1).split("?")[0];
+  const head = path.split("/").filter(Boolean)[0] || "home";
+  const resolved = ROUTE_ALIASES[head] || head;
+  return MODULES.some(module => module.id === resolved) ? resolved : "home";
+}
+
+function renderModuleNav() {
+  if (!moduleNav) return;
+  moduleNav.innerHTML = MODULES.map(module => `
+    <a href="${module.route}" class="module-nav-link" data-module="${module.id}" title="${esc(module.blurb)}">
+      ${esc(module.label)}
+    </a>
+  `).join("");
+  syncModuleNav();
+}
+
+function syncModuleNav() {
+  if (!moduleNav) return;
+  syncChromeHeights();
+  const active = activeModuleId();
+  for (const link of moduleNav.querySelectorAll(".module-nav-link")) {
+    const isActive = link.dataset.module === active;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  }
+  moduleNav.querySelector(".is-active")?.scrollIntoView({ block: "nearest", inline: "nearest" });
+}
+
+/* ----------------------------------------------------------- command palette */
+
+const paletteBackdrop = document.querySelector("#paletteBackdrop");
+const paletteInput = document.querySelector("#paletteInput");
+const paletteResults = document.querySelector("#paletteResults");
+let paletteItems = [];
+let paletteIndex = 0;
+let paletteReturnFocus = null;
+
+/** Modules first, then every saved entity, flattened into one jump list. */
+function paletteSources() {
+  const items = MODULES.map(module => ({
+    label: module.label,
+    detail: module.blurb,
+    kind: "Module",
+    route: module.route
+  }));
+  for (const module of MODULES) {
+    if (!module.collection) continue;
+    for (const record of state.universe[module.collection] || []) {
+      const entity = record.entity || record;
+      const name = entity.name || entity.identity?.name || entity.title || record.seed;
+      if (!name) continue;
+      items.push({
+        label: name,
+        detail: `${module.label}${record.favorite ? " · favorite" : ""}`,
+        kind: module.label,
+        route: `${module.route}/${encodeURIComponent(record.seed || record.id)}`
+      });
+    }
+  }
+  return items;
+}
+
+function scorePaletteItem(item, query) {
+  const label = item.label.toLowerCase();
+  if (label === query) return 0;
+  if (label.startsWith(query)) return 1;
+  const wordStart = label.split(/\s+/).some(word => word.startsWith(query));
+  if (wordStart) return 2;
+  if (label.includes(query)) return 3;
+  if (item.detail.toLowerCase().includes(query)) return 4;
+  return -1;
+}
+
+function filterPalette(query) {
+  const normalized = query.trim().toLowerCase();
+  const all = paletteSources();
+  if (!normalized) return all.slice(0, 40);
+  return all
+    .map(item => ({ item, score: scorePaletteItem(item, normalized) }))
+    .filter(entry => entry.score >= 0)
+    .sort((a, b) => a.score - b.score || a.item.label.length - b.item.label.length)
+    .slice(0, 40)
+    .map(entry => entry.item);
+}
+
+function renderPaletteResults(query) {
+  paletteItems = filterPalette(query);
+  paletteIndex = 0;
+  if (!paletteItems.length) {
+    paletteResults.innerHTML = `<li class="palette-empty">No matches for &ldquo;${esc(query)}&rdquo;</li>`;
+    paletteInput.setAttribute("aria-activedescendant", "");
+    return;
+  }
+  paletteResults.innerHTML = paletteItems.map((item, index) => `
+    <li class="palette-result" id="paletteResult${index}" role="option" data-index="${index}" aria-selected="${index === 0}">
+      <span class="palette-result-label">${esc(item.label)}</span>
+      <span class="palette-result-kind">${esc(item.kind)}</span>
+      <span class="palette-result-detail">${esc(item.detail)}</span>
+    </li>
+  `).join("");
+  syncPaletteSelection();
+}
+
+function syncPaletteSelection() {
+  const options = paletteResults.querySelectorAll(".palette-result");
+  options.forEach((option, index) => {
+    const selected = index === paletteIndex;
+    option.classList.toggle("is-selected", selected);
+    option.setAttribute("aria-selected", String(selected));
+    if (selected) option.scrollIntoView({ block: "nearest" });
+  });
+  paletteInput.setAttribute("aria-activedescendant", options.length ? `paletteResult${paletteIndex}` : "");
+}
+
+function openPalette() {
+  if (!paletteBackdrop) return;
+  paletteReturnFocus = document.activeElement;
+  paletteBackdrop.hidden = false;
+  paletteInput.value = "";
+  renderPaletteResults("");
+  paletteInput.focus();
+}
+
+function closePalette() {
+  if (!paletteBackdrop || paletteBackdrop.hidden) return;
+  paletteBackdrop.hidden = true;
+  paletteReturnFocus?.focus?.();
+  paletteReturnFocus = null;
+}
+
+function commitPalette() {
+  const item = paletteItems[paletteIndex];
+  if (!item) return;
+  closePalette();
+  navigateTo(item.route);
+}
+
+// The palette chrome is optional: qa.html hosts app.js in a bare shell.
+if (paletteBackdrop) {
+document.querySelector("#paletteButton")?.addEventListener("click", openPalette);
+paletteInput.addEventListener("input", () => renderPaletteResults(paletteInput.value));
+paletteBackdrop.addEventListener("mousedown", event => {
+  if (event.target === paletteBackdrop) closePalette();
+});
+paletteResults.addEventListener("mousemove", event => {
+  const option = event.target.closest(".palette-result");
+  if (!option || Number(option.dataset.index) === paletteIndex) return;
+  paletteIndex = Number(option.dataset.index);
+  syncPaletteSelection();
+});
+paletteResults.addEventListener("click", event => {
+  const option = event.target.closest(".palette-result");
+  if (!option) return;
+  paletteIndex = Number(option.dataset.index);
+  commitPalette();
+});
+paletteInput.addEventListener("keydown", event => {
+  if (event.key === "ArrowDown" || (event.key === "n" && event.ctrlKey)) {
+    event.preventDefault();
+    paletteIndex = Math.min(paletteIndex + 1, paletteItems.length - 1);
+    syncPaletteSelection();
+  } else if (event.key === "ArrowUp" || (event.key === "p" && event.ctrlKey)) {
+    event.preventDefault();
+    paletteIndex = Math.max(paletteIndex - 1, 0);
+    syncPaletteSelection();
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    commitPalette();
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    closePalette();
+  }
+});
+
+document.addEventListener("keydown", event => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    if (paletteBackdrop.hidden) openPalette();
+    else closePalette();
+    return;
+  }
+  if (event.key === "/" && paletteBackdrop.hidden && !isTypingTarget(event.target) && modalBackdrop.hidden) {
+    event.preventDefault();
+    openPalette();
+  }
+});
+}
+
+function isTypingTarget(node) {
+  return node instanceof HTMLElement
+    && (node.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(node.tagName));
+}
+
+storagePill?.addEventListener("click", () => exportUniverseBackup());
 
 window.addEventListener("popstate", renderRoute);
 window.addEventListener("hashchange", renderRoute);
@@ -4537,64 +4806,78 @@ window.ICR = {
   TABS
 };
 
+/**
+ * Public scripting API. Modules load on demand, so the generator and validator
+ * functions are exposed as getters that read through to the registry namespace.
+ * Await `SciFiWorldbuilder.ready()` before touching them from a script or test
+ * harness; the app itself only reaches them once its route has loaded.
+ */
+const LAZY_API = [
+  "generateStarSystem", "generateSettlement", "generateCharacter", "generateConflict",
+  "generateDocument", "validateDocument", "generateTimeline", "extractTimelineEvents",
+  "validateTimeline", "generateFaction", "validateFaction", "buildRelationshipGraph",
+  "findRelationshipPath", "validateRelationshipData", "generateStoryPremise",
+  "collectNarrativePressureSignals", "validateStoryPremise", "evaluateStoryPremise",
+  "analyzePremiseCoverage", "buildAtlas", "buildAtlasIndex", "buildAtlasArticle",
+  "buildWorldBible", "createUniverseProfile", "searchAtlas", "atlasContinuityAudit",
+  "atlasCoverageAudit", "generateTechnology", "generateInfrastructure",
+  "generateTechnicalStandard", "generateResearchProgram", "generateTechnicalFacility",
+  "validateTechnologyEntity", "analyzeTechnologyDependencies", "traceFailureCascade",
+  "analyzeTechnologyCoverage", "suggestTechnologies", "generateTechnologyEcosystem"
+];
+
+const TAB_RENDERERS = {
+  renderSystemTab: "renderSystemTab",
+  renderSettlementTab: "renderSettlementTab",
+  renderCharacterTab: "renderCharacterTab",
+  renderConflictTab: "renderConflictTab",
+  renderDocumentTab: "renderDocumentTab",
+  renderTimelineTab: "renderTimelineTab",
+  renderFactionTab: "renderFactionTab",
+  renderRelationshipTab: "renderRelationshipTab",
+  renderPremiseTab: "renderPremiseTab"
+};
+
 window.SciFiWorldbuilder = {
   generateOrganization,
-  generateStarSystem,
-  generateSettlement,
-  generateCharacter,
-  renderSystemTab: (system, tab) => import("./modules/systems/render.js").then(module => module.renderSystemTab(system, tab)),
-  renderSettlementTab: (settlement, tab) => import("./modules/settlements/render.js").then(module => module.renderSettlementTab(settlement, tab)),
-  renderCharacterTab: (character, tab) => import("./modules/characters/render.js").then(module => module.renderCharacterTab(character, tab)),
-  generateConflict,
-  renderConflictTab: (conflict, tab) => import("./modules/conflicts/render.js").then(module => module.renderConflictTab(conflict, tab)),
-  generateDocument,
-  validateDocument,
-  renderDocumentTab: (document, tab) => import("./modules/documents/render.js").then(module => module.renderDocumentTab(document, tab)),
-  generateTimeline,
-  extractTimelineEvents,
-  validateTimeline,
-  renderTimelineTab: (timeline, tab) => import("./modules/timeline/render.js").then(module => module.renderTimelineTab(timeline, tab)),
-  generateFaction,
-  validateFaction,
-  renderFactionTab: (faction, tab) => import("./modules/factions/render.js").then(module => module.renderFactionTab(faction, tab)),
-  buildRelationshipGraph,
-  findRelationshipPath,
-  validateRelationshipData,
-  renderRelationshipTab: (graph, tab, path = []) => import("./modules/relationships/render.js").then(module => module.renderRelationshipTab(graph, tab, path)),
-  generateStoryPremise,
-  collectNarrativePressureSignals,
-  validateStoryPremise,
-  evaluateStoryPremise,
-  analyzePremiseCoverage,
-  renderPremiseTab: (premise, tab) => import("./modules/premises/render.js").then(module => module.renderPremiseTab(premise, tab)),
-  buildAtlas,
-  buildAtlasIndex,
-  buildAtlasArticle,
-  buildWorldBible,
-  createUniverseProfile,
-  searchAtlas,
-  atlasContinuityAudit,
-  atlasCoverageAudit,
-  generateTechnology,
-  generateInfrastructure,
-  generateTechnicalStandard,
-  generateResearchProgram,
-  generateTechnicalFacility,
-  validateTechnologyEntity,
-  analyzeTechnologyDependencies,
-  traceFailureCascade,
-  analyzeTechnologyCoverage,
-  suggestTechnologies,
-  generateTechnologyEcosystem,
+  /** Loads every module; resolves to this same API object. */
+  async ready() {
+    await loadAllModules();
+    return window.SciFiWorldbuilder;
+  },
   get universe() {
     return state.universe;
   }
 };
+
+for (const name of LAZY_API) {
+  Object.defineProperty(window.SciFiWorldbuilder, name, {
+    enumerable: true,
+    get() {
+      const fn = M[name];
+      if (!fn) throw new Error(`${name} is not loaded yet - await SciFiWorldbuilder.ready() first.`);
+      return fn;
+    }
+  });
+}
+
+for (const [exposed, exported] of Object.entries(TAB_RENDERERS)) {
+  window.SciFiWorldbuilder[exposed] = (...args) => loadAllModules().then(() => M[exported](...args));
+}
+
 window.FutureArchive = window.SciFiWorldbuilder;
 
-const initialSeed = new URLSearchParams(window.location.search).get("seed");
-if (initialSeed && !window.location.hash) {
-  openSeed(initialSeed, false);
-} else {
-  renderRoute();
+renderModuleNav();
+updateStorageMeter();
+syncChromeHeights();
+
+// qa.html hosts this module only for its API and owns #app itself.
+if (!document.body.dataset.noRouter) {
+  const initialSeed = new URLSearchParams(window.location.search).get("seed");
+  if (initialSeed && !window.location.hash) {
+    openSeed(initialSeed, false);
+    syncModuleNav();
+  } else {
+    renderRoute();
+  }
 }

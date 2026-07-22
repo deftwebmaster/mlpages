@@ -25,6 +25,10 @@ Open `http://localhost:8000/qa.html` to run the static validation harness. It ch
 ## Current Capabilities
 
 - Shared suite shell with Home, Stellar Systems, Settlements, Organizations, Characters, Conflicts, Documents, Timeline, Factions, Relationships, Story Premises, Atlas, and Technology modules
+- Persistent module navigation bar and a command palette (`Cmd/Ctrl+K`, or `/`) for jumping to any module or saved entry
+- Live local-storage usage meter in the header; click it to download a full archive backup
+- Shared metric meters across modules, colour-coded by whether a high score is good or bad for that axis
+- Modules load on demand per route, so the first page does not pay for all twelve
 - Shared local universe storage with migration support for older saved organizations
 - Stellar Cartography Archive for seeded star systems, bodies, settlements, stations, factions, routes, hazards, history, and story hooks
 - Colonial Settlement Archive for standalone settlements and promoted system settlement summaries, with districts, local law, utilities, culture, maps, tensions, and story hooks
@@ -43,6 +47,27 @@ Open `http://localhost:8000/qa.html` to run the static validation harness. It ch
 - Related-organization traversal and system-to-organization links
 - JSON, Markdown, SVG, seal SVG, and multiple PNG visual exports
 - Document JSON, Markdown, plain-text, and printable HTML exports; use the browser print dialog for PDF output
+
+## Storage Limits
+
+The archive lives in `localStorage`, which browsers cap at roughly 5 MB. A generated
+settlement, star system, or technology dossier runs 20-30 KB, so a large universe can
+reach the ceiling. The header meter shows current usage and turns amber past 70% and
+red past 90%. If a write is refused, the app says so instead of failing silently, and
+the in-memory work stays on screen so it can still be exported.
+
+Saved records store their entity once rather than under both `entity` and a type alias,
+which roughly halves what a universe occupies on disk. Older saves are migrated on load.
+
+## Scripting API
+
+`window.SciFiWorldbuilder` exposes the generators and validators. Because modules load
+on demand, await `ready()` before using them from the console or a script:
+
+```js
+await window.SciFiWorldbuilder.ready();
+const settlement = window.SciFiWorldbuilder.generateSettlement("port-meridian-4821");
+```
 
 ## Module Names
 

@@ -413,6 +413,8 @@ function runQa() {
 }
 
 try {
+  // Modules load on demand now; the harness needs all of them resolved first.
+  await window.SciFiWorldbuilder.ready();
   const passed = runQa();
   document.querySelector("#app").innerHTML = `
     <section class="panel">

@@ -1,4 +1,5 @@
 import { esc, formatNumber, titleCase } from "../../shared/dom.js";
+import { fitText } from "../../shared/svg.js";
 import { relationshipMarkdown, RELATIONSHIP_TYPES } from "./generate.js";
 
 const RELATIONSHIP_TABS = ["Overview", "Network", "Relationships", "Evidence", "Path", "Suggestions", "Warnings", "Hubs", "Export"];
@@ -259,14 +260,17 @@ function networkSvg(graph) {
   if (!nodes.length) return `<div class="empty-state">No relationships to map yet.</div>`;
   const nodeIds = new Set(nodes.map(node => node.id));
   const edges = graph.edges.filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target)).slice(0, 42);
-  const center = 240;
-  const radius = 170;
+  const size = 560;
+  const center = size / 2;
+  const radius = 190;
+  // Labels sit outside the ring, so the arc between neighbours is the budget.
+  const labelBudget = Math.min(120, (Math.PI * 2 * radius) / nodes.length - 6);
   const positions = new Map(nodes.map((node, index) => {
     const angle = (Math.PI * 2 * index) / nodes.length - Math.PI / 2;
     return [node.id, { x: center + Math.cos(angle) * radius, y: center + Math.sin(angle) * radius }];
   }));
-  return `<svg class="relationship-map" viewBox="0 0 480 480" role="img" aria-label="Relationship network map">
-    <rect width="480" height="480" fill="transparent"/>
+  return `<svg class="relationship-map" viewBox="0 0 ${size} ${size}" role="img" aria-label="Relationship network map showing ${nodes.length} connected entities">
+    <rect width="${size}" height="${size}" fill="transparent"/>
     ${edges.map(edge => {
       const a = positions.get(edge.source);
       const b = positions.get(edge.target);
@@ -274,8 +278,14 @@ function networkSvg(graph) {
     }).join("")}
     ${nodes.map(node => {
       const pos = positions.get(node.id);
-      const size = Math.min(28, 8 + node.degree * 2);
-      return `<g><circle cx="${pos.x}" cy="${pos.y}" r="${size}" fill="var(--panel)" stroke="var(--accent)" stroke-width="3"><title>${esc(node.label)}: ${node.degree} links</title></circle><text x="${pos.x}" y="${pos.y + size + 14}" text-anchor="middle" fill="var(--text)" font-size="10">${esc(node.label.slice(0, 18))}</text></g>`;
+      const nodeRadius = Math.min(28, 8 + node.degree * 2);
+      // Push the label to whichever side keeps it inside the frame.
+      const below = pos.y >= center;
+      const labelY = below ? pos.y + nodeRadius + 14 : pos.y - nodeRadius - 7;
+      return `<g tabindex="0">
+        <circle cx="${pos.x}" cy="${pos.y}" r="${nodeRadius}" fill="var(--panel)" stroke="var(--accent)" stroke-width="3"><title>${esc(node.label)}: ${node.degree} links</title></circle>
+        <text x="${pos.x}" y="${labelY}" text-anchor="middle" fill="var(--text)" font-size="10">${esc(fitText(node.label, labelBudget, 10))}</text>
+      </g>`;
     }).join("")}
   </svg>`;
 }

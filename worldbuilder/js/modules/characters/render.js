@@ -1,4 +1,5 @@
 import { esc, titleCase } from "../../shared/dom.js";
+import { renderMetricBars } from "../../shared/metrics.js";
 import { characterMarkdown } from "./generate.js";
 
 const CHARACTER_TABS = ["Overview", "Network", "Context", "Work", "History", "Goals", "Secrets", "Story Hooks"];
@@ -174,9 +175,7 @@ function renderOverview(character) {
         <p class="eyebrow">Dossier synopsis</p>
         <h2>${esc(character.classification.socialStatus)}</h2>
         <p class="lede">${esc(character.summary)}</p>
-        <div class="metric-grid">
-          ${Object.entries(character.metrics).map(([label, value]) => `<article class="data-card"><span class="meta-label">${esc(titleCase(label.replace(/([A-Z])/g, " $1")))}</span><strong>${value}/100</strong></article>`).join("")}
-        </div>
+        ${renderMetricBars(character.metrics)}
       </section>
       <aside class="panel">
         <h2>Relationship Network</h2>

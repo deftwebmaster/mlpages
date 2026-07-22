@@ -67,16 +67,95 @@ export function loadSuite() {
     suite.activeUniverseId = universe.id;
     suite.universes.push(universe);
   }
-  suite.universes.forEach(ensureUniverseShape);
+  suite.universes.forEach(universe => {
+    ensureUniverseShape(universe);
+    rehydrateAliases(universe);
+  });
   migrateLegacyOrganizations(suite);
-  saveSuite(suite);
+  try {
+    saveSuite(suite);
+  } catch (error) {
+    if (!(error instanceof StorageQuotaError)) throw error;
+    // An over-budget archive must still open so the user can export and prune.
+    console.warn(error.message);
+  }
   return suite;
+}
+
+export class StorageQuotaError extends Error {
+  constructor(bytes) {
+    super("Local archive is full. Export a backup and remove entries before saving again.");
+    this.name = "StorageQuotaError";
+    this.bytes = bytes;
+  }
+}
+
+/**
+ * Records keep the entity under both `entity` and a type alias (`settlement`,
+ * `organization`, ...). They are the same object in memory, but JSON.stringify
+ * writes each reference in full, so persisting both doubles the payload. Drop
+ * the alias on write and rebuild it on read.
+ */
+function serializeSuite(suite) {
+  return JSON.stringify(suite, function (key, value) {
+    if (key === "entity" || !value || typeof value !== "object") return value;
+    if (this.entity && this.entityType && this.entity === value) return undefined;
+    return value;
+  });
+}
+
+function rehydrateAliases(universe) {
+  for (const collection of Object.values(universe)) {
+    if (!Array.isArray(collection)) continue;
+    for (const record of collection) {
+      if (!record?.entityType || !record.entity) continue;
+      record[entityPayloadKey(record.entityType)] = record.entity;
+    }
+  }
 }
 
 export function saveSuite(suite) {
   const active = getActiveUniverse(suite);
+  const previousUpdatedAt = active?.updatedAt;
   if (active) active.updatedAt = new Date().toISOString();
-  localStorage.setItem(SUITE_STORAGE_KEY, JSON.stringify(suite));
+  const payload = serializeSuite(suite);
+  try {
+    localStorage.setItem(SUITE_STORAGE_KEY, payload);
+  } catch (error) {
+    if (active) active.updatedAt = previousUpdatedAt;
+    if (isQuotaError(error)) throw new StorageQuotaError(payload.length);
+    throw error;
+  }
+  return payload.length;
+}
+
+function isQuotaError(error) {
+  return error instanceof DOMException
+    && (error.name === "QuotaExceededError"
+      || error.name === "NS_ERROR_DOM_QUOTA_REACHED"
+      || error.code === 22
+      || error.code === 1014);
+}
+
+/** Approximate localStorage budget. Browsers land between 5MB and 10MB; assume the floor. */
+export const STORAGE_BUDGET_BYTES = 5 * 1024 * 1024;
+
+export function estimateStorage() {
+  let bytes = 0;
+  try {
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index);
+      bytes += key.length + (localStorage.getItem(key)?.length || 0);
+    }
+  } catch {
+    return { bytes: 0, budget: STORAGE_BUDGET_BYTES, ratio: 0, available: false };
+  }
+  return {
+    bytes,
+    budget: STORAGE_BUDGET_BYTES,
+    ratio: Math.min(1, bytes / STORAGE_BUDGET_BYTES),
+    available: true
+  };
 }
 
 export function getActiveUniverse(suite) {

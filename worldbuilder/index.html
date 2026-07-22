@@ -26,11 +26,19 @@
         </span>
       </button>
       <div class="header-actions">
-        <span class="status-pill"><span></span> Local archive online</span>
+        <button class="palette-trigger" id="paletteButton" type="button" aria-label="Search the archive">
+          <span aria-hidden="true">Search</span>
+          <kbd>&#8984;K</kbd>
+        </button>
+        <button class="storage-pill" id="storagePill" type="button" data-level="ok">
+          <span class="storage-track" aria-hidden="true"></span>
+          <span class="storage-label">&mdash;</span>
+        </button>
         <button class="ghost-button" id="settingsButton" type="button">Settings</button>
         <button class="ghost-button" id="aboutButton" type="button">About</button>
       </div>
     </header>
+    <nav class="module-nav" id="moduleNav" aria-label="Modules"></nav>
 
     <main id="app" class="app-shell" tabindex="-1"></main>
 
@@ -51,6 +59,30 @@
         <div class="modal-body" id="modalBody"></div>
       </section>
     </div>
+
+    <div class="palette-backdrop" id="paletteBackdrop" hidden>
+      <div class="palette" role="dialog" aria-modal="true" aria-labelledby="paletteLabel">
+        <label class="palette-field">
+          <span class="visually-hidden" id="paletteLabel">Search modules and saved entries</span>
+          <input
+            id="paletteInput"
+            type="text"
+            role="combobox"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Jump to a module or saved entry&hellip;"
+            aria-expanded="true"
+            aria-controls="paletteResults"
+            aria-activedescendant="">
+        </label>
+        <ul class="palette-results" id="paletteResults" role="listbox" aria-labelledby="paletteLabel"></ul>
+        <p class="palette-hint">
+          <kbd>&uarr;</kbd><kbd>&darr;</kbd> navigate &middot; <kbd>Enter</kbd> open &middot; <kbd>Esc</kbd> close
+        </p>
+      </div>
+    </div>
+
+    <div class="toast-region" id="toastRegion" role="status" aria-live="polite"></div>
 
     <script type="module" src="js/app.js"></script>
   </body>

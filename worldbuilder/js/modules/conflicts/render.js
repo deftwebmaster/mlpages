@@ -1,4 +1,6 @@
 import { esc, titleCase } from "../../shared/dom.js";
+import { renderMetricBars } from "../../shared/metrics.js";
+import { fitText } from "../../shared/svg.js";
 import { conflictMarkdown } from "./generate.js";
 
 const CONFLICT_TABS = ["Overview", "Parties", "Causes", "Stakes", "Timeline", "Escalation", "Interventions", "Network"];
@@ -180,9 +182,7 @@ function renderOverview(conflict) {
         <p class="eyebrow">Conflict synopsis</p>
         <h2>${esc(conflict.subtitle)}</h2>
         <p class="lede">${esc(conflict.summary)}</p>
-        <div class="metric-grid">
-          ${Object.entries(conflict.metrics).map(([label, value]) => `<article class="data-card"><span class="meta-label">${esc(titleCase(label.replace(/([A-Z])/g, " $1")))}</span><strong>${value}/100</strong></article>`).join("")}
-        </div>
+        ${renderMetricBars(conflict.metrics)}
       </section>
       <aside class="panel">
         <h2>Pressure Network</h2>
@@ -281,8 +281,8 @@ function pressureSvg(conflict) {
     <text x="350" y="184" text-anchor="middle" fill="#101316" font-size="12" font-weight="700">CRISIS</text>
     ${nodes.map(node => `<line x1="350" y1="180" x2="${node.x}" y2="${node.y}" stroke="${accent}" stroke-width="3" opacity=".58"/>`).join("")}
     ${nodes.map(node => `<g tabindex="0">
-      <rect x="${node.x - 46}" y="${node.y - 20}" width="92" height="40" fill="rgba(255,255,255,.08)" stroke="${accent}" stroke-width="2"/>
-      <text x="${node.x}" y="${node.y + 4}" text-anchor="middle" fill="#f2eee6" font-size="10">${esc(node.party.name.slice(0, 15))}</text>
+      <rect x="${node.x - 62}" y="${node.y - 20}" width="124" height="40" fill="rgba(255,255,255,.08)" stroke="${accent}" stroke-width="2"/>
+      <text x="${node.x}" y="${node.y + 4}" text-anchor="middle" fill="#f2eee6" font-size="10">${esc(fitText(node.party.name, 112, 10))}</text>
       <title>${esc(node.party.name)}: ${esc(node.party.publicGoal)}</title>
     </g>`).join("")}
   </svg>`;
