@@ -1,0 +1,10 @@
+{
+  "name": "circuit-breaker-plus",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "check": "node ./scripts/check-board.js"
+  }
+}
