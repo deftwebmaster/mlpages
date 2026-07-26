@@ -1,0 +1,12 @@
+{
+  "name": "circuit-breaker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Circuit Breaker — an offline-ready match-three puzzle game. No build step; the source is the deployable site.",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.mjs 5173",
+    "test": "node tools/test-logic.mjs",
+    "icons": "python3 tools/generate-icons.py"
+  }
+}
