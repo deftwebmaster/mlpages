@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>Circuit Breaker — Match nodes. Build combos. Keep the grid alive.</title>
+<meta name="description" content="Circuit Breaker is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, and stop the grid from overheating.">
+<meta name="theme-color" content="#070b14">
+<meta name="color-scheme" content="dark">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Circuit">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon-180.png">
+<link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+
+<!-- Shared node symbols. Each node type has a distinct shape as well as a colour. -->
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <symbol id="sym-circle" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="26" />
+    </symbol>
+    <symbol id="sym-diamond" viewBox="0 0 100 100">
+      <path d="M50 20 L80 50 L50 80 L20 50 Z" />
+    </symbol>
+    <symbol id="sym-triangle" viewBox="0 0 100 100">
+      <path d="M50 21 L79 72 L21 72 Z" />
+    </symbol>
+    <symbol id="sym-hexagon" viewBox="0 0 100 100">
+      <path d="M50 19 L77 34.5 L77 65.5 L50 81 L23 65.5 L23 34.5 Z" />
+    </symbol>
+    <symbol id="sym-cross" viewBox="0 0 100 100">
+      <path d="M41 20 H59 V41 H80 V59 H59 V80 H41 V59 H20 V41 H41 Z" />
+    </symbol>
+  </defs>
+</svg>
+
+<div id="app" data-screen="loading">
+
+  <!-- ============ LOADING ============ -->
+  <section class="screen screen-loading" id="screen-loading" aria-label="Loading">
+    <div class="boot">
+      <div class="logo logo-sm">
+        <span class="logo-line">CIRCUIT</span>
+        <span class="logo-line logo-line-accent">BREAKER</span>
+      </div>
+      <div class="boot-track" role="progressbar" aria-label="Loading"><span class="boot-pulse"></span></div>
+      <p class="boot-label">INITIALISING GRID</p>
+    </div>
+  </section>
+
+  <!-- ============ MAIN MENU ============ -->
+  <section class="screen screen-menu" id="screen-menu" aria-label="Main menu">
+    <div class="menu-inner">
+      <div class="logo">
+        <span class="logo-line">CIRCUIT</span>
+        <span class="logo-line logo-line-accent">BREAKER</span>
+        <span class="logo-spark" aria-hidden="true"></span>
+      </div>
+      <p class="tagline">Match nodes. Build combos. Keep the grid alive.</p>
+
+      <div class="menu-best">
+        <span class="menu-best-label">BEST SCORE</span>
+        <strong class="menu-best-value" id="menu-best">0</strong>
+        <span class="menu-best-sub" id="menu-games">No runs logged</span>
+      </div>
+
+      <button class="btn btn-primary btn-lg" id="btn-start" type="button">START SYSTEM</button>
+
+      <div class="menu-row">
+        <button class="btn btn-ghost" id="btn-help" type="button">HELP</button>
+        <button class="btn btn-ghost hidden" id="btn-install" type="button">INSTALL</button>
+      </div>
+
+      <div class="toggle-list" role="group" aria-label="Settings">
+        <button class="toggle" id="toggle-sound-menu" type="button" role="switch" aria-checked="true">
+          <span class="toggle-label">SOUND</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+        <button class="toggle" id="toggle-haptics-menu" type="button" role="switch" aria-checked="true">
+          <span class="toggle-label">HAPTICS</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+        <button class="toggle" id="toggle-motion-menu" type="button" role="switch" aria-checked="false">
+          <span class="toggle-label">REDUCED FX</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <p class="menu-foot">Offline-ready · No account required</p>
+    </div>
+  </section>
+
+  <!-- ============ GAME ============ -->
+  <section class="screen screen-game" id="screen-game" aria-label="Game">
+    <header class="hud">
+      <div class="hud-block">
+        <span class="hud-label">SCORE</span>
+        <strong class="hud-score" id="hud-score">0</strong>
+      </div>
+      <div class="hud-block hud-block-right">
+        <span class="hud-label">BEST</span>
+        <strong class="hud-best" id="hud-best">0</strong>
+      </div>
+      <button class="icon-btn" id="btn-pause" type="button" aria-label="Pause game">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5" width="3.4" height="14" rx="1.2"/><rect x="13.6" y="5" width="3.4" height="14" rx="1.2"/></svg>
+      </button>
+    </header>
+
+    <div class="board-outer" id="board-outer">
+      <div class="combo" id="combo" aria-hidden="true"></div>
+      <div class="board" id="board">
+        <div class="board-grid" id="board-grid" aria-hidden="true"></div>
+        <div class="board-nodes" id="board-nodes" role="application"
+             aria-label="Circuit grid. Use arrow keys to move, Enter to select a node, then Enter on an adjacent node to swap."
+             tabindex="0"></div>
+        <div class="board-fx" id="board-fx" aria-hidden="true"></div>
+        <div class="board-flash" id="board-flash" aria-hidden="true"></div>
+        <div class="board-banner" id="board-banner" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <div class="heat-panel">
+      <div class="heat-head">
+        <span class="heat-title">SYSTEM HEAT</span>
+        <span class="heat-rate" id="heat-rate" title="Heat your next move will add">+4/MOVE</span>
+        <span class="heat-value" id="heat-value">15%</span>
+      </div>
+      <div class="heat-track" id="heat-track" role="meter" aria-label="System heat" aria-valuemin="0" aria-valuemax="100" aria-valuenow="15">
+        <div class="heat-fill" id="heat-fill"></div>
+        <div class="heat-ticks" aria-hidden="true"><i style="left:50%"></i><i style="left:75%"></i><i style="left:90%"></i></div>
+      </div>
+      <p class="heat-status" id="heat-status">SYSTEM STABLE</p>
+    </div>
+
+    <p class="sr-only" id="live-region" role="status" aria-live="polite"></p>
+  </section>
+
+  <!-- ============ OVERLAYS ============ -->
+  <div class="overlay" id="overlay-pause" role="dialog" aria-modal="true" aria-labelledby="pause-title" hidden>
+    <div class="panel">
+      <h2 class="panel-title" id="pause-title">PAUSED</h2>
+      <p class="panel-sub">Grid suspended. No heat is accumulating.</p>
+      <div class="toggle-list" role="group" aria-label="Settings">
+        <button class="toggle" id="toggle-sound-pause" type="button" role="switch" aria-checked="true">
+          <span class="toggle-label">SOUND</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+        <button class="toggle" id="toggle-haptics-pause" type="button" role="switch" aria-checked="true">
+          <span class="toggle-label">HAPTICS</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+        <button class="toggle" id="toggle-motion-pause" type="button" role="switch" aria-checked="false">
+          <span class="toggle-label">REDUCED FX</span><span class="toggle-pip" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-resume" type="button">RESUME</button>
+        <button class="btn btn-ghost" id="btn-restart" type="button">RESTART</button>
+        <button class="btn btn-ghost" id="btn-quit" type="button">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-help" role="dialog" aria-modal="true" aria-labelledby="help-title" hidden>
+    <div class="panel panel-wide">
+      <h2 class="panel-title" id="help-title">HOW IT WORKS</h2>
+      <ul class="help-list">
+        <li><span class="help-key" aria-hidden="true">1</span><span>Swap two <strong>adjacent</strong> nodes by tapping both, or by swiping one node.</span></li>
+        <li><span class="help-key" aria-hidden="true">2</span><span>A swap only holds if it lines up <strong>three or more</strong> matching nodes.</span></li>
+        <li><span class="help-key" aria-hidden="true">3</span><span>Every valid move adds heat, and <strong>each move costs more</strong> the longer you last. Reach 100% and the system shuts down.</span></li>
+        <li><span class="help-key" aria-hidden="true">4</span><span>Matches of four or more, and chain reactions, <strong>cool the grid</strong> and multiply your score.</span></li>
+        <li><span class="help-key" aria-hidden="true">5</span><span>Match <strong>four in a line</strong> to forge a <em>Line Breaker</em>. Match it again to discharge its whole row or column.</span></li>
+      </ul>
+      <div class="help-demo" aria-hidden="true">
+        <div class="help-demo-row">
+          <span class="demo-node demo-cyan"><svg viewBox="0 0 100 100"><use href="#sym-circle"/></svg></span>
+          <span class="demo-node demo-cyan"><svg viewBox="0 0 100 100"><use href="#sym-circle"/></svg></span>
+          <span class="demo-node demo-violet demo-swap"><svg viewBox="0 0 100 100"><use href="#sym-diamond"/></svg></span>
+          <span class="demo-arrow">⇄</span>
+          <span class="demo-node demo-cyan demo-swap"><svg viewBox="0 0 100 100"><use href="#sym-circle"/></svg></span>
+        </div>
+        <p class="help-demo-cap">Swap to complete the line</p>
+      </div>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-help-close" type="button">GOT IT</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay overlay-over" id="overlay-over" role="dialog" aria-modal="true" aria-labelledby="over-title" hidden>
+    <div class="panel">
+      <h2 class="panel-title panel-title-danger" id="over-title">SYSTEM OVERLOAD</h2>
+      <p class="new-best hidden" id="new-best">NEW HIGH SCORE</p>
+      <div class="final-score">
+        <span class="hud-label">FINAL SCORE</span>
+        <strong id="final-score">0</strong>
+        <span class="final-best">BEST <em id="final-best">0</em></span>
+      </div>
+      <dl class="stat-grid">
+        <div class="stat"><dt>VALID MOVES</dt><dd id="stat-moves">0</dd></div>
+        <div class="stat"><dt>LARGEST CHAIN</dt><dd id="stat-cascade">0</dd></div>
+        <div class="stat"><dt>LONGEST MATCH</dt><dd id="stat-match">0</dd></div>
+        <div class="stat"><dt>NODES CLEARED</dt><dd id="stat-cleared">0</dd></div>
+      </dl>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-reboot" type="button">REBOOT</button>
+        <button class="btn btn-ghost" id="btn-over-menu" type="button">MAIN MENU</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay-confirm" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="panel panel-narrow">
+      <h2 class="panel-title" id="confirm-title">ABANDON RUN?</h2>
+      <p class="panel-sub" id="confirm-body">This run is still active. Your score will not be saved unless it beats your best.</p>
+      <div class="panel-actions">
+        <button class="btn btn-primary" id="btn-confirm-yes" type="button">CONFIRM</button>
+        <button class="btn btn-ghost" id="btn-confirm-no" type="button">CANCEL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- First-run coaching -->
+  <div class="tutorial" id="tutorial" hidden>
+    <p class="tutorial-text" id="tutorial-text"></p>
+    <button class="tutorial-close" id="tutorial-close" type="button" aria-label="Dismiss tip">DISMISS</button>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>

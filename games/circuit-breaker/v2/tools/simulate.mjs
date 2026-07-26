@@ -1,0 +1,205 @@
+/**
+ * Headless game simulation, shared by the tests and the pacing tuner.
+ *
+ * It drives the real board, matching, scoring and heat modules through the same
+ * turn pipeline the game uses, so anything measured here reflects actual play.
+ */
+
+import { CONFIG, heatForMove } from '../js/config.js';
+import { Board } from '../js/board.js';
+import { findMatchGroups, groupCells, planSpecials, expandActivations, hasAnyMatch } from '../js/matches.js';
+import { evaluateStep } from '../js/scoring.js';
+import { Heat } from '../js/heat.js';
+
+/** Every legal swap currently on the board. */
+export function allMoves(board) {
+  const moves = [];
+  for (let r = 0; r < board.rows; r++) {
+    for (let c = 0; c < board.cols; c++) {
+      if (c + 1 < board.cols) {
+        const a = { row: r, col: c };
+        const b = { row: r, col: c + 1 };
+        if (board.swapCreatesMatch(a, b)) moves.push({ a, b });
+      }
+      if (r + 1 < board.rows) {
+        const a = { row: r, col: c };
+        const b = { row: r + 1, col: c };
+        if (board.swapCreatesMatch(a, b)) moves.push({ a, b });
+      }
+    }
+  }
+  return moves;
+}
+
+/** Picks the move whose immediate resolution cools most, then scores most. */
+export function greedyMove(board) {
+  const moves = allMoves(board);
+  if (!moves.length) return null;
+  let best = null;
+  for (const move of moves) {
+    board.swap(move.a, move.b);
+    const groups = findMatchGroups(board.grid);
+    const { cells, activations, keys } = expandActivations(board, groupCells(groups));
+    const evaluation = evaluateStep({
+      groups,
+      activations: activations.length,
+      fullLines: board.countFullLines(keys),
+      clearedCount: cells.length,
+      step: 1,
+    });
+    board.swap(move.a, move.b);
+    const rank = evaluation.cooling * 1000 + evaluation.points;
+    if (!best || rank > best.rank) best = { move, rank };
+  }
+  return best.move;
+}
+
+/**
+ * Plays one complete game.
+ *
+ * @param {object}   options
+ * @param {string}   options.strategy  'first' (careless) or 'greedy' (skilled)
+ * @param {number}   options.maxTurns  safety cap
+ * @param {function} options.validate  optional per-step invariant checker
+ */
+export function simulateGame({ strategy = 'first', maxTurns = 600, validate = null } = {}) {
+  const board = new Board();
+  board.generate();
+  const heat = new Heat();
+
+  const stats = {
+    turns: 0,
+    reshuffles: 0,
+    specialsCreated: 0,
+    specialsActivated: 0,
+    deepestCascade: 0,
+    longestMatch: 0,
+    nodesCleared: 0,
+    score: 0,
+    fullLines: 0,
+    cascadeTurns: 0,
+    movesBeforeCritical: null,
+    peakHeat: heat.value,
+  };
+
+  const chooseMove = () => (strategy === 'greedy' ? greedyMove(board) : board.findPossibleMove());
+
+  while (!heat.overloaded && stats.turns < maxTurns) {
+    let move = chooseMove();
+    let guard = 0;
+    while (!move && guard++ < 10) {
+      board.reshuffle();
+      stats.reshuffles++;
+      if (validate && hasAnyMatch(board.grid)) throw new Error('reshuffle left an immediate match');
+      move = chooseMove();
+    }
+    if (!move) throw new Error('board became unrecoverable');
+
+    board.swap(move.a, move.b);
+    stats.turns++;
+    heat.add(heatForMove(stats.turns));
+    if (stats.movesBeforeCritical === null && heat.value >= 75) {
+      stats.movesBeforeCritical = stats.turns;
+    }
+
+    let step = 0;
+    for (;;) {
+      const groups = findMatchGroups(board.grid);
+      if (!groups.length) break;
+      step++;
+      if (step > 60) throw new Error('resolution failed to terminate');
+
+      const matched = groupCells(groups);
+      const plans = planSpecials(groups, step === 1 ? [move.a, move.b] : []);
+      const { cells, activations, keys } = expandActivations(board, matched);
+      const fullLines = board.countFullLines(keys);
+      const evaluation = evaluateStep({
+        groups,
+        activations: activations.length,
+        fullLines,
+        clearedCount: cells.length,
+        step,
+      });
+
+      stats.score += evaluation.points;
+      stats.fullLines += fullLines;
+      stats.specialsActivated += activations.length;
+      stats.nodesCleared += cells.length;
+      stats.deepestCascade = Math.max(stats.deepestCascade, step);
+      stats.longestMatch = Math.max(stats.longestMatch, ...groups.map((g) => g.length));
+
+      if (validate) validate({ board, cells, step, turn: stats.turns, phase: 'before-clear' });
+
+      board.clearCells(cells);
+      plans.forEach((plan) => {
+        if (board.at(plan.row, plan.col)) return;
+        board.placeNode(plan.row, plan.col, plan.type, plan.special);
+        stats.specialsCreated++;
+      });
+      board.collapse();
+
+      if (validate) validate({ board, cells, step, turn: stats.turns, phase: 'after-collapse' });
+
+      heat.cool(evaluation.cooling);
+      stats.peakHeat = Math.max(stats.peakHeat, heat.peak);
+    }
+    if (step >= 2) stats.cascadeTurns++;
+  }
+
+  return { stats, heat, board };
+}
+
+/** Runs `count` games and reduces them to comparable aggregates. */
+export function runBatch({ strategy, count, maxTurns = 600 }) {
+  const moves = [];
+  const scores = [];
+  const totals = {
+    specialsCreated: 0,
+    specialsActivated: 0,
+    reshuffles: 0,
+    fullLines: 0,
+    cascadeTurns: 0,
+    deepestCascade: 0,
+    criticalAt: 0,
+    criticalRuns: 0,
+  };
+
+  for (let i = 0; i < count; i++) {
+    const { stats } = simulateGame({ strategy, maxTurns });
+    moves.push(stats.turns);
+    scores.push(stats.score);
+    totals.specialsCreated += stats.specialsCreated;
+    totals.specialsActivated += stats.specialsActivated;
+    totals.reshuffles += stats.reshuffles;
+    totals.fullLines += stats.fullLines;
+    totals.cascadeTurns += stats.cascadeTurns;
+    totals.deepestCascade = Math.max(totals.deepestCascade, stats.deepestCascade);
+    if (stats.movesBeforeCritical !== null) {
+      totals.criticalAt += stats.movesBeforeCritical;
+      totals.criticalRuns++;
+    }
+  }
+
+  moves.sort((a, b) => a - b);
+  scores.sort((a, b) => a - b);
+  const pct = (list, p) => list[Math.min(list.length - 1, Math.floor(list.length * p))];
+  const mean = (list) => list.reduce((s, n) => s + n, 0) / list.length;
+
+  return {
+    count,
+    movesMean: mean(moves),
+    movesMedian: pct(moves, 0.5),
+    movesP10: pct(moves, 0.1),
+    movesP90: pct(moves, 0.9),
+    scoreMean: mean(scores),
+    scoreMedian: pct(scores, 0.5),
+    breakersMade: totals.specialsCreated / count,
+    breakersFired: totals.specialsActivated / count,
+    cascadeTurnShare: totals.cascadeTurns / moves.reduce((s, n) => s + n, 0),
+    deepestCascade: totals.deepestCascade,
+    reshuffles: totals.reshuffles / count,
+    criticalAt: totals.criticalRuns ? totals.criticalAt / totals.criticalRuns : null,
+  };
+}
+
+export { CONFIG };
