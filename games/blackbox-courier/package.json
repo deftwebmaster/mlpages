@@ -1,0 +1,18 @@
+{
+  "name": "blackbox-courier",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Deliver the payload before the route collapses. A high-speed browser arcade game with procedurally assembled routes, built with vanilla JavaScript and Canvas.",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.mjs 8123",
+    "serve": "node tools/serve.mjs 8123",
+    "audit": "node tools/audit.mjs",
+    "icons": "node tools/make-icons.mjs"
+  },
+  "keywords": ["game", "canvas", "pwa", "arcade", "procedural-generation"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
