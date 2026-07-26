@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Dead Drop</title>
+<meta name="description" content="Get in. Get the package. Get out unseen. A turn-based stealth puzzle game.">
+<meta name="theme-color" content="#0b0f14">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div id="app" class="app">
+
+  <!-- LOADING -->
+  <section id="screen-loading" class="screen screen-loading" aria-live="polite">
+    <div class="loading-logo">DEAD DROP</div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </section>
+
+  <!-- MAIN MENU -->
+  <section id="screen-menu" class="screen screen-menu" hidden>
+    <div class="menu-logo">
+      <h1>DEAD DROP</h1>
+      <p class="tagline">Get in. Get the package. Get out unseen.</p>
+    </div>
+    <nav class="menu-actions">
+      <button class="btn btn-primary" id="btn-play" type="button">Play</button>
+      <button class="btn" id="btn-mission-select" type="button">Mission Select</button>
+      <button class="btn" id="btn-settings" type="button">Settings</button>
+      <button class="btn" id="btn-statistics" type="button">Statistics</button>
+      <button class="btn" id="btn-install" type="button" hidden>Install App</button>
+    </nav>
+  </section>
+
+  <!-- MISSION SELECT -->
+  <section id="screen-mission-select" class="screen screen-panel" hidden>
+    <header class="panel-header">
+      <button class="btn-icon" id="btn-mission-select-back" type="button" aria-label="Back to menu">&larr;</button>
+      <h2>Mission Select</h2>
+    </header>
+    <div id="mission-grid" class="mission-grid"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="screen-settings" class="screen screen-panel" hidden>
+    <header class="panel-header">
+      <button class="btn-icon" id="btn-settings-back" type="button" aria-label="Back to menu">&larr;</button>
+      <h2>Settings</h2>
+    </header>
+    <div class="settings-list">
+      <label class="settings-row"><span>Sound</span><input type="checkbox" id="setting-sound"></label>
+      <label class="settings-row"><span>Music</span><input type="checkbox" id="setting-music"></label>
+      <label class="settings-row"><span>Haptics</span><input type="checkbox" id="setting-haptics"></label>
+      <label class="settings-row"><span>Reduced Motion</span><input type="checkbox" id="setting-reduced-motion"></label>
+      <button class="btn btn-danger" id="btn-reset-progress" type="button">Reset Progress</button>
+    </div>
+  </section>
+
+  <!-- STATISTICS -->
+  <section id="screen-statistics" class="screen screen-panel" hidden>
+    <header class="panel-header">
+      <button class="btn-icon" id="btn-statistics-back" type="button" aria-label="Back to menu">&larr;</button>
+      <h2>Statistics</h2>
+    </header>
+    <dl class="stats-list" id="stats-list"></dl>
+  </section>
+
+  <!-- PLAYING -->
+  <section id="screen-playing" class="screen screen-playing" hidden>
+    <header class="hud-top">
+      <button class="btn-icon" id="btn-pause" type="button" aria-label="Pause">&#9646;&#9646;</button>
+      <div class="hud-mission">
+        <span id="hud-mission-name">Mission</span>
+      </div>
+      <div class="hud-stats">
+        <span id="hud-move-count" class="hud-chip">0 moves</span>
+        <span id="hud-package-status" class="hud-chip hud-package">Package</span>
+      </div>
+    </header>
+
+    <div class="board-wrap" id="board-wrap">
+      <canvas id="board-canvas" aria-label="Game board" role="img"></canvas>
+      <div id="planning-banner" class="planning-banner" hidden></div>
+    </div>
+
+    <footer class="hud-bottom">
+      <button class="btn-icon" id="btn-undo" type="button" aria-label="Undo">&#8630;</button>
+      <button class="btn-icon" id="btn-restart" type="button" aria-label="Restart">&#8635;</button>
+      <button class="btn-icon" id="btn-plan-execute" type="button" aria-label="Execute plan" hidden>&#9654;</button>
+      <button class="btn-icon" id="btn-plan-cancel" type="button" aria-label="Cancel plan" hidden>&#10005;</button>
+    </footer>
+  </section>
+
+  <!-- PAUSE OVERLAY -->
+  <div id="overlay-pause" class="overlay" hidden>
+    <div class="overlay-card">
+      <h2>Paused</h2>
+      <button class="btn btn-primary" id="btn-resume" type="button">Resume</button>
+      <button class="btn" id="btn-pause-restart" type="button">Restart</button>
+      <button class="btn" id="btn-pause-menu" type="button">Menu</button>
+    </div>
+  </div>
+
+  <!-- MISSION COMPLETE OVERLAY -->
+  <div id="overlay-complete" class="overlay" hidden>
+    <div class="overlay-card">
+      <h2>Mission Complete</h2>
+      <p id="complete-moves"></p>
+      <p id="complete-best"></p>
+      <div class="stars" id="complete-stars" aria-hidden="true"></div>
+      <button class="btn btn-primary" id="btn-next-mission" type="button">Next Mission</button>
+      <button class="btn" id="btn-complete-restart" type="button">Restart</button>
+      <button class="btn" id="btn-complete-menu" type="button">Return to Menu</button>
+    </div>
+  </div>
+
+  <!-- MISSION FAILED OVERLAY -->
+  <div id="overlay-failed" class="overlay" hidden>
+    <div class="overlay-card">
+      <h2>Mission Failed</h2>
+      <p id="failed-reason"></p>
+      <button class="btn btn-primary" id="btn-failed-restart" type="button">Restart</button>
+      <button class="btn" id="btn-failed-menu" type="button">Menu</button>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

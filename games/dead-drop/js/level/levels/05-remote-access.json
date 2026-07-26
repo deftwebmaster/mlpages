@@ -1,0 +1,39 @@
+{
+  "id": "05-remote-access",
+  "name": "Remote Access",
+  "order": 5,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 28,
+  "tiles": [
+    "##########",
+    "#W..S....#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#.....#D##",
+    "#.....#P.#",
+    "#.....#.X#",
+    "##########"
+  ],
+  "entities": {
+    "guards": [
+      {
+        "id": "g1",
+        "start": [2, 5],
+        "facing": "E",
+        "route": [[2, 5], [3, 5], [4, 5], [5, 5], [6, 5], [7, 5]],
+        "patrolMode": "pingpong"
+      }
+    ],
+    "switches": [
+      { "id": "sw1", "pos": [1, 1], "linkedDoorIds": ["d1"] }
+    ],
+    "doors": [
+      { "id": "d1", "pos": [7, 6], "locked": false, "startOpen": false, "linkedSwitchIds": ["sw1"] }
+    ],
+    "package": { "pos": [7, 7] },
+    "extraction": { "pos": [8, 8] }
+  }
+}

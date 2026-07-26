@@ -1,0 +1,12 @@
+[
+  { "id": "01-first-steps", "file": "01-first-steps.json", "name": "First Steps" },
+  { "id": "02-patrol", "file": "02-patrol.json", "name": "Patrol" },
+  { "id": "03-eyes-in-the-walls", "file": "03-eyes-in-the-walls.json", "name": "Eyes in the Walls" },
+  { "id": "04-behind-closed-doors", "file": "04-behind-closed-doors.json", "name": "Behind Closed Doors" },
+  { "id": "05-remote-access", "file": "05-remote-access.json", "name": "Remote Access" },
+  { "id": "06-two-sets-of-eyes", "file": "06-two-sets-of-eyes.json", "name": "Two Sets of Eyes" },
+  { "id": "07-clearance-required", "file": "07-clearance-required.json", "name": "Clearance Required" },
+  { "id": "08-moving-eyes", "file": "08-moving-eyes.json", "name": "Moving Eyes" },
+  { "id": "09-mixed-signals", "file": "09-mixed-signals.json", "name": "Mixed Signals" },
+  { "id": "10-dead-drop", "file": "10-dead-drop.json", "name": "Dead Drop" }
+]

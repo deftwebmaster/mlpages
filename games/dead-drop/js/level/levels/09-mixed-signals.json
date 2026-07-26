@@ -1,0 +1,37 @@
+{
+  "id": "09-mixed-signals",
+  "name": "Mixed Signals",
+  "order": 9,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 16,
+  "tiles": [
+    "##########",
+    "#.....#..#",
+    "#.W...#..#",
+    "#......D##",
+    "#S.......#",
+    "#........#",
+    "#......L##",
+    "#......P.#",
+    "#.......X#",
+    "##########"
+  ],
+  "entities": {
+    "cameras": [
+      { "id": "c1", "pos": [8, 2], "sequence": ["N", "E", "S", "W"], "mode": "continuous" }
+    ],
+    "switches": [
+      { "id": "sw1", "pos": [2, 2], "linkedDoorIds": ["d1"] }
+    ],
+    "doors": [
+      { "id": "d1", "pos": [7, 3], "locked": false, "startOpen": false, "linkedSwitchIds": ["sw1"] },
+      { "id": "d2", "pos": [7, 6], "locked": true, "startOpen": false }
+    ],
+    "keycards": [
+      { "id": "kc1", "pos": [7, 1], "matchesDoorIds": ["d2"] }
+    ],
+    "package": { "pos": [7, 7] },
+    "extraction": { "pos": [8, 8] }
+  }
+}

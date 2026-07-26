@@ -1,0 +1,40 @@
+{
+  "id": "06-two-sets-of-eyes",
+  "name": "Two Sets of Eyes",
+  "order": 6,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 34,
+  "tiles": [
+    "##########",
+    "#S.......#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#X......P#",
+    "##########"
+  ],
+  "entities": {
+    "guards": [
+      {
+        "id": "g1",
+        "start": [2, 3],
+        "facing": "E",
+        "route": [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3]],
+        "patrolMode": "pingpong"
+      },
+      {
+        "id": "g2",
+        "start": [6, 2],
+        "facing": "S",
+        "route": [[6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7]],
+        "patrolMode": "pingpong"
+      }
+    ],
+    "package": { "pos": [8, 8] },
+    "extraction": { "pos": [1, 8] }
+  }
+}

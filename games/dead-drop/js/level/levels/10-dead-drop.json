@@ -1,0 +1,55 @@
+{
+  "id": "10-dead-drop",
+  "name": "Dead Drop",
+  "order": 10,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 32,
+  "tiles": [
+    "##########",
+    "####...###",
+    "####...###",
+    "#####D####",
+    "#S......W#",
+    "#........#",
+    "#........#",
+    "#####L####",
+    "####P.X###",
+    "##########"
+  ],
+  "entities": {
+    "guards": [
+      {
+        "id": "gA",
+        "start": [2, 4],
+        "facing": "E",
+        "route": [[2, 4], [3, 4]],
+        "patrolMode": "pingpong",
+        "visionRange": 2
+      },
+      {
+        "id": "gB",
+        "start": [7, 6],
+        "facing": "E",
+        "route": [[7, 6], [8, 6]],
+        "patrolMode": "pingpong",
+        "visionRange": 1
+      }
+    ],
+    "cameras": [
+      { "id": "cam1", "pos": [5, 5], "sequence": ["E", "W"], "mode": "sweep", "visionRange": 3 }
+    ],
+    "switches": [
+      { "id": "sw1", "pos": [8, 4], "linkedDoorIds": ["d1"] }
+    ],
+    "doors": [
+      { "id": "d1", "pos": [5, 3], "locked": false, "startOpen": false, "linkedSwitchIds": ["sw1"] },
+      { "id": "d2", "pos": [5, 7], "locked": true, "startOpen": false }
+    ],
+    "keycards": [
+      { "id": "kc1", "pos": [4, 1], "matchesDoorIds": ["d2"] }
+    ],
+    "package": { "pos": [4, 8] },
+    "extraction": { "pos": [6, 8] }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "id": "08-moving-eyes",
+  "name": "Moving Eyes",
+  "order": 8,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 36,
+  "tiles": [
+    "##########",
+    "#S......P#",
+    "#........#",
+    "#........#",
+    "###.######",
+    "#........#",
+    "#........#",
+    "#######.##",
+    "#.......X#",
+    "##########"
+  ],
+  "entities": {
+    "cameras": [
+      { "id": "c1", "pos": [3, 4], "sequence": ["N", "E", "S", "W"], "mode": "pause", "pauseDuration": 2 },
+      { "id": "c2", "pos": [7, 7], "sequence": ["N", "E"], "mode": "sweep" }
+    ],
+    "package": { "pos": [8, 1] },
+    "extraction": { "pos": [8, 8] }
+  }
+}

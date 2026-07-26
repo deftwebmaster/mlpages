@@ -1,0 +1,39 @@
+{
+  "id": "04-behind-closed-doors",
+  "name": "Behind Closed Doors",
+  "order": 4,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 32,
+  "tiles": [
+    "##########",
+    "#S.......#",
+    "#.......P#",
+    "#........#",
+    "#...W....#",
+    "#####D####",
+    "#........#",
+    "#........#",
+    "#.......X#",
+    "##########"
+  ],
+  "entities": {
+    "guards": [
+      {
+        "id": "g1",
+        "start": [2, 7],
+        "facing": "E",
+        "route": [[2, 7], [3, 7], [4, 7], [5, 7], [6, 7]],
+        "patrolMode": "pingpong"
+      }
+    ],
+    "switches": [
+      { "id": "sw1", "pos": [4, 4], "linkedDoorIds": ["d1"] }
+    ],
+    "doors": [
+      { "id": "d1", "pos": [5, 5], "locked": false, "startOpen": false, "linkedSwitchIds": ["sw1"] }
+    ],
+    "package": { "pos": [8, 2] },
+    "extraction": { "pos": [8, 8] }
+  }
+}

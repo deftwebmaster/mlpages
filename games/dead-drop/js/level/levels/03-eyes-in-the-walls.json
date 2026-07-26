@@ -1,0 +1,27 @@
+{
+  "id": "03-eyes-in-the-walls",
+  "name": "Eyes in the Walls",
+  "order": 3,
+  "width": 10,
+  "height": 10,
+  "targetMoves": 34,
+  "tiles": [
+    "##########",
+    "#S......X#",
+    "#........#",
+    "#........#",
+    "#........#",
+    "#####.####",
+    "#........#",
+    "#........#",
+    "#.......P#",
+    "##########"
+  ],
+  "entities": {
+    "cameras": [
+      { "id": "c1", "pos": [5, 5], "sequence": ["N", "E", "S", "W"], "mode": "continuous" }
+    ],
+    "package": { "pos": [8, 8] },
+    "extraction": { "pos": [8, 1] }
+  }
+}
