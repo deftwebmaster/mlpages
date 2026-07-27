@@ -1,8 +1,29 @@
 import { LOCATIONS, getLocation } from '../data/locations.js';
 import { spendCash, addCash } from './finance-system.js';
 import { roundTo, clamp } from '../utils/math.js';
+import { isFeatureUnlocked } from './progression-system.js';
+
+/**
+ * Beyond each location's own reputation/cash requirement, expanding to a
+ * second location requires the "Time to Expand" milestone, and expanding
+ * past three requires "Regional Player" — this keeps the milestone system
+ * meaningfully gating growth rather than just being a reputation checkpoint
+ * the player blows past incidentally.
+ */
+export function getExpansionGateReason(state) {
+  const ownedCount = state.locations.ownedIds.length;
+  if (ownedCount >= 1 && !isFeatureUnlocked(state, 'second-location')) {
+    return 'Reach a $2,500 business value to unlock a second location.';
+  }
+  if (ownedCount >= 3 && !isFeatureUnlocked(state, 'regional-expansion')) {
+    return 'Operate three locations to unlock further regional expansion.';
+  }
+  return null;
+}
 
 export function getAvailableLocations(state) {
+  const gateReason = getExpansionGateReason(state);
+  if (gateReason) return [];
   return LOCATIONS.filter((loc) => {
     if (state.locations.ownedIds.includes(loc.id)) return false;
     const req = loc.unlockRequirement || {};
@@ -14,6 +35,7 @@ export function isLocationUnlocked(state, locationId) {
   const location = getLocation(locationId);
   if (!location) return false;
   if (location.id === 'driveway') return true;
+  if (getExpansionGateReason(state)) return false;
   const req = location.unlockRequirement || {};
   return state.reputation.score >= (req.reputation || 0) && state.finances.cash >= (req.cash || 0);
 }

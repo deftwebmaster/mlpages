@@ -4,6 +4,7 @@ import { getActiveSlot, loadFromSlot, saveToSlot, scheduleAutosave } from './sta
 import { initRouter, registerRoute } from './router.js';
 import { mountBottomNav } from './components/bottom-nav.js';
 import { initToasts, showToast } from './components/toast.js';
+import { initAudio } from './systems/audio-system.js';
 import { formatMoney, formatDate, capitalize } from './utils/format.js';
 import { getReputationTier } from './systems/progression-system.js';
 import { ensureDayBriefing } from './systems/briefing-system.js';
@@ -35,6 +36,7 @@ if (document.readyState !== 'loading') boot();
 
 async function boot() {
   initToasts();
+  initAudio(() => getState()?.settings?.soundEnabled ?? true);
   registerServiceWorker();
   applyThemePreferenceEarly();
 

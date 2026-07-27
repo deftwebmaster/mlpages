@@ -123,6 +123,29 @@ export function applyDailySpoilage(state) {
   return spoiledSummary;
 }
 
+const AUTO_RESTOCK_IDS = ['lemons', 'sugar', 'water', 'ice', 'cups'];
+
+/**
+ * Automated Ordering (business upgrade) quietly tops up the essentials
+ * whenever they run low, so a late-game player isn't stuck micromanaging the
+ * same five ingredients they mastered on day one. Returns the ingredients
+ * (with quantity added) it restocked, if any.
+ */
+export function autoRestockIfEnabled(state) {
+  if (!getUpgradeEffects(state).autoRestock) return [];
+  const restocked = [];
+  for (const id of AUTO_RESTOCK_IDS) {
+    if (!state.unlockedIngredients.includes(id)) continue;
+    const ingredient = getIngredient(id);
+    const entry = state.inventory[id];
+    const lowThreshold = ingredient.packSize * 0.5;
+    if ((entry?.quantity || 0) >= lowThreshold) continue;
+    const result = purchaseIngredient(state, id, 1);
+    if (result.success) restocked.push({ id, name: ingredient.name, quantityAdded: result.quantityAdded });
+  }
+  return restocked;
+}
+
 export function getFreshnessLabel(ingredientId, state) {
   const entry = state.inventory[ingredientId];
   const ingredient = getIngredient(ingredientId);

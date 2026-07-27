@@ -1,7 +1,16 @@
 import { onNotify } from '../systems/notification-system.js';
 import { NOTIFICATION_DURATION_MS } from '../utils/constants.js';
+import { playSound } from '../systems/audio-system.js';
 
 let initialized = false;
+
+const SOUND_BY_TOAST_TYPE = {
+  success: 'success',
+  achievement: 'achievement',
+  milestone: 'milestone',
+  error: 'error',
+  info: 'info',
+};
 
 export function initToasts() {
   if (initialized) return;
@@ -10,6 +19,7 @@ export function initToasts() {
 }
 
 export function showToast(message, type = 'info') {
+  playSound(SOUND_BY_TOAST_TYPE[type] || 'info');
   const root = document.getElementById('toast-root');
   if (!root) return;
   const el = document.createElement('div');

@@ -7,7 +7,7 @@ import {
   perCupIngredients, costPerCup, qualityScore, unitCost, refreshMenuUnlocks,
 } from './recipe-system.js';
 import {
-  maxCupsFromInventory, consumeIngredient, applyDailySpoilage,
+  maxCupsFromInventory, consumeIngredient, applyDailySpoilage, autoRestockIfEnabled,
 } from './inventory-system.js';
 import { getUpgradeEffects } from './upgrade-system.js';
 import { getActiveCompetitors } from '../simulation/competitor-model.js';
@@ -48,7 +48,8 @@ export function getPrepEstimate(state) {
   const demandRange = estimateDemandRange(dayModifier, location, location.hours);
   const priceExpectation = computeLocalPriceExpectation({ location, reputation: state.reputation.score, quality });
   const reaction = priceReaction(state.pricing.price, priceExpectation);
-  const maxCupsAffordable = maxCupsFromInventory(state, perCupIngredients(menuItemId, recipe));
+  const batchCap = getUpgradeEffects(state).batchSize || 20;
+  const maxCupsAffordable = Math.min(maxCupsFromInventory(state, perCupIngredients(menuItemId, recipe)), batchCap);
 
   return {
     demandRange,
@@ -56,6 +57,7 @@ export function getPrepEstimate(state) {
     priceExpectation,
     reaction,
     maxCupsAffordable,
+    batchCap,
     quality,
     potentialRevenue: roundTo(state.production.cupsPlanned * state.pricing.price, 2),
     estimatedMargin: roundTo(state.pricing.price - cupCost, 2),
@@ -67,7 +69,8 @@ export function prepareBatch(state, cupsRequested) {
   const menuItemId = state.recipes.activeMenuItemId;
   const recipe = state.recipes.current;
   const perCup = perCupIngredients(menuItemId, recipe);
-  const maxCups = maxCupsFromInventory(state, perCup);
+  const batchCap = getUpgradeEffects(state).batchSize || 20;
+  const maxCups = Math.min(maxCupsFromInventory(state, perCup), batchCap);
   const actualCups = Math.min(cupsRequested, maxCups);
 
   if (actualCups <= 0) {
@@ -93,7 +96,8 @@ export function prepareBatch(state, cupsRequested) {
 /** Consume more inventory mid-day for the "prepare another batch" live decision. */
 export function prepareAdditionalBatch(state, session, cupsRequested) {
   const perCup = perCupIngredients(session.menuItem.id, session.recipe);
-  const maxCups = maxCupsFromInventory(state, perCup);
+  const batchCap = getUpgradeEffects(state).batchSize || 20;
+  const maxCups = Math.min(maxCupsFromInventory(state, perCup), batchCap);
   const actualCups = Math.min(cupsRequested, maxCups);
   if (actualCups <= 0) return { success: false, reason: 'insufficient-ingredients' };
   for (const [id, amountPerCup] of Object.entries(perCup)) {
@@ -122,7 +126,10 @@ export function startDay(state) {
     menuItem,
     recipe: state.pendingPrep.recipe,
     price: state.pendingPrep.price,
-    quality: clamp(quality + empContribution.satisfactionBonus, 0, 1.3),
+    quality: clamp(
+      quality + empContribution.satisfactionBonus + effects.appealBonus + effects.satisfactionBonus + (effects.prepSpeed - 1) * 0.05,
+      0, 1.3
+    ),
     reputation: state.reputation.score,
     brandAwareness: state.reputation.brandAwareness,
     campaignReach,
@@ -130,6 +137,8 @@ export function startDay(state) {
     competitorAggression: difficulty.competitorAggression,
     cupsAvailable: state.pendingPrep.cupsPlanned,
     serviceSpeedFactor: effects.serviceSpeed * empContribution.speedBonus,
+    capacityBonus: effects.capacity,
+    waitTolerance: effects.waitTolerance,
     localActivity: state.today.localActivity,
     rngSeed: (state.meta.rngSeed + state.calendar.day * 104729 + 17) >>> 0,
   });
@@ -273,6 +282,11 @@ export function advanceToNextDay(state) {
   const { failedClients } = tickWholesale(state);
   for (const clientName of failedClients) {
     notify(`Missed the delivery deadline for ${clientName} — contract penalty applied.`, 'error');
+  }
+
+  const restocked = autoRestockIfEnabled(state);
+  if (restocked.length) {
+    notify(`Automated Ordering restocked ${restocked.map((r) => r.name).join(', ')}.`, 'info');
   }
 
   state.ui.dayPhase = 'briefing';

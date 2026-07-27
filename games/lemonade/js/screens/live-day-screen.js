@@ -2,7 +2,7 @@ import { getState, setState } from '../state/game-store.js';
 import { simulateTick, applyEventEffectsToSession, getSessionProgress } from '../simulation/day-simulator.js';
 import { finalizeDay, prepareAdditionalBatch } from '../systems/day-cycle-system.js';
 import { rollDailyEvent, applyEventChoice } from '../simulation/event-model.js';
-import { getOwnedUpgradeByCategory } from '../systems/upgrade-system.js';
+import { getOwnedUpgradeByCategory, getUpgradeEffects } from '../systems/upgrade-system.js';
 import { maxCupsFromInventory } from '../systems/inventory-system.js';
 import { perCupIngredients } from '../systems/recipe-system.js';
 import { createRng } from '../utils/random.js';
@@ -14,6 +14,7 @@ import { openModal } from '../components/modal.js';
 import { showToast } from '../components/toast.js';
 import { WEATHER_TYPES } from '../simulation/weather-model.js';
 import { MS_PER_TICK_BASE } from '../utils/constants.js';
+import { playSound } from '../systems/audio-system.js';
 
 const SPEEDS = [0, 1, 2, 4];
 
@@ -63,16 +64,16 @@ export function renderLiveDayScreen(container, { navigate }) {
 
       <div id="progress-holder">${progressBarHtml(0)}</div>
 
-      <div class="live-stat-row" id="stat-row"></div>
+      <div class="live-stat-row" id="stat-row" aria-live="polite"></div>
 
-      <div class="speed-controls" id="speed-controls">
-        ${['⏸', '1×', '2×', '4×'].map((label, i) => `<button class="chip" data-speed="${SPEEDS[i]}" aria-pressed="${SPEEDS[i] === speed}">${label}</button>`).join('')}
+      <div class="speed-controls" id="speed-controls" role="group" aria-label="Playback speed">
+        ${['Pause', '1×', '2×', '4×'].map((label, i) => `<button class="chip" data-speed="${SPEEDS[i]}" aria-pressed="${SPEEDS[i] === speed}" aria-label="${label === 'Pause' ? 'Pause' : `${label} speed`}">${label === 'Pause' ? '⏸' : label}</button>`).join('')}
         <button class="chip" id="actions-btn">⚙️ Actions</button>
       </div>
 
       <div class="card">
         <div class="section-title">Live Feed</div>
-        <div class="live-feed" id="live-feed"></div>
+        <div class="live-feed" id="live-feed" aria-live="polite"></div>
       </div>
     `;
   }
@@ -107,6 +108,7 @@ export function renderLiveDayScreen(container, { navigate }) {
 
     const result = simulateTick(session);
     renderDynamic(result);
+    if (result.tickEvents?.some((e) => e.type.startsWith('purchased'))) playSound('sale');
 
     if (result.ended) {
       clearInterval(intervalId);
@@ -133,6 +135,7 @@ export function renderLiveDayScreen(container, { navigate }) {
   }
 
   function finishDay() {
+    playSound('day-end');
     setState((s) => {
       const report = finalizeDay(s, session);
       s.lastDayReport = report;
@@ -224,7 +227,8 @@ export function renderLiveDayScreen(container, { navigate }) {
   function openPrepSheet() {
     const state2 = getState();
     const perCup = perCupIngredients(session.menuItem.id, session.recipe);
-    const maxCups = maxCupsFromInventory(state2, perCup);
+    const batchCap = getUpgradeEffects(state2).batchSize || 20;
+    const maxCups = Math.min(maxCupsFromInventory(state2, perCup), batchCap);
     let qty = Math.min(20, maxCups);
     openSheet({
       title: 'Prepare Another Batch',
@@ -236,7 +240,7 @@ export function renderLiveDayScreen(container, { navigate }) {
               <div class="stepper__value">${qty} cups</div>
               <button class="stepper__btn" id="q-plus">+</button>
             </div>
-            <div class="card__subtitle" style="text-align:center;margin-bottom:12px;">Max from current inventory: ${maxCups}</div>
+            <div class="card__subtitle" style="text-align:center;margin-bottom:12px;">Max this batch: ${maxCups} (equipment limit ${batchCap})</div>
             <button class="btn btn--primary btn--full" id="confirm-prep" ${qty <= 0 ? 'disabled' : ''}>Prepare ${qty} Cups</button>
           `;
           body.querySelector('#q-minus').addEventListener('click', () => { qty = Math.max(0, qty - 5); refresh(); });

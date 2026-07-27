@@ -15,7 +15,7 @@ import { formatHour } from '../utils/format.js';
 export function createDaySession({
   day, location, weather, season, menuItem, recipe, price, quality,
   reputation, brandAwareness, campaignReach, activeCompetitors, competitorAggression,
-  cupsAvailable, serviceSpeedFactor, localActivity, rngSeed,
+  cupsAvailable, serviceSpeedFactor, capacityBonus = 0, waitTolerance = 0, localActivity, rngSeed,
 }) {
   const hours = location.weekendOnly ? location.hours : (location.hours || [DAY_START_HOUR, DAY_END_HOUR]);
   const dayModifierBase = computeDayModifier({
@@ -39,6 +39,8 @@ export function createDaySession({
     cupsAvailable,
     cupsPreparedTotal: cupsAvailable,
     serviceSpeedFactor: serviceSpeedFactor || 1,
+    capacityBonus,
+    waitTolerance,
     closeEarly: null,
     rng: createRng(rngSeed),
     ended: false,
@@ -143,11 +145,17 @@ export function simulateTick(session) {
     }
   }
 
-  // Queue pressure grows when cups run out or the stand is swamped, easing off otherwise.
-  const overloaded = arrivals > 3 || session.cupsAvailable <= 0;
+  // Queue pressure grows when cups run out or the stand is swamped, easing off
+  // otherwise. Stand/service capacity upgrades raise how much traffic a rush
+  // can absorb before a line forms; waitTolerance (self-service shelf, etc.)
+  // slows how fast pressure builds and speeds how fast it clears.
+  const overloadThreshold = 3 + Math.floor(session.capacityBonus / 25);
+  const overloaded = arrivals > overloadThreshold || session.cupsAvailable <= 0;
+  const growthStep = Math.max(0.4, 1 - session.waitTolerance * 3);
+  const decayStep = 0.5 + session.waitTolerance * 3;
   session.waitQueueTicks = overloaded
-    ? Math.min(5, session.waitQueueTicks + 1)
-    : Math.max(0, session.waitQueueTicks - 0.5);
+    ? Math.min(5, session.waitQueueTicks + growthStep)
+    : Math.max(0, session.waitQueueTicks - decayStep);
 
   if (arrivals > 0) {
     const sold = tickEvents.filter((e) => e.type.startsWith('purchased')).length;

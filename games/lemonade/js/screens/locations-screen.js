@@ -1,6 +1,6 @@
 import { getState, setState } from '../state/game-store.js';
 import { LOCATIONS, getLocation } from '../data/locations.js';
-import { acquireLocation, setCurrentLocation, setManagementMode, getAvailableLocations } from '../systems/location-system.js';
+import { acquireLocation, setCurrentLocation, setManagementMode, getAvailableLocations, getExpansionGateReason } from '../systems/location-system.js';
 import { formatMoney } from '../utils/format.js';
 import { showToast } from '../components/toast.js';
 import { confirmDialog } from '../components/confirm-dialog.js';
@@ -54,6 +54,7 @@ function buildContent(state) {
   const owned = state.locations.ownedIds.map((id) => getLocation(id));
   const available = getAvailableLocations(state);
   const locked = LOCATIONS.filter((loc) => !state.locations.ownedIds.includes(loc.id) && !available.includes(loc));
+  const gateReason = getExpansionGateReason(state);
 
   return `
     <div class="row"><button class="icon-btn" id="back-btn" aria-label="Back">←</button><div style="font-weight:800;font-size:1.2rem;">Locations</div></div>
@@ -78,6 +79,12 @@ function buildContent(state) {
         </div>
       `).join('')}
     </div>
+
+    ${gateReason ? `
+    <div class="card" style="border:2px solid var(--accent-warning);">
+      <div style="font-weight:700;margin-bottom:2px;">🚧 Expansion Paused</div>
+      <div class="card__subtitle">${gateReason}</div>
+    </div>` : ''}
 
     ${available.length ? `
     <div class="section-title" style="margin-top:12px;">Available to Open</div>

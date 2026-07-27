@@ -14,8 +14,10 @@ import { progressBarHtml } from '../components/progress-bar.js';
 import { openSheet } from '../components/bottom-sheet.js';
 import { showToast } from '../components/toast.js';
 import { MILESTONES } from '../data/milestones.js';
+import { getAchievement } from '../data/achievements.js';
 import { advanceTutorial } from '../systems/tutorial-system.js';
 import { tutorialBannerHtml, wireTutorialBanner } from '../components/tutorial-banner.js';
+import { playSound } from '../systems/audio-system.js';
 
 const STAND_EMOJI_BY_TIER = ['🪑', '🛖', '🛒', '🚚', '🏪'];
 
@@ -68,6 +70,7 @@ export function renderStandScreen(container, { navigate }) {
 
     root.querySelector('#start-day-btn')?.addEventListener('click', () => {
       advanceTutorial(state, 'start-day');
+      playSound('day-start');
       setState((s) => { s.liveDay = startDay(s); });
       navigate('/stand/live');
     });
@@ -83,7 +86,8 @@ export function renderStandScreen(container, { navigate }) {
 
   function adjustCups(delta) {
     setState((s) => {
-      s.production.cupsPlanned = clamp(s.production.cupsPlanned + delta, 5, 500);
+      const batchCap = getPrepEstimate(s).batchCap;
+      s.production.cupsPlanned = clamp(s.production.cupsPlanned + delta, 5, batchCap);
     });
     rerender();
   }
@@ -115,6 +119,7 @@ function buildContent(state) {
 
   const nextTier = getNextReputationTier(state.reputation.score);
   const objective = getPrimaryObjective(state);
+  const optionalGoals = getOptionalGoals(state);
 
   return `
     ${tutorialBannerHtml(state, 'stand')}
@@ -165,6 +170,7 @@ function buildContent(state) {
         <span class="card__subtitle">Estimated demand: ${estimate.demandRange.low}–${estimate.demandRange.high} cups</span>
         <button class="badge" id="cups-max">Use max (${estimate.maxCupsAffordable})</button>
       </div>
+      <div class="card__subtitle">Equipment limit: ${estimate.batchCap} cups per batch</div>
 
       <div class="grid-2" style="margin-top:8px;">
         ${statTile('Potential revenue', formatMoney(estimate.potentialRevenue))}
@@ -185,6 +191,11 @@ function buildContent(state) {
       <div class="section-title">Objective</div>
       <div style="font-weight:700;margin-bottom:6px;">${objective.name}</div>
       <div class="card__subtitle">${objective.description}</div>
+      ${optionalGoals.length ? `
+      <div style="border-top:1px solid var(--border-soft);margin-top:10px;padding-top:10px;">
+        <div class="card__subtitle" style="font-weight:700;margin-bottom:4px;">Also try:</div>
+        ${optionalGoals.map((g) => `<div class="card__subtitle">🏆 ${g.name} — ${g.description}</div>`).join('')}
+      </div>` : ''}
     </div>` : ''}
 
     <div class="card">
@@ -212,6 +223,21 @@ function reactionTone(reaction) {
 function getPrimaryObjective(state) {
   const nextMilestone = MILESTONES.find((m) => !state.milestones.completed.includes(m.id));
   return nextMilestone || null;
+}
+
+// Roughly ordered easiest-to-hardest so early goals surface before deep late-game ones.
+const OPTIONAL_GOAL_ORDER = [
+  'first-sale', 'sold-out', 'perfect-batch', 'rush-hour', 'neighborhood-favorite',
+  'rain-or-shine', 'hundred-dollar-day', 'no-waste-streak', 'first-employee',
+  'five-star-service', 'second-location', 'thousand-cup-club',
+];
+
+function getOptionalGoals(state, count = 2) {
+  return OPTIONAL_GOAL_ORDER
+    .filter((id) => !state.achievements.earned.includes(id))
+    .slice(0, count)
+    .map((id) => getAchievement(id))
+    .filter(Boolean);
 }
 
 function openLocationPicker(state, rerender) {

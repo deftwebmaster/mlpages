@@ -41,17 +41,19 @@ Systems unlock gradually via milestones so a new player is never shown more than
 - Weather system with 10 conditions, imperfect forecasts, and temperature-driven demand curves
 - Reputation (0–100, six tiers) and brand awareness (separate from reputation) systems
 - 10-location progression from a free driveway to a production/bottling facility
-- Equipment upgrades across 6 categories (stand, production, cooling, service, business, logistics)
+- Equipment upgrades across 6 categories (stand, production, cooling, service, business, logistics), every effect wired to a real gameplay hook (batch-size caps, wait-queue capacity, quality/appeal bonuses, forecast accuracy, spoilage/ice retention, and automated ingredient reordering)
 - Employee system: hire, assign shifts, morale/experience, traits
 - Marketing campaigns with reach, duration, and flop risk
 - Reputation-gated competitors that shape local price expectations
 - Random daily events with 2–3 concrete choices and immediate effects
 - Loans with daily amortized payments
-- Multi-location ownership with lightweight employee-managed simulation for locations you aren't personally running
+- Multi-location ownership with lightweight employee-managed simulation for locations you aren't personally running, with expansion beyond one/three locations gated behind their own milestones (not just cash and reputation)
 - Wholesale/bottling: produce bottles from your recipe (3 sizes), accept rotating contract offers from 7 client types (café, school, grocery, restaurant, sports venue, hotel chain, regional supermarket), deliver against quality/deadline requirements, with penalties for missed deadlines and reputation rewards for completion — gated behind the Production Facility location
 - Achievements (16) and milestones (7) that gate feature unlocks
 - Reports: 7-day trend, product performance, location performance, customer segment mix
 - Contextual first-day tutorial (dismissible, resettable) — not a slideshow
+- One primary objective plus a couple of "also try" achievement-based optional goals shown on the Stand screen at all times
+- Synthesized sound effects (Web Audio API oscillators, no audio files to ship) for sales, purchases, achievements, milestones, and day start/end, respecting the sound toggle in Settings
 - 3 IndexedDB save slots, autosave, manual save, JSON export/import
 - Full PWA: manifest, service worker, offline shell caching, update-available prompt
 - Light/dark theme (auto by system preference or manual), reduced-motion support
@@ -198,7 +200,7 @@ This project has no automated test runner wired up (no bundler/CI in scope), but
 - Multi-location automation (`simulateEmployeeManagedLocation`) is a lightweight estimate, not a full second simulation — it's intentionally simple so owning several locations doesn't require manually running every stand every day.
 - Wholesale contract quality checks use your *current* recipe/ingredient quality at the moment of delivery rather than tracking quality per bottle batch — simpler to reason about, but it means changing your recipe after producing a batch can retroactively affect whether that batch clears a contract's bar.
 - Label design presets and retail-margin tooling (mentioned in the original design notes) were intentionally left out of the bottling system to keep it focused; bottle size, packaging cost, and shelf life are implemented.
-- Audio/haptics are not implemented; the Settings screen has sound/music toggles wired for a future audio system to hook into.
+- Sound effects are synthesized tones, not sampled audio, and there is no music track — the music toggle in Settings is inert (reserved) since there's nothing for it to control yet. Haptics are not implemented.
 - There is no bundler/minifier in the repo; for a production deploy you may want to add one purely for file-size optimization (not required for correctness).
 
 ## Extending the Game
