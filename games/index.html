@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="description" content="A curated collection of original mobile-friendly browser games designed and developed by Matt Livingston.">
+  <meta name="description" content="A collection of original browser games designed and developed by Matt Livingston.">
   <meta name="theme-color" content="#080a0f">
   <title>Games by Matt Livingston</title>
   <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
@@ -219,6 +219,27 @@
       line-height: 1.6;
     }
 
+
+    .collection-group-label {
+      grid-column: 1 / -1;
+      margin: 14px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .collection-group-label::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, var(--border), transparent);
+    }
+
     .games-grid {
       display: grid;
       grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -247,9 +268,15 @@
 
     .game-card:hover,
     .game-card:focus-visible {
-      transform: translateY(-5px);
-      border-color: color-mix(in srgb, var(--accent) 44%, rgba(255, 255, 255, 0.12));
-      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.34);
+      transform: translateY(-7px);
+      border-color: color-mix(in srgb, var(--accent) 58%, rgba(255, 255, 255, 0.12));
+      background:
+        radial-gradient(circle at 86% 12%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 44%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.058), rgba(255, 255, 255, 0.016)),
+        var(--panel-hover);
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.38),
+        0 0 34px color-mix(in srgb, var(--accent) 9%, transparent);
       outline: none;
     }
 
@@ -260,6 +287,7 @@
       height: 3px;
       opacity: 0.78;
       background: linear-gradient(90deg, transparent, var(--accent), var(--accent-secondary), transparent);
+      transition: opacity 220ms ease, filter 220ms ease;
     }
 
     .game-visual {
@@ -281,6 +309,47 @@
         linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
       background-size: 32px 32px;
+    }
+
+
+    .game-status {
+      position: absolute;
+      top: 16px;
+      right: 17px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+      border-radius: 999px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, rgba(8, 10, 15, 0.82));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 8%, transparent), 0 0 22px color-mix(in srgb, var(--accent) 16%, transparent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      font-size: 0.66rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .game-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: currentColor;
+      box-shadow: 0 0 12px currentColor;
+    }
+
+    .game-card:hover .game-status,
+    .game-card:focus-visible .game-status {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 72%, transparent);
+      background: color-mix(in srgb, var(--accent) 15%, rgba(8, 10, 15, 0.86));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 27%, transparent);
     }
 
     .game-number {
@@ -315,7 +384,26 @@
 
     .game-card:hover .game-symbol,
     .game-card:focus-visible .game-symbol {
-      transform: scale(1.045) rotate(-1deg);
+      transform: scale(1.06) rotate(-2deg);
+      box-shadow:
+        0 0 58px color-mix(in srgb, var(--accent) 20%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--accent) 6%, transparent);
+    }
+
+    .game-card:hover::after,
+    .game-card:focus-visible::after {
+      opacity: 1;
+      filter: brightness(1.35);
+    }
+
+    .game-title {
+      transition: color 220ms ease, transform 220ms ease;
+    }
+
+    .game-card:hover .game-title,
+    .game-card:focus-visible .game-title {
+      color: color-mix(in srgb, var(--accent) 36%, var(--text));
+      transform: translateX(2px);
     }
 
     .game-body {
@@ -491,6 +579,12 @@
       .game-footer { align-items: flex-start; flex-direction: column; }
       .game-card, .card-featured { min-height: 0; }
       .game-visual, .card-featured .game-visual { min-height: 180px; }
+      .game-status {
+        top: 14px;
+        right: 14px;
+        padding: 6px 9px;
+        font-size: 0.61rem;
+      }
       .game-symbol, .card-featured .game-symbol {
         width: 100px;
         height: 100px;
@@ -525,22 +619,23 @@
     </a>
 
     <nav class="site-nav" aria-label="Primary navigation">
+      <!-- <a class="nav-link" href="/tools/">Tools</a> -->
       <a class="nav-link" href="/">Home</a>
     </nav>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow">Mobile Browser Games</p>
+      <p class="eyebrow">Browser Game Collection</p>
       <h1>
-        Nine games.<br>
-        <span class="hero-highlight">Nine distinct worlds.</span>
+        Ten games.<br>
+        <span class="hero-highlight">Built from completely different ideas.</span>
       </h1>
 
       <p class="hero-copy">
-        A curated collection of original mobile-friendly games spanning arcade action,
-        strategy, simulation, exploration, and management. No accounts. No app store.
-        Just pick a world and play.
+        A curated collection of original browser games spanning arcade action, strategy,
+        simulation, management, exploration, and optimization. Every game is designed
+        from scratch, runs directly in your browser, and is built to feel like its own complete world.
       </p>
 
       <div class="hero-meta" aria-label="Collection features">
@@ -560,6 +655,8 @@
       </div>
 
       <div class="games-grid">
+        <div class="collection-group-label">Featured games</div>
+
         <a
           class="game-card card-featured"
           href="./salvage-zero/"
@@ -567,7 +664,8 @@
           aria-label="Play Salvage Zero"
         >
           <div class="game-visual">
-            <span class="game-number">GAME 06 · FEATURED</span>
+            <span class="game-number">GAME 06</span>
+            <span class="game-status">Featured</span>
             <div class="game-symbol" aria-hidden="true">◇→</div>
           </div>
           <div class="game-body">
@@ -584,7 +682,7 @@
                 <span class="game-tag">Physics</span>
                 <span class="game-tag">Salvage</span>
               </div>
-              <span class="play-label">Play game <span class="play-arrow" aria-hidden="true">→</span></span>
+              <span class="play-label">Begin salvage <span class="play-arrow" aria-hidden="true">→</span></span>
             </div>
           </div>
         </a>
@@ -596,18 +694,17 @@
           aria-label="Play Treasure Hunter"
         >
           <div class="game-visual">
-            <span class="game-number">GAME 09 · FLAGSHIP</span>
+            <span class="game-number">GAME 09</span>
+            <span class="game-status">Flagship</span>
             <div class="game-symbol" aria-hidden="true">✦⌖</div>
           </div>
           <div class="game-body">
             <div class="game-type">Expedition Management</div>
             <h3 class="game-title">Treasure Hunter</h3>
             <p class="game-description">
-              Build a treasure-hunting organization from a battered truck and uncertain maps
-              into a global expedition empire. Research rumors, decode clues, hire specialists,
-              prepare equipment, recover procedurally generated artifacts, and decide whether
-              each discovery should be sold, donated, researched, restored, or displayed in
-              your own museum.
+              Build a treasure-hunting organization from a battered truck into a global expedition empire.
+              Research rumors, decode clues, hire specialists, recover legendary artifacts, and decide
+              how every discovery shapes your organization.
             </p>
             <div class="game-footer">
               <div class="game-tags" aria-hidden="true">
@@ -615,10 +712,42 @@
                 <span class="game-tag">Artifacts</span>
                 <span class="game-tag">Empire Building</span>
               </div>
-              <span class="play-label">Begin the hunt <span class="play-arrow" aria-hidden="true">→</span></span>
+              <span class="play-label">Start expedition <span class="play-arrow" aria-hidden="true">→</span></span>
             </div>
           </div>
         </a>
+
+        <a
+          class="game-card"
+          href="./lemonade/"
+          style="--accent: #ffd84d; --accent-secondary: #38e8a1;"
+          aria-label="Play Lemonade Empire"
+        >
+          <div class="game-visual">
+            <span class="game-number">GAME 08</span>
+            <span class="game-status">Featured</span>
+            <div class="game-symbol" aria-hidden="true">🍋</div>
+          </div>
+          <div class="game-body">
+            <div class="game-type">Business Simulation</div>
+            <h3 class="game-title">Lemonade Empire</h3>
+            <p class="game-description">
+              Build a humble roadside lemonade stand into a thriving beverage empire.
+              Buy supplies, perfect your recipe, hire employees, expand to new locations,
+              and outsmart the competition in a relaxing business simulation.
+            </p>
+            <div class="game-footer">
+              <div class="game-tags" aria-hidden="true">
+                <span class="game-tag">Tycoon</span>
+                <span class="game-tag">Management</span>
+                <span class="game-tag">Expansion</span>
+              </div>
+              <span class="play-label">Build empire <span class="play-arrow" aria-hidden="true">→</span></span>
+            </div>
+          </div>
+        </a>
+
+        <div class="collection-group-label">More games</div>
 
         <a class="game-card" href="./circuit-breaker/" style="--accent: #8b5cf6; --accent-secondary: #00e5ff;" aria-label="Play Circuit Breaker">
           <div class="game-visual"><span class="game-number">GAME 01</span><div class="game-symbol" aria-hidden="true">⚡</div></div>
@@ -628,7 +757,7 @@
             <p class="game-description">Match volatile circuit nodes, trigger cascading reactions, and keep the board alive as the system pushes toward overload.</p>
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Combos</span><span class="game-tag">Cascades</span><span class="game-tag">Strategy</span></div>
-              <span class="play-label">Play game <span class="play-arrow">→</span></span>
+              <span class="play-label">Restore power <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -641,7 +770,7 @@
             <p class="game-description">Read patrol routes, plan every move, and complete covert objectives inside deterministic security systems where one bad step can compromise the entire operation.</p>
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Stealth</span><span class="game-tag">Planning</span><span class="game-tag">AI</span></div>
-              <span class="play-label">Play game <span class="play-arrow">→</span></span>
+              <span class="play-label">Accept mission <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -654,7 +783,7 @@
             <p class="game-description">Carry an unstable payload through a collapsing transit channel, phase through lethal barriers, and survive as the route becomes faster, narrower, and increasingly corrupted.</p>
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Speed</span><span class="game-tag">Procedural</span><span class="game-tag">Reflex</span></div>
-              <span class="play-label">Play game <span class="play-arrow">→</span></span>
+              <span class="play-label">Take delivery <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -667,7 +796,7 @@
             <p class="game-description">Cross a hostile digital network, ride moving data streams, and switch signal polarity to pass through frequency-dependent platforms, gates, and hazards.</p>
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Timing</span><span class="game-tag">Polarity</span><span class="game-tag">Movement</span></div>
-              <span class="play-label">Play game <span class="play-arrow">→</span></span>
+              <span class="play-label">Enter network <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -680,7 +809,7 @@
             <p class="game-description">Drain the grid while intelligent security drones close in. Rotate junctions, shift walls, and rewrite the maze before the pursuit reaches you.</p>
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Pathfinding</span><span class="game-tag">Chase AI</span><span class="game-tag">Maze Shift</span></div>
-              <span class="play-label">Play game <span class="play-arrow">→</span></span>
+              <span class="play-label">Enter grid <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -704,40 +833,40 @@
                 <span class="game-tag">Power Routing</span>
                 <span class="game-tag">Bosses</span>
               </div>
-              <span class="play-label">Play game <span class="play-arrow" aria-hidden="true">→</span></span>
+              <span class="play-label">Stabilize reactor <span class="play-arrow" aria-hidden="true">→</span></span>
             </div>
           </div>
         </a>
+
 
         <a
           class="game-card"
-          href="./lemonade/"
-          style="--accent: #ffd84d; --accent-secondary: #38e8a1;"
-          aria-label="Play Lemonade Empire"
+          href="./machine-works/"
+          style="--accent: #66d9ff; --accent-secondary: #ff9f43;"
+          aria-label="Play Machine Works"
         >
           <div class="game-visual">
-            <span class="game-number">GAME 08</span>
-            <div class="game-symbol" aria-hidden="true">🍋</div>
+            <span class="game-number">GAME 10</span>
+            <div class="game-symbol" aria-hidden="true">⚙</div>
           </div>
           <div class="game-body">
-            <div class="game-type">Business Simulation</div>
-            <h3 class="game-title">Lemonade Empire</h3>
+            <div class="game-type">Industrial Optimization</div>
+            <h3 class="game-title">Machine Works</h3>
             <p class="game-description">
-              Build a humble roadside lemonade stand into a thriving beverage empire.
-              Buy supplies, perfect your recipe, hire employees, expand to new locations,
-              and outsmart the competition in a relaxing business simulation.
+              Restore abandoned factories, engineer elegant production lines, eliminate bottlenecks,
+              and transform forgotten industrial sites into thriving manufacturing operations.
+              Every optimization is visible. Every improvement brings a dead factory back to life.
             </p>
             <div class="game-footer">
               <div class="game-tags" aria-hidden="true">
-                <span class="game-tag">Tycoon</span>
-                <span class="game-tag">Management</span>
-                <span class="game-tag">Expansion</span>
+                <span class="game-tag">Factories</span>
+                <span class="game-tag">Optimization</span>
+                <span class="game-tag">Restoration</span>
               </div>
-              <span class="play-label">Build your empire <span class="play-arrow" aria-hidden="true">→</span></span>
+              <span class="play-label">Restore industry <span class="play-arrow" aria-hidden="true">→</span></span>
             </div>
           </div>
         </a>
-
       </div>
     </section>
 
@@ -745,21 +874,20 @@
       <div>
         <h2>Built as a curated game collection.</h2>
         <p>
-          Each game was designed around a different technical challenge:
-          board logic, deterministic simulation, procedural generation, moving environments,
-          pathfinding, momentum physics, ricochet-based power routing, business simulation,
-          and expedition management.
+          Each game explores a completely different style of gameplay—from arcade action and stealth
+          to factory optimization, expedition management, and business simulation. Together they
+          showcase a broad range of game systems, technical challenges, and design philosophies.
         </p>
       </div>
-      <div class="collection-count" aria-label="Nine original games">
-        <strong>09</strong>
+      <div class="collection-count" aria-label="Ten original games">
+        <strong>10</strong>
         <span>Original games</span>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <span>Designed and developed by Matt Livingston.</span>
+    <span>Designed, developed, and illustrated by Matt Livingston.</span>
     <a href="/">MattLivingston.com</a>
   </footer>
 </body>
