@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1"
+    />
+    <title>Gridlock — Own the maze. Rewrite the pursuit.</title>
+    <meta name="description" content="A real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app." />
+    <meta name="theme-color" content="#05070b" />
+    <meta name="color-scheme" content="dark" />
+
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="icons/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Gridlock" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <div id="app">
+      <!-- ══ Loading ══════════════════════════════════════════════════════ -->
+      <section class="screen is-active" id="screen-loading" aria-label="Loading">
+        <div class="loading-core"><span></span><span></span><span></span></div>
+        <p class="loading-text">Initialising grid…</p>
+      </section>
+
+      <!-- ══ Menu ═════════════════════════════════════════════════════════ -->
+      <section class="screen menu" id="screen-menu" hidden>
+        <div class="menu-inner">
+          <header class="brand">
+            <h1 class="logo" aria-label="Gridlock">
+              <span>G</span><span>R</span><span>I</span><span>D</span><span>L</span><span>O</span><span>C</span
+              ><span>K</span>
+            </h1>
+            <p class="tagline">Own the maze. Rewrite the pursuit.</p>
+          </header>
+
+          <nav class="menu-actions">
+            <button class="btn btn-primary" data-action="continue" id="btn-continue">
+              <span class="btn-label">Start</span>
+              <span class="btn-sub" id="continue-sub">Sector 01</span>
+            </button>
+            <div class="menu-grid">
+              <button class="btn" data-action="levels">Level Select</button>
+              <button class="btn" data-action="help">How to Play</button>
+              <button class="btn" data-action="stats">Statistics</button>
+              <button class="btn" data-action="settings">Settings</button>
+            </div>
+            <button class="btn btn-ghost" data-action="install" id="btn-install" hidden>Install App</button>
+          </nav>
+
+          <footer class="menu-foot">
+            <span id="menu-progress">0 / 15 sectors cleared</span>
+            <span class="dot">•</span>
+            <span>Works offline</span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- ══ Level select ═════════════════════════════════════════════════ -->
+      <section class="screen sheet" id="screen-levels" hidden>
+        <header class="sheet-head">
+          <button class="btn-icon" data-action="back" aria-label="Back">←</button>
+          <h2>Select Sector</h2>
+          <span class="sheet-meta" id="levels-meta"></span>
+        </header>
+        <div class="level-grid" id="level-grid"></div>
+      </section>
+
+      <!-- ══ Settings ═════════════════════════════════════════════════════ -->
+      <section class="screen sheet" id="screen-settings" hidden>
+        <header class="sheet-head">
+          <button class="btn-icon" data-action="back" aria-label="Back">←</button>
+          <h2>Settings</h2>
+        </header>
+        <div class="sheet-body">
+          <label class="row"><span>Sound effects</span><input type="checkbox" data-setting="sound" /><i class="switch"></i></label>
+          <label class="row"><span>Music</span><input type="checkbox" data-setting="music" /><i class="switch"></i></label>
+          <label class="row"><span>Particles</span><input type="checkbox" data-setting="particles" /><i class="switch"></i></label>
+          <label class="row"><span>Screen shake</span><input type="checkbox" data-setting="screenShake" /><i class="switch"></i></label>
+          <label class="row"><span>Haptics</span><input type="checkbox" data-setting="hapticFeedback" /><i class="switch"></i></label>
+
+          <div class="row row-stack">
+            <span>On-screen D-pad</span>
+            <div class="segmented" data-setting-group="dpad">
+              <button data-value="auto">Auto</button>
+              <button data-value="on">Always</button>
+              <button data-value="off">Never</button>
+            </div>
+          </div>
+
+          <div class="danger-zone">
+            <p>Progress, records and medals live only on this device.</p>
+            <button class="btn btn-danger" data-action="reset">Reset all progress</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══ Statistics ═══════════════════════════════════════════════════ -->
+      <section class="screen sheet" id="screen-stats" hidden>
+        <header class="sheet-head">
+          <button class="btn-icon" data-action="back" aria-label="Back">←</button>
+          <h2>Statistics</h2>
+        </header>
+        <div class="sheet-body">
+          <div class="stat-grid" id="stat-grid"></div>
+          <h3 class="sub-head">Achievements</h3>
+          <div class="achievements" id="achievement-list"></div>
+        </div>
+      </section>
+
+      <!-- ══ Help ═════════════════════════════════════════════════════════ -->
+      <section class="screen sheet" id="screen-help" hidden>
+        <header class="sheet-head">
+          <button class="btn-icon" data-action="back" aria-label="Back">←</button>
+          <h2>How to Play</h2>
+        </header>
+        <div class="sheet-body help">
+          <article class="help-card">
+            <div class="demo demo-move" aria-hidden="true">
+              <i class="demo-wall"></i><i class="demo-player"></i>
+            </div>
+            <h3>Move</h3>
+            <p>Swipe anywhere on the board, or use <kbd>WASD</kbd> / arrow keys. Your next turn is buffered, so you can steer into a corner early.</p>
+          </article>
+
+          <article class="help-card">
+            <div class="demo demo-nodes" aria-hidden="true">
+              <i class="demo-node"></i><i class="demo-node"></i><i class="demo-node"></i><i class="demo-player"></i>
+            </div>
+            <h3>Drain every node</h3>
+            <p>Energy nodes are worth <b>10</b> each. Clear the last one and the sector ends immediately — the clock is your real opponent.</p>
+          </article>
+
+          <article class="help-card">
+            <div class="demo demo-drones" aria-hidden="true">
+              <i class="demo-drone d1"></i><i class="demo-drone d2"></i><i class="demo-player"></i>
+            </div>
+            <h3>Read the drones</h3>
+            <p><b>Hunters</b> take the shortest path to you. <b>Interceptors</b> aim ahead of you. <b>Sentinels</b> patrol until you come close. <b>Trackers</b> predict your escape. <b>Wanderers</b> ignore all of that.</p>
+          </article>
+
+          <article class="help-card">
+            <div class="demo demo-power" aria-hidden="true">
+              <i class="demo-module"></i><i class="demo-drone scared"></i>
+            </div>
+            <h3>Power modules</h3>
+            <p>Eight seconds of vulnerability, plus 10% speed. Chained drones score <b>100 → 200 → 400 → 800 → 1600</b>.</p>
+          </article>
+
+          <article class="help-card">
+            <div class="demo demo-shift" aria-hidden="true">
+              <i class="demo-block"></i><i class="demo-terminal"></i>
+            </div>
+            <h3>Grid Shift</h3>
+            <p>Touch a violet terminal to rotate a junction, slide a wall, toggle a gate, extend a bridge or drop a barrier. One shared <b>15 second</b> cooldown — the real skill is deciding when <em>not</em> to spend it.</p>
+          </article>
+
+          <article class="help-card">
+            <div class="demo demo-secret" aria-hidden="true">
+              <i class="demo-seal"></i><i class="demo-bonus"></i>
+            </div>
+            <h3>Secrets &amp; ranks</h3>
+            <p>Amber seams mark sealed compartments; some terminals breach them for <b>+500</b>. Rank blends time, deaths and secrets — a <b>Perfect Clear</b> needs no deaths, every secret, and the target time.</p>
+          </article>
+
+          <article class="help-card wide">
+            <h3>No game over</h3>
+            <p>Deaths cost you time and rank, never the run. Respawn is instant and retries are unlimited.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ══ Game ═════════════════════════════════════════════════════════ -->
+      <section class="screen game" id="screen-game" hidden>
+        <div class="playfield">
+          <aside class="hud hud-primary">
+            <div class="hud-brand">GRIDLOCK</div>
+            <div class="readout"><span>Score</span><b id="hud-score">0</b></div>
+            <div class="readout"><span>Time</span><b id="hud-time">0:00.00</b></div>
+            <div class="readout"><span>Nodes left</span><b id="hud-nodes">0</b></div>
+            <div class="readout"><span>Deaths</span><b id="hud-deaths">0</b></div>
+          </aside>
+
+          <div class="board-wrap">
+            <canvas id="board"></canvas>
+            <div class="board-overlay">
+              <div class="combo-badge" id="combo-badge" hidden></div>
+              <div class="power-bar" id="power-bar" hidden><i></i></div>
+            </div>
+          </div>
+
+          <aside class="hud hud-secondary">
+            <button class="btn-icon hud-pause" data-action="pause" aria-label="Pause">❚❚</button>
+            <div class="shift-meter" id="shift-meter">
+              <svg viewBox="0 0 44 44" aria-hidden="true">
+                <circle class="track" cx="22" cy="22" r="19" />
+                <circle class="fill" cx="22" cy="22" r="19" id="shift-arc" />
+              </svg>
+              <span class="shift-label">SHIFT</span>
+            </div>
+            <div class="readout small"><span>Secrets</span><b id="hud-secrets">0/0</b></div>
+            <div class="readout small"><span>Sector</span><b id="hud-sector">01</b></div>
+          </aside>
+        </div>
+
+        <div class="dpad" id="dpad" hidden>
+          <button data-dir="u" aria-label="Up"></button>
+          <button data-dir="l" aria-label="Left"></button>
+          <button data-dir="r" aria-label="Right"></button>
+          <button data-dir="d" aria-label="Down"></button>
+        </div>
+      </section>
+
+      <!-- ══ Pause overlay ════════════════════════════════════════════════ -->
+      <div class="overlay" id="overlay-pause" hidden>
+        <div class="card">
+          <h2>Paused</h2>
+          <p class="card-sub" id="pause-sector"></p>
+          <div class="card-actions">
+            <button class="btn btn-primary" data-action="resume">Resume</button>
+            <button class="btn" data-action="retry">Restart sector</button>
+            <button class="btn btn-ghost" data-action="quit">Main menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Level complete ═══════════════════════════════════════════════ -->
+      <div class="overlay" id="overlay-complete" hidden>
+        <div class="card card-result">
+          <div class="rank-badge" id="result-rank">A</div>
+          <h2 id="result-title">Sector Clear</h2>
+          <p class="card-sub" id="result-sub"></p>
+
+          <dl class="result-grid">
+            <div><dt>Score</dt><dd id="result-score">0</dd></div>
+            <div><dt>Time</dt><dd id="result-time">0:00</dd></div>
+            <div><dt>Deaths</dt><dd id="result-deaths">0</dd></div>
+            <div><dt>Best combo</dt><dd id="result-combo">0</dd></div>
+            <div><dt>Secrets</dt><dd id="result-secrets">0/0</dd></div>
+            <div><dt>Best time</dt><dd id="result-best">—</dd></div>
+          </dl>
+
+          <div class="result-flags" id="result-flags"></div>
+
+          <div class="card-actions">
+            <button class="btn btn-primary" data-action="next" id="btn-next">Next sector</button>
+            <button class="btn" data-action="retry">Retry</button>
+            <button class="btn btn-ghost" data-action="quit">Menu</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transient achievement / update notices -->
+      <div class="toasts" id="toasts" aria-live="polite"></div>
+    </div>
+
+    <noscript>
+      <p style="color: #dbe6f5; font: 16px system-ui; padding: 2rem">Gridlock needs JavaScript to run.</p>
+    </noscript>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

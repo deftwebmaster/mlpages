@@ -1,0 +1,20 @@
+{
+  "name": "gridlock",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Own the maze. Rewrite the pursuit. A real-time arcade maze game where you reconfigure the grid to outsmart autonomous security drones.",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "levels": "node tools/level-authoring.mjs",
+    "validate": "node tools/validate-levels.mjs",
+    "playtest": "node tools/playtest.mjs",
+    "icons": "node tools/gen-icons.mjs",
+    "check": "node tools/level-authoring.mjs && node tools/validate-levels.mjs && node tools/playtest.mjs"
+  },
+  "keywords": ["game", "arcade", "maze", "canvas", "pathfinding", "pwa", "vanilla-js"],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
