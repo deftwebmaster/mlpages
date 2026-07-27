@@ -48,6 +48,7 @@ Systems unlock gradually via milestones so a new player is never shown more than
 - Random daily events with 2–3 concrete choices and immediate effects
 - Loans with daily amortized payments
 - Multi-location ownership with lightweight employee-managed simulation for locations you aren't personally running
+- Wholesale/bottling: produce bottles from your recipe (3 sizes), accept rotating contract offers from 7 client types (café, school, grocery, restaurant, sports venue, hotel chain, regional supermarket), deliver against quality/deadline requirements, with penalties for missed deadlines and reputation rewards for completion — gated behind the Production Facility location
 - Achievements (16) and milestones (7) that gate feature unlocks
 - Reports: 7-day trend, product performance, location performance, customer segment mix
 - Contextual first-day tutorial (dismissible, resettable) — not a slideshow
@@ -195,7 +196,8 @@ This project has no automated test runner wired up (no bundler/CI in scope), but
 ## Known Limitations
 
 - Multi-location automation (`simulateEmployeeManagedLocation`) is a lightweight estimate, not a full second simulation — it's intentionally simple so owning several locations doesn't require manually running every stand every day.
-- Bottling/wholesale contracts are represented in the location data (`production-facility`, `enablesBottling`) and milestone system but do not yet have a dedicated contracts UI — this is the natural next system to build on top of the existing architecture.
+- Wholesale contract quality checks use your *current* recipe/ingredient quality at the moment of delivery rather than tracking quality per bottle batch — simpler to reason about, but it means changing your recipe after producing a batch can retroactively affect whether that batch clears a contract's bar.
+- Label design presets and retail-margin tooling (mentioned in the original design notes) were intentionally left out of the bottling system to keep it focused; bottle size, packaging cost, and shelf life are implemented.
 - Audio/haptics are not implemented; the Settings screen has sound/music toggles wired for a future audio system to hook into.
 - There is no bundler/minifier in the repo; for a production deploy you may want to add one purely for file-size optimization (not required for correctness).
 
@@ -208,6 +210,10 @@ This project has no automated test runner wired up (no bundler/CI in scope), but
 **Add a location:** add an entry to `js/data/locations.js` with `unlockRequirement`, `dailyFee`, `trafficBase`, `hours`, `customerMix` (should sum to ~1), and `priceExpectation`. It will show up in Business → Locations automatically.
 
 **Add an event:** add an entry to `js/data/events.js` with a `trigger` (minDay/weight/optional requirement flags) and 2–3 `choices`, each with an `outcome` string and any combination of effect fields (`cashDelta`, `trafficMultiplier`, `qualityMultiplier`, `productionMultiplier`, `priceCapMultiplier`, `serviceSpeedMultiplier`, `closeEarlyHour`, `reputationDelta`, `awarenessDelta`, `donatePercent`) — these are applied generically by `applyEventEffectsToSession` in `js/simulation/day-simulator.js`, so no new code is needed for most events.
+
+**Add a wholesale client:** add an entry to `js/data/contracts.js` (`CONTRACT_CLIENTS`) with `minReputation`, `quantityRange`, `deadlineDays`, `pricePerUnitRange`, `qualityRequirement`, `penalty`, and `reputationReward`. It will start appearing in rotating contract offers automatically once the player's reputation clears `minReputation` and they own the Production Facility.
+
+**Add a bottle size:** add an entry to `js/data/bottles.js` (`BOTTLE_SIZES`) with `ozSize` (used to scale ingredient consumption relative to a 9oz cup), `packagingCost`, `shelfLifeDays`, and an optional `unlockRequirement.reputation`.
 
 **Change the game title/branding:** edit `GAME_TITLE` and `GAME_SUBTITLE` in `js/utils/constants.js` (used throughout the UI and in `js/app.js`'s update banner). Also update `<title>` in `index.html` and `name`/`short_name` in `manifest.webmanifest`. The color palette lives entirely in `css/variables.css` as CSS custom properties.
 

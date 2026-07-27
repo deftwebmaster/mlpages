@@ -19,6 +19,8 @@ import { createDaySession } from '../simulation/day-simulator.js';
 import { recordDayFinancials } from './finance-system.js';
 import { checkAchievements } from './achievement-system.js';
 import { checkMilestones } from './progression-system.js';
+import { tickWholesale } from './wholesale-system.js';
+import { notify } from './notification-system.js';
 
 export function getPrepEstimate(state) {
   ensureDayBriefing(state);
@@ -268,6 +270,11 @@ export function advanceToNextDay(state) {
     state.calendar.season = SEASONS[(idx + 1) % SEASONS.length];
     state.calendar.seasonDay = 1;
   }
+  const { failedClients } = tickWholesale(state);
+  for (const clientName of failedClients) {
+    notify(`Missed the delivery deadline for ${clientName} — contract penalty applied.`, 'error');
+  }
+
   state.ui.dayPhase = 'briefing';
   state.today = null;
 }

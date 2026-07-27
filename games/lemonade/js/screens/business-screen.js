@@ -13,6 +13,7 @@ export function renderBusinessScreen(container, { navigate }) {
     { id: 'marketing', icon: '📣', title: 'Marketing', subtitle: 'Run campaigns to grow brand awareness', feature: 'marketing', path: '/business/marketing' },
     { id: 'locations', icon: '📍', title: 'Locations', subtitle: 'Expand where you sell', feature: 'core', path: '/business/locations' },
     { id: 'financing', icon: '🏦', title: 'Financing', subtitle: 'Loans to fuel growth', feature: 'core', path: '/business/financing' },
+    { id: 'wholesale', icon: '🏭', title: 'Wholesale', subtitle: 'Bottle lemonade and fulfill contracts', feature: 'bottling', path: '/business/wholesale' },
   ];
 
   root.innerHTML = `
@@ -51,5 +52,6 @@ function getMilestoneMap() {
     marketing: getMilestone('milestone-marketing'),
     upgrades: getMilestone('milestone-upgrades'),
     employees: getMilestone('milestone-employees'),
+    bottling: getMilestone('milestone-bottling'),
   };
 }

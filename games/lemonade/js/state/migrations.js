@@ -4,8 +4,16 @@ import { SAVE_VERSION } from '../utils/constants.js';
 // upgraded to version N+1. Add new entries here whenever default-state.js
 // shape changes in a way older saves won't already have.
 const migrations = {
-  // Example for future use:
-  // 1: (data) => ({ ...data, newField: 'default' }),
+  // Added the wholesale/bottling system (bottle inventory + contracts).
+  1: (data) => ({
+    ...data,
+    wholesale: data.wholesale || {
+      bottleInventory: {},
+      offers: [],
+      activeContracts: [],
+      completedContracts: [],
+    },
+  }),
 };
 
 export function migrate(savedData) {

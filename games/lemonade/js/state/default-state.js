@@ -86,6 +86,12 @@ export function createDefaultState({ businessName, ownerName, difficulty = 'stan
     competitors: {
       active: [],
     },
+    wholesale: {
+      bottleInventory: {},
+      offers: [],
+      activeContracts: [],
+      completedContracts: [],
+    },
     achievements: {
       earned: [],
     },

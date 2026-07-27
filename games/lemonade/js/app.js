@@ -22,6 +22,7 @@ import { renderStaffScreen } from './screens/staff-screen.js';
 import { renderMarketingScreen } from './screens/marketing-screen.js';
 import { renderLocationsScreen } from './screens/locations-screen.js';
 import { renderFinancingScreen } from './screens/financing-screen.js';
+import { renderWholesaleScreen } from './screens/wholesale-screen.js';
 import { renderReportsScreen } from './screens/reports-screen.js';
 import { renderMoreScreen } from './screens/more-screen.js';
 import { renderAchievementsScreen } from './screens/achievements-screen.js';
@@ -131,6 +132,7 @@ function registerAllRoutes() {
   registerRoute('/business/marketing', renderMarketingScreen);
   registerRoute('/business/locations', renderLocationsScreen);
   registerRoute('/business/financing', renderFinancingScreen);
+  registerRoute('/business/wholesale', renderWholesaleScreen);
   registerRoute('/reports', renderReportsScreen);
   registerRoute('/more', renderMoreScreen);
   registerRoute('/more/achievements', renderAchievementsScreen);

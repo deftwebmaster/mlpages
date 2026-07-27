@@ -3,7 +3,7 @@
 
 export const GAME_TITLE = 'Lemonade Empire';
 export const GAME_SUBTITLE = 'Squeeze. Sell. Expand.';
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 export const DB_NAME = 'lemonade-empire';
 export const DB_VERSION = 1;
 export const MAX_SAVE_SLOTS = 3;
@@ -61,3 +61,7 @@ export const MS_PER_TICK_BASE = 2200;
 export const CUSTOMER_SEGMENTS = ['children', 'parents', 'fitness', 'tourists', 'commuters'];
 
 export const NOTIFICATION_DURATION_MS = 3200;
+
+// A standard prepared cup is treated as this many fluid ounces when scaling
+// ingredient consumption for bottled products (see wholesale-system.js).
+export const CUP_SERVING_OZ = 9;
