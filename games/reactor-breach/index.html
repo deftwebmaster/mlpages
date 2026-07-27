@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>Reactor Breach</title>
+<meta name="description" content="Break the core. Control the fallout. An arcade ricochet game with live power routing." />
+<meta name="theme-color" content="#0b0e12" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icons/icon.svg" />
+<link rel="apple-touch-icon" href="icons/icon.svg" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="app">
+  <div id="chamberWrap">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="hud" class="hidden">
+      <div class="hud-top">
+        <button id="pauseBtn" class="icon-btn" aria-label="Pause">❚❚</button>
+        <div class="hud-score">
+          <span id="hudScore">0</span>
+          <span id="hudCombo" class="hud-combo hidden">x1</span>
+        </div>
+        <div id="hudCharges" class="hud-charges"></div>
+      </div>
+      <div id="hudObjective" class="hud-objective"></div>
+      <div id="hudBossBar" class="hud-boss hidden">
+        <div class="hud-boss-label" id="hudBossLabel">Boss</div>
+        <div class="hud-boss-track"><div id="hudBossFill" class="hud-boss-fill"></div></div>
+      </div>
+    </div>
+
+    <div id="tutorialPrompt" class="tutorial-prompt hidden"></div>
+
+    <div id="routingPanel" class="routing-panel hidden">
+      <button class="channel-meter" data-channel="deflector">
+        <span class="channel-icon">◈</span>
+        <span class="channel-name">DEFLECTOR</span>
+        <span class="channel-bar"><span class="channel-fill" data-fill="deflector"></span></span>
+        <span class="channel-tier" data-tier="deflector"></span>
+      </button>
+      <button class="channel-meter" data-channel="orb">
+        <span class="channel-icon">●</span>
+        <span class="channel-name">ORB</span>
+        <span class="channel-bar"><span class="channel-fill" data-fill="orb"></span></span>
+        <span class="channel-tier" data-tier="orb"></span>
+      </button>
+      <button class="channel-meter" data-channel="reactorControl">
+        <span class="channel-icon">◎</span>
+        <span class="channel-name">REACTOR CTRL</span>
+        <span class="channel-bar"><span class="channel-fill" data-fill="reactorControl"></span></span>
+        <span class="channel-tier" data-tier="reactorControl"></span>
+      </button>
+    </div>
+
+    <div id="mobileControls" class="mobile-controls hidden">
+      <button id="btnCatch" class="mobile-btn">CATCH</button>
+      <button id="btnLaunch" class="mobile-btn primary">LAUNCH</button>
+    </div>
+  </div>
+
+  <!-- Screens -->
+  <div id="screen-loading" class="screen">
+    <div class="logo-block">
+      <h1>REACTOR BREACH</h1>
+      <p class="tagline">Break the core. Control the fallout.</p>
+    </div>
+    <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+  </div>
+
+  <div id="screen-menu" class="screen hidden">
+    <div class="logo-block">
+      <h1>REACTOR BREACH</h1>
+      <p class="tagline">Break the core. Control the fallout.</p>
+    </div>
+    <nav class="menu-list">
+      <button data-action="continue" id="menuContinue">Continue</button>
+      <button data-action="newgame">New Game</button>
+      <button data-action="stageselect">Stage Select</button>
+      <button data-action="stats">Statistics</button>
+      <button data-action="settings">Settings</button>
+      <button data-action="help">Help</button>
+      <button data-action="install" id="menuInstall" class="hidden">Install App</button>
+    </nav>
+    <p class="footer-note">Offline-ready · No account required</p>
+  </div>
+
+  <div id="screen-stageSelect" class="screen hidden">
+    <header class="screen-header"><button class="back-btn" data-action="menu">←</button><h2>Stage Select</h2></header>
+    <div id="stageGrid" class="stage-grid"></div>
+  </div>
+
+  <div id="screen-stageIntro" class="screen hidden">
+    <div class="intro-card">
+      <div class="intro-num" id="introNum"></div>
+      <h2 id="introName"></h2>
+      <p id="introSubtitle" class="intro-subtitle"></p>
+      <div class="intro-objective">
+        <strong>Primary:</strong> <span id="introPrimary"></span>
+      </div>
+      <ul id="introSecondary" class="intro-secondary"></ul>
+      <button data-action="start" class="primary-btn">Begin</button>
+    </div>
+  </div>
+
+  <div id="screen-pause" class="screen overlay hidden">
+    <div class="menu-card">
+      <h2>Paused</h2>
+      <nav class="menu-list">
+        <button data-action="resume">Resume</button>
+        <button data-action="restart">Restart Stage</button>
+        <button data-action="settings">Settings</button>
+        <button data-action="help">Controls / Help</button>
+        <button data-action="stageselect">Stage Select</button>
+        <button data-action="menu">Main Menu</button>
+      </nav>
+    </div>
+  </div>
+
+  <div id="screen-help" class="screen overlay hidden">
+    <header class="screen-header"><button class="back-btn" data-action="back">←</button><h2>Help</h2></header>
+    <div class="help-content">
+      <ul>
+        <li>Move the deflector with arrow keys, A/D, mouse, or drag on mobile.</li>
+        <li>Press Space (or tap Launch) to launch the orb.</li>
+        <li>Where the orb strikes the deflector changes its rebound angle.</li>
+        <li>Break reactor components to release energy.</li>
+        <li>Collect energy with the deflector and route it into Deflector, Orb, or Reactor Control.</li>
+        <li>Press Space to activate the selected channel's ability once charged.</li>
+        <li>Hold Shift (or tap Catch) to magnetically catch and reposition the orb.</li>
+        <li>Complete the primary objective to breach the chamber.</li>
+      </ul>
+      <h3>Keyboard</h3>
+      <ul class="keys">
+        <li><kbd>←/A</kbd> <kbd>→/D</kbd> Move</li>
+        <li><kbd>Space</kbd> Launch / Ability</li>
+        <li><kbd>Shift</kbd> Magnetic Catch</li>
+        <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> Select Channel</li>
+        <li><kbd>Q</kbd> <kbd>E</kbd> Cycle Channel</li>
+        <li><kbd>P</kbd> / <kbd>Esc</kbd> Pause</li>
+        <li><kbd>R</kbd> Restart</li>
+      </ul>
+    </div>
+  </div>
+
+  <div id="screen-settings" class="screen overlay hidden">
+    <header class="screen-header"><button class="back-btn" data-action="back">←</button><h2>Settings</h2></header>
+    <div class="settings-content">
+      <label class="toggle-row"><span>Sound</span><input type="checkbox" data-setting="sound" /></label>
+      <label class="toggle-row"><span>Music</span><input type="checkbox" data-setting="music" /></label>
+      <label class="toggle-row"><span>Haptics</span><input type="checkbox" data-setting="haptics" /></label>
+      <label class="toggle-row"><span>Reduced Motion</span><input type="checkbox" data-setting="reducedMotion" /></label>
+      <label class="toggle-row"><span>Reduced Effects</span><input type="checkbox" data-setting="reducedEffects" /></label>
+      <label class="toggle-row"><span>Assist Mode (unlimited charges, rank capped at A)</span><input type="checkbox" data-setting="assist" /></label>
+      <div class="toggle-row">
+        <span>Screen Shake</span>
+        <select data-setting="screenShake">
+          <option value="full">Full</option>
+          <option value="reduced">Reduced</option>
+          <option value="off">Off</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="screen-stats" class="screen overlay hidden">
+    <header class="screen-header"><button class="back-btn" data-action="back">←</button><h2>Statistics</h2></header>
+    <div id="statsContent" class="stats-content"></div>
+  </div>
+
+  <div id="screen-stageComplete" class="screen overlay hidden">
+    <div class="menu-card">
+      <h2 id="completeTitle">Chamber Breached</h2>
+      <div class="rank-display" id="completeRank">C</div>
+      <div class="result-grid" id="completeStats"></div>
+      <div class="medal-row" id="completeMedals"></div>
+      <nav class="menu-list">
+        <button data-action="next" id="btnNextStage">Next Stage</button>
+        <button data-action="stageselect">Stage Select</button>
+        <button data-action="restart">Replay Stage</button>
+      </nav>
+    </div>
+  </div>
+
+  <div id="screen-stageFailed" class="screen overlay hidden">
+    <div class="menu-card">
+      <h2>Containment Failed</h2>
+      <div class="result-grid" id="failedStats"></div>
+      <nav class="menu-list">
+        <button data-action="retry" class="primary-btn">Retry</button>
+        <button data-action="stageselect">Stage Select</button>
+        <button data-action="menu">Main Menu</button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
