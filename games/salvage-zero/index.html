@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Salvage Zero</title>
+<meta name="description" content="Break the wreckage. Recover the core. Escape alive. A mobile-first arcade salvage game.">
+<meta name="theme-color" content="#05070a">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- LOADING -->
+  <section id="screen-loading" class="screen active">
+    <div class="loading-wrap">
+      <div class="logo-mark">SALVAGE<span>ZERO</span></div>
+      <div class="loading-bar"><div class="loading-fill" id="loadingFill"></div></div>
+      <div class="loading-label">Calibrating salvage rig…</div>
+    </div>
+  </section>
+
+  <!-- MAIN MENU -->
+  <section id="screen-menu" class="screen">
+    <div class="menu-panel">
+      <div class="logo-mark small">SALVAGE<span>ZERO</span></div>
+      <div class="tagline">Break the wreckage. Recover the core. Escape alive.</div>
+      <nav class="menu-list">
+        <button class="menu-btn primary" data-action="continue">Continue</button>
+        <button class="menu-btn" data-action="new-game">New Game</button>
+        <button class="menu-btn" data-action="mission-select">Mission Select</button>
+        <button class="menu-btn" data-action="statistics">Statistics</button>
+        <button class="menu-btn" data-action="settings">Settings</button>
+        <button class="menu-btn" data-action="install" id="installBtn" hidden>Install App</button>
+      </nav>
+      <div class="menu-footer">v1.0 · Runs fully offline</div>
+    </div>
+  </section>
+
+  <!-- MISSION SELECT -->
+  <section id="screen-mission-select" class="screen">
+    <header class="subscreen-header">
+      <button class="icon-btn" data-action="back-to-menu">&larr;</button>
+      <h1>Mission Select</h1>
+    </header>
+    <div class="mission-grid" id="missionGrid"></div>
+  </section>
+
+  <!-- STATISTICS -->
+  <section id="screen-statistics" class="screen">
+    <header class="subscreen-header">
+      <button class="icon-btn" data-action="back-to-menu">&larr;</button>
+      <h1>Statistics</h1>
+    </header>
+    <div class="stats-list" id="statsList"></div>
+  </section>
+
+  <!-- SETTINGS -->
+  <section id="screen-settings" class="screen">
+    <header class="subscreen-header">
+      <button class="icon-btn" data-action="back-to-menu">&larr;</button>
+      <h1>Settings</h1>
+    </header>
+    <div class="settings-list">
+      <label class="setting-row">
+        <span>SFX Volume</span>
+        <input type="range" id="sfxVolume" min="0" max="1" step="0.05">
+      </label>
+      <label class="setting-row">
+        <span>Music Volume</span>
+        <input type="range" id="musicVolume" min="0" max="1" step="0.05">
+      </label>
+      <label class="setting-row">
+        <span>Screen Shake</span>
+        <input type="checkbox" id="screenShake">
+      </label>
+      <label class="setting-row">
+        <span>Reduced Motion</span>
+        <input type="checkbox" id="reducedMotion">
+      </label>
+      <label class="setting-row">
+        <span>High Contrast HUD</span>
+        <input type="checkbox" id="highContrast">
+      </label>
+      <label class="setting-row">
+        <span>Steering Thumb Side</span>
+        <select id="controlSide">
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <!-- MISSION BRIEF -->
+  <section id="screen-brief" class="screen">
+    <div class="brief-panel">
+      <div class="brief-eyebrow" id="briefEyebrow">CONTRACT 01</div>
+      <h1 id="briefName">Mission Name</h1>
+      <p id="briefText" class="brief-text"></p>
+      <div class="brief-stats">
+        <div><span class="k">Quota</span><span class="v" id="briefQuota">—</span></div>
+        <div><span class="k">Timer</span><span class="v" id="briefTimer">—</span></div>
+        <div><span class="k">Best</span><span class="v" id="briefBest">—</span></div>
+      </div>
+      <div class="brief-objectives" id="briefOptional"></div>
+      <div class="brief-actions">
+        <button class="menu-btn" data-action="back-to-mission-select">&larr; Back</button>
+        <button class="menu-btn primary" data-action="launch-mission">Launch</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME VIEW -->
+  <section id="screen-game" class="screen">
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="hud" id="hud">
+      <div class="hud-top-left">
+        <div class="bar-group">
+          <div class="bar-label">HULL</div>
+          <div class="bar hull-bar"><div class="bar-fill" id="hullFill"></div></div>
+        </div>
+        <div class="bar-group">
+          <div class="bar-label">HEAT</div>
+          <div class="bar heat-bar"><div class="bar-fill" id="heatFill"></div></div>
+        </div>
+      </div>
+
+      <div class="hud-top-right">
+        <button class="icon-btn" data-action="pause">II</button>
+      </div>
+
+      <div class="hud-top-center">
+        <div class="objective-text" id="objectiveText">Destroy wreckage. Collect salvage.</div>
+        <div class="cargo-readout"><span id="cargoCount">0</span> / <span id="cargoQuota">0</span> CARGO</div>
+        <div class="timer-readout" id="timerReadout" hidden>00:00</div>
+      </div>
+
+      <canvas class="radar" id="radarCanvas" width="140" height="140"></canvas>
+
+      <div class="combo-readout" id="comboReadout" hidden></div>
+
+      <div class="extraction-banner" id="extractionBanner" hidden>EXTRACTION GATE ACTIVE — HEAD TO THE BEACON</div>
+    </div>
+
+    <!-- Mobile controls -->
+    <div class="mobile-controls" id="mobileControls">
+      <div class="joy-zone" id="joyZone"><div class="joy-knob" id="joyKnob"></div></div>
+      <div class="action-buttons">
+        <button class="ctrl-btn brake-btn" id="btnBrake">BRAKE</button>
+        <button class="ctrl-btn tractor-btn" id="btnTractor">TRACTOR</button>
+        <button class="ctrl-btn fire-btn" id="btnFire">FIRE</button>
+        <button class="ctrl-btn thrust-btn" id="btnThrust">THRUST</button>
+      </div>
+    </div>
+
+    <!-- Pause overlay -->
+    <div class="overlay" id="pauseOverlay" hidden>
+      <div class="overlay-panel">
+        <h2>Paused</h2>
+        <button class="menu-btn primary" data-action="resume">Resume</button>
+        <button class="menu-btn" data-action="restart-mission">Restart</button>
+        <button class="menu-btn" data-action="quit-to-menu">Quit to Menu</button>
+      </div>
+    </div>
+
+    <!-- Mission complete overlay -->
+    <div class="overlay" id="completeOverlay" hidden>
+      <div class="overlay-panel">
+        <div class="rank-badge" id="rankBadge">S</div>
+        <h2>Contract Complete</h2>
+        <div class="result-list" id="resultList"></div>
+        <button class="menu-btn primary" data-action="next-mission">Next Contract</button>
+        <button class="menu-btn" data-action="quit-to-menu">Mission Select</button>
+      </div>
+    </div>
+
+    <!-- Failure overlay -->
+    <div class="overlay" id="failureOverlay" hidden>
+      <div class="overlay-panel">
+        <h2 id="failureTitle">Salvage Lost</h2>
+        <p id="failureReason" class="brief-text"></p>
+        <button class="menu-btn primary" data-action="restart-mission">Retry</button>
+        <button class="menu-btn" data-action="quit-to-menu">Mission Select</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
