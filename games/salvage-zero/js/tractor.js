@@ -39,14 +39,15 @@ export function applyTractorBeam(ship, salvageList, dt, events, worldW, worldH) 
     const dy = wrapDelta(s.y, ship.y, worldH);
     const dist = Math.hypot(dx, dy);
 
-    if (ship.tractorActive && dist < CONFIG.TRACTOR.RANGE) {
+    const range = ship.tractorRange || CONFIG.TRACTOR.RANGE;
+    if (ship.tractorActive && dist < range) {
       const angleToSalvage = Math.atan2(dy, dx);
       const beamAngle = ship.angle;
       let diff = angleToSalvage - beamAngle;
       diff = Math.atan2(Math.sin(diff), Math.cos(diff));
       if (Math.abs(diff) < CONFIG.TRACTOR.HALF_ANGLE) {
         s.beamed = true;
-        const pull = CONFIG.TRACTOR.PULL_FORCE * (1 - dist / CONFIG.TRACTOR.RANGE);
+        const pull = CONFIG.TRACTOR.PULL_FORCE * (1 - dist / range);
         s.vx += (-dx / dist) * pull * dt;
         s.vy += (-dy / dist) * pull * dt;
       } else {

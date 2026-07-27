@@ -20,6 +20,8 @@ export class UI {
     this.pauseOverlay = $('#pauseOverlay');
     this.completeOverlay = $('#completeOverlay');
     this.failureOverlay = $('#failureOverlay');
+    this.damageVignette = $('#damageVignette');
+    this._lastComboMult = 1;
   }
 
   showScreen(id) {
@@ -35,6 +37,33 @@ export class UI {
   renderMenu(save) {
     $('#installBtn').hidden = !window.__deferredInstallPrompt;
     $('.menu-btn[data-action="continue"]').style.display = save.completed && Object.keys(save.completed).length ? '' : 'none';
+    $('#menuCredits').textContent = `${save.credits.toLocaleString()} CR · Runs fully offline`;
+  }
+
+  renderUpgrades(save, upgradeDefs, maxLevel, onBuy) {
+    $('#upgradesCredits').textContent = `${save.credits.toLocaleString()} CR`;
+    const list = $('#upgradeList');
+    list.innerHTML = '';
+    for (const key in upgradeDefs) {
+      const def = upgradeDefs[key];
+      const level = save.upgrades[key] || 0;
+      const maxed = level >= maxLevel;
+      const cost = maxed ? null : def.costs[level];
+      const canAfford = !maxed && save.credits >= cost;
+      const card = document.createElement('div');
+      card.className = 'upgrade-card';
+      const dots = Array.from({ length: maxLevel }, (_, i) => `<span class="${i < level ? 'filled' : ''}"></span>`).join('');
+      card.innerHTML = `
+        <div class="row1"><span class="name">${def.name}</span><div class="upgrade-dots">${dots}</div></div>
+        <div class="desc">${def.description}</div>
+        <div class="effect">${def.describe(level)}</div>
+        <button class="upgrade-buy ${maxed ? 'maxed' : ''}" ${maxed || !canAfford ? 'disabled' : ''}>
+          ${maxed ? 'MAXED' : `Upgrade — ${cost.toLocaleString()} CR`}
+        </button>
+      `;
+      if (!maxed) card.querySelector('.upgrade-buy').addEventListener('click', () => onBuy(key));
+      list.appendChild(card);
+    }
   }
 
   renderMissionGrid(missionDefs, save, onSelect) {
@@ -137,9 +166,17 @@ export class UI {
     if (mission.combo.mult > 1 && mission.combo.timer > 0) {
       this.comboReadout.hidden = false;
       this.comboReadout.textContent = `${mission.combo.mult}x COMBO`;
+      if (mission.combo.mult > this._lastComboMult) {
+        this.comboReadout.classList.remove('combo-pop');
+        void this.comboReadout.offsetWidth; // restart animation
+        this.comboReadout.classList.add('combo-pop');
+      }
     } else {
       this.comboReadout.hidden = true;
     }
+    this._lastComboMult = mission.combo.mult;
+
+    this.damageVignette.style.opacity = ship.hitFlash > 0 ? Math.min(1, ship.hitFlash / 0.35) * 0.85 : 0;
   }
 
   drawRadar(mission, ship) {
@@ -151,20 +188,32 @@ export class UI {
     ctx.strokeStyle = 'rgba(139,152,165,0.4)'; ctx.stroke();
 
     const scale = R / (Math.max(mission.worldW, mission.worldH) * 0.55);
-    const plot = (wx, wy, color, size) => {
+    const project = (wx, wy) => {
       let dx = wx - ship.x, dy = wy - ship.y;
       if (dx > mission.worldW / 2) dx -= mission.worldW; if (dx < -mission.worldW / 2) dx += mission.worldW;
       if (dy > mission.worldH / 2) dy -= mission.worldH; if (dy < -mission.worldH / 2) dy += mission.worldH;
       const px = cx + dx * scale, py = cy + dy * scale;
-      const d = Math.hypot(px - cx, py - cy);
-      if (d > R) return;
+      return { px, py, visible: Math.hypot(px - cx, py - cy) <= R };
+    };
+    const plot = (wx, wy, color, size) => {
+      const p = project(wx, wy);
+      if (!p.visible) return;
       ctx.fillStyle = color;
-      ctx.beginPath(); ctx.arc(px, py, size, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.px, p.py, size, 0, Math.PI * 2); ctx.fill();
     };
 
     for (const w2 of mission.wrecks) {
       if (!w2.alive) continue;
       if (w2.level === 0) plot(w2.x, w2.y, w2.def.reactor ? '#ff4d4d' : 'rgba(139,152,165,0.8)', w2.def.reactor ? 2.6 : 2);
+      if (w2.def.reactor && w2.reactorCountdown >= 0) {
+        const p = project(w2.x, w2.y);
+        if (p.visible) {
+          const pulse = 4 + Math.sin(performance.now() / 120) * 2.5;
+          ctx.strokeStyle = 'rgba(255,77,77,0.8)';
+          ctx.lineWidth = 1.4;
+          ctx.beginPath(); ctx.arc(p.px, p.py, 5 + pulse, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
     }
     for (const s of mission.salvage) {
       if (s.collected) continue;
@@ -187,9 +236,9 @@ export class UI {
       ['Largest Combo', 'x' + result.largestCombo],
       ['Optional Objectives', `${result.optionalDone}/${result.optionalTotal}`],
       ['Score', result.score.toLocaleString()],
+      ['Credits Earned', '+' + result.creditsEarned.toLocaleString()],
     ];
     $('#resultList').innerHTML = rows.map(([k, v]) => `<div class="row"><span>${k}</span><span class="hi">${v}</span></div>`).join('');
-    $('#nextBtn');
     const nextBtn = document.querySelector('[data-action="next-mission"]');
     nextBtn.style.display = result.hasNext ? '' : 'none';
     this.completeOverlay.hidden = false;

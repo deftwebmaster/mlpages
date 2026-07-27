@@ -77,3 +77,28 @@ export const SALVAGE_DEFS = {
   blackbox: { name: 'Black Box',     color: '#ff4d4d', value: 40, size: 8 },
   rare:     { name: 'Rare Component',color: '#c58bff', value: 30, size: 7 },
 };
+
+// Salvage-funded ship upgrades. Each maxes at level 3; costs[i] is the price to buy
+// level i+1 (i.e. costs[0] takes you from 0->1). Purchased with save.credits, earned
+// from mission.cargoValue on contract completion.
+export const UPGRADE_DEFS = {
+  tractorRange: {
+    name: 'Tractor Range',
+    description: 'Extends the beam\'s effective reach.',
+    costs: [150, 350, 700],
+    describe: (level) => `${CONFIG.TRACTOR.RANGE + level * 40}px range`,
+  },
+  cooling: {
+    name: 'Cooling Efficiency',
+    description: 'Faster heat dissipation and cooler shots.',
+    costs: [150, 350, 700],
+    describe: (level) => `+${level * 15}% dissipation, -${level * 8}% heat/shot`,
+  },
+  hullReinforcement: {
+    name: 'Hull Reinforcement',
+    description: 'Reinforced plating raises max hull integrity.',
+    costs: [150, 350, 700],
+    describe: (level) => `${CONFIG.SHIP.MAX_HULL + level * 20} max hull`,
+  },
+};
+export const UPGRADE_MAX_LEVEL = 3;

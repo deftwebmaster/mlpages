@@ -61,6 +61,7 @@ export class Renderer {
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d', { alpha: false });
     this.stars = [];
+    this.nebula = [];
     this.reducedMotion = false;
   }
 
@@ -92,6 +93,37 @@ export class Renderer {
           speed: layer.speed,
         });
       }
+    }
+  }
+
+  generateNebula(worldW, worldH, theme) {
+    this.nebula = [];
+    const count = 7;
+    for (let i = 0; i < count; i++) {
+      this.nebula.push({
+        x: Math.random() * worldW,
+        y: Math.random() * worldH,
+        radius: randRange(220, 480),
+        alpha: randRange(0.05, 0.13),
+        speed: 0.06,
+        color: theme.accent,
+      });
+    }
+  }
+
+  drawNebula(camera) {
+    const ctx = this.ctx;
+    for (const n of this.nebula) {
+      const dx = wrapDelta(n.x, camera.x * n.speed + n.x * (1 - n.speed), camera.worldW);
+      const dy = wrapDelta(n.y, camera.y * n.speed + n.y * (1 - n.speed), camera.worldH);
+      const px = this.width / 2 + dx;
+      const py = this.height / 2 + dy;
+      if (px < -n.radius || px > this.width + n.radius || py < -n.radius || py > this.height + n.radius) continue;
+      const g = ctx.createRadialGradient(px, py, 0, px, py, n.radius);
+      g.addColorStop(0, hexAlphaColor(n.color, n.alpha));
+      g.addColorStop(1, hexAlphaColor(n.color, 0));
+      ctx.fillStyle = g;
+      ctx.fillRect(px - n.radius, py - n.radius, n.radius * 2, n.radius * 2);
     }
   }
 
@@ -137,6 +169,10 @@ export function mixHex(a, b, t) {
   return `rgb(${r},${g},${bl})`;
 }
 function lerp(a, b, t) { return a + (b - a) * t; }
+function hexAlphaColor(hex, alpha) {
+  const { r, g, b } = hexToRgb(hex);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
 function hexToRgb(hex) {
   hex = hex.replace('#', '');
   if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');

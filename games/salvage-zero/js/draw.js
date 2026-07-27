@@ -5,6 +5,7 @@ export function drawFrame(renderer, camera, mission, ship, projectilePool, parti
   const W = renderer.width, H = renderer.height;
 
   renderer.clear(bgTheme);
+  renderer.drawNebula(camera);
   renderer.drawStars(camera);
 
   drawGate(ctx, camera, mission, W, H);
@@ -166,7 +167,7 @@ function drawParticles(ctx, camera, pool, W, H) {
 
 function drawTractorBeam(ctx, camera, ship, W, H) {
   const pos = camera.toScreen(ship.x, ship.y, W, H);
-  const range = CONFIG.TRACTOR.RANGE;
+  const range = ship.tractorRange || CONFIG.TRACTOR.RANGE;
   const half = CONFIG.TRACTOR.HALF_ANGLE;
   ctx.save();
   ctx.translate(pos.x, pos.y);
@@ -185,9 +186,14 @@ function drawTractorBeam(ctx, camera, ship, W, H) {
 
 function drawShip(ctx, camera, ship, W, H) {
   const pos = camera.toScreen(ship.x, ship.y, W, H);
+  const warp = ship.warpProgress || 0;
   ctx.save();
   ctx.translate(pos.x, pos.y);
   ctx.rotate(ship.angle);
+  if (warp > 0) {
+    ctx.globalAlpha = 1 - warp;
+    ctx.scale(1 - warp * 0.9, 1 - warp * 0.9);
+  }
 
   const damaged = ship.hull / ship.maxHull < 0.25;
   const r = ship.radius;

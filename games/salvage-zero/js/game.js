@@ -1,4 +1,4 @@
-import { CONFIG } from './config.js';
+import { CONFIG, UPGRADE_DEFS, UPGRADE_MAX_LEVEL } from './config.js';
 import { InputManager } from './input.js';
 import { Renderer, Camera, BACKGROUNDS } from './renderer.js';
 import { createShip, updateShip, canFire, fireWeapon, damageShip } from './ship.js';
@@ -13,12 +13,14 @@ import { UI, computeScore, computeRank } from './ui.js';
 import { AudioEngine } from './audio.js';
 import { loadSave, writeSave } from './storage.js';
 import { resolveElastic, speedOf } from './physics.js';
-import { wrapDelta, clamp } from './utils.js';
+import { wrapDelta, wrapValue, clamp } from './utils.js';
 import { drawFrame } from './draw.js';
+
+const EXTRACTION_WARP_DURATION = 0.9;
 
 const STATE = {
   LOADING: 'loading', MENU: 'menu', MISSION_SELECT: 'mission-select', STATISTICS: 'statistics',
-  SETTINGS: 'settings', BRIEF: 'brief', PLAYING: 'playing', PAUSED: 'paused',
+  SETTINGS: 'settings', UPGRADES: 'upgrades', BRIEF: 'brief', PLAYING: 'playing', PAUSED: 'paused',
   COMPLETE: 'complete', FAILURE: 'failure',
 };
 
@@ -43,6 +45,7 @@ export class Game {
 
     this._lastTime = 0;
     this._accumulator = 0;
+    this._heartbeatTimer = 0;
 
     this._bindUIActions();
     this._bindMobileControls();
@@ -111,6 +114,7 @@ export class Game {
         this.openBrief(next); break;
       }
       case 'mission-select': this.goToMissionSelect(); break;
+      case 'upgrades': this.goToUpgrades(); break;
       case 'statistics': this.ui.renderStats(this.save); this.state = STATE.STATISTICS; this.ui.showScreen('screen-statistics'); break;
       case 'settings': this.state = STATE.SETTINGS; this.ui.showScreen('screen-settings'); break;
       case 'back-to-menu': this.goToMenu(); break;
@@ -159,18 +163,40 @@ export class Game {
     this.ui.showScreen('screen-brief');
   }
 
+  goToUpgrades() {
+    this.state = STATE.UPGRADES;
+    this.ui.renderUpgrades(this.save, UPGRADE_DEFS, UPGRADE_MAX_LEVEL, (key) => this.buyUpgrade(key));
+    this.ui.showScreen('screen-upgrades');
+  }
+
+  buyUpgrade(key) {
+    const def = UPGRADE_DEFS[key];
+    const level = this.save.upgrades[key] || 0;
+    if (level >= UPGRADE_MAX_LEVEL) return;
+    const cost = def.costs[level];
+    if (this.save.credits < cost) return;
+    this.save.credits -= cost;
+    this.save.upgrades[key] = level + 1;
+    writeSave(this.save);
+    this.audio.playPickup();
+    this.ui.renderUpgrades(this.save, UPGRADE_DEFS, UPGRADE_MAX_LEVEL, (k) => this.buyUpgrade(k));
+  }
+
   // ---------------- Mission lifecycle ----------------
   startMission(id) {
     const def = getMissionDef(id);
     this.mission = buildMissionRuntime(def);
-    this.ship = createShip(this.mission.startX, this.mission.startY);
+    this.ship = createShip(this.mission.startX, this.mission.startY, this.save.upgrades);
     this.camera = new Camera(this.mission.worldW, this.mission.worldH);
     this.camera.follow(this.ship, 0);
     this.renderer.generateStars(this.mission.worldW, this.mission.worldH, BACKGROUNDS[def.background].starDensity);
+    this.renderer.generateNebula(this.mission.worldW, this.mission.worldH, BACKGROUNDS[def.background]);
     this.projectiles.clear();
     this.particles.clear();
     this.events.length = 0;
     this.grid = new SpatialGrid(160, this.mission.worldW, this.mission.worldH);
+    this.extracting = false;
+    this.extractionTimer = 0;
 
     this.state = STATE.PLAYING;
     this.ui.showScreen('screen-game');
@@ -187,6 +213,7 @@ export class Game {
     this.ui.showPause(true);
     this.audio.setThruster(false);
     this.audio.setTractor(false);
+    this.audio.setHeatAlarm(false);
   }
   resume() {
     if (this.state !== STATE.PAUSED) return;
@@ -230,12 +257,28 @@ export class Game {
   _tick(dt) {
     const m = this.mission, ship = this.ship;
 
+    if (this.extracting) {
+      this._tickExtraction(dt);
+      return;
+    }
+
     updateShip(ship, this.input, dt, m.worldW, m.worldH);
     this.audio.setThruster(ship.thrusting);
     this.audio.setTractor(ship.tractorActive);
+    this.audio.setHeatAlarm(ship.heat >= 85);
     if (ship.thrusting) emitThruster(this.particles, ship, dt, false);
     if (ship.braking) emitThruster(this.particles, ship, dt, true);
     if (ship.tractorActive && Math.random() < 0.5) emitTractorParticle(this.particles, ship);
+
+    if (ship.hull / ship.maxHull < 0.25) {
+      this._heartbeatTimer -= dt;
+      if (this._heartbeatTimer <= 0) {
+        this.audio.playHeartbeat();
+        this._heartbeatTimer = 0.6;
+      }
+    } else {
+      this._heartbeatTimer = 0;
+    }
 
     if (this.input.fire && canFire(ship)) {
       fireWeapon(ship);
@@ -289,13 +332,39 @@ export class Game {
     if (m.gate.active) {
       const gateEntity = { x: m.gate.x, y: m.gate.y, radius: m.gate.radius };
       if (circleOverlap(ship, gateEntity, m.worldW, m.worldH)) {
-        this._completeMission();
+        this.extracting = true;
+        this.extractionTimer = EXTRACTION_WARP_DURATION;
+        ship.warpProgress = 0;
+        this.audio.setThruster(false);
+        this.audio.setTractor(false);
+        this.audio.setHeatAlarm(false);
         return;
       }
     }
 
     if (!ship.alive) {
       this._failMission('Salvage Craft Lost', 'Hull integrity reached zero.');
+    }
+  }
+
+  // Ship spirals into the gate and shrinks before the mission-complete screen appears.
+  _tickExtraction(dt) {
+    const m = this.mission, ship = this.ship;
+    this.extractionTimer -= dt;
+    ship.warpProgress = clamp(1 - this.extractionTimer / EXTRACTION_WARP_DURATION, 0, 1);
+    ship.angle += dt * 14; // fast spin while warping in
+
+    const dx = wrapDelta(m.gate.x, ship.x, m.worldW);
+    const dy = wrapDelta(m.gate.y, ship.y, m.worldH);
+    ship.x = wrapValue(ship.x + dx * dt * 5, m.worldW);
+    ship.y = wrapValue(ship.y + dy * dt * 5, m.worldH);
+    ship.vx = 0; ship.vy = 0;
+
+    if (Math.random() < 0.9) emitTractorParticle(this.particles, ship);
+
+    if (this.extractionTimer <= 0) {
+      this.extracting = false;
+      this._completeMission();
     }
   }
 
@@ -412,6 +481,7 @@ export class Game {
     this.state = STATE.COMPLETE;
     this.audio.setThruster(false);
     this.audio.setTractor(false);
+    this.audio.setHeatAlarm(false);
     this.audio.playVictory();
 
     const optionalDone = def.optional.filter(o => this._checkOptional(o, m, ship)).length;
@@ -422,6 +492,7 @@ export class Game {
     this.save.stats.distanceFlown += ship.distanceFlown;
     this.save.completed[def.id] = true;
     this.save.unlockedMissions = Math.max(this.save.unlockedMissions, Math.min(12, def.id + 1));
+    this.save.credits += m.cargoValue;
     const prevScore = this.save.bestScores[def.id] || 0;
     if (score > prevScore) {
       this.save.bestScores[def.id] = score;
@@ -432,7 +503,7 @@ export class Game {
     this.ui.showComplete({
       rank, score, cargoValue: m.cargoValue, hullPct: (ship.hull / ship.maxHull) * 100,
       time: m.elapsed, largestCombo: m.largestCombo, optionalDone, optionalTotal: def.optional.length,
-      hasNext: def.id < 12,
+      hasNext: def.id < 12, creditsEarned: m.cargoValue,
     });
   }
 
@@ -451,6 +522,7 @@ export class Game {
     this.state = STATE.FAILURE;
     this.audio.setThruster(false);
     this.audio.setTractor(false);
+    this.audio.setHeatAlarm(false);
     writeSave(this.save);
     this.ui.showFailure(title, reason);
   }

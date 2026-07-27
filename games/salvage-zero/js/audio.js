@@ -149,6 +149,22 @@ export class AudioEngine {
     }
   }
 
+  setHeatAlarm(active) {
+    if (!this.ctx) return;
+    if (active && !this._heatAlarmInterval) {
+      const beep = () => this._osc('square', 880, 0.09, 0.14, this.sfxGain, 700);
+      beep();
+      this._heatAlarmInterval = setInterval(beep, 350);
+    } else if (!active && this._heatAlarmInterval) {
+      clearInterval(this._heatAlarmInterval);
+      this._heatAlarmInterval = null;
+    }
+  }
+
+  playHeartbeat() {
+    this._osc('sine', 65, 0.16, 0.3, this.sfxGain, 40);
+  }
+
   startAmbient() {
     if (!this.ctx || this._ambientNodes) return;
     const osc1 = this.ctx.createOscillator();

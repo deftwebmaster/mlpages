@@ -8,6 +8,12 @@ const DEFAULT_SAVE = {
   bestRanks: {},        // missionId -> rank string
   completed: {},         // missionId -> true
   optionalCompleted: {}, // missionId -> { [objectiveId]: true }
+  credits: 0,             // spendable currency, earned from cargoValue on mission complete
+  upgrades: {              // each 0-3, see config.js UPGRADE_DEFS for effects/costs
+    tractorRange: 0,
+    cooling: 0,
+    hullReinforcement: 0,
+  },
   stats: {
     totalSalvage: 0,
     contractsCompleted: 0,

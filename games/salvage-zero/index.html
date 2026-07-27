@@ -32,11 +32,12 @@
         <button class="menu-btn primary" data-action="continue">Continue</button>
         <button class="menu-btn" data-action="new-game">New Game</button>
         <button class="menu-btn" data-action="mission-select">Mission Select</button>
+        <button class="menu-btn" data-action="upgrades">Upgrades</button>
         <button class="menu-btn" data-action="statistics">Statistics</button>
         <button class="menu-btn" data-action="settings">Settings</button>
         <button class="menu-btn" data-action="install" id="installBtn" hidden>Install App</button>
       </nav>
-      <div class="menu-footer">v1.0 · Runs fully offline</div>
+      <div class="menu-footer" id="menuCredits">v1.0 · Runs fully offline</div>
     </div>
   </section>
 
@@ -47,6 +48,16 @@
       <h1>Mission Select</h1>
     </header>
     <div class="mission-grid" id="missionGrid"></div>
+  </section>
+
+  <!-- UPGRADES -->
+  <section id="screen-upgrades" class="screen">
+    <header class="subscreen-header">
+      <button class="icon-btn" data-action="back-to-menu">&larr;</button>
+      <h1>Upgrades</h1>
+      <div class="credits-readout" id="upgradesCredits">0 CR</div>
+    </header>
+    <div class="upgrade-list" id="upgradeList"></div>
   </section>
 
   <!-- STATISTICS -->
@@ -117,6 +128,7 @@
   <!-- GAME VIEW -->
   <section id="screen-game" class="screen">
     <canvas id="gameCanvas"></canvas>
+    <div class="damage-vignette" id="damageVignette"></div>
 
     <div class="hud" id="hud">
       <div class="hud-top-left">

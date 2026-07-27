@@ -100,6 +100,38 @@ html, body {
 }
 .setting-row input[type=range] { width: 140px; }
 
+/* ---------- Upgrades ---------- */
+.credits-readout {
+  margin-left: auto; color: var(--orange); font-weight: 700; letter-spacing: 0.04em;
+  background: var(--panel-2); border: 1px solid var(--steel-dim); border-radius: 8px; padding: 8px 14px;
+}
+.upgrade-list { display: flex; flex-direction: column; gap: 12px; max-width: 520px; }
+.upgrade-card {
+  background: var(--panel-2); border: 1px solid var(--steel-dim); border-radius: 10px; padding: 16px 18px;
+}
+.upgrade-card .row1 { display: flex; justify-content: space-between; align-items: baseline; }
+.upgrade-card .name { font-weight: 700; font-size: 1rem; }
+.upgrade-card .desc { color: var(--steel); font-size: 0.82rem; margin: 4px 0 10px; }
+.upgrade-card .effect { color: var(--cyan); font-size: 0.8rem; margin-bottom: 10px; }
+.upgrade-dots { display: flex; gap: 6px; }
+.upgrade-dots span {
+  width: 18px; height: 6px; border-radius: 3px; background: var(--steel-dim);
+}
+.upgrade-dots span.filled { background: var(--cyan); }
+.upgrade-buy {
+  padding: 8px 16px; font-size: 0.85rem; font-weight: 700; border-radius: 7px;
+  background: var(--deep-blue); border: 1px solid var(--cyan); color: var(--white); cursor: pointer;
+}
+.upgrade-buy:disabled { opacity: 0.35; cursor: not-allowed; border-color: var(--steel-dim); }
+.upgrade-buy.maxed { background: transparent; border-color: var(--steel-dim); color: var(--steel); }
+
+/* ---------- Damage vignette ---------- */
+.damage-vignette {
+  position: absolute; inset: 0; pointer-events: none; opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(255,77,77,0) 55%, rgba(255,77,77,0.45) 100%);
+  transition: opacity 0.08s ease-out;
+}
+
 /* ---------- Mission Brief ---------- */
 #screen-brief { align-items: center; justify-content: center; }
 .brief-panel { width: min(90vw, 460px); background: var(--panel-2); border: 1px solid var(--steel-dim); border-radius: 12px; padding: 26px; }
@@ -147,6 +179,11 @@ html, body {
   position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
   font-size: 1.1rem; font-weight: 800; color: var(--orange);
   text-shadow: 0 0 8px rgba(255,149,64,0.6);
+}
+.combo-readout.combo-pop { animation: combo-pop 0.32s cubic-bezier(.2,1.4,.4,1); }
+@keyframes combo-pop {
+  0% { transform: translateX(-50%) scale(1.6); text-shadow: 0 0 18px rgba(255,149,64,0.95); }
+  100% { transform: translateX(-50%) scale(1); text-shadow: 0 0 8px rgba(255,149,64,0.6); }
 }
 
 .extraction-banner {

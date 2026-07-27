@@ -2,7 +2,12 @@ import { CONFIG } from './config.js';
 import { applyThrust, clampSpeed } from './physics.js';
 import { clamp, wrapValue } from './utils.js';
 
-export function createShip(x, y) {
+export function createShip(x, y, upgrades = {}) {
+  const hullLevel = upgrades.hullReinforcement || 0;
+  const coolingLevel = upgrades.cooling || 0;
+  const tractorLevel = upgrades.tractorRange || 0;
+  const maxHull = CONFIG.SHIP.MAX_HULL + hullLevel * 20;
+
   return {
     type: 'ship',
     x, y,
@@ -11,13 +16,16 @@ export function createShip(x, y) {
     radius: CONFIG.SHIP.RADIUS,
     mass: 5,
     drag: 0.14,
-    hull: CONFIG.SHIP.MAX_HULL,
-    maxHull: CONFIG.SHIP.MAX_HULL,
+    hull: maxHull,
+    maxHull,
     heat: 0,
     overheated: false,
     overheatTimer: 0,
     fireCooldown: 0,
     tractorActive: false,
+    tractorRange: CONFIG.TRACTOR.RANGE + tractorLevel * 40,
+    heatDissipateMult: 1 + coolingLevel * 0.15,
+    heatPerShotMult: 1 - coolingLevel * 0.08,
     thrusting: false,
     braking: false,
     invuln: 0,
@@ -78,7 +86,7 @@ export function updateShip(ship, input, dt, worldW, worldH) {
       ship.heat = 0;
     }
   } else {
-    ship.heat = clamp(ship.heat - CONFIG.WEAPON.HEAT_DISSIPATE * dt, 0, 100);
+    ship.heat = clamp(ship.heat - CONFIG.WEAPON.HEAT_DISSIPATE * ship.heatDissipateMult * dt, 0, 100);
     if (ship.heat >= 100) {
       ship.overheated = true;
       ship.overheatTimer = CONFIG.WEAPON.HEAT_OVERHEAT_LOCK;
@@ -96,7 +104,7 @@ export function canFire(ship) {
 
 export function fireWeapon(ship) {
   ship.fireCooldown = 1 / CONFIG.WEAPON.FIRE_RATE;
-  ship.heat = clamp(ship.heat + CONFIG.WEAPON.HEAT_PER_SHOT, 0, 100);
+  ship.heat = clamp(ship.heat + CONFIG.WEAPON.HEAT_PER_SHOT * ship.heatPerShotMult, 0, 100);
   if (ship.heat >= 100) {
     ship.overheated = true;
     ship.overheatTimer = CONFIG.WEAPON.HEAT_OVERHEAT_LOCK;
