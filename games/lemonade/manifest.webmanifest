@@ -1,0 +1,17 @@
+{
+  "name": "Lemonade Empire",
+  "short_name": "Lemonade Empire",
+  "description": "Squeeze. Sell. Expand. Build a lemonade empire from a folding table to a regional brand.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff8e7",
+  "theme_color": "#ffc93c",
+  "categories": ["games", "business", "simulation"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

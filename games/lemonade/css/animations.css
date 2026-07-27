@@ -1,0 +1,88 @@
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screen-enter {
+  animation: screen-in var(--transition-base);
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+
+.pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0.6); opacity: 0; }
+  60% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.bounce-in { animation: bounce-in 420ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+@keyframes cup-fill {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes float-away {
+  0% { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(var(--drift-x, 20px), -60px); opacity: 0; }
+}
+
+.float-away {
+  animation: float-away 900ms ease-out forwards;
+}
+
+@keyframes walk-in {
+  from { transform: translateX(var(--walk-from, -40px)); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.walk-in { animation: walk-in 500ms ease-out; }
+
+@keyframes cash-pop {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-30px) scale(1.15); opacity: 0; }
+}
+
+.cash-pop {
+  position: absolute;
+  animation: cash-pop 700ms ease-out forwards;
+  font-weight: 800;
+  color: var(--color-leaf-dark);
+  pointer-events: none;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.weather-icon-anim { display: inline-block; }
+.weather-icon-anim.windy { animation: spin-slow 6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse, .bounce-in, .float-away, .walk-in, .cash-pop, .weather-icon-anim.windy {
+    animation: none !important;
+  }
+}
