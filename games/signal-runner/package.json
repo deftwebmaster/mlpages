@@ -1,0 +1,16 @@
+{
+  "name": "signal-runner",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Signal Runner — a mobile-first lane-crossing arcade puzzle built with vanilla JS and Canvas.",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "serve": "node tools/serve.mjs",
+    "validate": "node tools/validate-levels.mjs",
+    "icons": "node tools/generate-icons.mjs",
+    "playtest": "node tools/playtest.mjs",
+    "test": "node tools/validate-levels.mjs && node tools/playtest.mjs"
+  },
+  "license": "MIT"
+}

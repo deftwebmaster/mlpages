@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Signal Runner</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Cross the network. Carry the signal home. A mobile-first lane-crossing arcade puzzle.">
+<meta name="theme-color" content="#05070d">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Signal Runner">
+<!-- All paths are relative so the game runs unmodified from a GitHub Pages subdirectory. -->
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ---------------- HUD ---------------- -->
+  <header id="hud" hidden>
+    <button id="pauseBtn" class="icon-btn" aria-label="Pause game" title="Pause (Esc)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    </button>
+    <div class="hud-title">
+      <span id="hudLevelNum">01</span>
+      <span id="hudLevelName">FIRST CONTACT</span>
+    </div>
+    <dl class="hud-readout">
+      <div><dt>TIME</dt><dd id="hudTime">0:00.0</dd></div>
+      <div><dt>SCORE</dt><dd id="hudScore">0</dd></div>
+      <div><dt>UPLINK</dt><dd id="hudUplinks">0/1</dd></div>
+      <div><dt>FRAG</dt><dd id="hudFragments">0/0</dd></div>
+    </dl>
+  </header>
+
+  <!-- ---------------- STAGE ---------------- -->
+  <main id="stage">
+    <canvas id="game" aria-label="Signal Runner game board" role="img"></canvas>
+
+    <p id="toast" role="status" aria-live="polite"></p>
+
+    <div id="tutorial" class="tutorial-card" hidden>
+      <p id="tutorialText"></p>
+      <button id="tutorialDismiss" class="btn btn-small">GOT IT</button>
+    </div>
+  </main>
+
+  <!-- ---------------- CONTROLS ---------------- -->
+  <footer id="controls" hidden>
+    <div class="control-left">
+      <button id="restartBtn" class="icon-btn" aria-label="Restart level" title="Restart (R)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
+      </button>
+      <p class="control-hint">SWIPE OR ARROWS<br>TO MOVE ONE CELL</p>
+    </div>
+    <button id="polarityBtn" class="polarity-btn is-cyan" aria-label="Switch frequency to violet">
+      <span class="polarity-ring" aria-hidden="true"></span>
+      <span class="polarity-glyph" id="polarityGlyph" aria-hidden="true"></span>
+      <span class="polarity-label"><em>FREQ</em><b id="polarityName">CYAN</b></span>
+      <span class="polarity-cooldown" id="polarityCooldown" aria-hidden="true"></span>
+    </button>
+  </footer>
+
+  <!-- ---------------- SCREENS ---------------- -->
+
+  <section id="screen-menu" class="screen" hidden>
+    <div class="screen-inner menu">
+      <div class="logo">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <h1>SIGNAL<span>RUNNER</span></h1>
+        <p class="tagline">Cross the network. Carry the signal home.</p>
+      </div>
+      <div class="menu-actions">
+        <button id="btnStart" class="btn btn-primary">START</button>
+        <button id="btnLevels" class="btn">LEVEL SELECT</button>
+        <div class="btn-row">
+          <button id="btnSettings" class="btn btn-ghost">SETTINGS</button>
+          <button id="btnHelp" class="btn btn-ghost">HOW TO PLAY</button>
+        </div>
+        <button id="btnStats" class="btn btn-ghost">STATISTICS</button>
+        <button id="btnInstall" class="btn btn-ghost" hidden>INSTALL APP</button>
+      </div>
+      <dl class="menu-summary">
+        <div><dt>BEST TOTAL</dt><dd id="menuScore">0</dd></div>
+        <div><dt>BADGES</dt><dd id="menuBadges">0/36</dd></div>
+        <div><dt>FRAGMENTS</dt><dd id="menuFragments">0</dd></div>
+      </dl>
+      <p class="footnote">Offline-ready · No account required</p>
+    </div>
+  </section>
+
+  <section id="screen-levels" class="screen" hidden>
+    <div class="screen-inner">
+      <header class="screen-head">
+        <button class="icon-btn back" data-back aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8z"/></svg>
+        </button>
+        <h2>LEVEL SELECT</h2>
+      </header>
+      <ol id="levelList" class="level-list"></ol>
+    </div>
+  </section>
+
+  <section id="screen-pause" class="screen" hidden>
+    <div class="screen-inner narrow">
+      <h2>PAUSED</h2>
+      <p id="pauseSummary" class="muted"></p>
+      <div class="menu-actions">
+        <button id="btnResume" class="btn btn-primary">RESUME</button>
+        <button id="btnRestart" class="btn">RESTART LEVEL</button>
+        <button id="btnPauseSettings" class="btn btn-ghost">SETTINGS</button>
+        <button id="btnPauseLevels" class="btn btn-ghost">LEVEL SELECT</button>
+        <button id="btnPauseMenu" class="btn btn-ghost">MAIN MENU</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-complete" class="screen" hidden>
+    <div class="screen-inner narrow">
+      <p class="eyebrow" id="completeEyebrow">LEVEL COMPLETE</p>
+      <h2 id="completeName">FIRST CONTACT</h2>
+      <ul class="badge-row" id="completeBadges"></ul>
+      <dl class="result-grid">
+        <div><dt>TIME</dt><dd id="resultTime">0:00.0</dd></div>
+        <div><dt>BEST</dt><dd id="resultBest">--</dd></div>
+        <div><dt>DEATHS</dt><dd id="resultDeaths">0</dd></div>
+        <div><dt>FRAGMENTS</dt><dd id="resultFragments">0/0</dd></div>
+        <div class="wide"><dt>SCORE</dt><dd id="resultScore">0</dd></div>
+      </dl>
+      <div class="menu-actions">
+        <button id="btnNext" class="btn btn-primary">NEXT LEVEL</button>
+        <button id="btnRetry" class="btn">RETRY</button>
+        <button id="btnCompleteLevels" class="btn btn-ghost">LEVEL SELECT</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-settings" class="screen" hidden>
+    <div class="screen-inner narrow">
+      <header class="screen-head">
+        <button class="icon-btn back" data-back aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8z"/></svg>
+        </button>
+        <h2>SETTINGS</h2>
+      </header>
+      <ul class="settings-list">
+        <li>
+          <label for="setSound">Sound effects</label>
+          <button id="setSound" class="toggle" role="switch" aria-checked="true"><span></span></button>
+        </li>
+        <li>
+          <label for="setMusic">Ambient music</label>
+          <button id="setMusic" class="toggle" role="switch" aria-checked="false"><span></span></button>
+        </li>
+        <li>
+          <label for="setHaptics">Haptics</label>
+          <button id="setHaptics" class="toggle" role="switch" aria-checked="true"><span></span></button>
+        </li>
+        <li>
+          <label for="setReduced">Reduced effects
+            <em>Removes shake, flashes and most particles.</em>
+          </label>
+          <button id="setReduced" class="toggle" role="switch" aria-checked="false"><span></span></button>
+        </li>
+      </ul>
+      <div class="menu-actions">
+        <button id="btnReplayTutorials" class="btn btn-ghost">REPLAY TUTORIALS</button>
+        <button id="btnResetProgress" class="btn btn-danger">RESET ALL PROGRESS</button>
+      </div>
+      <p class="footnote" id="storageNote"></p>
+    </div>
+  </section>
+
+  <section id="screen-help" class="screen" hidden>
+    <div class="screen-inner">
+      <header class="screen-head">
+        <button class="icon-btn back" data-back aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8z"/></svg>
+        </button>
+        <h2>HOW TO PLAY</h2>
+      </header>
+      <ul class="help-list">
+        <li>
+          <span class="help-icon icon-move" aria-hidden="true"></span>
+          <div><h3>Move one cell</h3><p>Swipe, use the arrow keys or WASD, or tap a neighbouring cell. You move a single cell at a time — the network does not.</p></div>
+        </li>
+        <li>
+          <span class="help-icon icon-packet" aria-hidden="true"></span>
+          <div><h3>Avoid security packets</h3><p>Orange traffic is lethal to any frequency. Wait in the gaps; there is no penalty for patience.</p></div>
+        </li>
+        <li>
+          <span class="help-icon icon-platform" aria-hidden="true"></span>
+          <div><h3>Ride data platforms</h3><p>Dark rows have no floor. Land on a moving bar and it carries you. Being carried off the edge ends the attempt.</p></div>
+        </li>
+        <li>
+          <span class="help-icon icon-polarity" aria-hidden="true"></span>
+          <div><h3>Switch frequency</h3><p>Tap the FREQ button or press Space. Cyan is marked with a circle, violet with a diamond. Matching frequency passes safely through a hazard, gate or platform; the opposite does not.</p></div>
+        </li>
+        <li>
+          <span class="help-icon icon-scanner" aria-hidden="true"></span>
+          <div><h3>Read the scan cycle</h3><p>Scanners always charge before they fire. A hatched area with a filling bar is a warning, not a hit.</p></div>
+        </li>
+        <li>
+          <span class="help-icon icon-uplink" aria-hidden="true"></span>
+          <div><h3>Reach every uplink</h3><p>Activate a terminal at the top and you return to the start to fetch the next. Activated uplinks stay online even if you are lost on the way back.</p></div>
+        </li>
+      </ul>
+      <h3 class="section-label">CONTROLS</h3>
+      <table class="key-table">
+        <tbody>
+          <tr><th>Move</th><td>Swipe · Arrow keys · WASD · Tap a neighbouring cell</td></tr>
+          <tr><th>Frequency</th><td>FREQ button · Space</td></tr>
+          <tr><th>Pause</th><td>Esc · P</td></tr>
+          <tr><th>Restart</th><td>R</td></tr>
+        </tbody>
+      </table>
+      <h3 class="section-label">BADGES</h3>
+      <ul class="badge-legend">
+        <li><span class="badge b-connected" aria-hidden="true"></span><div><b>Connected</b> — finish the level.</div></li>
+        <li><span class="badge b-clean" aria-hidden="true"></span><div><b>Clean Signal</b> — finish without losing the signal once.</div></li>
+        <li><span class="badge b-latency" aria-hidden="true"></span><div><b>Low Latency</b> — finish inside the level's target time.</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="screen-stats" class="screen" hidden>
+    <div class="screen-inner narrow">
+      <header class="screen-head">
+        <button class="icon-btn back" data-back aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4l-8 8 8 8z"/></svg>
+        </button>
+        <h2>STATISTICS</h2>
+      </header>
+      <dl class="result-grid" id="statsGrid"></dl>
+    </div>
+  </section>
+
+  <div id="updateBanner" class="update-banner" hidden>
+    <span>A new version is ready.</span>
+    <button id="btnReload" class="btn btn-small">RELOAD</button>
+  </div>
+
+</div>
+
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
