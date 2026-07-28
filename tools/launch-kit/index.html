@@ -4,26 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Launch Kit | Matt Livingston</title>
-    <meta name="description" content="Everything you need to launch a website. Placeholder content, meta tags, robots.txt, sitemap, security headers, and more.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <meta name="description" content="Generate the launch files, metadata, security headers, legal drafts, and final checklist a website needs before go-live.">
+    <script src="vendor/jszip.min.js"></script>
     <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
     <div class="container">
         <header class="header">
             <div class="header-top">
-                <a href="/tools/" class="back-link">← Tools</a>
-                <span class="privacy-badge">🔒 Nothing leaves your browser</span>
+                <a href="../" class="back-link">← Tools</a>
+                <span class="privacy-badge">Nothing leaves your browser</span>
             </div>
-            <h1 class="title">Website Launch Kit</h1>
-            <p class="subtitle">Everything you need before your site has real content.</p>
+            <div class="hero-layout">
+                <div class="hero-copy">
+                    <p class="eyebrow">Preflight console</p>
+                    <h1 class="title">Website Launch Kit</h1>
+                    <p class="subtitle">Generate the boring launch files before launch day breaks you.</p>
+                    <div class="hero-actions">
+                        <button type="button" class="btn btn-primary" data-flow-tab="preflight">Start with Site Basics</button>
+                        <button type="button" class="btn btn-secondary" id="heroDownloadBtn">Download Package</button>
+                    </div>
+                </div>
+                <div class="hero-card" aria-label="Files this tool can generate">
+                    <div class="hero-card-row"><span>01</span><strong>Meta tags</strong></div>
+                    <div class="hero-card-row"><span>02</span><strong>robots.txt + sitemap.xml</strong></div>
+                    <div class="hero-card-row"><span>03</span><strong>Security headers</strong></div>
+                    <div class="hero-card-row"><span>04</span><strong>Legal drafts + checklist</strong></div>
+                </div>
+            </div>
+            <div class="capability-strip" aria-label="Launch Kit capabilities">
+                <span>SEO-ready head tags</span>
+                <span>Cloudflare / Netlify / Vercel presets</span>
+                <span>FTC-aware disclosures</span>
+                <span>ZIP export</span>
+            </div>
         </header>
+
+        <section class="cinderkit-bridge" aria-label="CinderKit starter kit">
+            <div>
+                <p class="eyebrow">Need the site shell too?</p>
+                <h2>CinderKit pairs with Launch Kit.</h2>
+                <p>Use CinderKit when you want a clean static starter site, then come back here to generate the launch files, metadata, security headers, legal drafts, and checklist that help it ship properly.</p>
+            </div>
+            <a class="btn btn-secondary" href="../cinderkit/">Open CinderKit</a>
+        </section>
 
         <!-- Global Controls -->
         <section class="global-controls">
+            <div class="global-summary">
+                <strong>Launch package</strong>
+                <span id="globalPackageSummary">Start with the preflight basics, then generate or download everything.</span>
+            </div>
             <div class="global-actions">
                 <button type="button" class="btn btn-secondary" id="importConfigBtn">Import Config</button>
                 <button type="button" class="btn btn-secondary" id="exportConfigBtn">Export Config</button>
@@ -62,21 +95,147 @@
 
         <!-- Tab Navigation -->
         <nav class="tab-nav" role="tablist">
-            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="placeholder">Content</button>
-            <button class="tab-btn" role="tab" aria-selected="false" data-tab="meta">Meta Tags</button>
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="preflight">Preflight</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="meta">Meta</button>
             <button class="tab-btn" role="tab" aria-selected="false" data-tab="robots">robots.txt</button>
             <button class="tab-btn" role="tab" aria-selected="false" data-tab="sitemap">Sitemap</button>
-            <button class="tab-btn" role="tab" aria-selected="false" data-tab="htaccess">.htaccess</button>
-            <button class="tab-btn" role="tab" aria-selected="false" data-tab="humans">humans.txt</button>
             <button class="tab-btn" role="tab" aria-selected="false" data-tab="security">Security</button>
             <button class="tab-btn" role="tab" aria-selected="false" data-tab="legal">Legal</button>
             <button class="tab-btn" role="tab" aria-selected="false" data-tab="checklist">Checklist</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="htaccess">Server</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="humans">humans.txt</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="placeholder">Content</button>
         </nav>
 
         <!-- Tab Panels -->
         <main class="tab-panels">
+            <!-- Preflight Tab -->
+            <section class="tab-panel active" id="preflight-panel" role="tabpanel">
+                <div class="panel-header split-header">
+                    <div>
+                        <h2>Site Preflight</h2>
+                        <p>Enter the basics once, choose a host, then generate the pieces your launch package needs.</p>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="applyPreflightBtn">Apply Basics to Kit</button>
+                </div>
+
+                <div class="preflight-layout">
+                    <div class="preflight-main">
+                        <div class="form-section preflight-card">
+                            <h3>Site Basics</h3>
+                            <div class="preflight-grid">
+                                <div class="form-group">
+                                    <label for="siteName">Site / Product Name</label>
+                                    <input type="text" id="siteName" placeholder="Acme Launch">
+                                </div>
+                                <div class="form-group">
+                                    <label for="siteUrl">Production URL</label>
+                                    <input type="url" id="siteUrl" placeholder="https://example.com">
+                                </div>
+                                <div class="form-group wide">
+                                    <label for="siteDescription">Search Description</label>
+                                    <textarea id="siteDescription" rows="3" maxlength="160" placeholder="A clear one-sentence description for search results and social previews."></textarea>
+                                    <span class="char-count"><span id="siteDescriptionCount">0</span>/160</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="siteType">Site Type</label>
+                                    <select id="siteType">
+                                        <option value="static">Static / Marketing Site</option>
+                                        <option value="portfolio">Portfolio</option>
+                                        <option value="blog">Blog / Publication</option>
+                                        <option value="saas">SaaS / Web App</option>
+                                        <option value="ecommerce">E-commerce</option>
+                                        <option value="community">Community</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hostingPlatform">Hosting Platform</label>
+                                    <select id="hostingPlatform">
+                                        <option value="cloudflare">Cloudflare Pages</option>
+                                        <option value="netlify">Netlify</option>
+                                        <option value="vercel">Vercel</option>
+                                        <option value="apache">Apache / cPanel</option>
+                                        <option value="nginx">Nginx</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="siteContactEmail">Legal Contact Email</label>
+                                    <input type="email" id="siteContactEmail" placeholder="legal@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="siteRegion">Primary Jurisdiction</label>
+                                    <select id="siteRegion">
+                                        <option value="US">United States</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="EU">European Union</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section preflight-card">
+                            <h3>Launch Profile</h3>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profileAnalytics" checked>
+                                    Analytics or usage tracking
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profilePayments">
+                                    Payments or subscriptions
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profileAccounts">
+                                    User accounts
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profileAffiliate">
+                                    Affiliate links
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profileSponsored">
+                                    Sponsored content
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="profileCookies" checked>
+                                    Cookies or local storage
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <aside class="preflight-aside">
+                        <div class="package-card">
+                            <h3>Package Preview</h3>
+                            <p id="packagePreviewText">Choose a platform to see the files this kit will prepare.</p>
+                            <ul class="package-list" id="packagePreviewList">
+                                <li>meta-tags.html</li>
+                                <li>robots.txt</li>
+                                <li>sitemap.xml</li>
+                                <li>_headers</li>
+                                <li>legal drafts</li>
+                            </ul>
+                            <button type="button" class="btn btn-primary btn-block" id="generateCoreBtn">Generate Core Files</button>
+                        </div>
+
+                        <div class="flow-card">
+                            <h3>Recommended Flow</h3>
+                            <button type="button" class="flow-step" data-flow-tab="meta"><span>1</span> Meta and social previews</button>
+                            <button type="button" class="flow-step" data-flow-tab="robots"><span>2</span> Crawl rules</button>
+                            <button type="button" class="flow-step" data-flow-tab="sitemap"><span>3</span> Sitemap</button>
+                            <button type="button" class="flow-step" data-flow-tab="security"><span>4</span> Security headers</button>
+                            <button type="button" class="flow-step" data-flow-tab="legal"><span>5</span> Legal drafts</button>
+                            <button type="button" class="flow-step" data-flow-tab="checklist"><span>6</span> Final checklist</button>
+                        </div>
+                    </aside>
+                </div>
+            </section>
+
             <!-- Placeholder Content Tab -->
-            <section class="tab-panel active" id="placeholder-panel" role="tabpanel">
+            <section class="tab-panel" id="placeholder-panel" role="tabpanel">
                 <div class="panel-header">
                     <h2>Placeholder Content</h2>
                     <p>Generate realistic filler content for development and design.</p>
@@ -1104,6 +1263,9 @@
                             <h3>Quick Presets</h3>
                             <div class="preset-buttons">
                                 <button type="button" class="btn btn-secondary btn-sm" data-security-preset="basic">Basic</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="static">Static Site</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="saas">SaaS</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-security-preset="commerce">Commerce</button>
                                 <button type="button" class="btn btn-secondary btn-sm" data-security-preset="strict">Strict</button>
                                 <button type="button" class="btn btn-secondary btn-sm" data-security-preset="api">API / Backend</button>
                             </div>
@@ -1273,7 +1435,9 @@
                                 <select id="securityOutputFormat">
                                     <option value="htaccess">.htaccess (Apache)</option>
                                     <option value="netlify">Netlify _headers</option>
-                                    <option value="cloudflare">Cloudflare (Transform Rules)</option>
+                                    <option value="cloudflare" selected>Cloudflare Pages _headers</option>
+                                    <option value="vercel">Vercel vercel.json</option>
+                                    <option value="cloudflare-transform">Cloudflare Transform Rules</option>
                                     <option value="nginx">nginx.conf</option>
                                 </select>
                             </div>
@@ -1307,13 +1471,13 @@
             <section class="tab-panel" id="legal-panel" role="tabpanel">
                 <div class="panel-header">
                     <h2>Legal Boilerplate</h2>
-                    <p>Privacy policies, terms of service, and disclosures.</p>
+                    <p>Draft privacy, terms, cookie, and disclosure copy for review before publishing.</p>
                 </div>
 
                 <!-- Disclaimer -->
                 <div class="warning-box legal-disclaimer">
-                    <strong>⚠️ Not Legal Advice</strong>
-                    <p>These templates are starting points only. They are not a substitute for professional legal counsel. Consult a lawyer for your specific situation, especially for GDPR, CCPA, or industry-specific compliance.</p>
+                    <strong>Not Legal Advice</strong>
+                    <p>These drafts are launch-day starting points, not legal advice. Review them for your actual data practices, monetization, audience, and jurisdiction. For regulated industries, GDPR/UK GDPR, CCPA/CPRA, children’s privacy, health, finance, or high-risk use cases, talk to a qualified attorney before publishing.</p>
                 </div>
 
                 <div class="two-column-layout">
@@ -1375,7 +1539,7 @@
                                     <input type="radio" name="legalDocType" value="affiliate">
                                     <span class="legal-doc-card">
                                         <strong>Affiliate Disclosure</strong>
-                                        <small>FTC-compliant disclosure</small>
+                                        <small>Plain-language disclosure drafts</small>
                                     </span>
                                 </label>
                             </div>
@@ -1512,6 +1676,10 @@
                         <!-- Affiliate Options -->
                         <div class="form-section legal-options" id="affiliateOptions" style="display: none;">
                             <h3>Affiliate Disclosure Options</h3>
+                            <div class="info-box compact-info">
+                                <strong>Placement matters</strong>
+                                <p>Put disclosures close to the recommendation or affiliate link. A footer-only disclosure or vague “affiliate link” label may be missed or misunderstood.</p>
+                            </div>
                             <div class="form-group">
                                 <label>Affiliate programs:</label>
                                 <div class="checkbox-group">
@@ -1532,7 +1700,9 @@
                             <div class="form-group">
                                 <label>Format</label>
                                 <select id="affiliateFormat">
-                                    <option value="short">Short (inline disclosure)</option>
+                                    <option value="short">Short inline disclosure</option>
+                                    <option value="near-link">Near-link disclosure</option>
+                                    <option value="review-note">Product review disclosure</option>
                                     <option value="full" selected>Full page</option>
                                 </select>
                             </div>

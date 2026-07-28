@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Launch Doctor — Static Site Preflight Auditor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Drop in a static site, get a launch-readiness score, issue report, and downloadable fix pack — all client-side, no upload.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://mattlivingston.com/tools/launch-doctor/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Launch Doctor | Static Site Preflight Auditor">
+<meta property="og:description" content="Audit a static site locally and export a launch report plus fix pack before publishing.">
+<meta property="og:url" content="https://mattlivingston.com/tools/launch-doctor/">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308090d'/%3E%3Cpath d='M8 8h16v4H12v8h12v4H8V8Z' fill='%232df8e6'/%3E%3Cpath d='M18 12h6v12h-6v-4h2v-4h-2v-4Z' fill='%23b86cff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="../tool-modern.css">
+<script defer src="../tool-credit.js"></script>
+</head>
+<body>
+<div class="app">
+  <nav class="top-nav" aria-label="Tool navigation">
+    <a class="back-link" href="../">Tools</a>
+    <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
+  </nav>
+
+  <header class="app-header">
+    <div class="brand">
+      <h1>Launch Doctor<span class="dot">.</span></h1>
+      <span class="brand-tag">static site preflight auditor</span>
+    </div>
+    <div class="header-meta">
+      <strong>Before you publish, drop in your built static site.</strong>
+      Launch Doctor scans pages, links, metadata, assets, deploy files, and security basics, then gives you a score, prioritized issues, exportable report, and fix pack.
+    </div>
+  </header>
+
+  <section class="panel">
+    <h2>Import</h2>
+    <div class="import-grid">
+      <div id="dropzone" class="dropzone" tabindex="0">
+        <div class="icon">ZIP</div>
+        <div class="primary" id="dropzone-primary">Drag a ZIP or folder here</div>
+        <div class="secondary">Upload your generated site files, or run the demo to see a full report.</div>
+        <div class="file-actions">
+          <button type="button" class="btn btn-secondary btn-small" id="btn-pick-zip">Choose ZIP file</button>
+          <button type="button" class="btn btn-secondary btn-small" id="btn-pick-folder">Choose folder</button>
+          <button type="button" class="btn btn-secondary btn-small" id="btn-pick-files">Choose files</button>
+          <button type="button" class="btn btn-secondary btn-small" id="btn-demo">Run demo report</button>
+        </div>
+        <input type="file" id="input-zip" accept=".zip">
+        <input type="file" id="input-folder" webkitdirectory multiple>
+        <input type="file" id="input-files" multiple>
+      </div>
+      <div class="side-controls">
+        <div>
+          <label class="field-label" for="input-url">Production URL</label>
+          <input type="url" id="input-url" placeholder="https://yourdomain.com">
+        </div>
+        <div>
+          <label class="field-label" for="input-threshold">Image size warning threshold (KB)</label>
+          <input type="number" id="input-threshold" value="500" min="50" step="50">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-scan" disabled>Run Scan</button>
+        <div class="status-line" id="status-line"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="doctor-strip" aria-label="Launch Doctor audit coverage">
+    <article>
+      <span>01</span>
+      <strong>SEO and metadata</strong>
+      <p>Titles, descriptions, canonical URLs, social previews, sitemap, robots, and noindex mistakes.</p>
+    </article>
+    <article>
+      <span>02</span>
+      <strong>Accessibility and links</strong>
+      <p>Alt text, labels, heading flow, empty links, missing local files, anchors, and placeholder URLs.</p>
+    </article>
+    <article>
+      <span>03</span>
+      <strong>Security and deploy</strong>
+      <p>Headers, CSP basics, deploy files, 404 page, GitHub Pages/static-host readiness, and fix pack suggestions.</p>
+    </article>
+  </section>
+
+  <section class="panel hidden" id="summary-panel">
+    <h2>Scan Summary</h2>
+    <div class="summary-grid">
+      <div class="score-ring">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="60" fill="none" stroke="#1e222a" stroke-width="12"></circle>
+          <circle id="score-arc" cx="70" cy="70" r="60" fill="none" stroke="url(#scoreGradient)" stroke-width="12" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"></circle>
+          <defs>
+            <linearGradient id="scoreGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2df8e6"></stop>
+              <stop offset="100%" stop-color="#b86cff"></stop>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-value" id="score-value">–</div>
+        <div class="score-label">/ 100</div>
+      </div>
+      <div>
+        <div class="counts-row">
+          <div class="count-pill fail"><span class="n" id="count-fail">0</span>Critical</div>
+          <div class="count-pill warn"><span class="n" id="count-warn">0</span>Warnings</div>
+          <div class="count-pill info"><span class="n" id="count-info">0</span>Suggestions</div>
+          <div class="count-pill files"><span class="n" id="count-files">0</span>Files scanned</div>
+        </div>
+        <div class="hint-row">
+          <div>Framework: <b id="hint-framework">–</b></div>
+          <div>Host hint: <b id="hint-host">–</b></div>
+          <div>Production URL: <b id="hint-url">–</b></div>
+        </div>
+        <div class="category-bars" id="category-bars"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="report-panel">
+    <h2>Report</h2>
+    <div class="tabbar" id="tabbar"></div>
+    <div class="chipbar" id="chipbar">
+      <button class="chip fail active" data-severity="fail">Critical</button>
+      <button class="chip warn active" data-severity="warn">Warnings</button>
+      <button class="chip info active" data-severity="info">Suggestions</button>
+    </div>
+    <div class="issue-list" id="issue-list"></div>
+  </section>
+
+  <section class="panel hidden" id="fixpack-panel">
+    <h2>Fix Pack</h2>
+    <p class="issue-message" style="margin-bottom:14px;">Suggested files based on your scan. Nothing here overwrites your uploaded files — review before using.</p>
+    <div class="filegrid" id="filegrid"></div>
+    <pre class="code-preview hidden" id="code-preview"></pre>
+    <div class="actions-row">
+      <button class="btn btn-primary" id="btn-download-fixpack">Download Fix Pack (.zip)</button>
+    </div>
+  </section>
+
+  <section class="panel hidden" id="export-panel">
+    <h2>Export Report</h2>
+    <div class="actions-row">
+      <button class="btn btn-secondary" id="btn-export-json">Download report.json</button>
+      <button class="btn btn-secondary" id="btn-export-md">Download report.md</button>
+    </div>
+  </section>
+
+  <div class="footer-note">Launch Doctor — no backend, no uploads, no tracking.</div>
+</div>
+
+<script src="js/vendor/jszip.min.js"></script>
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

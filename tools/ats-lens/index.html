@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="theme-color" content="#0b1117">
+  <meta name="description" content="Upload a resume locally, inspect extracted ATS-style text, find parsing risks, and compare against a job description.">
+  <title>ATS Lens</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to analysis</a>
+  <div id="updateNotice" class="update-notice" hidden>
+    A new version is ready. <button type="button" id="reloadApp">Reload</button>
+  </div>
+
+  <div class="app-shell">
+    <header class="site-header no-print">
+      <a class="wordmark" href="./" aria-label="ATS Lens home">
+        <span class="mark" aria-hidden="true"></span>
+        <span data-app-name>ATS Lens</span>
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#how-it-works">How It Works</a>
+        <a href="#privacy">Privacy</a>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+          <span aria-hidden="true">◐</span>
+        </button>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section id="landingView" class="landing-view" aria-labelledby="heroTitle">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Private resume diagnostics</p>
+            <h1 id="heroTitle">See what resume software can actually read.</h1>
+            <p class="hero-text">Upload your resume to inspect its extracted text, uncover parsing risks, and compare it against a job description. Everything stays in your browser.</p>
+            <div class="trust-row" id="privacy">
+              <span>No account required</span>
+              <span>No server upload</span>
+              <span>Transparent scoring</span>
+            </div>
+          </div>
+
+          <section class="upload-panel" aria-labelledby="uploadTitle">
+            <h2 id="uploadTitle">Analyze My Resume</h2>
+            <p class="privacy-note">Your resume is processed locally in your browser. It is not uploaded to a server.</p>
+            <div id="dropZone" class="drop-zone" tabindex="0" role="button" aria-describedby="uploadHelp">
+              <input id="fileInput" type="file" accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+              <span class="upload-icon" aria-hidden="true">↑</span>
+              <strong>Drop your resume here</strong>
+              <span>or browse for a PDF, DOCX, or TXT file</span>
+              <button class="primary-button" id="browseButton" type="button">Browse Files</button>
+            </div>
+            <p id="uploadHelp" class="fine-print">PDF, DOCX, or TXT. One resume at a time. Maximum file size: 10 MB.</p>
+            <div class="upload-actions">
+              <button class="secondary-button" id="demoButton" type="button">Try Demo Resume</button>
+            </div>
+            <div id="processingPanel" class="processing-panel" hidden aria-live="polite">
+              <p id="fileMeta"></p>
+              <ol id="progressSteps" class="progress-steps"></ol>
+            </div>
+            <div id="errorPanel" class="error-panel" hidden></div>
+          </section>
+        </div>
+
+        <section id="how-it-works" class="info-band" aria-labelledby="howTitle">
+          <div class="section-heading">
+            <p class="eyebrow">How it works</p>
+            <h2 id="howTitle">Three checks, one local report.</h2>
+          </div>
+          <div class="info-grid">
+            <article>
+              <span class="step">01</span>
+              <h3>Upload your resume</h3>
+              <p>ATS Lens extracts selectable text from PDF, DOCX, and TXT files in your browser.</p>
+            </article>
+            <article>
+              <span class="step">02</span>
+              <h3>Inspect the extracted result</h3>
+              <p>Review raw and cleaned text, section boundaries, contact detection, and reading-order warnings.</p>
+            </article>
+            <article>
+              <span class="step">03</span>
+              <h3>Compare it with a job</h3>
+              <p>Paste a job description to see matched terms, missing terms, and practical recommendations.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="trust-section" aria-labelledby="trustTitle">
+          <div>
+            <p class="eyebrow">Trust model</p>
+            <h2 id="trustTitle">Built for privacy, not mystery scoring.</h2>
+          </div>
+          <p>ATS Lens uses deterministic, explainable diagnostics for common parsing compatibility and resume-structure principles. It does not claim to reproduce Workday, Greenhouse, Taleo, Lever, iCIMS, or any proprietary ATS.</p>
+        </section>
+      </section>
+
+      <section id="dashboardView" class="dashboard-view" hidden>
+        <header class="dashboard-header no-print">
+          <div>
+            <a class="wordmark compact" href="./">
+              <span class="mark" aria-hidden="true"></span>
+              <span data-app-name>ATS Lens</span>
+            </a>
+            <p id="currentFileName" class="current-file"></p>
+          </div>
+          <div class="header-actions">
+            <button class="secondary-button" id="uploadAnotherButton" type="button">Upload Another</button>
+            <button class="secondary-button" id="clearDataButton" type="button">Clear Resume</button>
+            <button class="primary-button" id="printButton" type="button">Print Report</button>
+          </div>
+        </header>
+
+        <div id="demoBadge" class="demo-badge no-print" hidden>Demo Data</div>
+
+        <nav class="tab-list no-print" aria-label="Analysis sections">
+          <button class="tab-button active" type="button" data-tab="overview">Overview</button>
+          <button class="tab-button" type="button" data-tab="ats">ATS View</button>
+          <button class="tab-button" type="button" data-tab="structure">Structure</button>
+          <button class="tab-button" type="button" data-tab="job">Job Match</button>
+          <button class="tab-button" type="button" data-tab="recommendations">Recommendations</button>
+          <button class="tab-button" type="button" data-tab="report">Report</button>
+        </nav>
+
+        <div id="overviewPanel" class="tab-panel active"></div>
+        <div id="atsPanel" class="tab-panel"></div>
+        <div id="structurePanel" class="tab-panel"></div>
+        <div id="jobPanel" class="tab-panel"></div>
+        <div id="recommendationsPanel" class="tab-panel"></div>
+        <div id="reportPanel" class="tab-panel print-area"></div>
+      </section>
+    </main>
+
+    <footer class="footer no-print">
+      <div>
+        <strong>ATS Lens <span id="footerVersion"></span></strong>
+        <p>Your resume and job description stay in memory for this session and clear on refresh.</p>
+      </div>
+      <a href="../">Back to tools</a>
+    </footer>
+  </div>
+
+  <script src="vendor/mammoth.browser.min.js" defer></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

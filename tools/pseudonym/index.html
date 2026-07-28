@@ -3,1418 +3,1529 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pen Name Generator & Fake Identity Creator | Free Online Tool</title>
-  <meta name="description" content="Generate realistic pen names, online aliases, and fake identities for privacy. Perfect for authors, testing, and protecting your real identity online. Free, no signup.">
-  <meta name="keywords" content="pen name generator, pseudonym generator, fake name generator, alias generator, fake identity, author name, pen name ideas">
+  <title>Pseudonym: Fictional Identity Creator | Matt Livingston</title>
+  <meta name="description" content="Create polished pen names, fictional identity packs, safe phone numbers, birthdays, zodiac signs, addresses, emails, usernames, and exportable test data. Local-first and free.">
+  <meta name="keywords" content="pseudonym generator, pen name generator, fictional identity creator, fake identity generator, test data generator, alias generator, fictional address, fake phone number">
+  <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mattlivingston.com/tools/pseudonym/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      color-scheme: dark;
+      --bg: #08090f;
+      --panel: #131822;
+      --panel-2: #1b2330;
+      --panel-3: #243146;
+      --line: rgba(247, 248, 255, 0.14);
+      --line-strong: rgba(247, 248, 255, 0.24);
+      --text: #f7f8ff;
+      --muted: #b9c2d0;
+      --faint: #7f8b9b;
+      --cyan: #a78bfa;
+      --violet: #64d2ff;
+      --pink: #ff64d8;
+      --green: #7cf7bd;
+      --rose: #ff647f;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
     }
 
-    :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-input: #0f172a;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.3);
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border: #475569;
-      --radius: 12px;
-      --radius-sm: 8px;
-    }
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
+      margin: 0;
       min-height: 100vh;
-      padding: 2rem 1rem;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(247, 248, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(247, 248, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at 10% 2%, rgba(167, 139, 250, 0.23), transparent 30rem),
+        radial-gradient(circle at 90% 4%, rgba(100, 210, 255, 0.16), transparent 30rem),
+        linear-gradient(135deg, #08090f 0%, #10111a 48%, #071414 100%);
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
     }
 
-    .container {
-      max-width: 1000px;
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button { color: inherit; }
+    a { color: inherit; }
+
+    .app {
+      width: min(1140px, calc(100% - 24px));
       margin: 0 auto;
+      padding: 18px 0 72px;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 38px;
     }
 
-    .back-link {
-      display: inline-block;
-      color: var(--text-muted);
+    .back-link,
+    .creator-link {
+      color: var(--faint);
+      font-size: 0.9rem;
+      font-weight: 850;
       text-decoration: none;
-      font-size: 0.875rem;
-      margin-bottom: 1rem;
-      transition: color 0.2s;
     }
 
-    .back-link:hover {
-      color: var(--accent);
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    .site-title {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.25rem;
-    }
-
-    .site-title span {
-      color: var(--accent);
-    }
-
-    .tagline {
-      color: var(--text-secondary);
-      font-size: 0.95rem;
-    }
-
-    /* Controls */
-    .controls {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: flex-end;
-      background: var(--bg-secondary);
-      padding: 1.25rem;
-      border-radius: var(--radius);
-      margin-bottom: 1.5rem;
-      border: 1px solid var(--border);
-    }
-
-    .control-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      flex: 1;
-      min-width: 130px;
-    }
-
-    .control-group label {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    select {
-      padding: 0.6rem 0.75rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: inherit;
-      cursor: pointer;
-      transition: all 0.2s;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-      padding-right: 36px;
-    }
-
-    select:hover {
-      border-color: var(--accent);
-    }
-
-    select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    /* Use Case Hint */
-    .use-case-hint {
-      background: var(--bg-card);
-      border-radius: var(--radius-sm);
-      padding: 0.6rem 1rem;
-      margin-bottom: 1.5rem;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .use-case-hint .hint-icon {
-      font-size: 1rem;
-    }
-
-    .use-case-hint strong {
-      color: var(--text-secondary);
-    }
-
-    /* Buttons */
-    .btn-primary {
-      padding: 0.6rem 1.25rem;
-      background: var(--accent);
-      border: none;
-      border-radius: var(--radius-sm);
-      color: white;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    .btn-secondary {
-      padding: 0.6rem 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-secondary);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      white-space: nowrap;
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-input);
-      border-color: var(--accent);
-      color: var(--text-primary);
-    }
-
-    .keyboard-hint {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-left: 0.5rem;
-    }
-
-    .keyboard-hint kbd {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: 0.1rem 0.3rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem;
-    }
-
-    /* Results Grid */
-    .results {
+    .hero {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 1rem;
+      gap: 18px;
+      margin-bottom: 18px;
     }
 
-    .result-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.25rem;
-      transition: all 0.2s;
-      animation: slideIn 0.3s ease-out;
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--violet);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    h1 {
+      max-width: 940px;
+      margin: 0;
+      font-size: clamp(3rem, 13vw, 6.6rem);
+      line-height: 0.9;
+      letter-spacing: 0;
     }
 
-    .result-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 4px 20px var(--accent-glow);
+    .hero-text {
+      max-width: 860px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+      line-height: 1.45;
     }
 
-    .card-header {
+    .hero-actions,
+    .row-actions,
+    .tabs,
+    .chip-row,
+    .result-actions {
       display: flex;
-      justify-content: flex-end;
-      margin-bottom: 0.5rem;
-    }
-
-    .icon-btn {
-      background: var(--bg-card);
-      border: none;
-      color: var(--text-muted);
-      padding: 0.4rem;
-      width: 2rem;
-      height: 2rem;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .icon-btn:hover {
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .icon-btn.favorited {
-      color: var(--warning);
-      background: rgba(245, 158, 11, 0.1);
-    }
-
-    .name-section {
-      margin-bottom: 1rem;
-    }
-
-    .name-display {
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      margin-bottom: 0.5rem;
-      word-break: break-word;
-    }
-
-    .name-parts {
-      display: flex;
-      gap: 0.4rem;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .name-part-btn {
-      background: var(--bg-card);
-      border: none;
-      color: var(--text-muted);
-      padding: 0.3rem 0.6rem;
-      font-size: 0.7rem;
-      border-radius: 4px;
+    .hero-actions {
+      margin-top: 22px;
+    }
+
+    .btn,
+    .tab-btn,
+    .chip {
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 850;
       cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
     }
 
-    .name-part-btn:hover {
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
+    .btn,
+    .tab-btn {
+      padding: 0.72rem 1rem;
     }
 
-    .info-section {
-      border-top: 1px solid var(--border);
-      padding-top: 0.75rem;
+    .chip {
+      min-height: 36px;
+      padding: 0.42rem 0.66rem;
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+    }
+
+    .btn:hover,
+    .tab-btn:hover,
+    .chip:hover {
+      transform: translateY(-1px);
+      border-color: rgba(46, 246, 226, 0.58);
+    }
+
+    .btn:disabled,
+    .btn:disabled:hover {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      border-color: var(--line);
+      background: transparent;
+    }
+
+    .btn.primary,
+    .tab-btn.active {
+      color: #06100f;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, rgba(46, 246, 226, 0.15), rgba(179, 108, 255, 0.18));
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn.danger {
+      color: #ffc0cc;
+    }
+
+    .btn.full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card,
+    .panel,
+    .identity-card,
+    .saved-card,
+    .trust-card,
+    .output-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(19, 24, 34, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      padding: 16px;
+      background:
+        linear-gradient(135deg, rgba(46, 246, 226, 0.1), rgba(179, 108, 255, 0.12)),
+        rgba(19, 24, 34, 0.82);
+    }
+
+    .hero-panel strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 8px 0;
+      background: linear-gradient(to bottom, rgba(8, 9, 15, 0.98), rgba(8, 9, 15, 0.76));
+      backdrop-filter: blur(16px);
+    }
+
+    .tab-btn {
+      flex: 1 1 auto;
+      min-width: 130px;
+      min-height: 40px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.88rem;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .left-stack,
+    .right-stack,
+    .form-grid,
+    .two-grid,
+    .three-grid,
+    .saved-list,
+    .results,
+    .identity-fields {
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      padding: 16px;
+      box-shadow: none;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.05;
+    }
+
+    .panel-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 850;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.72rem 0.82rem;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #070a0f;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: 2px solid rgba(46, 246, 226, 0.25);
+      border-color: rgba(46, 246, 226, 0.72);
+    }
+
+    .hint {
+      color: var(--faint);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .checkbox input {
+      width: 18px;
+      min-height: 18px;
+      margin-top: 2px;
+      accent-color: var(--cyan);
+    }
+
+    .identity-card,
+    .output-card {
+      padding: 16px;
+      box-shadow: none;
+      background:
+        linear-gradient(135deg, rgba(46, 246, 226, 0.08), rgba(179, 108, 255, 0.1)),
+        rgba(19, 24, 34, 0.82);
+    }
+
+    .identity-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .identity-name {
+      display: block;
+      font-size: clamp(1.65rem, 8vw, 2.7rem);
+      font-weight: 950;
+      line-height: 0.95;
+      overflow-wrap: anywhere;
+    }
+
+    .identity-role {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .mini-btn {
+      min-width: 38px;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mini-btn:hover,
+    .mini-btn.active {
+      color: var(--cyan);
+      border-color: rgba(46, 246, 226, 0.62);
+    }
+
+    .identity-fields {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
     }
 
     .info-row {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: minmax(90px, 0.72fr) minmax(0, 1.5fr) auto;
+      gap: 10px;
       align-items: center;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(247, 248, 255, 0.08);
     }
 
     .info-row:last-child {
-      border-bottom: none;
-    }
-
-    .info-row.stacked {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.4rem;
+      border-bottom: 0;
     }
 
     .info-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
+      color: var(--faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
 
     .info-value {
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      font-weight: 500;
+      color: var(--text);
+      font-weight: 750;
+      overflow-wrap: anywhere;
     }
 
-    .info-value.small {
-      font-size: 0.8rem;
+    .identity-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
     }
 
-    .info-actions {
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
+    .saved-card,
+    .trust-card {
+      padding: 13px;
+      box-shadow: none;
+      background: rgba(255, 255, 255, 0.035);
     }
 
-    .copy-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.2rem 0.4rem;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      border-radius: 4px;
-    }
-
-    .copy-btn:hover {
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
-    }
-
-    .copy-btn.copied {
-      color: var(--success);
-    }
-
-    .copy-all-btn {
-      width: 100%;
-      margin-top: 0.75rem;
-      padding: 0.5rem;
-      background: var(--bg-card);
-      border: 1px dashed var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-muted);
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .copy-all-btn:hover {
-      border-color: var(--accent);
-      color: var(--text-primary);
-      border-style: solid;
-    }
-
-    .copy-all-btn.copied {
-      border-color: var(--success);
-      color: var(--success);
-    }
-
-    /* Username Suggestions */
-    .username-section {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .username-label {
-      font-size: 0.7rem;
-      color: var(--text-muted);
+    .saved-card span,
+    .trust-card span,
+    .output-card span {
+      display: block;
+      color: var(--faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.4rem;
     }
 
-    .username-suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
+    .saved-card strong,
+    .trust-card strong {
+      display: block;
+      margin: 5px 0;
+      font-size: 1rem;
     }
 
-    .username-chip {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      padding: 0.25rem 0.5rem;
-      background: var(--bg-card);
-      border-radius: 4px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.2s;
+    .saved-card p,
+    .trust-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
     }
 
-    .username-chip:hover {
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
+    .trust-grid {
+      display: grid;
+      gap: 10px;
     }
 
-    .username-chip.copied {
-      color: var(--success);
-    }
-
-    /* Favorites Panel */
-    .favorites-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .favorites-panel {
-      position: fixed;
-      top: 0;
-      right: 0;
+    .export-box {
       width: 100%;
-      max-width: 420px;
-      height: 100vh;
-      background: var(--bg-secondary);
-      border-left: 1px solid var(--border);
-      padding: 1.5rem;
-      overflow-y: auto;
-      transition: transform 0.3s ease;
-      z-index: 1000;
+      min-height: 220px;
+      margin-top: 12px;
+      white-space: pre;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.82rem;
     }
 
-    .favorites-panel.hidden {
-      transform: translateX(100%);
-    }
-
-    .favorites-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .favorites-header h2 {
-      font-size: 1.25rem;
-      color: var(--text-primary);
-    }
-
-    .btn-close {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.5rem;
-      cursor: pointer;
-      padding: 0.25rem;
-      line-height: 1;
-      transition: color 0.2s;
-    }
-
-    .btn-close:hover {
-      color: var(--text-primary);
-    }
-
-    .favorites-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .favorite-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-    }
-
-    .favorite-item .name-display {
-      font-size: 1.1rem;
-      margin-bottom: 0.4rem;
-    }
-
-    .favorite-meta {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 0.25rem;
-    }
-
-    .favorite-actions {
-      display: flex;
-      gap: 0.4rem;
-      margin-top: 0.75rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-      border: none;
-      width: 100%;
-      margin-top: 1.5rem;
-      padding: 0.75rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      font-family: inherit;
-      transition: opacity 0.2s;
-    }
-
-    .btn-danger:hover {
-      opacity: 0.9;
-    }
-
-    .empty-state {
+    .empty {
+      padding: 22px;
+      color: var(--muted);
       text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.025);
     }
 
-    .empty-state-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-      opacity: 0.5;
+    .hidden {
+      display: none !important;
     }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding-top: 2rem;
-      margin-top: 2rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-bottom: 1rem;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.85rem;
-      transition: color 0.2s;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    .footer-credit {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .footer-credit a {
-      color: var(--text-secondary);
-      text-decoration: none;
-    }
-
-    .footer-credit a:hover {
-      color: var(--accent);
-    }
-
-    /* Toast */
     .toast {
       position: fixed;
-      bottom: 2rem;
       left: 50%;
+      bottom: 24px;
+      z-index: 20;
       transform: translateX(-50%);
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 0.75rem 1.5rem;
+      padding: 0.74rem 1rem;
+      border: 1px solid var(--line);
       border-radius: var(--radius);
-      font-size: 0.9rem;
-      z-index: 1001;
-      animation: slideUp 0.3s ease;
+      background: var(--panel-3);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      font-weight: 850;
     }
 
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateX(-50%) translateY(20px);
+    .footer {
+      margin-top: 42px;
+      padding: 18px 0;
+      color: var(--faint);
+      text-align: center;
+      font-size: 0.86rem;
+    }
+
+    .footer a {
+      color: var(--violet);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    @media (min-width: 860px) {
+      .app {
+        width: min(1140px, calc(100% - 40px));
+        padding-top: 28px;
       }
-      to {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
+
+      .top-nav {
+        margin-bottom: 58px;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: end;
+        gap: 34px;
+      }
+
+      .workspace {
+        grid-template-columns: 390px minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .left-stack {
+        position: sticky;
+        top: 12px;
+      }
+
+      .two-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .three-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .results.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
-    /* Responsive */
-    @media (max-width: 600px) {
-      .site-title {
-        font-size: 1.4rem;
-      }
-
-      .controls {
-        flex-direction: column;
-      }
-
-      .control-group {
+    @media (max-width: 620px) {
+      .hero-actions .btn,
+      .result-actions .btn,
+      .row-actions .btn,
+      .chip-row .chip {
         width: 100%;
       }
 
-      .results {
-        grid-template-columns: 1fr;
+      .tab-btn {
+        flex: 1 1 calc(50% - 6px);
       }
 
-      .favorites-panel {
-        max-width: 100%;
+      .info-row {
+        grid-template-columns: 1fr auto;
       }
 
-      .keyboard-hint {
-        display: none;
+      .info-label {
+        grid-column: 1 / -1;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <a href="/tools/" class="back-link">← All Tools</a>
-      <h1 class="site-title">Pen Name Generator <span>&</span> Fake Identity Creator</h1>
-      <p class="tagline">Create believable pseudonyms for writing, testing, or privacy protection.</p>
+  <div class="app">
+    <nav class="top-nav" aria-label="Tool navigation">
+      <a class="back-link" href="../">Tools</a>
+      <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Pen Names, Personas, Test Data</p>
+        <h1>Pseudonym: Fictional Identity Creator</h1>
+        <p class="hero-text">Create polished pen names first, then build fictional identity packs for mockups, stories, privacy-safe examples, and synthetic test data.</p>
+        <div class="hero-actions">
+          <button class="btn primary" type="button" data-mode-jump="pen">Create Pen Names</button>
+          <button class="btn secondary" type="button" data-mode-jump="identity">Build Identity Pack</button>
+        </div>
+      </div>
+      <aside class="card hero-panel">
+        <strong>Fictional only</strong>
+        <p>Profiles are generated locally in your browser for writing, demos, and testing. Keep them fictional, privacy-safe, and out of real-world transactions.</p>
+      </aside>
     </header>
 
-    <!-- Controls -->
-    <div class="controls">
-      <div class="control-group">
-        <label for="mode">Mode</label>
-        <select id="mode">
-          <option value="pen">Pen Name</option>
-          <option value="alias">Online Alias</option>
-          <option value="spam">Privacy / Form Fill</option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="culture">Culture</label>
-        <select id="culture">
-          <option value="western">Western</option>
-          <option value="mexican">Hispanic / Mexican</option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="gender">Gender</label>
-        <select id="gender">
-          <option value="random">Random</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-        </select>
-      </div>
-
-      <div class="control-group">
-        <label for="middleInitial">Middle Initial</label>
-        <select id="middleInitial">
-          <option value="none">None</option>
-          <option value="initial">Include Initial</option>
-        </select>
-      </div>
-
-      <div class="favorites-toggle">
-        <button id="generate-btn" class="btn-primary">Generate</button>
-        <span class="keyboard-hint">or <kbd>Space</kbd></span>
-      </div>
-      
-      <button id="toggle-favorites" class="btn-secondary">★ Favorites (<span id="favorites-count">0</span>)</button>
+    <div class="tabs" role="tablist" aria-label="Pseudonym workflows">
+      <button class="tab-btn active" type="button" data-mode="pen">Pen Names</button>
+      <button class="tab-btn" type="button" data-mode="identity">Identity Pack</button>
+      <button class="tab-btn" type="button" data-mode="test">Test Data</button>
+      <button class="tab-btn" type="button" data-mode="saved">Saved</button>
     </div>
 
-    <!-- Use Case Hint -->
-    <div class="use-case-hint" id="useCaseHint">
-      <span class="hint-icon">✍️</span>
-      <span><strong>Pen Name:</strong> Professional pseudonyms for authors, artists, and creators.</span>
-    </div>
+    <main class="workspace">
+      <div class="left-stack">
+        <section class="panel" data-panel="pen">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Primary Tool</p>
+              <h2>Find a pen name</h2>
+              <p>Generate names that feel intentional, not randomly stapled together.</p>
+            </div>
+          </div>
 
-    <!-- Results Container -->
-    <div id="results" class="results"></div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="penGenre">Writing Lane</label>
+              <select id="penGenre">
+                <option value="literary">Literary / essay</option>
+                <option value="thriller">Thriller / mystery</option>
+                <option value="romance">Romance</option>
+                <option value="scifi">Sci-fi / speculative</option>
+                <option value="business">Business / nonfiction</option>
+                <option value="anonymous">Anonymous column</option>
+              </select>
+            </div>
+            <div class="two-grid">
+              <div class="field">
+                <label for="penCulture">Name Set</label>
+                <select id="penCulture">
+                  <option value="western">Western</option>
+                  <option value="hispanic">Hispanic / Mexican</option>
+                  <option value="global">Global mix</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="penGender">Style</label>
+                <select id="penGender">
+                  <option value="any">Any</option>
+                  <option value="masculine">Masculine</option>
+                  <option value="feminine">Feminine</option>
+                  <option value="neutral">Neutral</option>
+                </select>
+              </div>
+            </div>
+            <div class="two-grid">
+              <div class="field">
+                <label for="penMiddle">Middle</label>
+                <select id="penMiddle">
+                  <option value="none">None</option>
+                  <option value="initial">Middle initial</option>
+                  <option value="name">Middle name</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="penCount">How Many</label>
+                <select id="penCount">
+                  <option value="4">4</option>
+                  <option value="6" selected>6</option>
+                  <option value="8">8</option>
+                </select>
+              </div>
+            </div>
+            <label class="checkbox">
+              <input id="alliterative" type="checkbox">
+              <span>Prefer memorable alliteration when possible.</span>
+            </label>
+            <button class="btn primary full" type="button" id="generatePen">Generate Pen Names</button>
+            <div class="chip-row" aria-label="Pen name presets">
+              <button class="chip" type="button" data-pen-preset="literary">Literary</button>
+              <button class="chip" type="button" data-pen-preset="thriller">Thriller</button>
+              <button class="chip" type="button" data-pen-preset="scifi">Sci-fi</button>
+              <button class="chip" type="button" data-pen-preset="anonymous">Anonymous</button>
+            </div>
+          </div>
+        </section>
 
-    <!-- Favorites Panel -->
-    <div id="favorites-panel" class="favorites-panel hidden">
-      <div class="favorites-header">
-        <h2>★ Saved Favorites</h2>
-        <button id="close-favorites" class="btn-close">×</button>
+        <section class="panel hidden" data-panel="identity">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Fictional Profile</p>
+              <h2>Build an identity pack</h2>
+              <p>Name, birthday, zodiac, safe phone, address, email, and username.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="two-grid">
+              <div class="field">
+                <label for="identityPurpose">Use Case</label>
+                <select id="identityPurpose">
+                  <option value="story">Story character</option>
+                  <option value="mockup">Product mockup</option>
+                  <option value="privacy">Privacy-safe example</option>
+                  <option value="qa">QA persona</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="identityAge">Age Range</label>
+                <select id="identityAge">
+                  <option value="adult">Adult, 18-65</option>
+                  <option value="young">Young adult, 18-29</option>
+                  <option value="middle">Mid-career, 30-54</option>
+                  <option value="senior">Senior, 55-82</option>
+                </select>
+              </div>
+            </div>
+            <div class="two-grid">
+              <div class="field">
+                <label for="identityRegion">US Region</label>
+                <select id="identityRegion">
+                  <option value="any">Any US region</option>
+                  <option value="west">West</option>
+                  <option value="south">South</option>
+                  <option value="midwest">Midwest</option>
+                  <option value="northeast">Northeast</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="identityCount">How Many</label>
+                <select id="identityCount">
+                  <option value="1">1</option>
+                  <option value="3" selected>3</option>
+                  <option value="6">6</option>
+                </select>
+              </div>
+            </div>
+            <label class="checkbox">
+              <input id="includeBio" type="checkbox" checked>
+              <span>Include a short fictional context note.</span>
+            </label>
+            <button class="btn primary full" type="button" id="generateIdentity">Generate Identity Pack</button>
+          </div>
+        </section>
+
+        <section class="panel hidden" data-panel="test">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Developer Utility</p>
+              <h2>Export test data</h2>
+              <p>Create synthetic rows for fixtures, demos, and QA spreadsheets.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="two-grid">
+              <div class="field">
+                <label for="testRows">Rows</label>
+                <input id="testRows" type="number" min="1" max="100" value="12">
+              </div>
+              <div class="field">
+                <label for="testFormat">Format</label>
+                <select id="testFormat">
+                  <option value="json">JSON</option>
+                  <option value="csv">CSV</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="testRegion">Region</label>
+              <select id="testRegion">
+                <option value="any">Any US region</option>
+                <option value="west">West</option>
+                <option value="south">South</option>
+                <option value="midwest">Midwest</option>
+                <option value="northeast">Northeast</option>
+              </select>
+            </div>
+            <button class="btn primary full" type="button" id="generateTest">Generate Test Data</button>
+            <button class="btn secondary full" type="button" id="copyExport" disabled>Copy Export</button>
+          </div>
+        </section>
+
+        <section class="panel hidden" data-panel="saved">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Local Shelf</p>
+              <h2>Saved identities</h2>
+              <p>Saved only in this browser.</p>
+            </div>
+            <button class="btn ghost danger" type="button" id="clearSaved">Clear</button>
+          </div>
+          <div class="saved-list" id="savedList"></div>
+        </section>
       </div>
-      <div id="favorites-list" class="favorites-list"></div>
-      <button id="clear-favorites" class="btn-danger">Clear All Favorites</button>
-    </div>
 
-    <!-- Footer -->
-    <footer>
-      <div class="footer-links">
-        <a href="/tools/">← All Tools</a>
+      <div class="right-stack">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow" id="resultEyebrow">Results</p>
+              <h2 id="resultTitle">Pen name candidates</h2>
+              <p id="resultSummary">Choose a name, copy the supporting ideas, or save your favorites.</p>
+            </div>
+          </div>
+          <div class="results two" id="results"></div>
+          <div class="output-card hidden" id="exportPanel">
+            <span>Export</span>
+            <textarea class="export-box" id="exportOutput" readonly></textarea>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Trust Layer</p>
+              <h2>Built for safe fiction</h2>
+              <p>Everything is generated in your browser and can be copied without creating an account.</p>
+            </div>
+          </div>
+          <div class="trust-grid">
+            <article class="trust-card">
+              <span>Randomness</span>
+              <strong>Browser crypto</strong>
+              <p>Draws use <code>crypto.getRandomValues()</code> for stronger browser-based randomness.</p>
+            </article>
+            <article class="trust-card">
+              <span>Phone numbers</span>
+              <strong>Fictional 555-01XX range</strong>
+              <p>US phone numbers use the reserved fictional range, such as 555-0100 through 555-0199.</p>
+            </article>
+            <article class="trust-card">
+              <span>Boundary</span>
+              <strong>Fictional profile data</strong>
+              <p>Use these profiles for stories, examples, screenshots, fixtures, and QA. Do not use them as real personal data.</p>
+            </article>
+          </div>
+        </section>
       </div>
-      <p class="footer-credit">
-        Built by <a href="https://mattlivingston.com">Matt Livingston</a>
-      </p>
+    </main>
+
+    <footer class="footer">
+      Built by <a href="https://mattlivingston.com">Matt Livingston</a> · Pseudonym: Fictional Identity Creator · Local-only, no accounts, no tracking.
     </footer>
   </div>
 
   <script>
-    // ============================================
-    // Data: Western Names
-    // ============================================
-    const WESTERN_NAMES = {
-      male: [
-        'James', 'Michael', 'Robert', 'John', 'David',
-        'William', 'Richard', 'Joseph', 'Thomas', 'Christopher',
-        'Charles', 'Daniel', 'Matthew', 'Anthony', 'Mark',
-        'Donald', 'Steven', 'Andrew', 'Paul', 'Joshua',
-        'Kenneth', 'Kevin', 'Brian', 'George', 'Timothy',
-        'Ronald', 'Edward', 'Jason', 'Jeffrey', 'Ryan',
-        'Jacob', 'Gary', 'Nicholas', 'Eric', 'Jonathan',
-        'Stephen', 'Larry', 'Justin', 'Scott', 'Brandon',
-        'Benjamin', 'Samuel', 'Raymond', 'Gregory', 'Frank',
-        'Alexander', 'Patrick', 'Jack', 'Dennis', 'Jerry',
-        'Tyler', 'Aaron', 'Henry', 'Douglas', 'Peter',
-        'Adam', 'Nathan', 'Zachary', 'Walter', 'Kyle'
-      ],
-      
-      female: [
-        'Mary', 'Patricia', 'Jennifer', 'Linda', 'Barbara',
-        'Elizabeth', 'Susan', 'Jessica', 'Sarah', 'Karen',
-        'Lisa', 'Nancy', 'Betty', 'Margaret', 'Sandra',
-        'Ashley', 'Kimberly', 'Emily', 'Donna', 'Michelle',
-        'Carol', 'Amanda', 'Dorothy', 'Melissa', 'Deborah',
-        'Stephanie', 'Rebecca', 'Sharon', 'Laura', 'Cynthia',
-        'Kathleen', 'Amy', 'Angela', 'Shirley', 'Anna',
-        'Brenda', 'Pamela', 'Emma', 'Nicole', 'Helen',
-        'Samantha', 'Katherine', 'Christine', 'Debra', 'Rachel',
-        'Carolyn', 'Janet', 'Catherine', 'Maria', 'Heather',
-        'Diane', 'Ruth', 'Julie', 'Olivia', 'Joyce',
-        'Virginia', 'Victoria', 'Kelly', 'Lauren', 'Christina'
-      ],
-      
-      last: [
-        'Smith', 'Johnson', 'Williams', 'Brown', 'Jones',
-        'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-        'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson',
-        'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
-        'Lee', 'Perez', 'Thompson', 'White', 'Harris',
-        'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
-        'Walker', 'Young', 'Allen', 'King', 'Wright',
-        'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
-        'Green', 'Adams', 'Nelson', 'Baker', 'Hall',
-        'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
-        'Phillips', 'Evans', 'Turner', 'Parker', 'Collins',
-        'Edwards', 'Stewart', 'Morris', 'Murphy', 'Cook'
-      ]
+    const TOOL_URL = 'https://mattlivingston.com/tools/pseudonym/';
+    const SAVED_KEY = 'pseudonym-fictional-identity-saved';
+
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+
+    const state = {
+      mode: 'pen',
+      results: [],
+      exportText: '',
+      saved: loadJson(SAVED_KEY, []),
     };
 
-    // ============================================
-    // Data: Mexican Names
-    // ============================================
-    const MEXICAN_NAMES = {
-      male: [
-        'Miguel', 'José', 'Carlos', 'Luis', 'Francisco',
-        'Juan', 'Antonio', 'Alejandro', 'Diego', 'Rafael',
-        'Manuel', 'Pedro', 'Javier', 'Fernando', 'Jorge',
-        'Roberto', 'Ricardo', 'Sergio', 'Alberto', 'Andrés',
-        'Enrique', 'Raúl', 'Jesús', 'Daniel', 'Eduardo',
-        'Óscar', 'Armando', 'Arturo', 'Ramón', 'Gerardo',
-        'Héctor', 'Víctor', 'Rodrigo', 'Mauricio', 'Jaime',
-        'Rubén', 'Pablo', 'Gustavo', 'Julio', 'César',
-        'Gabriel', 'Marco', 'Martín', 'Alfredo', 'Hugo',
-        'Ignacio', 'Salvador', 'Felipe', 'Ernesto', 'Guillermo'
-      ],
-      
-      female: [
-        'María', 'Guadalupe', 'Juana', 'Rosa', 'Carmen',
-        'Ana', 'Elena', 'Isabel', 'Sofía', 'Gabriela',
-        'Patricia', 'Margarita', 'Daniela', 'Beatriz', 'Claudia',
-        'Alejandra', 'Mónica', 'Teresa', 'Laura', 'Silvia',
-        'Verónica', 'Adriana', 'Leticia', 'Carolina', 'Sandra',
-        'Diana', 'Martha', 'Francisca', 'Rocío', 'Andrea',
-        'Cristina', 'Lucía', 'Paola', 'Fernanda', 'Valeria',
-        'Victoria', 'Cecilia', 'Natalia', 'Susana', 'Gloria',
-        'Angélica', 'Norma', 'Alicia', 'Esther', 'Irma',
-        'Eva', 'Catalina', 'Josefina', 'Dolores', 'Raquel'
-      ],
-      
-      last: [
-        'García', 'Rodríguez', 'Martínez', 'López', 'González',
-        'Hernández', 'Pérez', 'Sánchez', 'Ramírez', 'Torres',
-        'Flores', 'Rivera', 'Morales', 'Reyes', 'Jiménez',
-        'Cruz', 'Díaz', 'Gómez', 'Mendoza', 'Vargas',
-        'Castillo', 'Guzmán', 'Vázquez', 'Ruiz', 'Romero',
-        'Álvarez', 'Medina', 'Ortiz', 'Herrera', 'Aguilar',
-        'Ramos', 'Silva', 'Castro', 'Rojas', 'Delgado',
-        'Guerrero', 'Núñez', 'Estrada', 'Méndez', 'Salazar',
-        'Campos', 'Contreras', 'Navarro', 'Fernández', 'Valdez',
-        'Cortés', 'Maldonado', 'Ríos', 'Mejía', 'Domínguez'
-      ]
+    const DATA = {
+      names: {
+        western: {
+          masculine: ['James', 'Michael', 'Robert', 'David', 'William', 'Daniel', 'Matthew', 'Anthony', 'Joseph', 'Samuel', 'Benjamin', 'Alexander', 'Julian', 'Miles', 'Grant', 'Everett', 'Owen', 'Caleb', 'Nathan', 'Elliot'],
+          feminine: ['Mary', 'Elizabeth', 'Sarah', 'Katherine', 'Rebecca', 'Laura', 'Emily', 'Anna', 'Grace', 'Claire', 'Audrey', 'Nora', 'Vivian', 'Elise', 'June', 'Maren', 'Celia', 'Iris', 'Lydia', 'Tessa'],
+          neutral: ['Avery', 'Jordan', 'Morgan', 'Taylor', 'Riley', 'Casey', 'Quinn', 'Rowan', 'Sage', 'Parker', 'Reese', 'Emerson', 'Hayden', 'Blair', 'Ellis', 'Arden'],
+          last: ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Wilson', 'Anderson', 'Taylor', 'Moore', 'Parker', 'Collins', 'Bennett', 'Hayes', 'Foster', 'Reed', 'Sullivan', 'Brooks', 'Hart', 'Wells', 'Stone', 'Vaughn', 'Archer'],
+        },
+        hispanic: {
+          masculine: ['Miguel', 'Carlos', 'Luis', 'Antonio', 'Alejandro', 'Diego', 'Rafael', 'Javier', 'Mateo', 'Santiago', 'Nicolás', 'Emilio', 'Andrés', 'Gabriel', 'Marco', 'Hugo'],
+          feminine: ['María', 'Sofía', 'Elena', 'Isabel', 'Gabriela', 'Daniela', 'Alejandra', 'Lucía', 'Valeria', 'Camila', 'Natalia', 'Carmen', 'Paola', 'Rosa', 'Adriana', 'Mónica'],
+          neutral: ['Ángel', 'Cruz', 'Guadalupe', 'Reyes', 'Sol', 'Noel', 'Alexis', 'Ariel', 'René', 'Azul'],
+          last: ['García', 'Rodríguez', 'Martínez', 'López', 'González', 'Hernández', 'Pérez', 'Sánchez', 'Ramírez', 'Torres', 'Flores', 'Rivera', 'Morales', 'Reyes', 'Jiménez', 'Cruz', 'Vargas', 'Castillo'],
+        },
+        global: {
+          masculine: ['Owen', 'Felix', 'Theo', 'Nico', 'Arun', 'Kai', 'Malik', 'Hugo', 'Jonas', 'Rafi', 'Milo', 'Luca', 'Soren', 'Dante', 'Amir', 'Elias'],
+          feminine: ['Mina', 'Asha', 'Lina', 'Mira', 'Noemi', 'Freya', 'Anika', 'Sana', 'Leona', 'Ines', 'Nadia', 'Amara', 'Clara', 'Zara', 'Iona', 'Maya'],
+          neutral: ['Kai', 'Noa', 'Ari', 'Remy', 'Lior', 'Indigo', 'Sasha', 'Rio', 'Marin', 'Sol', 'Taj', 'Niko'],
+          last: ['Vale', 'Novak', 'Kline', 'Sato', 'Morrow', 'Vega', 'Lennox', 'Rossi', 'Hayashi', 'Kaur', 'Moreau', 'Ivers', 'Solberg', 'Rivers', 'Kade', 'Marin', 'Silva', 'Noor'],
+        },
+      },
+      genreLast: {
+        literary: ['Ash', 'Vale', 'Wells', 'Hart', 'Morrow', 'Reed', 'Ellis', 'Stone'],
+        thriller: ['Cross', 'Rook', 'Wolfe', 'Pierce', 'Locke', 'Voss', 'Kade', 'Sloane'],
+        romance: ['Rose', 'Hart', 'Vale', 'Brooks', 'Summers', 'Blythe', 'Hayes', 'Lark'],
+        scifi: ['Nova', 'Voss', 'Kade', 'Orion', 'Vale', 'Sable', 'Quill', 'Cyra'],
+        business: ['Grant', 'Bennett', 'Parker', 'Sterling', 'Hayes', 'Brooks', 'Foster', 'Wells'],
+        anonymous: ['Gray', 'Vale', 'North', 'Page', 'Stone', 'Lane', 'Reed', 'Black'],
+      },
+      middle: ['Avery', 'Blake', 'Claire', 'Dean', 'Elliot', 'Francis', 'Grace', 'Hayes', 'Iris', 'James', 'Lane', 'Morgan', 'Quinn', 'Reese', 'Sage', 'Vale'],
+      authorNotes: {
+        literary: ['quiet, credible, and essay-friendly', 'serious without feeling stiff', 'works well for fiction, essays, or memoir-adjacent pieces'],
+        thriller: ['sharp enough for a mystery cover', 'short, memorable, and easy to search', 'built for suspense, noir, or procedural work'],
+        romance: ['warm and memorable without getting sugary', 'soft enough for contemporary romance', 'good for character-forward fiction'],
+        scifi: ['clean, speculative, and future-friendly', 'distinctive without becoming costume-y', 'works for sci-fi, fantasy, and worldbuilding'],
+        business: ['credible for nonfiction and professional writing', 'polished, direct, and easy to cite', 'good for guides, essays, and newsletters'],
+        anonymous: ['privacy-forward and intentionally low-profile', 'simple enough to avoid drawing attention', 'good for columns, forums, and anonymous publishing'],
+      },
+      regions: {
+        west: [
+          { city: 'Portland', state: 'OR', zip: '97205', area: '503' },
+          { city: 'Seattle', state: 'WA', zip: '98104', area: '206' },
+          { city: 'Denver', state: 'CO', zip: '80202', area: '303' },
+          { city: 'San Diego', state: 'CA', zip: '92101', area: '619' },
+          { city: 'Las Vegas', state: 'NV', zip: '89101', area: '702' },
+        ],
+        south: [
+          { city: 'Austin', state: 'TX', zip: '78701', area: '512' },
+          { city: 'Nashville', state: 'TN', zip: '37203', area: '615' },
+          { city: 'Atlanta', state: 'GA', zip: '30303', area: '404' },
+          { city: 'Charlotte', state: 'NC', zip: '28202', area: '704' },
+          { city: 'Miami', state: 'FL', zip: '33130', area: '305' },
+        ],
+        midwest: [
+          { city: 'Chicago', state: 'IL', zip: '60602', area: '312' },
+          { city: 'Minneapolis', state: 'MN', zip: '55401', area: '612' },
+          { city: 'Columbus', state: 'OH', zip: '43215', area: '614' },
+          { city: 'Kansas City', state: 'MO', zip: '64106', area: '816' },
+          { city: 'Milwaukee', state: 'WI', zip: '53202', area: '414' },
+        ],
+        northeast: [
+          { city: 'Boston', state: 'MA', zip: '02108', area: '617' },
+          { city: 'New York', state: 'NY', zip: '10007', area: '212' },
+          { city: 'Philadelphia', state: 'PA', zip: '19103', area: '215' },
+          { city: 'Providence', state: 'RI', zip: '02903', area: '401' },
+          { city: 'Burlington', state: 'VT', zip: '05401', area: '802' },
+        ],
+      },
+      streets: ['Example Lane', 'Fiction Street', 'Mockingbird Way', 'Placeholder Avenue', 'Sample Road', 'Demo Drive', 'Atlas Court', 'Nova Terrace', 'Cedar Test Lane', 'Keystone Loop', 'Juniper Mock Road', 'Summit Fiction Ave'],
+      purposes: {
+        story: ['Fictional character profile for drafting.', 'Story-ready persona with enough detail to feel grounded.'],
+        mockup: ['Product mockup profile for realistic UI screens.', 'Demo user for onboarding, forms, and account pages.'],
+        privacy: ['Privacy-safe example profile for screenshots or documentation.', 'Synthetic profile for examples where real personal data does not belong.'],
+        qa: ['QA persona for manual testing and fixture data.', 'Synthetic user for repeatable product checks.'],
+      },
     };
 
-    // ============================================
-    // Data: US Addresses
-    // ============================================
-    const US_ADDRESS_DATA = {
-      streetNames: [
-        'Main Street', 'Oak Avenue', 'Maple Drive', 'Park Place', 'Washington Street',
-        'Cedar Lane', 'Elm Street', 'Pine Road', 'Sunset Boulevard', 'Lake View Drive',
-        'Forest Avenue', 'Hill Street', 'River Road', 'Spring Street', 'Church Street',
-        'Center Street', 'Mill Road', 'Grove Avenue', 'Ridge Road', 'Valley Drive',
-        'Birch Lane', 'Willow Way', 'Cherry Street', 'Meadow Lane', 'Summit Avenue'
-      ],
-      
-      cities: [
-        { city: 'Austin', state: 'TX', zip: '78701' },
-        { city: 'Portland', state: 'OR', zip: '97201' },
-        { city: 'Seattle', state: 'WA', zip: '98101' },
-        { city: 'Denver', state: 'CO', zip: '80202' },
-        { city: 'Phoenix', state: 'AZ', zip: '85001' },
-        { city: 'San Diego', state: 'CA', zip: '92101' },
-        { city: 'Charlotte', state: 'NC', zip: '28201' },
-        { city: 'Nashville', state: 'TN', zip: '37201' },
-        { city: 'Atlanta', state: 'GA', zip: '30301' },
-        { city: 'Boston', state: 'MA', zip: '02101' },
-        { city: 'Chicago', state: 'IL', zip: '60601' },
-        { city: 'Dallas', state: 'TX', zip: '75201' },
-        { city: 'Houston', state: 'TX', zip: '77001' },
-        { city: 'Miami', state: 'FL', zip: '33101' },
-        { city: 'Philadelphia', state: 'PA', zip: '19101' }
-      ]
-    };
+    document.addEventListener('DOMContentLoaded', init);
 
-    // ============================================
-    // Use Case Hints
-    // ============================================
-    const USE_CASE_HINTS = {
-      pen: {
-        icon: '✍️',
-        text: '<strong>Pen Name:</strong> Professional pseudonyms for authors, artists, and creators.'
-      },
-      alias: {
-        icon: '🎭',
-        text: '<strong>Online Alias:</strong> Usernames and handles for social media, gaming, and forums.'
-      },
-      spam: {
-        icon: '🛡️',
-        text: '<strong>Privacy Mode:</strong> Fake identities for form fills, signups, and protecting your real info.'
-      }
-    };
-
-    // ============================================
-    // Generators
-    // ============================================
-    const NameGenerator = {
-      _random(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-      },
-      
-      _randomInitial() {
-        return String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      },
-      
-      generate(culture = 'western', gender = 'random', includeMiddle = false) {
-        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
-        const actualGender = gender === 'random' 
-          ? (Math.random() < 0.5 ? 'male' : 'female')
-          : gender;
-        
-        const firstName = this._random(namePool[actualGender]);
-        const lastName = this._random(namePool.last);
-        const middleInitial = includeMiddle ? this._randomInitial() + '.' : null;
-        
-        const fullName = middleInitial 
-          ? `${firstName} ${middleInitial} ${lastName}`
-          : `${firstName} ${lastName}`;
-        
-        return {
-          firstName,
-          middleInitial,
-          lastName,
-          fullName
-        };
-      },
-      
-      regenerateFirstName(lastName, middleInitial, culture = 'western', gender = 'random') {
-        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
-        const actualGender = gender === 'random' 
-          ? (Math.random() < 0.5 ? 'male' : 'female')
-          : gender;
-        
-        const firstName = this._random(namePool[actualGender]);
-        const fullName = middleInitial 
-          ? `${firstName} ${middleInitial} ${lastName}`
-          : `${firstName} ${lastName}`;
-        
-        return { firstName, middleInitial, lastName, fullName };
-      },
-      
-      regenerateLastName(firstName, middleInitial, culture = 'western') {
-        const namePool = culture === 'mexican' ? MEXICAN_NAMES : WESTERN_NAMES;
-        const lastName = this._random(namePool.last);
-        const fullName = middleInitial 
-          ? `${firstName} ${middleInitial} ${lastName}`
-          : `${firstName} ${lastName}`;
-        
-        return { firstName, middleInitial, lastName, fullName };
-      }
-    };
-
-    const UsernameGenerator = {
-      generate(firstName, lastName) {
-        const first = firstName.toLowerCase().replace(/[^a-z]/g, '');
-        const last = lastName.toLowerCase().replace(/[^a-z]/g, '');
-        const num = Math.floor(Math.random() * 99) + 1;
-        const year = Math.floor(Math.random() * 30) + 1985;
-        
-        return [
-          `${first}${last}`,
-          `${first}_${last}`,
-          `${first}.${last}`,
-          `${first}${num}`,
-          `${first[0]}${last}`,
-          `${first}${last.slice(0, 3)}`,
-          `${first}_${year}`,
-          `the_${first}`
-        ].slice(0, 5);
-      }
-    };
-
-    const AddressGenerator = {
-      _random(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
-      },
-      
-      generate() {
-        const houseNumber = Math.floor(Math.random() * 9900) + 100;
-        const streetName = this._random(US_ADDRESS_DATA.streetNames);
-        const location = this._random(US_ADDRESS_DATA.cities);
-        
-        const street = `${houseNumber} ${streetName}`;
-        const fullAddress = `${street}, ${location.city}, ${location.state} ${location.zip}`;
-        
-        return {
-          street,
-          city: location.city,
-          state: location.state,
-          zip: location.zip,
-          fullAddress
-        };
-      }
-    };
-
-    const DateGenerator = {
-      generate() {
-        const currentYear = new Date().getFullYear();
-        const age = Math.floor(Math.random() * (65 - 18 + 1)) + 18;
-        const birthYear = currentYear - age;
-        const birthMonth = Math.floor(Math.random() * 12);
-        const daysInMonth = new Date(birthYear, birthMonth + 1, 0).getDate();
-        const birthDay = Math.floor(Math.random() * daysInMonth) + 1;
-        
-        const month = String(birthMonth + 1).padStart(2, '0');
-        const day = String(birthDay).padStart(2, '0');
-        const date = `${month}/${day}/${birthYear}`;
-        
-        return { date, age };
-      }
-    };
-
-    // ============================================
-    // UI Module
-    // ============================================
-    const UI = {
-      updateUseCaseHint(mode) {
-        const hint = USE_CASE_HINTS[mode];
-        document.getElementById('useCaseHint').innerHTML = `
-          <span class="hint-icon">${hint.icon}</span>
-          <span>${hint.text}</span>
-        `;
-      },
-      
-      renderResults(identities, mode) {
-        const container = document.getElementById('results');
-        container.innerHTML = '';
-        
-        identities.forEach((identity, index) => {
-          const card = this.createResultCard(identity, mode, index);
-          container.appendChild(card);
-        });
-      },
-      
-      createResultCard(identity, mode, index) {
-        const card = document.createElement('div');
-        card.className = 'result-card';
-        card.dataset.index = index;
-        
-        const isFavorited = App.isFavorited(identity);
-        
-        let html = `
-          <div class="card-header">
-            <button class="icon-btn favorite-btn ${isFavorited ? 'favorited' : ''}" data-index="${index}">
-              ${isFavorited ? '★' : '☆'}
-            </button>
-          </div>
-          
-          <div class="name-section">
-            <div class="name-display">${identity.name.fullName}</div>
-            <div class="name-parts">
-              <button class="name-part-btn regen-first">↻ First</button>
-              <button class="name-part-btn regen-last">↻ Last</button>
-              <button class="name-part-btn regen-full">↻ All</button>
-            </div>
-          </div>
-          
-          <div class="info-section">
-            <div class="info-row">
-              <span class="info-label">Full Name</span>
-              <div class="info-actions">
-                <span class="info-value">${identity.name.fullName}</span>
-                <button class="copy-btn" data-copy="${identity.name.fullName}">Copy</button>
-              </div>
-            </div>
-        `;
-        
-        if (mode === 'spam' && identity.birthdate && identity.address) {
-          html += `
-            <div class="info-row">
-              <span class="info-label">DOB (Age ${identity.birthdate.age})</span>
-              <div class="info-actions">
-                <span class="info-value">${identity.birthdate.date}</span>
-                <button class="copy-btn" data-copy="${identity.birthdate.date}">Copy</button>
-              </div>
-            </div>
-            <div class="info-row stacked">
-              <span class="info-label">Address</span>
-              <div class="info-actions" style="width: 100%; justify-content: space-between;">
-                <span class="info-value small">${identity.address.fullAddress}</span>
-                <button class="copy-btn" data-copy="${identity.address.fullAddress}">Copy</button>
-              </div>
-            </div>
-            <button class="copy-all-btn" data-copyall="${identity.name.fullName}\n${identity.birthdate.date}\n${identity.address.fullAddress}">
-              📋 Copy All (Name + DOB + Address)
-            </button>
-          `;
-        }
-        
-        if (mode === 'alias') {
-          const usernames = UsernameGenerator.generate(identity.name.firstName, identity.name.lastName);
-          html += `
-            <div class="username-section">
-              <div class="username-label">Username Ideas</div>
-              <div class="username-suggestions">
-                ${usernames.map(u => `<span class="username-chip" data-copy="${u}">${u}</span>`).join('')}
-              </div>
-            </div>
-          `;
-        }
-        
-        html += '</div>';
-        card.innerHTML = html;
-        
-        this.attachCardListeners(card, identity, index);
-        return card;
-      },
-      
-      attachCardListeners(card, identity, index) {
-        // Copy buttons
-        card.querySelectorAll('.copy-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            this.copyToClipboard(e.target.dataset.copy, e.target);
-          });
-        });
-        
-        // Username chips
-        card.querySelectorAll('.username-chip').forEach(chip => {
-          chip.addEventListener('click', (e) => {
-            this.copyToClipboard(e.target.dataset.copy, e.target);
-          });
-        });
-        
-        // Copy all button
-        const copyAllBtn = card.querySelector('.copy-all-btn');
-        if (copyAllBtn) {
-          copyAllBtn.addEventListener('click', (e) => {
-            this.copyToClipboard(e.target.dataset.copyall, e.target);
-          });
-        }
-        
-        // Favorite button
-        const favBtn = card.querySelector('.favorite-btn');
-        favBtn.addEventListener('click', () => {
-          App.toggleFavorite(identity);
-          favBtn.classList.toggle('favorited');
-          favBtn.textContent = favBtn.classList.contains('favorited') ? '★' : '☆';
-          this.updateFavoritesCount();
-        });
-        
-        // Regenerate buttons
-        card.querySelector('.regen-first').addEventListener('click', () => App.regenerateFirstName(index));
-        card.querySelector('.regen-last').addEventListener('click', () => App.regenerateLastName(index));
-        card.querySelector('.regen-full').addEventListener('click', () => App.regenerateFull(index));
-      },
-      
-      async copyToClipboard(text, button) {
-        try {
-          await navigator.clipboard.writeText(text);
-          const original = button.textContent;
-          button.textContent = '✓ Copied';
-          button.classList.add('copied');
-          
-          setTimeout(() => {
-            button.textContent = original;
-            button.classList.remove('copied');
-          }, 1500);
-        } catch (err) {
-          showToast('Failed to copy');
-        }
-      },
-      
-      updateFavoritesCount() {
-        document.getElementById('favorites-count').textContent = App.state.favorites.length;
-      },
-      
-      renderFavorites() {
-        const favorites = App.state.favorites;
-        const container = document.getElementById('favorites-list');
-        
-        if (favorites.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state">
-              <div class="empty-state-icon">☆</div>
-              <p>No favorites yet</p>
-              <p style="font-size: 0.8rem; margin-top: 0.5rem;">Click the star on any generated name to save it</p>
-            </div>
-          `;
-          return;
-        }
-        
-        container.innerHTML = '';
-        
-        favorites.forEach((identity, index) => {
-          const item = document.createElement('div');
-          item.className = 'favorite-item';
-          
-          let html = `<div class="name-display">${identity.name.fullName}</div>`;
-          
-          if (identity.birthdate) {
-            html += `<div class="favorite-meta">DOB: ${identity.birthdate.date} (Age ${identity.birthdate.age})</div>`;
-          }
-          
-          if (identity.address) {
-            html += `<div class="favorite-meta">${identity.address.fullAddress}</div>`;
-          }
-          
-          html += `
-            <div class="favorite-actions">
-              <button class="btn-secondary copy-btn" data-copy="${identity.name.fullName}">Copy Name</button>
-              ${identity.birthdate ? `<button class="btn-secondary copy-btn" data-copy="${identity.birthdate.date}">Copy DOB</button>` : ''}
-              <button class="icon-btn" data-remove="${index}">🗑️</button>
-            </div>
-          `;
-          
-          item.innerHTML = html;
-          
-          item.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              this.copyToClipboard(e.target.dataset.copy, e.target);
-            });
-          });
-          
-          item.querySelector('[data-remove]').addEventListener('click', () => {
-            App.removeFavorite(index);
-            this.renderFavorites();
-            this.updateFavoritesCount();
-          });
-          
-          container.appendChild(item);
-        });
-      },
-      
-      toggleFavoritesPanel() {
-        const panel = document.getElementById('favorites-panel');
-        panel.classList.toggle('hidden');
-        
-        if (!panel.classList.contains('hidden')) {
-          this.renderFavorites();
-        }
-      }
-    };
-
-    // ============================================
-    // App Module
-    // ============================================
-    const App = {
-      state: {
-        mode: 'pen',
-        culture: 'western',
-        gender: 'random',
-        middleInitial: 'none',
-        currentResults: [],
-        favorites: []
-      },
-      
-      init() {
-        this.loadFavorites();
-        this.attachEventListeners();
-        this.generate();
-        UI.updateFavoritesCount();
-      },
-      
-      attachEventListeners() {
-        document.getElementById('mode').addEventListener('change', (e) => {
-          this.state.mode = e.target.value;
-          UI.updateUseCaseHint(e.target.value);
-        });
-        
-        document.getElementById('culture').addEventListener('change', (e) => {
-          this.state.culture = e.target.value;
-        });
-        
-        document.getElementById('gender').addEventListener('change', (e) => {
-          this.state.gender = e.target.value;
-        });
-        
-        document.getElementById('middleInitial').addEventListener('change', (e) => {
-          this.state.middleInitial = e.target.value;
-        });
-        
-        document.getElementById('generate-btn').addEventListener('click', () => this.generate());
-        document.getElementById('toggle-favorites').addEventListener('click', () => UI.toggleFavoritesPanel());
-        document.getElementById('close-favorites').addEventListener('click', () => UI.toggleFavoritesPanel());
-        
-        document.getElementById('clear-favorites').addEventListener('click', () => {
-          if (confirm('Clear all favorites?')) {
-            this.state.favorites = [];
-            this.saveFavorites();
-            UI.renderFavorites();
-            UI.updateFavoritesCount();
-          }
-        });
-        
-        // Keyboard shortcut
-        document.addEventListener('keydown', (e) => {
-          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return;
-          if (e.code === 'Space') {
-            e.preventDefault();
-            this.generate();
-          }
-        });
-      },
-      
-      generate() {
-        const { mode, culture, gender, middleInitial } = this.state;
-        const includeMiddle = middleInitial === 'initial';
-        const identities = [];
-        
-        for (let i = 0; i < 6; i++) {
-          const identity = {
-            name: NameGenerator.generate(culture, gender, includeMiddle),
-            mode,
-            culture,
-            gender
-          };
-          
-          if (mode === 'spam') {
-            identity.birthdate = DateGenerator.generate();
-            identity.address = AddressGenerator.generate();
-          }
-          
-          identities.push(identity);
-        }
-        
-        this.state.currentResults = identities;
-        UI.renderResults(identities, mode);
-      },
-      
-      regenerateFirstName(index) {
-        const identity = this.state.currentResults[index];
-        identity.name = NameGenerator.regenerateFirstName(
-          identity.name.lastName,
-          identity.name.middleInitial,
-          identity.culture,
-          identity.gender
-        );
-        UI.renderResults(this.state.currentResults, this.state.mode);
-      },
-      
-      regenerateLastName(index) {
-        const identity = this.state.currentResults[index];
-        identity.name = NameGenerator.regenerateLastName(
-          identity.name.firstName,
-          identity.name.middleInitial,
-          identity.culture
-        );
-        UI.renderResults(this.state.currentResults, this.state.mode);
-      },
-      
-      regenerateFull(index) {
-        const { mode, culture, gender, middleInitial } = this.state;
-        const includeMiddle = middleInitial === 'initial';
-        
-        const identity = {
-          name: NameGenerator.generate(culture, gender, includeMiddle),
-          mode,
-          culture,
-          gender
-        };
-        
-        if (mode === 'spam') {
-          identity.birthdate = DateGenerator.generate();
-          identity.address = AddressGenerator.generate();
-        }
-        
-        this.state.currentResults[index] = identity;
-        UI.renderResults(this.state.currentResults, this.state.mode);
-      },
-      
-      isFavorited(identity) {
-        return this.state.favorites.some(fav => 
-          fav.name.fullName === identity.name.fullName &&
-          fav.birthdate?.date === identity.birthdate?.date
-        );
-      },
-      
-      toggleFavorite(identity) {
-        const index = this.state.favorites.findIndex(fav => 
-          fav.name.fullName === identity.name.fullName &&
-          fav.birthdate?.date === identity.birthdate?.date
-        );
-        
-        if (index >= 0) {
-          this.state.favorites.splice(index, 1);
-        } else {
-          this.state.favorites.push(identity);
-        }
-        
-        this.saveFavorites();
-      },
-      
-      removeFavorite(index) {
-        this.state.favorites.splice(index, 1);
-        this.saveFavorites();
-      },
-      
-      saveFavorites() {
-        try {
-          localStorage.setItem('pseudonym_favorites', JSON.stringify(this.state.favorites));
-        } catch (err) {
-          console.error('Failed to save favorites:', err);
-        }
-      },
-      
-      loadFavorites() {
-        try {
-          const stored = localStorage.getItem('pseudonym_favorites');
-          if (stored) {
-            this.state.favorites = JSON.parse(stored);
-          }
-        } catch (err) {
-          this.state.favorites = [];
-        }
-      }
-    };
-
-    // ============================================
-    // Utility
-    // ============================================
-    function showToast(message) {
-      const existing = document.querySelector('.toast');
-      if (existing) existing.remove();
-
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2000);
+    function init() {
+      bindEvents();
+      generatePen();
+      renderSaved();
     }
 
-    // Initialize
-    App.init();
+    function bindEvents() {
+      $$('[data-mode]').forEach((button) => {
+        button.addEventListener('click', () => setMode(button.dataset.mode));
+      });
+      $$('[data-mode-jump]').forEach((button) => {
+        button.addEventListener('click', () => setMode(button.dataset.modeJump));
+      });
+      $$('[data-pen-preset]').forEach((button) => {
+        button.addEventListener('click', () => {
+          $('#penGenre').value = button.dataset.penPreset;
+          if (button.dataset.penPreset === 'anonymous') $('#penMiddle').value = 'none';
+          generatePen();
+        });
+      });
+
+      $('#generatePen').addEventListener('click', generatePen);
+      $('#generateIdentity').addEventListener('click', generateIdentity);
+      $('#generateTest').addEventListener('click', generateTestData);
+      $('#copyExport').addEventListener('click', () => copyText(state.exportText, $('#copyExport')));
+      $('#clearSaved').addEventListener('click', clearSaved);
+    }
+
+    function setMode(mode) {
+      state.mode = mode;
+      $$('[data-mode]').forEach((button) => button.classList.toggle('active', button.dataset.mode === mode));
+      $$('[data-panel]').forEach((panel) => panel.classList.toggle('hidden', panel.dataset.panel !== mode));
+      $('#exportPanel').classList.toggle('hidden', mode !== 'test' || !state.exportText);
+
+      if (mode === 'pen') {
+        updateResultHeader('Results', 'Pen name candidates', 'Choose a name, copy the supporting ideas, or save your favorites.');
+        renderResults(state.results.length ? state.results : makePenNames());
+      } else if (mode === 'identity') {
+        updateResultHeader('Results', 'Fictional identity packs', 'Copy a complete synthetic profile or save one for later.');
+        if (!state.results.length || state.results[0]?.kind !== 'identity') generateIdentity();
+      } else if (mode === 'test') {
+        updateResultHeader('Export', 'Synthetic test data', 'Generate JSON or CSV for fixtures, mockups, and QA.');
+        if (!state.exportText) generateTestData();
+      } else if (mode === 'saved') {
+        updateResultHeader('Saved', 'Local favorites', 'Your saved pen names and fictional identities live only in this browser.');
+        renderSaved();
+      }
+
+      document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateResultHeader(eyebrow, title, summary) {
+      $('#resultEyebrow').textContent = eyebrow;
+      $('#resultTitle').textContent = title;
+      $('#resultSummary').textContent = summary;
+    }
+
+    function generatePen() {
+      state.results = makePenNames();
+      state.exportText = '';
+      $('#exportPanel').classList.add('hidden');
+      updateResultHeader('Results', 'Pen name candidates', 'Choose a name, copy the supporting ideas, or save your favorites.');
+      renderResults(state.results);
+    }
+
+    function makePenNames() {
+      const genre = $('#penGenre').value;
+      const culture = $('#penCulture').value;
+      const gender = $('#penGender').value;
+      const middle = $('#penMiddle').value;
+      const count = Number($('#penCount').value) || 6;
+      const alliterative = $('#alliterative').checked;
+
+      return Array.from({ length: count }, () => {
+        const name = createName({ culture, gender, middle, alliterative, genre });
+        const handles = makeHandles(name);
+        const domains = handles.slice(0, 3).map((handle) => `${handle.replace(/_/g, '')}.com`);
+        const note = randomItem(DATA.authorNotes[genre]);
+        return {
+          kind: 'pen',
+          id: randomId(),
+          name: name.full,
+          firstName: name.first,
+          lastName: name.last,
+          subtitle: `${titleCase(genre)} pen name`,
+          note: `${name.full} feels ${note}.`,
+          fields: [
+            { label: 'Full name', value: name.full },
+            { label: 'Byline', value: `By ${name.full}` },
+            { label: 'Handles', value: handles.slice(0, 4).join(', ') },
+            { label: 'Domain ideas', value: domains.join(', ') },
+          ],
+          copy: formatProfile({
+            type: 'Pen Name',
+            name: name.full,
+            note: `${name.full} feels ${note}.`,
+            handles: handles.slice(0, 4).join(', '),
+            domains: domains.join(', '),
+          }),
+        };
+      });
+    }
+
+    function generateIdentity() {
+      const purpose = $('#identityPurpose').value;
+      const ageRange = $('#identityAge').value;
+      const region = $('#identityRegion').value;
+      const count = Number($('#identityCount').value) || 3;
+      const includeBio = $('#includeBio').checked;
+
+      state.results = Array.from({ length: count }, () => makeIdentity({ purpose, ageRange, region, includeBio }));
+      state.exportText = '';
+      $('#exportPanel').classList.add('hidden');
+      updateResultHeader('Results', 'Fictional identity packs', 'Copy a complete synthetic profile or save one for later.');
+      renderResults(state.results);
+    }
+
+    function makeIdentity({ purpose = 'mockup', ageRange = 'adult', region = 'any', includeBio = true } = {}) {
+      const name = createName({ culture: 'global', gender: 'any', middle: 'none', alliterative: false, genre: 'business' });
+      const birthday = makeBirthday(ageRange);
+      const location = randomLocation(region);
+      const address = makeAddress(location);
+      const phone = makePhone(location.area);
+      const email = makeEmail(name);
+      const username = makeHandles(name)[0];
+      const context = randomItem(DATA.purposes[purpose]);
+      const bio = includeBio ? `${name.first} is a fictional ${purposeLabel(purpose).toLowerCase()} profile based in ${location.city}.` : '';
+
+      const fields = [
+        { label: 'Full name', value: name.full },
+        { label: 'Birthday', value: `${birthday.date} (${birthday.age}, ${birthday.zodiac})` },
+        { label: 'Address', value: address.full },
+        { label: 'Phone', value: phone },
+        { label: 'Email', value: email },
+        { label: 'Username', value: username },
+      ];
+      if (bio) fields.push({ label: 'Context', value: bio });
+
+      const profile = {
+        type: 'Fictional Identity Pack',
+        name: name.full,
+        birthday: birthday.date,
+        age: birthday.age,
+        zodiac: birthday.zodiac,
+        address: address.full,
+        phone,
+        email,
+        username,
+        note: context,
+        bio,
+      };
+
+      return {
+        kind: 'identity',
+        id: randomId(),
+        name: name.full,
+        firstName: name.first,
+        lastName: name.last,
+        subtitle: purposeLabel(purpose),
+        note: context,
+        fields,
+        raw: profile,
+        copy: formatProfile(profile),
+      };
+    }
+
+    function generateTestData() {
+      const rows = clamp(Number($('#testRows').value) || 12, 1, 100);
+      const format = $('#testFormat').value;
+      const region = $('#testRegion').value;
+      const records = Array.from({ length: rows }, (_, index) => {
+        const identity = makeIdentity({ purpose: 'qa', ageRange: 'adult', region, includeBio: false });
+        return {
+          id: `user_${String(index + 1).padStart(3, '0')}`,
+          full_name: identity.raw.name,
+          birthday: identity.raw.birthday,
+          age: identity.raw.age,
+          zodiac: identity.raw.zodiac,
+          address: identity.raw.address,
+          phone: identity.raw.phone,
+          email: identity.raw.email,
+          username: identity.raw.username,
+        };
+      });
+
+      state.results = [];
+      state.exportText = format === 'csv' ? toCsv(records) : JSON.stringify(records, null, 2);
+      $('#exportOutput').value = state.exportText;
+      $('#exportPanel').classList.remove('hidden');
+      $('#copyExport').disabled = false;
+      $('#results').innerHTML = `<div class="empty">Generated ${rows} ${format.toUpperCase()} rows. Use Copy Export to grab the data.</div>`;
+      updateResultHeader('Export', 'Synthetic test data', 'Generate JSON or CSV for fixtures, mockups, and QA.');
+    }
+
+    function renderResults(items) {
+      $('#exportPanel').classList.add('hidden');
+      const target = $('#results');
+      if (!items.length) {
+        target.innerHTML = '<div class="empty">Generate a profile to get started.</div>';
+        return;
+      }
+      target.innerHTML = items.map((item, index) => `
+        <article class="identity-card" data-id="${item.id}" style="animation-delay:${index * 20}ms">
+          <div class="identity-top">
+            <div>
+              <span class="identity-name">${escapeHtml(item.name)}</span>
+              <span class="identity-role">${escapeHtml(item.subtitle)}</span>
+            </div>
+            <button class="mini-btn ${isSaved(item) ? 'active' : ''}" type="button" data-save="${item.id}" aria-label="Save ${escapeHtml(item.name)}">${isSaved(item) ? 'Saved' : 'Save'}</button>
+          </div>
+          <p class="identity-note">${escapeHtml(item.note)}</p>
+          <div class="identity-fields">
+            ${item.fields.map((field) => `
+              <div class="info-row">
+                <span class="info-label">${escapeHtml(field.label)}</span>
+                <span class="info-value">${escapeHtml(field.value)}</span>
+                <button class="mini-btn" type="button" data-copy="${escapeAttribute(field.value)}">Copy</button>
+              </div>
+            `).join('')}
+          </div>
+          <div class="result-actions" style="margin-top: 14px;">
+            <button class="btn primary" type="button" data-copy-profile="${item.id}">Copy Profile</button>
+            <button class="btn secondary" type="button" data-regenerate="${item.id}">Regenerate</button>
+          </div>
+        </article>
+      `).join('');
+
+      $$('[data-copy]', target).forEach((button) => {
+        button.addEventListener('click', () => copyText(button.dataset.copy, button));
+      });
+      $$('[data-copy-profile]', target).forEach((button) => {
+        button.addEventListener('click', () => {
+          const item = state.results.find((result) => result.id === button.dataset.copyProfile);
+          if (item) copyText(item.copy, button);
+        });
+      });
+      $$('[data-save]', target).forEach((button) => {
+        button.addEventListener('click', () => {
+          const item = state.results.find((result) => result.id === button.dataset.save);
+          if (item) toggleSaved(item);
+        });
+      });
+      $$('[data-regenerate]', target).forEach((button) => {
+        button.addEventListener('click', () => regenerateOne(button.dataset.regenerate));
+      });
+    }
+
+    function regenerateOne(id) {
+      const index = state.results.findIndex((item) => item.id === id);
+      if (index < 0) return;
+      if (state.results[index].kind === 'pen') {
+        state.results[index] = makePenNames()[0];
+      } else {
+        state.results[index] = makeIdentity({
+          purpose: $('#identityPurpose').value,
+          ageRange: $('#identityAge').value,
+          region: $('#identityRegion').value,
+          includeBio: $('#includeBio').checked,
+        });
+      }
+      renderResults(state.results);
+    }
+
+    function renderSaved() {
+      const target = $('#savedList');
+      if (!state.saved.length) {
+        target.innerHTML = '<div class="empty">No saved identities yet.</div>';
+        if (state.mode === 'saved') $('#results').innerHTML = '<div class="empty">Save a favorite from Pen Names or Identity Pack and it will show up here.</div>';
+        return;
+      }
+      target.innerHTML = state.saved.map((item) => `
+        <article class="saved-card">
+          <span>${escapeHtml(item.kind === 'pen' ? 'Pen name' : 'Identity pack')}</span>
+          <strong>${escapeHtml(item.name)}</strong>
+          <p>${escapeHtml(item.note)}</p>
+          <div class="row-actions" style="margin-top: 12px;">
+            <button class="btn secondary" type="button" data-copy-saved="${item.id}">Copy</button>
+            <button class="btn ghost danger" type="button" data-remove-saved="${item.id}">Remove</button>
+          </div>
+        </article>
+      `).join('');
+
+      $$('[data-copy-saved]', target).forEach((button) => {
+        button.addEventListener('click', () => {
+          const item = state.saved.find((saved) => saved.id === button.dataset.copySaved);
+          if (item) copyText(item.copy, button);
+        });
+      });
+      $$('[data-remove-saved]', target).forEach((button) => {
+        button.addEventListener('click', () => {
+          state.saved = state.saved.filter((saved) => saved.id !== button.dataset.removeSaved);
+          persistSaved();
+          renderSaved();
+          if (state.mode !== 'saved') renderResults(state.results);
+        });
+      });
+
+      if (state.mode === 'saved') {
+        $('#results').innerHTML = state.saved.map((item) => `
+          <article class="identity-card">
+            <div class="identity-top">
+              <div>
+                <span class="identity-name">${escapeHtml(item.name)}</span>
+                <span class="identity-role">${escapeHtml(item.subtitle)}</span>
+              </div>
+            </div>
+            <p class="identity-note">${escapeHtml(item.note)}</p>
+            <div class="result-actions" style="margin-top: 14px;">
+              <button class="btn primary" type="button" data-copy-saved-result="${item.id}">Copy Profile</button>
+            </div>
+          </article>
+        `).join('');
+        $$('[data-copy-saved-result]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const item = state.saved.find((saved) => saved.id === button.dataset.copySavedResult);
+            if (item) copyText(item.copy, button);
+          });
+        });
+      }
+    }
+
+    function toggleSaved(item) {
+      if (isSaved(item)) {
+        state.saved = state.saved.filter((saved) => saved.name !== item.name || saved.kind !== item.kind);
+      } else {
+        state.saved.unshift({ ...item, savedAt: new Date().toISOString() });
+        state.saved = state.saved.slice(0, 30);
+      }
+      persistSaved();
+      renderSaved();
+      renderResults(state.results);
+    }
+
+    function isSaved(item) {
+      return state.saved.some((saved) => saved.name === item.name && saved.kind === item.kind);
+    }
+
+    function clearSaved() {
+      if (!state.saved.length) return;
+      if (!window.confirm('Clear saved fictional identities from this browser?')) return;
+      state.saved = [];
+      persistSaved();
+      renderSaved();
+      if (state.mode !== 'saved') renderResults(state.results);
+    }
+
+    function persistSaved() {
+      localStorage.setItem(SAVED_KEY, JSON.stringify(state.saved));
+    }
+
+    function createName({ culture = 'western', gender = 'any', middle = 'none', alliterative = false, genre = 'literary' } = {}) {
+      const pool = DATA.names[culture] || DATA.names.western;
+      let lane = gender === 'any' ? randomItem(['masculine', 'feminine', 'neutral']) : gender;
+      if (!pool[lane]) lane = 'neutral';
+      const first = randomItem(pool[lane]);
+      let lastPool = [...pool.last, ...(DATA.genreLast[genre] || [])];
+      if (alliterative) {
+        const matches = lastPool.filter((name) => normalizeName(name)[0] === normalizeName(first)[0]);
+        if (matches.length) lastPool = matches;
+      }
+      const last = randomItem(lastPool);
+      const middleValue = middle === 'initial' ? `${randomLetter()}.` : middle === 'name' ? randomItem(DATA.middle) : '';
+      return {
+        first,
+        middle: middleValue,
+        last,
+        full: [first, middleValue, last].filter(Boolean).join(' '),
+      };
+    }
+
+    function makeHandles(name) {
+      const first = slug(name.first);
+      const last = slug(name.last);
+      const year = randomInt(1978, 2006);
+      const suffix = randomInt(10, 98);
+      return [
+        `${first}${last}`,
+        `${first}_${last}`,
+        `${first}.${last}`,
+        `${first[0] || 'x'}${last}`,
+        `${first}${suffix}`,
+        `${first}_${year}`,
+      ];
+    }
+
+    function makeEmail(name) {
+      const handle = makeHandles(name)[randomInt(0, 2)];
+      return `${handle}@example.com`;
+    }
+
+    function makeBirthday(rangeName) {
+      const ranges = {
+        young: [18, 29],
+        middle: [30, 54],
+        senior: [55, 82],
+        adult: [18, 65],
+      };
+      const [min, max] = ranges[rangeName] || ranges.adult;
+      const age = randomInt(min, max);
+      const today = new Date();
+      const year = today.getFullYear() - age;
+      const month = randomInt(0, 11);
+      const day = randomInt(1, new Date(year, month + 1, 0).getDate());
+      const birthDate = new Date(year, month, day);
+      const adjustedAge = getAge(birthDate, today);
+      return {
+        date: `${String(month + 1).padStart(2, '0')}/${String(day).padStart(2, '0')}/${year}`,
+        age: adjustedAge,
+        zodiac: zodiac(month + 1, day),
+      };
+    }
+
+    function randomLocation(region) {
+      const pools = region === 'any'
+        ? Object.values(DATA.regions).flat()
+        : DATA.regions[region] || DATA.regions.south;
+      return randomItem(pools);
+    }
+
+    function makeAddress(location) {
+      const unit = randomInt(100, 999);
+      const streetNumber = randomInt(100, 9899);
+      const street = `${streetNumber} ${randomItem(DATA.streets)}`;
+      return {
+        street,
+        city: location.city,
+        state: location.state,
+        zip: location.zip,
+        full: `${street}, Apt ${unit}, ${location.city}, ${location.state} ${location.zip}`,
+      };
+    }
+
+    function makePhone(areaCode) {
+      return `(${areaCode}) 555-01${String(randomInt(0, 99)).padStart(2, '0')}`;
+    }
+
+    function purposeLabel(purpose) {
+      const labels = {
+        story: 'Story Character',
+        mockup: 'Product Mockup Persona',
+        privacy: 'Privacy-Safe Example',
+        qa: 'QA Persona',
+      };
+      return labels[purpose] || 'Fictional Persona';
+    }
+
+    function formatProfile(profile) {
+      return [
+        `${profile.type}: ${profile.name}`,
+        '',
+        ...Object.entries(profile)
+          .filter(([key]) => !['type', 'name'].includes(key))
+          .filter(([, value]) => value)
+          .map(([key, value]) => `${titleCase(key)}: ${value}`),
+        '',
+        `Generated by Pseudonym: Fictional Identity Creator: ${TOOL_URL}`,
+      ].join('\n');
+    }
+
+    function toCsv(records) {
+      if (!records.length) return '';
+      const headers = Object.keys(records[0]);
+      const rows = records.map((record) => headers.map((header) => csvCell(record[header])).join(','));
+      return [headers.join(','), ...rows].join('\n');
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? '');
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    function copyText(text, button) {
+      if (!text) return;
+      navigator.clipboard?.writeText(text).then(() => flashButton(button, 'Copied')).catch(() => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+        flashButton(button, 'Copied');
+      });
+    }
+
+    function flashButton(button, label) {
+      if (!button) return;
+      const original = button.textContent;
+      button.textContent = label;
+      button.classList.add('active');
+      setTimeout(() => {
+        button.textContent = original;
+        button.classList.remove('active');
+      }, 1200);
+    }
+
+    function randomItem(items) {
+      return items[cryptoInt(items.length)];
+    }
+
+    function randomInt(min, max) {
+      return min + cryptoInt(max - min + 1);
+    }
+
+    function cryptoInt(maxExclusive) {
+      if (maxExclusive <= 0) return 0;
+      const range = 0x100000000;
+      const limit = range - (range % maxExclusive);
+      const array = new Uint32Array(1);
+      do {
+        crypto.getRandomValues(array);
+      } while (array[0] >= limit);
+      return array[0] % maxExclusive;
+    }
+
+    function randomId() {
+      if (crypto.randomUUID) return crypto.randomUUID();
+      return `${Date.now()}-${cryptoInt(0x1000000).toString(16)}`;
+    }
+
+    function randomLetter() {
+      return String.fromCharCode(65 + cryptoInt(26));
+    }
+
+    function zodiac(month, day) {
+      const signs = [
+        ['Capricorn', 19], ['Aquarius', 18], ['Pisces', 20], ['Aries', 19],
+        ['Taurus', 20], ['Gemini', 20], ['Cancer', 22], ['Leo', 22],
+        ['Virgo', 22], ['Libra', 22], ['Scorpio', 21], ['Sagittarius', 21],
+        ['Capricorn', 31],
+      ];
+      return day <= signs[month - 1][1] ? signs[month - 1][0] : signs[month][0];
+    }
+
+    function getAge(birthDate, today) {
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const hasBirthdayPassed = today.getMonth() > birthDate.getMonth()
+        || (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+      if (!hasBirthdayPassed) age -= 1;
+      return age;
+    }
+
+    function slug(value) {
+      return normalizeName(value).replace(/[^a-z0-9]+/g, '');
+    }
+
+    function normalizeName(value) {
+      return String(value || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+    }
+
+    function titleCase(value) {
+      return String(value || '').replace(/[_-]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    }
+
+    function loadJson(key, fallback) {
+      try {
+        return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+      } catch {
+        return fallback;
+      }
+    }
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = value == null ? '' : String(value);
+      return div.innerHTML;
+    }
+
+    function escapeAttribute(value) {
+      return escapeHtml(value).replace(/"/g, '&quot;');
+    }
   </script>
 </body>
 </html>

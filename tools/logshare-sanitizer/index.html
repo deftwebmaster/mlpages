@@ -6,9 +6,11 @@
   <title>LogShare Sanitizer | Local Log Redaction Tool</title>
   <meta name="description" content="Sanitize logs, stack traces, headers, env dumps, and JSON payloads before sharing. Detects tokens, keys, emails, IPs, URLs, and connection strings locally.">
   <link rel="canonical" href="https://mattlivingston.com/tools/logshare-sanitizer/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="LogShare Sanitizer | Matt Livingston">
+  <meta property="og:description" content="Redact secrets, tokens, headers, URLs, emails, and IPs locally before sharing logs.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/logshare-sanitizer/">
+  <meta name="twitter:card" content="summary">
   <style>
     * {
       box-sizing: border-box;
@@ -17,32 +19,50 @@
     }
 
     :root {
-      --bg: #0a1020;
-      --panel: #111a2d;
-      --panel-2: #182338;
-      --panel-3: #22314b;
-      --input: #0d1628;
-      --border: #31435f;
-      --border-strong: #4b5f7d;
-      --text: #f1f5f9;
-      --text-soft: #cbd5e1;
-      --text-muted: #8b9bb1;
-      --accent: #38bdf8;
-      --good: #22c55e;
-      --warn: #f59e0b;
-      --bad: #f43f5e;
-      --purple: #a78bfa;
+      color-scheme: dark;
+      --bg: #08090d;
+      --panel: #151923;
+      --panel-2: #1d2330;
+      --panel-3: #242b3a;
+      --input: #0c0e14;
+      --border: rgba(248, 247, 255, 0.14);
+      --border-strong: rgba(248, 247, 255, 0.26);
+      --text: #f8f7ff;
+      --text-soft: #d3d6e4;
+      --text-muted: #8e95a6;
+      --accent: #2df8e6;
+      --good: #70ff9c;
+      --warn: #ffd166;
+      --bad: #ff4f7b;
+      --purple: #b86cff;
       --radius: 8px;
-      --shadow: rgba(0, 0, 0, 0.3);
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow: rgba(0, 0, 0, 0.34);
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --font-stack: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 82% 8%, rgba(45, 248, 230, 0.13), transparent 32rem),
+        radial-gradient(circle at 10% 2%, rgba(184, 108, 255, 0.18), transparent 30rem),
+        linear-gradient(135deg, #08090d 0%, #0f111a 48%, #081115 100%);
       color: var(--text);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--font-stack);
       line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      background-image:
+        linear-gradient(rgba(248, 247, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248, 247, 255, 0.08) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 72%);
     }
 
     button,
@@ -56,6 +76,8 @@
     }
 
     .page {
+      position: relative;
+      z-index: 1;
       max-width: 1260px;
       margin: 0 auto;
       padding: 28px 18px 54px;
@@ -66,14 +88,22 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      margin-bottom: 24px;
+      margin-bottom: 56px;
     }
 
     .back-link {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
+      font-weight: 800;
       transition: color 0.2s ease;
+    }
+
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--accent);
+      font-family: var(--mono);
     }
 
     .back-link:hover {
@@ -88,9 +118,9 @@
     }
 
     .pill {
-      color: #bae6fd;
-      background: rgba(56, 189, 248, 0.09);
-      border: 1px solid rgba(56, 189, 248, 0.32);
+      color: var(--good);
+      background: rgba(112, 255, 156, 0.1);
+      border: 1px solid rgba(112, 255, 156, 0.34);
       border-radius: 999px;
       padding: 4px 10px;
       font-size: 0.78rem;
@@ -99,37 +129,113 @@
 
     header {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
-      gap: 22px;
-      align-items: end;
-      margin-bottom: 18px;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.74fr);
+      gap: 36px;
+      align-items: center;
+      margin-bottom: 34px;
     }
 
     h1 {
-      font-size: clamp(2.15rem, 4.3vw, 4.8rem);
-      line-height: 0.95;
+      font-size: clamp(3.1rem, 8vw, 6.9rem);
+      line-height: 0.9;
       letter-spacing: 0;
-      margin-bottom: 12px;
+      margin-bottom: 18px;
     }
 
     .subtitle {
       color: var(--text-soft);
-      max-width: 690px;
-      font-size: 1.02rem;
+      max-width: 760px;
+      font-size: clamp(1.05rem, 2.4vw, 1.28rem);
     }
 
     .notice {
-      background: rgba(245, 158, 11, 0.11);
-      border: 1px solid rgba(245, 158, 11, 0.36);
-      color: #fde68a;
+      background:
+        linear-gradient(135deg, rgba(184, 108, 255, 0.18), transparent 58%),
+        rgba(21, 25, 35, 0.86);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
       border-radius: var(--radius);
-      padding: 15px 16px;
+      padding: 20px;
       font-size: 0.9rem;
+      box-shadow: 0 22px 70px var(--shadow);
+    }
+
+    .notice strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .proof-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 28px;
+      max-width: 840px;
+    }
+
+    .proof-row div {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(21, 25, 35, 0.74);
+      padding: 13px;
+    }
+
+    .proof-row strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .proof-row span {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .safety-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .safety-list span {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(12, 14, 20, 0.72);
+      color: var(--text-soft);
+    }
+
+    .safety-list b {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.78rem;
     }
 
     .toolbar {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto auto;
+      grid-template-columns: minmax(0, 1fr) auto auto auto auto;
       gap: 10px;
       margin-bottom: 16px;
     }
@@ -168,15 +274,15 @@
       align-items: center;
       justify-content: center;
       background: var(--accent);
-      color: #03111f;
-      font-weight: 800;
+      color: #08090d;
+      font-weight: 850;
       cursor: pointer;
       text-decoration: none;
       transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
     }
 
     .btn:hover {
-      background: #7dd3fc;
+      background: #78fff1;
       transform: translateY(-1px);
       text-decoration: none;
     }
@@ -189,6 +295,15 @@
 
     .btn.secondary:hover {
       background: #2a3a57;
+    }
+
+    .btn.violet {
+      background: var(--purple);
+      color: #fff;
+    }
+
+    .btn.violet:hover {
+      background: #c98bff;
     }
 
     .btn:disabled {
@@ -413,6 +528,17 @@
       align-items: start;
       padding: 13px 16px;
       border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background-color 0.16s ease, border-color 0.16s ease;
+    }
+
+    .finding:hover,
+    .finding.selected {
+      background: rgba(45, 248, 230, 0.06);
+    }
+
+    .finding.selected {
+      border-left: 3px solid var(--accent);
     }
 
     .finding:last-child {
@@ -485,6 +611,12 @@
       margin-bottom: 10px;
     }
 
+    .guide p {
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+    }
+
     .guide-list {
       display: flex;
       flex-wrap: wrap;
@@ -499,6 +631,27 @@
       font-family: var(--mono);
       font-size: 0.72rem;
       padding: 5px 8px;
+    }
+
+    .share-checklist {
+      display: grid;
+      gap: 9px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .share-checklist span {
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr);
+      gap: 9px;
+      color: var(--text-soft);
+      font-size: 0.84rem;
+    }
+
+    .share-checklist b {
+      color: var(--accent);
+      font-family: var(--mono);
     }
 
     @media (max-width: 980px) {
@@ -523,6 +676,10 @@
       .pill-row {
         justify-content: flex-start;
       }
+
+      .proof-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 620px) {
@@ -533,6 +690,11 @@
       .topbar {
         flex-direction: column;
         align-items: flex-start;
+        margin-bottom: 34px;
+      }
+
+      h1 {
+        font-size: clamp(3.2rem, 16vw, 4.7rem);
       }
 
       .summary-grid {
@@ -553,6 +715,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
   <div class="page">
@@ -567,16 +731,32 @@
 
     <header>
       <div>
-        <h1>LogShare Sanitizer</h1>
+        <p class="eyebrow">Share-safe log console</p>
+        <h1>Redact the scary parts before you paste.</h1>
         <p class="subtitle">Clean logs, stack traces, request headers, JSON payloads, and env dumps before sharing them in issues, chats, tickets, or support threads.</p>
+        <div class="hero-actions">
+          <a class="btn violet" href="#sanitizer">Start sanitizing</a>
+          <button class="btn secondary" id="heroDemoBtn" type="button">Try demo</button>
+        </div>
+        <div class="proof-row" aria-label="Sanitizer guarantees">
+          <div><strong>Local</strong><span>Text never leaves this page.</span></div>
+          <div><strong>Stable</strong><span>Repeated secrets get matching placeholders.</span></div>
+          <div><strong>Reviewable</strong><span>Every replacement gets a finding.</span></div>
+        </div>
       </div>
       <div class="notice">
+        <strong>Share checklist</strong>
         This catches common secret patterns, but it is still a safety net. Review the output before posting anything public.
+        <div class="safety-list" aria-label="Share checklist">
+          <span>Tokens and private keys <b>BLOCK</b></span>
+          <span>Emails, IPs, URLs <b>REVIEW</b></span>
+          <span>Stack traces and context <b>KEEP</b></span>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="toolbar" aria-label="Sanitizer controls">
+      <section class="toolbar" id="sanitizer" aria-label="Sanitizer controls">
         <div class="options">
           <label class="check">
             <input id="redactEmails" type="checkbox" checked>
@@ -593,6 +773,7 @@
         </div>
         <button class="btn secondary" id="demoBtn" type="button">Load demo</button>
         <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+        <button class="btn secondary" id="reportBtn" type="button" disabled>Export report</button>
         <button class="btn" id="copyBtn" type="button" disabled>Copy safe log</button>
       </section>
 
@@ -668,20 +849,29 @@
 
         <aside class="panel guide">
           <h2>Detection coverage</h2>
+          <p>Use the chips as a coverage map, not a promise. The safest workflow is sanitize, review findings, then copy.</p>
           <div class="guide-list" aria-label="Detected pattern types">
             <span class="token-chip">Bearer tokens</span>
             <span class="token-chip">JWTs</span>
             <span class="token-chip">OpenAI keys</span>
+            <span class="token-chip">Anthropic keys</span>
             <span class="token-chip">GitHub tokens</span>
+            <span class="token-chip">GitLab tokens</span>
             <span class="token-chip">AWS keys</span>
             <span class="token-chip">Stripe keys</span>
             <span class="token-chip">Slack tokens</span>
+            <span class="token-chip">Cloudflare tokens</span>
             <span class="token-chip">Private keys</span>
             <span class="token-chip">Database URLs</span>
             <span class="token-chip">.env secrets</span>
             <span class="token-chip">Emails</span>
             <span class="token-chip">IP addresses</span>
             <span class="token-chip">Sensitive URL params</span>
+          </div>
+          <div class="share-checklist" aria-label="Review checklist">
+            <span><b>1</b> Scan the original text.</span>
+            <span><b>2</b> Review each high-risk finding.</span>
+            <span><b>3</b> Copy the safe log or export a report.</span>
           </div>
         </aside>
       </section>
@@ -694,8 +884,10 @@
       output: document.getElementById('outputText'),
       fileInput: document.getElementById('fileInput'),
       demoBtn: document.getElementById('demoBtn'),
+      heroDemoBtn: document.getElementById('heroDemoBtn'),
       clearBtn: document.getElementById('clearBtn'),
       copyBtn: document.getElementById('copyBtn'),
+      reportBtn: document.getElementById('reportBtn'),
       exportBtn: document.getElementById('exportBtn'),
       redactEmails: document.getElementById('redactEmails'),
       redactIps: document.getElementById('redactIps'),
@@ -714,7 +906,8 @@
     const state = {
       redacted: '',
       findings: [],
-      placeholderMap: new Map()
+      placeholderMap: new Map(),
+      selectedFinding: null
     };
 
     const severityWeight = { high: 22, medium: 10, low: 4 };
@@ -742,11 +935,25 @@
         pattern: /\bsk-(?:proj-)?[A-Za-z0-9_-]{24,}\b/g
       },
       {
+        id: 'ANTHROPIC_KEY',
+        label: 'Anthropic API key',
+        severity: 'high',
+        placeholder: 'ANTHROPIC_KEY',
+        pattern: /\bsk-ant-[A-Za-z0-9_-]{24,}\b/g
+      },
+      {
         id: 'GITHUB_TOKEN',
         label: 'GitHub token',
         severity: 'high',
         placeholder: 'GITHUB_TOKEN',
         pattern: /\b(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{30,}\b/g
+      },
+      {
+        id: 'GITLAB_TOKEN',
+        label: 'GitLab token',
+        severity: 'high',
+        placeholder: 'GITLAB_TOKEN',
+        pattern: /\bglpat-[A-Za-z0-9_-]{20,}\b/g
       },
       {
         id: 'AWS_ACCESS_KEY',
@@ -775,6 +982,13 @@
         severity: 'high',
         placeholder: 'SLACK_WEBHOOK',
         pattern: /https:\/\/hooks\.slack\.com\/services\/[A-Za-z0-9/_-]+/g
+      },
+      {
+        id: 'CLOUDFLARE_TOKEN',
+        label: 'Cloudflare token',
+        severity: 'high',
+        placeholder: 'CLOUDFLARE_TOKEN',
+        pattern: /\b(?:cf-|cloudflare[_-]?token\s*[:=]\s*)[A-Za-z0-9_-]{24,}\b/gi
       },
       {
         id: 'JWT',
@@ -866,6 +1080,7 @@ callback=https://example.com/callback?token=abc123supersecret&user=42
     function scan() {
       const source = els.input.value;
       state.placeholderMap = new Map();
+      state.selectedFinding = null;
       const rawFindings = [];
 
       getEnabledRules().forEach((rule, ruleIndex) => {
@@ -950,6 +1165,7 @@ callback=https://example.com/callback?token=abc123supersecret&user=42
       const hasOutput = state.redacted.length > 0;
       els.copyBtn.disabled = !hasOutput;
       els.exportBtn.disabled = !hasOutput;
+      els.reportBtn.disabled = !els.input.value;
     }
 
     function renderOutput() {
@@ -982,8 +1198,8 @@ callback=https://example.com/callback?token=abc123supersecret&user=42
         return;
       }
       els.findingsSummary.textContent = `${state.findings.length} finding${state.findings.length === 1 ? '' : 's'} replaced.`;
-      els.findingsList.innerHTML = state.findings.map(finding => `
-        <article class="finding">
+      els.findingsList.innerHTML = state.findings.map((finding, index) => `
+        <article class="finding ${state.selectedFinding === index ? 'selected' : ''}" data-finding-index="${index}">
           <div><span class="severity ${finding.severity}">${finding.severity}</span></div>
           <div>
             <h3>${escapeHtml(finding.label)}</h3>
@@ -1038,6 +1254,59 @@ callback=https://example.com/callback?token=abc123supersecret&user=42
       }, 1200);
     }
 
+    function createShareReport() {
+      const high = state.findings.filter(item => item.severity === 'high').length;
+      const medium = state.findings.filter(item => item.severity === 'medium').length;
+      const low = state.findings.filter(item => item.severity === 'low').length;
+      const lines = [
+        '# LogShare Sanitizer Report',
+        '',
+        `Generated: ${new Date().toLocaleString()}`,
+        '',
+        '## Summary',
+        '',
+        `- Findings replaced: ${state.findings.length}`,
+        `- High risk: ${high}`,
+        `- Medium risk: ${medium}`,
+        `- Low risk: ${low}`,
+        `- Lines scanned: ${els.input.value ? els.input.value.split('\n').length : 0}`,
+        '',
+        '## Findings',
+        ''
+      ];
+
+      if (!state.findings.length) {
+        lines.push('No configured secret patterns were found. Review manually before sharing.');
+      } else {
+        state.findings.forEach(finding => {
+          lines.push(`- [${finding.severity.toUpperCase()}] line ${finding.line}: ${finding.label} -> ${finding.placeholder}`);
+        });
+      }
+
+      lines.push('');
+      lines.push('## Sanitized Log');
+      lines.push('');
+      lines.push('```text');
+      lines.push(state.redacted || '');
+      lines.push('```');
+      lines.push('');
+      lines.push('Generated locally by LogShare Sanitizer: https://mattlivingston.com/tools/logshare-sanitizer/');
+      return lines.join('\n');
+    }
+
+    function exportReport() {
+      if (!els.input.value) return;
+      const blob = new Blob([createShareReport()], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'logshare-sanitizer-report.md';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
     function exportOutput() {
       const blob = new Blob([state.redacted], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
@@ -1055,20 +1324,34 @@ callback=https://example.com/callback?token=abc123supersecret&user=42
       state.redacted = '';
       state.findings = [];
       state.placeholderMap = new Map();
+      state.selectedFinding = null;
       render();
+    }
+
+    function loadDemo() {
+      els.input.value = demoLog;
+      scan();
     }
 
     els.input.addEventListener('input', scan);
     els.redactEmails.addEventListener('change', scan);
     els.redactIps.addEventListener('change', scan);
     els.redactUrls.addEventListener('change', scan);
-    els.demoBtn.addEventListener('click', () => {
-      els.input.value = demoLog;
-      scan();
+    els.demoBtn.addEventListener('click', loadDemo);
+    els.heroDemoBtn.addEventListener('click', () => {
+      loadDemo();
+      document.getElementById('sanitizer').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     els.clearBtn.addEventListener('click', clearAll);
     els.copyBtn.addEventListener('click', copyOutput);
+    els.reportBtn.addEventListener('click', exportReport);
     els.exportBtn.addEventListener('click', exportOutput);
+    els.findingsList.addEventListener('click', event => {
+      const row = event.target.closest('.finding[data-finding-index]');
+      if (!row) return;
+      state.selectedFinding = Number(row.dataset.findingIndex);
+      render();
+    });
     els.fileInput.addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;

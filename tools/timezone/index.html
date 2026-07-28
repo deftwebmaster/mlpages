@@ -3,1296 +3,1377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TimeSync - Timezone Overlap Finder</title>
-  <meta name="description" content="Find the best meeting times across timezones. Free tool for remote teams.">
-  <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+  <title>Time Zone Call Planner | Matt Livingston</title>
+  <meta name="description" content="Mobile-first call planner for finding business-hour overlap across international time zones.">
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-input: #475569;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.3);
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.3);
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border: #475569;
-      --radius: 12px;
-      --radius-sm: 8px;
+      color-scheme: dark;
+      --bg: #07090e;
+      --panel: #121721;
+      --panel-2: #192231;
+      --panel-3: #223044;
+      --line: rgba(247, 250, 255, 0.14);
+      --line-strong: rgba(247, 250, 255, 0.24);
+      --text: #f7faff;
+      --muted: #b8c2d2;
+      --faint: #7f8b9c;
+      --cyan: #2ef6e2;
+      --violet: #b36cff;
+      --green: #55e996;
+      --amber: #f4c95d;
+      --rose: #ff647f;
+      --blue: #66a6ff;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
     }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      line-height: 1.6;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      margin: 0;
       min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(247, 250, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(247, 250, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at 12% 4%, rgba(179, 108, 255, 0.18), transparent 30rem),
+        radial-gradient(circle at 88% 8%, rgba(46, 246, 226, 0.14), transparent 28rem),
+        linear-gradient(135deg, #07090e 0%, #0c121a 52%, #061214 100%);
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 70% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
+    button,
+    input,
+    select {
+      font: inherit;
     }
 
-    .container {
-      max-width: 1200px;
+    button {
+      color: inherit;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .app {
+      width: min(1120px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-      position: relative;
-      z-index: 1;
+      padding: 18px 0 72px;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-      padding: 2rem 0;
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%);
-      border-radius: var(--radius);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 20px var(--accent-glow);
-    }
-
-    header h1 {
-      font-size: 2.25rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    header .tagline {
-      color: var(--text-secondary);
-      font-size: 1.1rem;
-      margin-top: 0.25rem;
-    }
-
-    .trust-badges {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin-top: 1.5rem;
-      flex-wrap: wrap;
-    }
-
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .trust-badge span {
-      color: var(--accent);
-    }
-
-    /* Controls Bar */
-    .controls-bar {
+    .top-nav {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 34px;
     }
 
-    .controls-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .toggle-switch {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--text-secondary);
+    .back-link,
+    .creator-link {
+      color: var(--faint);
       font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .toggle-switch input {
-      width: 40px;
-      height: 22px;
-      appearance: none;
-      background: var(--bg-card);
-      border-radius: 11px;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .toggle-switch input::before {
-      content: '';
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      background: var(--text-muted);
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: all 0.3s;
-    }
-
-    .toggle-switch input:checked {
-      background: var(--accent);
-    }
-
-    .toggle-switch input:checked::before {
-      transform: translateX(18px);
-      background: white;
-    }
-
-    .current-time {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      color: var(--text-secondary);
-    }
-
-    .current-time .time {
-      color: var(--accent);
-      font-weight: 600;
-      font-family: 'SF Mono', 'Monaco', monospace;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.6rem 1.25rem;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px var(--accent-glow);
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-input);
-      border-color: var(--accent);
-    }
-
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.2);
-      color: var(--danger);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-
-    .btn-danger:hover {
-      background: rgba(239, 68, 68, 0.3);
-    }
-
-    /* Sections */
-    section {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.25rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-title {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-    }
-
-    .section-icon {
-      font-size: 1.25rem;
-    }
-
-    /* Person Cards */
-    .person-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .person-card {
-      display: grid;
-      grid-template-columns: auto 1fr 200px auto auto;
-      gap: 1rem;
-      align-items: center;
-      padding: 1rem 1.25rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      transition: all 0.2s;
-    }
-
-    .person-card:hover {
-      border-color: var(--accent);
-    }
-
-    .person-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .person-card input,
-    .person-card select {
-      padding: 0.6rem 0.875rem;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-
-    .person-card input:focus,
-    .person-card select:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
-
-    .person-card input[type="text"] {
-      min-width: 0;
-    }
-
-    .person-card select {
-      min-width: 0;
-    }
-
-    .time-inputs {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-
-    .time-inputs span {
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    .time-inputs input[type="time"] {
-      width: 110px;
-      padding: 0.6rem;
-    }
-
-    .btn-delete {
-      flex-shrink: 0;
-    }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: var(--text-muted);
-    }
-
-    .empty-state-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    /* Timeline */
-    .timeline-container {
-      position: relative;
-      margin-top: 1rem;
-    }
-
-    .timeline-header {
-      display: flex;
-      position: relative;
-      height: 32px;
-      margin-bottom: 0.75rem;
-      margin-left: 180px;
-    }
-
-    .timeline-tick {
-      position: absolute;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      transform: translateX(-50%);
-      font-family: 'SF Mono', 'Monaco', monospace;
-    }
-
-    .timeline-tick::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      width: 1px;
-      height: 6px;
-      background: var(--border);
-    }
-
-    .timeline-rows {
-      position: relative;
-    }
-
-    .timeline-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .timeline-label {
-      width: 170px;
-      padding-right: 1rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      text-align: right;
-      flex-shrink: 0;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .timeline-label strong {
-      color: var(--text-primary);
-    }
-
-    .timeline-label small {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .timeline-track {
-      flex: 1;
-      height: 36px;
-      background: var(--bg-card);
-      border-radius: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .timeline-bar {
-      position: absolute;
-      height: 100%;
-      border-radius: 4px;
-      opacity: 0.85;
-      transition: opacity 0.2s, transform 0.2s;
-      cursor: pointer;
-    }
-
-    .timeline-bar:hover {
-      opacity: 1;
-      transform: scaleY(1.1);
-      z-index: 10;
-    }
-
-    .timeline-bar-inner {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
-    }
-
-    .timeline-row.overlap-row .timeline-track {
-      height: 44px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    .timeline-bar.overlap {
-      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-      box-shadow: 0 0 20px var(--success-glow);
-      animation: pulse-glow 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 10px var(--success-glow); }
-      50% { box-shadow: 0 0 25px var(--success-glow), 0 0 40px rgba(16, 185, 129, 0.2); }
-    }
-
-    .timeline-now {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: var(--danger);
-      z-index: 20;
-      pointer-events: none;
-    }
-
-    .timeline-now::before {
-      content: 'NOW';
-      position: absolute;
-      top: -20px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.65rem;
-      font-weight: 700;
-      color: var(--danger);
-      letter-spacing: 0.05em;
-    }
-
-    /* Suggestions */
-    .suggestions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-
-    .suggestion-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1.25rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .suggestion-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--success), var(--accent));
-    }
-
-    .suggestion-card.best::before {
-      height: 4px;
-      background: linear-gradient(90deg, var(--success), #10b981);
-    }
-
-    .suggestion-card.best {
-      border-color: var(--success);
-    }
-
-    .suggestion-badge {
-      display: inline-block;
-      padding: 0.25rem 0.5rem;
-      background: rgba(16, 185, 129, 0.2);
-      color: var(--success);
-      font-size: 0.7rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-radius: 4px;
-      margin-bottom: 0.75rem;
-    }
-
-    .suggestion-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 0.75rem;
-    }
-
-    .suggestion-times {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .suggestion-time {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-    }
-
-    .suggestion-time .time {
-      font-weight: 600;
-      color: var(--accent);
-      font-family: 'SF Mono', 'Monaco', monospace;
-      min-width: 70px;
-    }
-
-    .suggestion-time .name {
-      color: var(--text-secondary);
-    }
-
-    .suggestion-duration {
-      margin-top: 0.75rem;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .no-overlap {
-      text-align: center;
-      padding: 2rem;
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.3);
-      border-radius: var(--radius-sm);
-    }
-
-    .no-overlap-icon {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .no-overlap h3 {
-      color: var(--warning);
-      margin-bottom: 0.5rem;
-    }
-
-    .no-overlap p {
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 1rem;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    footer a {
-      color: var(--accent);
+      font-weight: 850;
       text-decoration: none;
     }
 
-    footer a:hover {
-      text-decoration: underline;
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    /* Tooltip */
-    .tooltip {
-      position: fixed;
-      background: var(--bg-primary);
-      border: 1px solid var(--border);
-      color: var(--text-primary);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      pointer-events: none;
-      z-index: 1000;
+    .hero {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--violet);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 780px;
+      margin: 0;
+      font-size: clamp(3.2rem, 16vw, 6.4rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+    }
+
+    .hero-text {
+      max-width: 860px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 3.8vw, 1.35rem);
+      line-height: 1.45;
+    }
+
+    .hero-actions,
+    .row-actions,
+    .result-actions,
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .hero-actions {
+      margin-top: 22px;
+    }
+
+    .btn {
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      padding: 0.72rem 1rem;
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(46, 246, 226, 0.58);
+    }
+
+    .btn.primary {
+      color: #06100f;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, rgba(46, 246, 226, 0.15), rgba(179, 108, 255, 0.18));
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn.danger {
+      color: #ffc0cc;
+    }
+
+    .btn.full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card,
+    .call-card,
+    .planner-panel,
+    .person-card,
+    .timezone-card,
+    .window-card,
+    .timeline-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(18, 23, 33, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .call-card {
+      padding: 18px;
+      margin: 20px 0 16px;
+      background:
+        linear-gradient(135deg, rgba(46, 246, 226, 0.12), rgba(179, 108, 255, 0.12)),
+        rgba(18, 23, 33, 0.82);
+    }
+
+    .call-card.empty {
+      border-color: rgba(244, 201, 93, 0.44);
+      background: rgba(244, 201, 93, 0.08);
+    }
+
+    .call-kicker {
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .call-time {
+      display: block;
+      margin-top: 10px;
+      font-size: clamp(2rem, 9vw, 4.3rem);
+      font-weight: 950;
+      line-height: 0.95;
+    }
+
+    .call-subtitle {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .planner-panel {
+      padding: 16px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      line-height: 1.05;
+    }
+
+    .panel-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .settings-grid,
+    .add-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 850;
+    }
+
+    input,
+    select {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.72rem 0.82rem;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #070a0f;
+    }
+
+    input:focus,
+    select:focus {
+      outline: 2px solid rgba(46, 246, 226, 0.25);
+      border-color: rgba(46, 246, 226, 0.7);
+    }
+
+    .preset-row {
+      margin: 14px 0 4px;
+    }
+
+    .preset-chip {
+      min-height: 38px;
+      padding: 0.5rem 0.72rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .preset-chip:hover {
+      color: var(--text);
+      border-color: var(--cyan);
+    }
+
+    .people-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .person-card {
+      padding: 12px;
+      box-shadow: none;
+    }
+
+    .person-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .person-name {
+      font-size: 1.06rem;
+      font-weight: 950;
+    }
+
+    .person-meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .person-local {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .local-pill {
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .local-pill span {
+      display: block;
+      color: var(--faint);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .local-pill strong {
+      display: block;
+      margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 1rem;
+    }
+
+    .timezone-grid,
+    .windows-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .timezone-card,
+    .window-card,
+    .timeline-card {
+      padding: 14px;
+      box-shadow: none;
+    }
+
+    .window-card.best {
+      border-color: rgba(85, 233, 150, 0.62);
+      background: linear-gradient(135deg, rgba(85, 233, 150, 0.12), rgba(46, 246, 226, 0.08));
+    }
+
+    .window-card h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .time-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .time-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .time-line:last-child {
+      border-bottom: 0;
+    }
+
+    .time-line span {
+      color: var(--muted);
+    }
+
+    .time-line strong {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .status-good { color: var(--green); }
+    .status-warn { color: var(--amber); }
+    .status-bad { color: var(--rose); }
+
+    .timeline-card {
+      overflow: hidden;
+    }
+
+    .timeline-scroll {
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .timeline {
+      min-width: 760px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .timeline-hours,
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 132px repeat(24, 1fr);
+      gap: 2px;
+      align-items: center;
+    }
+
+    .timeline-hours span {
+      color: var(--faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.68rem;
+      text-align: center;
+    }
+
+    .timeline-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
 
-    /* Responsive */
-    @media (max-width: 900px) {
-      .person-card {
-        grid-template-columns: auto 1fr auto;
-        gap: 0.75rem;
+    .hour-cell {
+      height: 22px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .hour-cell.work {
+      background: linear-gradient(135deg, rgba(102, 166, 255, 0.6), rgba(179, 108, 255, 0.48));
+    }
+
+    .hour-cell.overlap {
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+    }
+
+    .copy-box {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(0, 0, 0, 0.18);
+      color: var(--muted);
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .footer {
+      margin-top: 40px;
+      padding: 18px 0;
+      color: var(--faint);
+      text-align: center;
+      font-size: 0.86rem;
+    }
+
+    .footer a {
+      color: var(--violet);
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 820px) {
+      .app {
+        width: min(1120px, calc(100% - 40px));
+        padding-top: 28px;
       }
 
-      .person-card select {
+      .top-nav {
+        margin-bottom: 56px;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: end;
+        gap: 34px;
+      }
+
+      .call-card {
+        padding: 22px;
+      }
+
+      .dashboard {
+        grid-template-columns: 390px minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .planner-stack {
+        position: sticky;
+        top: 20px;
+        display: grid;
+        gap: 16px;
+      }
+
+      .settings-grid,
+      .add-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .add-grid .wide {
         grid-column: 1 / -1;
-        order: 10;
       }
 
-      .time-inputs {
-        grid-column: 1 / -2;
-        order: 11;
+      .timezone-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .time-inputs input[type="time"] {
-        width: 100px;
+      .windows-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
-      .btn-delete {
-        grid-row: 1;
-        grid-column: 3;
-      }
-
-      .timeline-header {
-        margin-left: 0;
-      }
-
-      .timeline-label {
-        width: 100%;
-        text-align: left;
-        padding: 0 0 0.25rem 0;
-        position: static;
-      }
-
-      .timeline-row {
-        flex-direction: column;
-        align-items: stretch;
+      .window-card.best {
+        grid-column: 1 / -1;
       }
     }
 
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
+    @media (max-width: 520px) {
+      .hero-actions .btn,
+      .result-actions .btn,
+      .row-actions .btn {
+        width: 100%;
       }
 
-      header h1 {
-        font-size: 1.75rem;
-      }
-
-      .controls-bar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .controls-left {
-        justify-content: center;
-      }
-
-      .trust-badges {
-        gap: 1rem;
-      }
-
-      .suggestions-grid {
+      .person-local {
         grid-template-columns: 1fr;
       }
     }
-
-    /* Color palette for person bars */
-    .color-0 { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
-    .color-1 { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
-    .color-2 { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
-    .color-3 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-    .color-4 { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
-    .color-5 { background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%); }
-    .color-6 { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
-    .color-7 { background: linear-gradient(135deg, #84cc16 0%, #65a30d 100%); }
-
-    .dot-0 { background: #3b82f6; }
-    .dot-1 { background: #8b5cf6; }
-    .dot-2 { background: #ec4899; }
-    .dot-3 { background: #f59e0b; }
-    .dot-4 { background: #14b8a6; }
-    .dot-5 { background: #f43f5e; }
-    .dot-6 { background: #06b6d4; }
-    .dot-7 { background: #84cc16; }
-
-    /* Hidden */
-    .hidden { display: none !important; }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">🌍</div>
-        <h1>TimeSync</h1>
+  <div class="app">
+    <nav class="top-nav" aria-label="Tool navigation">
+      <a class="back-link" href="../">Tools</a>
+      <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Conference Call Planner</p>
+        <h1>Time Zone Call Planner</h1>
+        <p class="hero-text">Find the cleanest business-hour overlap for people around the world, then copy a polished call proposal with everyone’s local time.</p>
+        <div class="hero-actions">
+          <button class="btn primary" type="button" data-scroll="#best-call">Find Best Time</button>
+          <button class="btn secondary" type="button" id="copyPlanTop">Copy Call Plan</button>
+        </div>
       </div>
-      <p class="tagline">Find the perfect meeting time across timezones</p>
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> 100% Private</div>
-        <div class="trust-badge"><span>🔗</span> Shareable Links</div>
-        <div class="trust-badge"><span>⚡</span> Instant Results</div>
-      </div>
+      <aside class="card call-card" aria-label="Tool promise">
+        <span class="call-kicker">Built for real calls</span>
+        <p class="call-subtitle">Fast on a phone, readable in a cab, and clear enough to send directly to clients, vendors, or regional teams.</p>
+      </aside>
     </header>
 
-    <div class="controls-bar">
-      <div class="controls-left">
-        <label class="toggle-switch">
-          <input type="checkbox" id="toggle24h" checked>
-          <span>24-hour time</span>
-        </label>
-        <div class="current-time">
-          <span>🕐</span>
-          <span>Your time:</span>
-          <span class="time" id="currentTime">--:--</span>
-        </div>
+    <section class="call-card" id="best-call" aria-live="polite"></section>
+
+    <main class="dashboard">
+      <div class="planner-stack">
+        <section class="planner-panel" aria-label="Call settings">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Call Details</p>
+              <h2>Set the meeting</h2>
+              <p>Choose a date, duration, and time format.</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="field">
+              <label for="meetingTitle">Meeting Name</label>
+              <input id="meetingTitle" type="text" value="International conference call">
+            </div>
+            <div class="field">
+              <label for="meetingDate">Call Date</label>
+              <input id="meetingDate" type="date">
+            </div>
+            <div class="field">
+              <label for="meetingDuration">Duration</label>
+              <select id="meetingDuration">
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60" selected>60 minutes</option>
+                <option value="90">90 minutes</option>
+                <option value="120">2 hours</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="timeFormat">Time Format</label>
+              <select id="timeFormat">
+                <option value="12" selected>12-hour</option>
+                <option value="24">24-hour</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="planner-panel" aria-label="Add contact">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">People</p>
+              <h2>Add a caller</h2>
+              <p>Business hours are local to each person.</p>
+            </div>
+          </div>
+          <div class="add-grid">
+            <div class="field">
+              <label for="personName">Name</label>
+              <input id="personName" type="text" placeholder="Client, vendor, office">
+            </div>
+            <div class="field">
+              <label for="personZone">Location</label>
+              <select id="personZone"></select>
+            </div>
+            <div class="field">
+              <label for="workStart">Starts Work</label>
+              <input id="workStart" type="time" value="09:00">
+            </div>
+            <div class="field">
+              <label for="workEnd">Ends Work</label>
+              <input id="workEnd" type="time" value="17:00">
+            </div>
+            <button class="btn primary full wide" type="button" id="addPerson">Add Person</button>
+          </div>
+
+          <div class="preset-row" aria-label="Quick add presets">
+            <button class="preset-chip" type="button" data-preset="New York">New York</button>
+            <button class="preset-chip" type="button" data-preset="London">London</button>
+            <button class="preset-chip" type="button" data-preset="Berlin">Berlin</button>
+            <button class="preset-chip" type="button" data-preset="Dubai">Dubai</button>
+            <button class="preset-chip" type="button" data-preset="Singapore">Singapore</button>
+            <button class="preset-chip" type="button" data-preset="Tokyo">Tokyo</button>
+          </div>
+        </section>
       </div>
-      <div class="controls-right">
-        <button class="btn btn-secondary" id="shareBtn">
-          <span>📋</span> Copy Link
-        </button>
+
+      <div class="results-stack">
+        <section class="planner-panel" aria-label="Callers">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Roster</p>
+              <h2>Callers and local times</h2>
+              <p>Current local time and business-day status for each person.</p>
+            </div>
+            <div class="row-actions">
+              <button class="btn secondary" type="button" id="saveGroup">Save Group</button>
+              <button class="btn ghost" type="button" id="copyLink">Copy Link</button>
+            </div>
+          </div>
+          <div id="peopleList" class="people-list"></div>
+        </section>
+
+        <section class="planner-panel" aria-label="Suggested times">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Best Windows</p>
+              <h2>Suggested call times</h2>
+              <p>Ranked by overlap length and how close the call is to the middle of everyone’s workday.</p>
+            </div>
+          </div>
+          <div id="windows" class="windows-grid"></div>
+        </section>
+
+        <section class="planner-panel" aria-label="Time zone board">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Board View</p>
+              <h2>At-a-glance time zones</h2>
+              <p>Useful when someone proposes a time and you need to sanity-check it quickly.</p>
+            </div>
+          </div>
+          <div id="zoneBoard" class="timezone-grid"></div>
+        </section>
+
+        <section class="timeline-card" aria-label="Business-hour timeline">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Timeline</p>
+              <h2>Working-hour overlap</h2>
+              <p>Timeline shown in your local time. Green blocks are shared call windows.</p>
+            </div>
+          </div>
+          <div class="timeline-scroll">
+            <div id="timeline" class="timeline"></div>
+          </div>
+        </section>
+
+        <section class="planner-panel" aria-label="Saved groups">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Frequent Calls</p>
+              <h2>Saved groups</h2>
+              <p>Stored only in this browser for regular conference calls.</p>
+            </div>
+            <button class="btn ghost danger" type="button" id="clearSaved">Clear</button>
+          </div>
+          <div id="savedGroups" class="people-list"></div>
+        </section>
+
+        <section class="planner-panel" aria-label="Copyable plan">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Send It</p>
+              <h2>Copy-ready call proposal</h2>
+              <p>Paste this into email, text, Slack, or a calendar invite.</p>
+            </div>
+            <div class="result-actions">
+              <button class="btn primary" type="button" id="copyPlan">Copy Plan</button>
+              <button class="btn secondary" type="button" id="downloadIcs">Download .ics</button>
+            </div>
+          </div>
+          <div id="copyBox" class="copy-box"></div>
+        </section>
       </div>
-    </div>
-
-    <main>
-      <section id="people-section">
-        <div class="section-header">
-          <div class="section-title">
-            <span class="section-icon">👥</span>
-            <span>Team Members</span>
-          </div>
-          <button class="btn btn-primary" id="addPersonBtn">
-            <span>+</span> Add Person
-          </button>
-        </div>
-        <div id="people-list" class="person-list"></div>
-      </section>
-
-      <section id="timeline-section">
-        <div class="section-header">
-          <div class="section-title">
-            <span class="section-icon">📊</span>
-            <span>Working Hours Timeline</span>
-          </div>
-          <span style="font-size: 0.85rem; color: var(--text-muted);">Times shown in UTC</span>
-        </div>
-        <div id="timeline-container" class="timeline-container"></div>
-      </section>
-
-      <section id="suggestions-section">
-        <div class="section-header">
-          <div class="section-title">
-            <span class="section-icon">✨</span>
-            <span>Best Meeting Times</span>
-          </div>
-        </div>
-        <div id="suggestions"></div>
-      </section>
     </main>
 
-    <footer>
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    <footer class="footer">
+      Built by <a href="https://mattlivingston.com">Matt Livingston</a> · Local-only timezone planning · Uses your browser's timezone database.
     </footer>
   </div>
 
-  <div id="tooltip" class="tooltip hidden"></div>
-
   <script>
-    const { DateTime } = luxon;
+    const STORAGE_KEY = 'timezone-call-planner-groups';
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-    // State
-    const state = {
-      use24h: true,
-      anchorDate: DateTime.now().plus({ days: 1 }).startOf('day'),
-      people: []
-    };
-
-    // Extended timezone list with friendly names
-    const timezones = [
-      { id: 'Pacific/Auckland', label: 'Auckland (NZST)', offset: '+12:00' },
-      { id: 'Australia/Sydney', label: 'Sydney (AEST)', offset: '+10:00' },
-      { id: 'Asia/Tokyo', label: 'Tokyo (JST)', offset: '+9:00' },
-      { id: 'Asia/Shanghai', label: 'Shanghai (CST)', offset: '+8:00' },
-      { id: 'Asia/Singapore', label: 'Singapore (SGT)', offset: '+8:00' },
-      { id: 'Asia/Bangkok', label: 'Bangkok (ICT)', offset: '+7:00' },
-      { id: 'Asia/Dhaka', label: 'Dhaka (BST)', offset: '+6:00' },
-      { id: 'Asia/Kolkata', label: 'Mumbai/Delhi (IST)', offset: '+5:30' },
-      { id: 'Asia/Karachi', label: 'Karachi (PKT)', offset: '+5:00' },
-      { id: 'Asia/Dubai', label: 'Dubai (GST)', offset: '+4:00' },
-      { id: 'Europe/Moscow', label: 'Moscow (MSK)', offset: '+3:00' },
-      { id: 'Europe/Istanbul', label: 'Istanbul (TRT)', offset: '+3:00' },
-      { id: 'Africa/Cairo', label: 'Cairo (EET)', offset: '+2:00' },
-      { id: 'Europe/Berlin', label: 'Berlin/Paris (CET)', offset: '+1:00' },
-      { id: 'Europe/Amsterdam', label: 'Amsterdam (CET)', offset: '+1:00' },
-      { id: 'Europe/London', label: 'London (GMT)', offset: '+0:00' },
-      { id: 'UTC', label: 'UTC', offset: '+0:00' },
-      { id: 'America/Sao_Paulo', label: 'São Paulo (BRT)', offset: '-3:00' },
-      { id: 'America/New_York', label: 'New York (EST)', offset: '-5:00' },
-      { id: 'America/Toronto', label: 'Toronto (EST)', offset: '-5:00' },
-      { id: 'America/Chicago', label: 'Chicago (CST)', offset: '-6:00' },
-      { id: 'America/Mexico_City', label: 'Mexico City (CST)', offset: '-6:00' },
-      { id: 'America/Denver', label: 'Denver (MST)', offset: '-7:00' },
-      { id: 'America/Phoenix', label: 'Phoenix (MST)', offset: '-7:00' },
-      { id: 'America/Los_Angeles', label: 'Los Angeles (PST)', offset: '-8:00' },
-      { id: 'America/Vancouver', label: 'Vancouver (PST)', offset: '-8:00' },
-      { id: 'America/Anchorage', label: 'Anchorage (AKST)', offset: '-9:00' },
-      { id: 'Pacific/Honolulu', label: 'Honolulu (HST)', offset: '-10:00' },
+    const zones = [
+      ['America/Los_Angeles', 'Los Angeles', 'Pacific Time'],
+      ['America/Denver', 'Denver', 'Mountain Time'],
+      ['America/Phoenix', 'Phoenix', 'Arizona'],
+      ['America/Chicago', 'Chicago', 'Central Time'],
+      ['America/New_York', 'New York', 'Eastern Time'],
+      ['America/Toronto', 'Toronto', 'Eastern Time'],
+      ['America/Mexico_City', 'Mexico City', 'Central Mexico'],
+      ['America/Sao_Paulo', 'Sao Paulo', 'Brazil'],
+      ['UTC', 'UTC', 'Coordinated Universal Time'],
+      ['Europe/London', 'London', 'United Kingdom'],
+      ['Europe/Dublin', 'Dublin', 'Ireland'],
+      ['Europe/Paris', 'Paris', 'Central Europe'],
+      ['Europe/Berlin', 'Berlin', 'Central Europe'],
+      ['Europe/Amsterdam', 'Amsterdam', 'Central Europe'],
+      ['Europe/Madrid', 'Madrid', 'Central Europe'],
+      ['Europe/Zurich', 'Zurich', 'Central Europe'],
+      ['Europe/Istanbul', 'Istanbul', 'Turkey'],
+      ['Asia/Dubai', 'Dubai', 'United Arab Emirates'],
+      ['Asia/Kolkata', 'Mumbai / Delhi', 'India'],
+      ['Asia/Bangkok', 'Bangkok', 'Thailand'],
+      ['Asia/Singapore', 'Singapore', 'Singapore'],
+      ['Asia/Shanghai', 'Shanghai', 'China'],
+      ['Asia/Hong_Kong', 'Hong Kong', 'Hong Kong'],
+      ['Asia/Tokyo', 'Tokyo', 'Japan'],
+      ['Asia/Seoul', 'Seoul', 'South Korea'],
+      ['Australia/Sydney', 'Sydney', 'Australia'],
+      ['Pacific/Auckland', 'Auckland', 'New Zealand'],
     ];
+
+    const state = {
+      title: 'International conference call',
+      date: isoDate(addDays(new Date(), 1)),
+      duration: 60,
+      format: '12',
+      people: [],
+      saved: loadSavedGroups(),
+    };
 
     let nextId = 1;
 
-    // Initialize
+    document.addEventListener('DOMContentLoaded', init);
+
     function init() {
-      loadFromURL();
-      
-      if (state.people.length === 0) {
-        const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const matchedTz = timezones.find(tz => tz.id === userTz)?.id || 'America/New_York';
-        addPerson('You', matchedTz, 9 * 60, 17 * 60);
-      }
+      populateZoneSelect();
+      loadFromUrl();
+      if (!state.people.length) seedDefaultCallers();
+      bindEvents();
+      hydrateInputs();
+      render();
+      setInterval(renderClocksOnly, 30000);
+    }
 
-      document.getElementById('toggle24h').addEventListener('change', (e) => {
-        state.use24h = e.target.checked;
+    function populateZoneSelect() {
+      $('#personZone').innerHTML = zones.map(([id, city, label]) => `<option value="${id}">${city} - ${label}</option>`).join('');
+    }
+
+    function bindEvents() {
+      $('#meetingTitle').addEventListener('input', (event) => {
+        state.title = event.target.value || 'International conference call';
         render();
       });
-
-      document.getElementById('addPersonBtn').addEventListener('click', () => {
-        addPerson('', 'UTC', 9 * 60, 17 * 60);
+      $('#meetingDate').addEventListener('change', (event) => {
+        state.date = event.target.value || isoDate(new Date());
         render();
       });
+      $('#meetingDuration').addEventListener('change', (event) => {
+        state.duration = Number(event.target.value);
+        render();
+      });
+      $('#timeFormat').addEventListener('change', (event) => {
+        state.format = event.target.value;
+        render();
+      });
+      $('#addPerson').addEventListener('click', addPersonFromForm);
+      $('#saveGroup').addEventListener('click', saveCurrentGroup);
+      $('#copyLink').addEventListener('click', copyShareLink);
+      $('#copyPlan').addEventListener('click', copyPlan);
+      $('#copyPlanTop').addEventListener('click', copyPlan);
+      $('#downloadIcs').addEventListener('click', downloadIcs);
+      $('#clearSaved').addEventListener('click', clearSavedGroups);
 
-      document.getElementById('shareBtn').addEventListener('click', copyShareLink);
+      $$('[data-scroll]').forEach((button) => {
+        button.addEventListener('click', () => $(button.dataset.scroll)?.scrollIntoView({ behavior: 'smooth' }));
+      });
 
-      // Update current time every second
-      updateCurrentTime();
-      setInterval(updateCurrentTime, 1000);
+      $$('[data-preset]').forEach((button) => {
+        button.addEventListener('click', () => addPreset(button.dataset.preset));
+      });
+    }
 
+    function hydrateInputs() {
+      $('#meetingTitle').value = state.title;
+      $('#meetingDate').value = state.date;
+      $('#meetingDuration').value = String(state.duration);
+      $('#timeFormat').value = state.format;
+      const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      $('#personZone').value = zones.some(([id]) => id === userZone) ? userZone : 'America/New_York';
+    }
+
+    function seedDefaultCallers() {
+      const userZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      addPerson('You', zones.some(([id]) => id === userZone) ? userZone : 'America/Chicago', 8 * 60, 17 * 60);
+      addPerson('London Office', 'Europe/London', 9 * 60, 17 * 60);
+      addPerson('New York Client', 'America/New_York', 9 * 60, 17 * 60);
+    }
+
+    function addPreset(city) {
+      const found = zones.find(([, zoneCity]) => zoneCity === city);
+      if (!found) return;
+      addPerson(city, found[0], 9 * 60, 17 * 60);
       render();
     }
 
-    function updateCurrentTime() {
-      const now = DateTime.now();
-      const timeStr = state.use24h 
-        ? now.toFormat('HH:mm:ss')
-        : now.toFormat('h:mm:ss a');
-      document.getElementById('currentTime').textContent = timeStr;
+    function addPersonFromForm() {
+      const zone = $('#personZone').value;
+      const city = zoneLabel(zone).city;
+      const name = $('#personName').value.trim() || city;
+      const start = timeToMinutes($('#workStart').value);
+      const end = timeToMinutes($('#workEnd').value);
+      addPerson(name, zone, start, end);
+      $('#personName').value = '';
+      render();
     }
 
-    function addPerson(name, tz, startMin, endMin) {
+    function addPerson(name, zone, start, end) {
       state.people.push({
         id: `p${nextId++}`,
-        name: name || `Person ${state.people.length + 1}`,
-        tz,
-        startMin,
-        endMin
+        name,
+        zone,
+        start,
+        end,
       });
     }
 
-    function removePerson(id) {
-      state.people = state.people.filter(p => p.id !== id);
-      render();
-    }
-
-    function updatePerson(id, field, value) {
-      const person = state.people.find(p => p.id === id);
-      if (person) {
-        person[field] = value;
-        render();
-      }
-    }
-
-    // Render
     function render() {
-      renderPeopleList();
+      renderHeroCall();
+      renderPeople();
+      renderWindows();
+      renderZoneBoard();
       renderTimeline();
-      renderSuggestions();
+      renderCopyBox();
+      renderSavedGroups();
     }
 
-    function renderPeopleList() {
-      const container = document.getElementById('people-list');
-      
-      if (state.people.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">👥</div>
-            <p>Add team members to find overlapping hours</p>
-          </div>
+    function renderClocksOnly() {
+      renderHeroCall();
+      renderPeople();
+      renderZoneBoard();
+      renderCopyBox();
+    }
+
+    function renderHeroCall() {
+      const best = meetingWindows()[0];
+      const card = $('#best-call');
+      if (!best) {
+        card.className = 'call-card empty';
+        card.innerHTML = `
+          <span class="call-kicker">No clean overlap yet</span>
+          <span class="call-time">Split the call</span>
+          <p class="call-subtitle">The current roster does not share a ${state.duration}-minute business-hour window. Try shortening the call, changing work hours, or splitting into regional calls.</p>
         `;
         return;
       }
 
-      container.innerHTML = state.people.map((person, index) => {
-        const colorIndex = index % 8;
+      const hostZone = state.people[0]?.zone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      card.className = 'call-card';
+      card.innerHTML = `
+        <span class="call-kicker">Best call window</span>
+        <span class="call-time">${formatInZone(best.start, hostZone)}-${formatInZone(best.end, hostZone)}</span>
+        <p class="call-subtitle">${dateInZone(best.start, hostZone)} for ${state.people[0]?.name || 'you'} · ${best.duration} minute shared window · ${state.people.length} callers</p>
+      `;
+    }
+
+    function renderPeople() {
+      const list = $('#peopleList');
+      if (!state.people.length) {
+        list.innerHTML = '<div class="person-card">Add callers to find overlap.</div>';
+        return;
+      }
+
+      list.innerHTML = state.people.map((person) => {
+        const now = new Date();
+        const localNow = localMinutes(now, person.zone);
+        const isWorking = isMinuteInRange(localNow, person.start, person.end);
         return `
-          <div class="person-card" data-id="${person.id}">
-            <div class="person-color dot-${colorIndex}"></div>
-            <input type="text" value="${person.name}" placeholder="Name" 
-                   onchange="updatePerson('${person.id}', 'name', this.value)">
-            <select onchange="updatePerson('${person.id}', 'tz', this.value)">
-              ${timezones.map(tz => `
-                <option value="${tz.id}" ${tz.id === person.tz ? 'selected' : ''}>
-                  ${tz.label}
-                </option>
-              `).join('')}
-            </select>
-            <div class="time-inputs">
-              <input type="time" value="${minToTime(person.startMin)}" 
-                     onchange="updatePerson('${person.id}', 'startMin', timeToMin(this.value))">
-              <span>to</span>
-              <input type="time" value="${minToTime(person.endMin)}" 
-                     onchange="updatePerson('${person.id}', 'endMin', timeToMin(this.value))">
+          <article class="person-card" data-person-id="${person.id}">
+            <div class="person-main">
+              <div>
+                <div class="person-name">${escapeHtml(person.name)}</div>
+                <div class="person-meta">${escapeHtml(zoneLabel(person.zone).city)} · ${escapeHtml(zoneAbbr(now, person.zone))} · <span class="${isWorking ? 'status-good' : 'status-warn'}">${isWorking ? 'Working now' : 'Outside hours'}</span></div>
+              </div>
+              <button class="btn ghost danger" type="button" data-remove="${person.id}">Remove</button>
             </div>
-            <button class="btn btn-danger btn-delete" onclick="removePerson('${person.id}')">✕</button>
-          </div>
+            <div class="person-local">
+              <div class="local-pill"><span>Local time</span><strong>${formatInZone(now, person.zone)}</strong></div>
+              <div class="local-pill"><span>Work hours</span><strong>${formatMinutes(person.start)}-${formatMinutes(person.end)}</strong></div>
+            </div>
+          </article>
         `;
       }).join('');
+
+      $$('[data-remove]', list).forEach((button) => {
+        button.addEventListener('click', () => {
+          state.people = state.people.filter((person) => person.id !== button.dataset.remove);
+          render();
+        });
+      });
+    }
+
+    function renderWindows() {
+      const container = $('#windows');
+      const windows = meetingWindows();
+      if (!windows.length) {
+        container.innerHTML = '<div class="window-card">No shared call window at the selected duration. Try 30 minutes or adjust work hours.</div>';
+        return;
+      }
+
+      container.innerHTML = windows.slice(0, 4).map((window, index) => `
+        <article class="window-card ${index === 0 ? 'best' : ''}">
+          <h3>${index === 0 ? 'Best option' : `Option ${index + 1}`} · ${window.duration} min window</h3>
+          <div class="time-list">
+            ${state.people.map((person) => `
+              <div class="time-line">
+                <span>${escapeHtml(person.name)}</span>
+                <strong>${formatInZone(window.start, person.zone)}-${formatInZone(window.end, person.zone)}</strong>
+              </div>
+            `).join('')}
+          </div>
+          <div class="result-actions" style="margin-top:12px">
+            <button class="btn secondary" type="button" data-copy-window="${index}">Copy This Option</button>
+          </div>
+        </article>
+      `).join('');
+
+      $$('[data-copy-window]', container).forEach((button) => {
+        button.addEventListener('click', () => copyText(callPlan(Number(button.dataset.copyWindow)), button));
+      });
+    }
+
+    function renderZoneBoard() {
+      const best = meetingWindows()[0];
+      const instant = best?.start || new Date();
+      $('#zoneBoard').innerHTML = state.people.map((person) => `
+        <article class="timezone-card">
+          <div class="call-kicker">${escapeHtml(person.name)}</div>
+          <div class="call-time" style="font-size:2rem">${formatInZone(instant, person.zone)}</div>
+          <p class="call-subtitle">${dateInZone(instant, person.zone)} · ${escapeHtml(zoneLabel(person.zone).city)} · ${escapeHtml(zoneAbbr(instant, person.zone))}</p>
+        </article>
+      `).join('');
     }
 
     function renderTimeline() {
-      const container = document.getElementById('timeline-container');
-      
-      if (state.people.length === 0) {
-        container.innerHTML = '';
-        return;
-      }
+      const windows = meetingWindows();
+      const dayStart = new Date(`${state.date}T00:00:00`);
+      const hours = Array.from({ length: 24 }, (_, hour) => hour);
 
-      // Header with hour ticks
-      let headerHTML = '<div class="timeline-header">';
-      for (let h = 0; h <= 24; h += 3) {
-        const left = (h / 24) * 100;
-        headerHTML += `<div class="timeline-tick" style="left: ${left}%">${String(h).padStart(2, '0')}:00</div>`;
-      }
-      headerHTML += '</div>';
-
-      // Timeline rows
-      let rowsHTML = '<div class="timeline-rows">';
-      
-      // Current time indicator position (in UTC)
-      const nowUTC = DateTime.utc();
-      const nowMinutes = nowUTC.hour * 60 + nowUTC.minute;
-      const nowLeft = (nowMinutes / 1440) * 100;
-
-      state.people.forEach((person, index) => {
-        const colorIndex = index % 8;
-        const intervals = localToUTCIntervals(person);
-        const tzInfo = timezones.find(tz => tz.id === person.tz);
-        const shortTz = tzInfo ? tzInfo.label.split(' ')[0] : person.tz.split('/').pop();
-        
-        rowsHTML += `
-          <div class="timeline-row">
-            <div class="timeline-label">
-              <strong>${person.name}</strong>
-              <small>${shortTz}</small>
-            </div>
-            <div class="timeline-track">
-              ${intervals.map(([start, end]) => {
-                const left = (start / 1440) * 100;
-                const width = ((end - start) / 1440) * 100;
-                return `<div class="timeline-bar color-${colorIndex}" 
-                            style="left: ${left}%; width: ${width}%"
-                            data-person="${person.name}"
-                            data-start="${formatTime(person.startMin)}"
-                            data-end="${formatTime(person.endMin)}">
-                          <div class="timeline-bar-inner"></div>
-                        </div>`;
-              }).join('')}
-            </div>
-          </div>
-        `;
+      let html = '<div class="timeline-hours"><span></span>' + hours.map((hour) => `<span>${String(hour).padStart(2, '0')}</span>`).join('') + '</div>';
+      state.people.forEach((person) => {
+        html += `<div class="timeline-row"><div class="timeline-label">${escapeHtml(person.name)}</div>`;
+        hours.forEach((hour) => {
+          const instant = addMinutes(dayStart, hour * 60);
+          const minute = localMinutes(instant, person.zone);
+          html += `<span class="hour-cell ${isMinuteInRange(minute, person.start, person.end) ? 'work' : ''}"></span>`;
+        });
+        html += '</div>';
       });
 
-      // Overlap row
-      const overlap = computeOverlap();
-      if (overlap.length > 0) {
-        rowsHTML += `
-          <div class="timeline-row overlap-row">
-            <div class="timeline-label">
-              <strong>⭐ Overlap</strong>
-              <small>Best times</small>
-            </div>
-            <div class="timeline-track">
-              ${overlap.map(([start, end]) => {
-                const left = (start / 1440) * 100;
-                const width = ((end - start) / 1440) * 100;
-                const duration = end - start;
-                const hours = Math.floor(duration / 60);
-                const mins = duration % 60;
-                const durationStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-                return `<div class="timeline-bar overlap" 
-                            style="left: ${left}%; width: ${width}%"
-                            data-duration="${durationStr}">
-                          <div class="timeline-bar-inner"></div>
-                        </div>`;
-              }).join('')}
-              <div class="timeline-now" style="left: ${nowLeft}%"></div>
-            </div>
-          </div>
-        `;
-      }
-
-      rowsHTML += '</div>';
-
-      container.innerHTML = headerHTML + rowsHTML;
-
-      // Add hover tooltips
-      container.querySelectorAll('.timeline-bar').forEach(bar => {
-        bar.addEventListener('mouseenter', showTooltip);
-        bar.addEventListener('mouseleave', hideTooltip);
-        bar.addEventListener('mousemove', moveTooltip);
+      html += '<div class="timeline-row"><div class="timeline-label">Shared windows</div>';
+      hours.forEach((hour) => {
+        const instant = addMinutes(dayStart, hour * 60);
+        const overlaps = windows.some((window) => instant >= window.start && instant < window.end);
+        html += `<span class="hour-cell ${overlaps ? 'overlap' : ''}"></span>`;
       });
-    }
-
-    function renderSuggestions() {
-      const container = document.getElementById('suggestions');
-      const overlap = computeOverlap();
-
-      if (state.people.length === 0) {
-        container.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">📅</div>
-            <p>Add team members to see meeting suggestions</p>
-          </div>
-        `;
-        return;
-      }
-
-      if (overlap.length === 0) {
-        container.innerHTML = `
-          <div class="no-overlap">
-            <div class="no-overlap-icon">😔</div>
-            <h3>No Overlap Found</h3>
-            <p>Working hours don't overlap. Consider async communication, adjusting schedules, or splitting into smaller groups.</p>
-          </div>
-        `;
-        return;
-      }
-
-      // Sort by duration (longest first)
-      const sorted = [...overlap].sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
-
-      let html = '<div class="suggestions-grid">';
-      
-      sorted.slice(0, 3).forEach(([start, end], i) => {
-        const mid = Math.floor((start + end) / 2);
-        const midRounded = Math.round(mid / 15) * 15;
-        
-        const durationMin = end - start;
-        const durationHr = Math.floor(durationMin / 60);
-        const durationRemainder = durationMin % 60;
-        const durationStr = durationHr > 0 
-          ? `${durationHr}h ${durationRemainder > 0 ? durationRemainder + 'm' : ''} window`
-          : `${durationRemainder}m window`;
-
-        const isBest = i === 0;
-
-        html += `
-          <div class="suggestion-card ${isBest ? 'best' : ''}">
-            ${isBest ? '<div class="suggestion-badge">⭐ Best Option</div>' : `<div class="suggestion-badge" style="background: var(--bg-input); color: var(--text-muted);">Option ${i + 1}</div>`}
-            <div class="suggestion-times">
-              ${state.people.map(p => {
-                const localTime = utcToLocal(midRounded, p.tz);
-                return `
-                  <div class="suggestion-time">
-                    <span class="time">${formatTime(localTime)}</span>
-                    <span class="name">${p.name}</span>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-            <div class="suggestion-duration">📏 ${durationStr}</div>
-          </div>
-        `;
-      });
-
       html += '</div>';
-      container.innerHTML = html;
+
+      $('#timeline').innerHTML = html;
     }
 
-    // Tooltip handlers
-    function showTooltip(e) {
-      const bar = e.target.closest('.timeline-bar');
-      const tooltip = document.getElementById('tooltip');
-      
-      let content = '';
-      if (bar.classList.contains('overlap')) {
-        content = `⭐ Overlap: ${bar.dataset.duration}`;
-      } else {
-        content = `${bar.dataset.person}: ${bar.dataset.start} - ${bar.dataset.end}`;
+    function renderCopyBox() {
+      $('#copyBox').textContent = callPlan(0);
+    }
+
+    function renderSavedGroups() {
+      const container = $('#savedGroups');
+      if (!state.saved.length) {
+        container.innerHTML = '<div class="person-card">No saved groups yet. Save your regular international calls here.</div>';
+        return;
       }
-      
-      tooltip.textContent = content;
-      tooltip.classList.remove('hidden');
+      container.innerHTML = state.saved.map((group, index) => `
+        <article class="person-card">
+          <div class="person-main">
+            <div>
+              <div class="person-name">${escapeHtml(group.name)}</div>
+              <div class="person-meta">${group.people.length} callers · saved ${new Date(group.savedAt).toLocaleDateString()}</div>
+            </div>
+            <div class="row-actions">
+              <button class="btn secondary" type="button" data-load-group="${index}">Load</button>
+              <button class="btn ghost danger" type="button" data-delete-group="${index}">Delete</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      $$('[data-load-group]', container).forEach((button) => {
+        button.addEventListener('click', () => {
+          const group = state.saved[Number(button.dataset.loadGroup)];
+          state.people = group.people.map((person) => ({ ...person, id: `p${nextId++}` }));
+          state.title = group.name;
+          hydrateInputs();
+          render();
+        });
+      });
+
+      $$('[data-delete-group]', container).forEach((button) => {
+        button.addEventListener('click', () => {
+          state.saved.splice(Number(button.dataset.deleteGroup), 1);
+          persistSavedGroups();
+          renderSavedGroups();
+        });
+      });
     }
 
-    function hideTooltip() {
-      document.getElementById('tooltip').classList.add('hidden');
+    function meetingWindows() {
+      if (!state.people.length) return [];
+      const scanStart = new Date(`${state.date}T00:00:00`);
+      const step = 15;
+      const options = [];
+
+      for (let min = 0; min <= 1440 - state.duration; min += step) {
+        const start = addMinutes(scanStart, min);
+        const end = addMinutes(start, state.duration);
+        const everyAvailable = state.people.every((person) => {
+          const startLocal = localMinutes(start, person.zone);
+          const endLocal = localMinutes(addMinutes(end, -1), person.zone);
+          return isMinuteInRange(startLocal, person.start, person.end) && isMinuteInRange(endLocal, person.start, person.end);
+        });
+        if (!everyAvailable) continue;
+
+        const score = state.people.reduce((sum, person) => {
+          const mid = localMinutes(addMinutes(start, state.duration / 2), person.zone);
+          const workMid = midpoint(person.start, person.end);
+          return sum + Math.abs(mid - workMid);
+        }, 0);
+        options.push({ start, end, duration: state.duration, score });
+      }
+
+      return mergeOptions(options).sort((a, b) => a.score - b.score || a.start - b.start);
     }
 
-    function moveTooltip(e) {
-      const tooltip = document.getElementById('tooltip');
-      tooltip.style.left = (e.clientX + 10) + 'px';
-      tooltip.style.top = (e.clientY - 30) + 'px';
-    }
-
-    // Time calculations
-    function localToUTCIntervals(person) {
-      const { tz, startMin, endMin } = person;
-
-      try {
-        const base = state.anchorDate.setZone(tz);
-        const startDT = base.set({ hour: Math.floor(startMin / 60), minute: startMin % 60 });
-        const endDT = base.set({ hour: Math.floor(endMin / 60), minute: endMin % 60 });
-
-        let startUTC = startDT.toUTC().diff(state.anchorDate.toUTC(), 'minutes').minutes;
-        let endUTC = endDT.toUTC().diff(state.anchorDate.toUTC(), 'minutes').minutes;
-
-        if (endMin <= startMin) {
-          endUTC += 1440;
-        }
-
-        const intervals = [];
-        if (startUTC < 0) {
-          intervals.push([startUTC + 1440, 1440]);
-          if (endUTC > 0) intervals.push([0, Math.min(endUTC, 1440)]);
-        } else if (endUTC > 1440) {
-          intervals.push([startUTC, 1440]);
-          intervals.push([0, endUTC - 1440]);
+    function mergeOptions(options) {
+      if (!options.length) return [];
+      const groups = [];
+      let current = { ...options[0] };
+      for (let i = 1; i < options.length; i++) {
+        const option = options[i];
+        if (option.start <= current.end) {
+          current.end = option.end;
+          current.duration = Math.round((current.end - current.start) / 60000);
+          current.score = Math.min(current.score, option.score);
         } else {
-          intervals.push([startUTC, endUTC]);
+          groups.push(current);
+          current = { ...option };
         }
+      }
+      groups.push(current);
+      return groups;
+    }
 
-        return intervals;
-      } catch (e) {
-        console.error('Error converting time for', person, e);
+    function callPlan(index) {
+      const window = meetingWindows()[index];
+      if (!window) {
+        return [
+          `${state.title}`,
+          '',
+          `No shared ${state.duration}-minute business-hour window was found for ${state.date}.`,
+          '',
+          'Consider shortening the call, adjusting business hours, or splitting into regional calls.',
+          '',
+          `Planned with Time Zone Call Planner: https://mattlivingston.com/tools/timezone/`,
+        ].join('\n');
+      }
+      return [
+        `${state.title}`,
+        '',
+        `Suggested time: ${formatInZone(window.start, state.people[0].zone)}-${formatInZone(window.end, state.people[0].zone)} (${dateInZone(window.start, state.people[0].zone)})`,
+        '',
+        'Local times:',
+        ...state.people.map((person) => `- ${person.name}: ${formatInZone(window.start, person.zone)}-${formatInZone(window.end, person.zone)} ${zoneAbbr(window.start, person.zone)} (${dateInZone(window.start, person.zone)})`),
+        '',
+        `Planned with Time Zone Call Planner: https://mattlivingston.com/tools/timezone/`,
+      ].join('\n');
+    }
+
+    function copyPlan() {
+      copyText(callPlan(0), $('#copyPlan'));
+    }
+
+    function copyShareLink() {
+      const payload = btoa(unescape(encodeURIComponent(JSON.stringify({
+        title: state.title,
+        date: state.date,
+        duration: state.duration,
+        format: state.format,
+        people: state.people.map(({ name, zone, start, end }) => ({ name, zone, start, end })),
+      }))));
+      const url = `${window.location.origin}${window.location.pathname}?call=${payload}`;
+      copyText(url, $('#copyLink'));
+    }
+
+    function loadFromUrl() {
+      const payload = new URLSearchParams(window.location.search).get('call');
+      if (!payload) return;
+      try {
+        const parsed = JSON.parse(decodeURIComponent(escape(atob(payload))));
+        state.title = parsed.title || state.title;
+        state.date = parsed.date || state.date;
+        state.duration = Number(parsed.duration) || state.duration;
+        state.format = parsed.format || state.format;
+        state.people = (parsed.people || []).map((person) => ({ ...person, id: `p${nextId++}` }));
+      } catch (error) {
+        console.warn('Could not load shared call plan', error);
+      }
+    }
+
+    function saveCurrentGroup() {
+      if (!state.people.length) return;
+      const name = window.prompt('Save this call group as:', state.title || 'International call group');
+      if (!name) return;
+      state.saved.unshift({
+        name,
+        savedAt: new Date().toISOString(),
+        people: state.people.map(({ name, zone, start, end }) => ({ name, zone, start, end })),
+      });
+      state.saved = state.saved.slice(0, 12);
+      persistSavedGroups();
+      renderSavedGroups();
+    }
+
+    function clearSavedGroups() {
+      if (!state.saved.length) return;
+      if (!window.confirm('Clear saved call groups from this browser?')) return;
+      state.saved = [];
+      persistSavedGroups();
+      renderSavedGroups();
+    }
+
+    function downloadIcs() {
+      const window = meetingWindows()[0];
+      if (!window) return;
+      const stamp = compactUtc(new Date());
+      const start = compactUtc(window.start);
+      const end = compactUtc(window.end);
+      const description = callPlan(0).replace(/\n/g, '\\n');
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Matt Livingston//Time Zone Call Planner//EN',
+        'BEGIN:VEVENT',
+        `UID:${Date.now()}@mattlivingston.com`,
+        `DTSTAMP:${stamp}`,
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:${escapeIcs(state.title)}`,
+        `DESCRIPTION:${escapeIcs(description)}`,
+        'END:VEVENT',
+        'END:VCALENDAR',
+      ].join('\r\n');
+      downloadText(ics, 'timezone-call-plan.ics', 'text/calendar');
+    }
+
+    function loadSavedGroups() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch {
         return [];
       }
     }
 
-    function utcToLocal(utcMin, tz) {
-      try {
-        const dt = state.anchorDate.toUTC().plus({ minutes: utcMin }).setZone(tz);
-        return dt.hour * 60 + dt.minute;
-      } catch (e) {
-        return 0;
-      }
+    function persistSavedGroups() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.saved));
     }
 
-    function computeOverlap() {
-      if (state.people.length === 0) return [];
-
-      let intervals = [[0, 1440]];
-
-      state.people.forEach(person => {
-        const personIntervals = localToUTCIntervals(person);
-        intervals = intersectIntervals(intervals, personIntervals);
+    function copyText(text, button) {
+      navigator.clipboard?.writeText(text).then(() => flashButton(button, 'Copied')).catch(() => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+        flashButton(button, 'Copied');
       });
-
-      return intervals.filter(([start, end]) => end > start);
     }
 
-    function intersectIntervals(a, b) {
-      const result = [];
-      for (const [a1, a2] of a) {
-        for (const [b1, b2] of b) {
-          const start = Math.max(a1, b1);
-          const end = Math.min(a2, b2);
-          if (start < end) result.push([start, end]);
-        }
-      }
-      return result;
+    function flashButton(button, label) {
+      if (!button) return;
+      const original = button.textContent;
+      button.textContent = label;
+      setTimeout(() => { button.textContent = original; }, 1400);
     }
 
-    // Utilities
-    function minToTime(min) {
-      const h = Math.floor(min / 60);
-      const m = min % 60;
-      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    function formatInZone(date, zone) {
+      return new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: state.format !== '24',
+      }).format(date);
     }
 
-    function timeToMin(timeStr) {
-      const [h, m] = timeStr.split(':').map(Number);
-      return h * 60 + m;
+    function dateInZone(date, zone) {
+      return new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      }).format(date);
     }
 
-    function formatTime(min) {
-      const h = Math.floor(min / 60) % 24;
-      const m = min % 60;
-      if (state.use24h) {
-        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-      }
-      const period = h >= 12 ? 'PM' : 'AM';
+    function zoneAbbr(date, zone) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        timeZoneName: 'short',
+      }).formatToParts(date);
+      return parts.find((part) => part.type === 'timeZoneName')?.value || zone;
+    }
+
+    function localMinutes(date, zone) {
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: zone,
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+      }).formatToParts(date);
+      const hour = Number(parts.find((part) => part.type === 'hour')?.value || 0) % 24;
+      const minute = Number(parts.find((part) => part.type === 'minute')?.value || 0);
+      return hour * 60 + minute;
+    }
+
+    function isMinuteInRange(minute, start, end) {
+      if (start === end) return true;
+      if (end > start) return minute >= start && minute < end;
+      return minute >= start || minute < end;
+    }
+
+    function midpoint(start, end) {
+      const adjustedEnd = end > start ? end : end + 1440;
+      return (start + adjustedEnd) / 2 % 1440;
+    }
+
+    function timeToMinutes(value) {
+      const [hour, minute] = value.split(':').map(Number);
+      return hour * 60 + minute;
+    }
+
+    function formatMinutes(minutes) {
+      const h = Math.floor(minutes / 60) % 24;
+      const m = minutes % 60;
+      if (state.format === '24') return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+      const suffix = h >= 12 ? 'PM' : 'AM';
       const h12 = h % 12 || 12;
-      return `${h12}:${String(m).padStart(2, '0')} ${period}`;
+      return `${h12}:${String(m).padStart(2, '0')} ${suffix}`;
     }
 
-    // Share link
-    function copyShareLink() {
-      const params = state.people.map(p =>
-        `${encodeURIComponent(p.name)},${p.tz},${p.startMin},${p.endMin}`
-      ).join(';');
-
-      const url = `${window.location.origin}${window.location.pathname}?p=${params}`;
-      
-      navigator.clipboard.writeText(url).then(() => {
-        const btn = document.getElementById('shareBtn');
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<span>✓</span> Copied!';
-        btn.style.background = 'var(--success)';
-        btn.style.borderColor = 'var(--success)';
-        setTimeout(() => {
-          btn.innerHTML = originalHTML;
-          btn.style.background = '';
-          btn.style.borderColor = '';
-        }, 2000);
-      });
+    function zoneLabel(zone) {
+      const found = zones.find(([id]) => id === zone);
+      return found ? { city: found[1], label: found[2] } : { city: zone.split('/').pop().replace(/_/g, ' '), label: zone };
     }
 
-    function loadFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      const pData = params.get('p');
-
-      if (pData) {
-        try {
-          const people = pData.split(';').map(entry => {
-            const [name, tz, start, end] = entry.split(',');
-            return {
-              id: `p${nextId++}`,
-              name: decodeURIComponent(name),
-              tz,
-              startMin: parseInt(start),
-              endMin: parseInt(end)
-            };
-          });
-          state.people = people;
-        } catch (e) {
-          console.error('Error parsing URL params', e);
-        }
-      }
+    function addDays(date, days) {
+      const copy = new Date(date);
+      copy.setDate(copy.getDate() + days);
+      return copy;
     }
 
-    // Expose to window for inline handlers
-    window.updatePerson = updatePerson;
-    window.removePerson = removePerson;
+    function addMinutes(date, minutes) {
+      return new Date(date.getTime() + minutes * 60000);
+    }
 
-    init();
+    function isoDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    function compactUtc(date) {
+      return date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    }
+
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = value == null ? '' : String(value);
+      return div.innerHTML;
+    }
+
+    function escapeIcs(value) {
+      return String(value).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    }
+
+    function downloadText(text, filename, mime) {
+      const blob = new Blob([text], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 4000);
+    }
   </script>
 </body>
 </html>

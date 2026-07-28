@@ -3,12 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Favicon Generator | Free Online Tool</title>
-  <meta name="description" content="Generate all favicon sizes from one image. Creates ICO, PNG, Apple Touch Icon, and PWA icons. Free, private, no upload required.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <title>Favicon Generator | Matt Livingston Tools</title>
+  <meta name="description" content="Generate a complete favicon and app icon kit locally in your browser, including ICO, PNG, Apple touch icon, PWA manifest icons, maskable icons, browserconfig, and install code.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mattlivingston.com/tools/favicon/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Favicon Generator | Matt Livingston Tools">
+  <meta property="og:description" content="A local-first favicon studio for generating browser, Apple, Android, PWA, and maskable icon kits from one image.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/favicon/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308090d'/%3E%3Cpath d='M7 7h18v18H7z' fill='%232df8e6'/%3E%3Cpath d='M12 12h8v8h-8z' fill='%23b86cff'/%3E%3C/svg%3E">
   <style>
     * {
       box-sizing: border-box;
@@ -17,1228 +21,1731 @@
     }
 
     :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-input: #0f172a;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.3);
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.3);
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border: #475569;
-      --radius: 12px;
-      --radius-sm: 8px;
+      color-scheme: dark;
+      --bg: #08090d;
+      --panel: rgba(21, 25, 35, 0.78);
+      --panel-raised: rgba(29, 35, 48, 0.84);
+      --ink: #f8f7ff;
+      --muted: #c4c8d8;
+      --faint: #858b9c;
+      --border: rgba(248, 247, 255, 0.14);
+      --border-soft: rgba(248, 247, 255, 0.08);
+      --cyan: #2df8e6;
+      --violet: #b86cff;
+      --green: #70ff9c;
+      --yellow: #ffd166;
+      --red: #ff4f7b;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+      --radius: 10px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
       min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(184, 108, 255, 0.22), transparent 32rem),
+        radial-gradient(circle at 88% 8%, rgba(45, 248, 230, 0.16), transparent 34rem),
+        linear-gradient(135deg, #08090d 0%, #10131b 52%, #071214 100%);
+      color: var(--ink);
+      line-height: 1.55;
     }
 
     body::before {
-      content: '';
+      content: "";
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+      inset: 0;
       pointer-events: none;
-      z-index: 0;
+      opacity: 0.13;
+      background:
+        linear-gradient(rgba(248, 247, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248, 247, 255, 0.08) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, black, transparent 76%);
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
     }
 
     .container {
-      max-width: 1000px;
+      width: min(1280px, calc(100% - 40px));
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 28px 0 76px;
       position: relative;
       z-index: 1;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 46px;
     }
 
-    .logo {
+    .back-link,
+    .creator-link {
+      color: var(--faint);
+      font-size: 14px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--cyan);
+      font-family: var(--mono);
+    }
+
+    .back-link:hover,
+    .creator-link:hover {
+      color: var(--ink);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(300px, 0.82fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      color: var(--violet);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      font-size: clamp(3.1rem, 8vw, 6.8rem);
+      font-weight: 950;
+      line-height: 0.9;
+      letter-spacing: 0;
+      margin-bottom: 18px;
+    }
+
+    .hero-copy {
+      color: var(--muted);
+      max-width: 760px;
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .pill {
       display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
+      gap: 8px;
+      padding: 0.5rem 0.7rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(21, 25, 35, 0.72);
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 850;
     }
 
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--success) 100%);
+    .pill span {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-weight: 950;
+    }
+
+    .hero-card,
+    .panel,
+    .quality-card {
+      border: 1px solid var(--border);
       border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      overflow: hidden;
+    }
+
+    .hero-card-row {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 14px;
+      padding: 16px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    .hero-card-row:last-child {
+      border-bottom: 0;
+    }
+
+    .hero-card-row span {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .hero-card-row strong {
+      display: block;
+      margin-bottom: 3px;
+      font-size: 0.95rem;
+    }
+
+    .hero-card-row p {
+      color: var(--faint);
+      font-size: 0.84rem;
+    }
+
+    .workflow {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 20px var(--accent-glow);
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
     }
 
-    header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .panel-title {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
-    .tagline {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-top: 0.25rem;
-    }
-
-    .trust-badges {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--text-muted);
+    .panel-kicker {
+      color: var(--faint);
       font-size: 0.8rem;
     }
 
-    .trust-badge span {
-      color: var(--accent);
-    }
-
-    /* Upload Area */
-    .upload-section {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
-      margin-bottom: 1.5rem;
-    }
-
     .drop-zone {
-      border: 2px dashed var(--border);
+      min-height: 260px;
+      border: 1.5px dashed var(--border);
       border-radius: var(--radius);
-      padding: 3rem 2rem;
+      background: rgba(29, 35, 48, 0.72);
+      display: grid;
+      place-items: center;
+      padding: 28px;
       text-align: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
+      transition: border-color 0.18s, background 0.18s, transform 0.18s;
     }
 
     .drop-zone:hover,
     .drop-zone.dragover {
-      border-color: var(--accent);
-      background: rgba(59, 130, 246, 0.05);
-    }
-
-    .drop-zone.has-image {
-      padding: 1.5rem;
-    }
-
-    .drop-zone-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.7;
-    }
-
-    .drop-zone h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .drop-zone p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      border-color: var(--cyan);
+      background: rgba(45, 248, 230, 0.06);
+      transform: translateY(-1px);
     }
 
     .drop-zone input {
       display: none;
     }
 
+    .upload-mark {
+      width: 64px;
+      height: 64px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 16px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      color: #08090d;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .drop-zone h2 {
+      font-size: 1.1rem;
+      margin-bottom: 6px;
+    }
+
+    .drop-zone p {
+      color: var(--faint);
+      font-size: 0.92rem;
+    }
+
     .source-preview {
-      display: flex;
+      display: grid;
+      grid-template-columns: 116px 1fr;
+      gap: 18px;
       align-items: center;
-      gap: 1.5rem;
       text-align: left;
+      width: 100%;
     }
 
-    .source-image-wrapper {
-      width: 120px;
-      height: 120px;
-      border-radius: var(--radius-sm);
+    .source-image-frame,
+    .preview-swatch,
+    .device-icon,
+    .file-thumb {
+      background:
+        linear-gradient(45deg, rgba(255,255,255,0.08) 25%, transparent 25%),
+        linear-gradient(-45deg, rgba(255,255,255,0.08) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.08) 75%),
+        linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.08) 75%),
+        #11151e;
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    }
+
+    .source-image-frame {
+      width: 116px;
+      height: 116px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
       overflow: hidden;
-      background: repeating-conic-gradient(#333 0% 25%, #444 0% 50%) 50% / 16px 16px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .source-image-wrapper img {
+    .source-image-frame img {
       max-width: 100%;
       max-height: 100%;
       object-fit: contain;
     }
 
-    .source-info {
-      flex: 1;
-    }
-
-    .source-info h4 {
+    .source-info h3 {
       font-size: 1rem;
-      margin-bottom: 0.25rem;
-      word-break: break-all;
+      word-break: break-word;
     }
 
-    .source-info p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
+    .source-info p,
+    .status-line {
+      color: var(--faint);
+      font-size: 0.86rem;
     }
 
     .source-actions {
       display: flex;
-      gap: 0.5rem;
-      margin-top: 0.75rem;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
     }
 
-    /* Options */
-    .options-section {
-      background: var(--bg-secondary);
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label,
+    .field-label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      min-height: 42px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      background: #050609;
+      color: var(--ink);
+      padding: 0.65rem 0.78rem;
+      outline: none;
     }
 
-    .section-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    textarea {
+      min-height: 184px;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      line-height: 1.55;
     }
 
-    .options-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+    input[type="text"]:focus,
+    input[type="url"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(45, 248, 230, 0.16);
     }
 
-    .option-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .option-group label {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    .option-group input[type="color"] {
+    input[type="color"] {
       width: 100%;
-      height: 40px;
+      height: 42px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      background: var(--bg-card);
-      cursor: pointer;
+      border-radius: var(--radius);
+      background: var(--panel-raised);
       padding: 4px;
     }
 
-    .option-group input[type="text"] {
-      padding: 0.6rem 0.875rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-family: inherit;
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--violet);
     }
 
-    .option-group input[type="text"]:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .checkbox-label {
+    .range-top {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      cursor: pointer;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .checkbox-label input {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--accent);
-      cursor: pointer;
+    .range-value {
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      font-weight: 900;
     }
 
-    /* Preview Section */
-    .preview-section {
-      background: var(--bg-secondary);
+    .checkbox-card {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      background: rgba(29, 35, 48, 0.58);
+    }
+
+    .checkbox-card input {
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--violet);
+    }
+
+    .checkbox-card strong {
+      display: block;
+      font-size: 0.88rem;
+    }
+
+    .checkbox-card span {
+      color: var(--faint);
+      display: block;
+      font-size: 0.76rem;
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0.7rem 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-size: 0.88rem;
+      font-weight: 850;
+      text-decoration: none;
+      transition: transform 0.16s, border-color 0.16s, box-shadow 0.16s, background 0.16s;
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .btn-primary,
+    .btn-success {
+      background: linear-gradient(135deg, var(--cyan), var(--violet));
+      color: #08090d;
+      box-shadow: 0 18px 52px rgba(45, 248, 230, 0.15);
+    }
+
+    .btn-secondary {
+      border-color: var(--border);
+      background: rgba(29, 35, 48, 0.82);
+      color: var(--muted);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      border-color: var(--cyan);
+      color: var(--ink);
+    }
+
+    .btn-large {
+      width: 100%;
+      min-height: 54px;
+      font-size: 1rem;
     }
 
     .preview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-top: 1rem;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
     }
 
     .preview-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .preview-item-image {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: repeating-conic-gradient(#333 0% 25%, #444 0% 50%) 50% / 8px 8px;
-      border-radius: 4px;
-    }
-
-    .preview-item-image img {
-      max-width: 100%;
-      max-height: 100%;
-      image-rendering: pixelated;
-    }
-
-    .preview-item-image.large {
-      width: 80px;
-      height: 80px;
-    }
-
-    .preview-item h4 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
-
-    .preview-item p {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-    }
-
-    /* Browser Tab Preview */
-    .browser-preview {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      margin-top: 1rem;
-    }
-
-    .browser-tab-bar {
-      display: flex;
-      align-items: center;
-      background: #1a1a2e;
-      padding: 0.5rem 0.75rem;
-      gap: 0.5rem;
-    }
-
-    .browser-dots {
-      display: flex;
-      gap: 6px;
-    }
-
-    .browser-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-
-    .browser-dot.red { background: #ff5f56; }
-    .browser-dot.yellow { background: #ffbd2e; }
-    .browser-dot.green { background: #27ca40; }
-
-    .browser-tab {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-secondary);
-      padding: 0.5rem 1rem;
-      border-radius: 6px 6px 0 0;
-      margin-left: 0.5rem;
-    }
-
-    .browser-tab img {
-      width: 16px;
-      height: 16px;
-    }
-
-    .browser-tab span {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-    }
-
-    .browser-content {
-      height: 60px;
-      background: #f5f5f5;
-    }
-
-    /* Generate Button */
-    .generate-section {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: var(--radius-sm);
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .btn svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px var(--accent-glow);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-success {
-      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
-      color: white;
-      padding: 1rem 2rem;
-      font-size: 1.1rem;
-    }
-
-    .btn-success:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px var(--success-glow);
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-input);
-      border-color: var(--accent);
-    }
-
-    .btn-sm {
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-    }
-
-    /* Output Section */
-    .output-section {
-      background: var(--bg-secondary);
+      min-height: 142px;
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
+      background: rgba(29, 35, 48, 0.62);
+      padding: 14px;
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .preview-swatch {
+      width: 72px;
+      height: 72px;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .preview-swatch img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    .preview-swatch.small {
+      width: 36px;
+      height: 36px;
+    }
+
+    .preview-swatch.circle {
+      border-radius: 999px;
+    }
+
+    .preview-swatch.rounded {
+      border-radius: 18px;
+    }
+
+    .preview-item strong {
+      font-size: 0.82rem;
+    }
+
+    .preview-item span {
+      color: var(--faint);
+      font-size: 0.72rem;
+    }
+
+    .device-preview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .device-card {
+      min-height: 144px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(29, 35, 48, 0.58);
+      padding: 14px;
+      display: grid;
+      justify-items: center;
+      align-content: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .device-icon {
+      width: 70px;
+      height: 70px;
+      border: 1px solid var(--border-soft);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .device-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .device-icon.ios {
+      border-radius: 18px;
+      background: #11151e;
+    }
+
+    .device-icon.android {
+      border-radius: 999px;
+      background: #11151e;
+    }
+
+    .device-icon.tab {
+      width: 120px;
+      height: 42px;
+      border-radius: 10px 10px 4px 4px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 8px;
+      padding: 10px;
+      background: #151923;
+    }
+
+    .device-icon.tab img {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+    }
+
+    .tab-title {
+      color: var(--muted);
+      font-size: 0.72rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .quality-card {
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .quality-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .quality-row {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .quality-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--green);
+      margin-top: 6px;
+      box-shadow: 0 0 0 4px rgba(112, 255, 156, 0.1);
+    }
+
+    .quality-dot.warn {
+      background: var(--yellow);
+      box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.1);
+    }
+
+    .quality-dot.bad {
+      background: var(--red);
+      box-shadow: 0 0 0 4px rgba(255, 79, 123, 0.1);
+    }
+
+    .output-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      margin-top: 18px;
     }
 
     .files-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 0.75rem;
-      margin: 1rem 0;
+      gap: 10px;
     }
 
     .file-item {
-      display: flex;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
       align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      background: var(--bg-card);
+      padding: 10px;
       border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
+      border-radius: var(--radius);
+      background: rgba(29, 35, 48, 0.58);
     }
 
-    .file-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--bg-secondary);
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      flex-shrink: 0;
+    .file-thumb {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--cyan);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      font-weight: 950;
+      text-transform: uppercase;
     }
 
-    .file-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .file-info h5 {
-      font-size: 0.8rem;
-      font-weight: 600;
-      white-space: nowrap;
+    .file-item strong {
+      display: block;
       overflow: hidden;
       text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.82rem;
     }
 
-    .file-info p {
-      font-size: 0.7rem;
-      color: var(--text-muted);
+    .file-item span {
+      color: var(--faint);
+      font-size: 0.72rem;
     }
 
-    /* Code Block */
     .code-block {
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1rem;
-      margin-top: 1rem;
       position: relative;
     }
 
-    .code-block pre {
-      font-family: 'JetBrains Mono', 'SF Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
+    .code-block textarea {
+      min-height: 294px;
+      padding-top: 44px;
+      white-space: pre;
+      overflow: auto;
     }
 
-    .code-block .copy-btn {
+    .copy-code {
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
+      top: 10px;
+      right: 10px;
     }
 
-    /* Progress */
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: var(--bg-card);
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 1rem 0;
+    .status-banner {
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(45, 248, 230, 0.08);
+      color: var(--muted);
+      font-size: 0.86rem;
+      margin-top: 12px;
     }
 
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--success));
-      border-radius: 4px;
-      transition: width 0.3s ease;
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 28px;
+      z-index: 20;
+      transform: translateX(-50%);
+      padding: 0.8rem 1rem;
+      border: 1px solid rgba(112, 255, 156, 0.34);
+      border-radius: var(--radius);
+      background: rgba(11, 18, 16, 0.94);
+      color: var(--green);
+      font-weight: 850;
+      box-shadow: var(--shadow);
+      animation: toastIn 2.1s ease both;
     }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 1rem;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.85rem;
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+      12%, 82% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
     }
 
-    footer a {
-      color: var(--accent);
-      text-decoration: none;
+    .hidden {
+      display: none !important;
     }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Utilities */
-    .hidden { display: none !important; }
-
-    .mt-1 { margin-top: 1rem; }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
-      }
-
-      header h1 {
-        font-size: 1.5rem;
-      }
-
-      .source-preview {
-        flex-direction: column;
-        text-align: center;
+    @media (max-width: 1000px) {
+      .hero,
+      .workflow,
+      .output-layout {
+        grid-template-columns: 1fr;
       }
 
       .preview-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
     }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
+    @media (max-width: 680px) {
+      .container {
+        width: min(100% - 40px, 1280px);
+        padding-top: 24px;
+      }
 
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--success);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      z-index: 1000;
-      animation: fadeInOut 2s ease;
-    }
+      .top-nav {
+        margin-bottom: 40px;
+      }
 
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      h1 {
+        font-size: clamp(2.7rem, 13vw, 4rem);
+      }
+
+      .hero-card-row,
+      .source-preview,
+      .control-grid,
+      .device-preview {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        display: none;
+      }
+
+      .source-preview {
+        text-align: center;
+        justify-items: center;
+      }
+
+      .preview-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .panel {
+        padding: 16px;
+      }
     }
   </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">🎨</div>
-        <h1>Favicon Generator</h1>
+    <nav class="top-nav" aria-label="Tool navigation">
+      <a class="back-link" href="../">Tools</a>
+      <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
+    </nav>
+
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Favicon studio</p>
+        <h1>Generate the full icon kit your site actually needs.</h1>
+        <p class="hero-copy">Drop in one logo and export browser favicons, Apple touch icons, Android/PWA icons, maskable icons, manifest files, Windows tile config, and copy-paste install code. Everything runs locally in your browser.</p>
+        <div class="trust-row" aria-label="Tool details">
+          <span class="pill"><span>01</span> No uploads</span>
+          <span class="pill"><span>02</span> ICO + PNG + manifest</span>
+          <span class="pill"><span>03</span> Maskable safe zone</span>
+        </div>
       </div>
-      <p class="tagline">Generate all favicon sizes from one image</p>
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> 100% Private</div>
-        <div class="trust-badge"><span>💻</span> Runs Locally</div>
-        <div class="trust-badge"><span>📦</span> Download as ZIP</div>
-      </div>
+
+      <aside class="hero-card" aria-label="Included outputs">
+        <div class="hero-card-row">
+          <span>Browser</span>
+          <div>
+            <strong>Classic favicon coverage</strong>
+            <p>16, 32, and 48 pixel PNGs plus multi-size favicon.ico.</p>
+          </div>
+        </div>
+        <div class="hero-card-row">
+          <span>Mobile</span>
+          <div>
+            <strong>Apple and Android ready</strong>
+            <p>Apple touch icon, PWA icons, and optional legacy tile config.</p>
+          </div>
+        </div>
+        <div class="hero-card-row">
+          <span>Install</span>
+          <div>
+            <strong>Manifest and snippets</strong>
+            <p>site.webmanifest, HTML tags, README, and generated asset manifest.</p>
+          </div>
+        </div>
+      </aside>
     </header>
 
-    <!-- Upload Section -->
-    <section class="upload-section">
-      <div class="drop-zone" id="dropZone">
-        <div class="drop-zone-content" id="dropZoneContent">
-          <div class="drop-zone-icon">📁</div>
-          <h3>Drop your image here</h3>
-          <p>or click to browse • PNG, JPG, SVG, or WebP • Square recommended</p>
-        </div>
-        <div class="source-preview hidden" id="sourcePreview">
-          <div class="source-image-wrapper">
-            <img id="sourceImage" src="" alt="Source image">
+    <main class="workflow">
+      <div class="stack">
+        <section class="panel" aria-labelledby="upload-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="upload-title">Source</h2>
+            <span class="panel-kicker">PNG, JPG, SVG, WebP</span>
           </div>
-          <div class="source-info">
-            <h4 id="sourceFileName">image.png</h4>
-            <p id="sourceFileInfo">512 × 512 • PNG • 24 KB</p>
-            <div class="source-actions">
-              <button class="btn btn-secondary btn-sm" onclick="clearImage()">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="width:16px;height:16px">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                Remove
-              </button>
+
+          <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Choose source image">
+            <div id="dropZoneContent">
+              <div class="upload-mark">IMG</div>
+              <h2>Drop an image here</h2>
+              <p>Use a square 1024 x 1024 SVG or PNG for the best results.</p>
+            </div>
+
+            <div class="source-preview hidden" id="sourcePreview">
+              <div class="source-image-frame">
+                <img id="sourceImage" src="" alt="Source image preview">
+              </div>
+              <div class="source-info">
+                <h3 id="sourceFileName">image.png</h3>
+                <p id="sourceFileInfo">512 x 512 - PNG - 24 KB</p>
+                <p id="sourceAdvice" class="status-line">Ready to generate.</p>
+                <div class="source-actions">
+                  <button class="btn btn-secondary" type="button" id="replaceBtn">Replace</button>
+                  <button class="btn btn-secondary" type="button" id="clearBtn">Remove</button>
+                </div>
+              </div>
+            </div>
+
+            <input type="file" id="fileInput" accept="image/png,image/jpeg,image/svg+xml,image/webp">
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="brand-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="brand-title">Brand And App</h2>
+          </div>
+
+          <div class="control-grid">
+            <div class="field">
+              <label for="siteName">Site name</label>
+              <input type="text" id="siteName" value="My Website" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="shortName">Short name</label>
+              <input type="text" id="shortName" value="Website" maxlength="24" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="startUrl">Start URL</label>
+              <input type="url" id="startUrl" value="/" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="displayMode">PWA display</label>
+              <select id="displayMode">
+                <option value="standalone">Standalone</option>
+                <option value="minimal-ui">Minimal UI</option>
+                <option value="browser">Browser</option>
+                <option value="fullscreen">Fullscreen</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="themeColor">Theme color</label>
+              <input type="color" id="themeColor" value="#08090d">
+            </div>
+            <div class="field">
+              <label for="backgroundColor">Icon background</label>
+              <input type="color" id="backgroundColor" value="#08090d">
             </div>
           </div>
-        </div>
-        <input type="file" id="fileInput" accept="image/png,image/jpeg,image/svg+xml,image/webp">
-      </div>
-    </section>
+        </section>
 
-    <!-- Options Section -->
-    <section class="options-section" id="optionsSection">
-      <div class="section-title">⚙️ Options</div>
-      <div class="options-grid">
-        <div class="option-group">
-          <label for="bgColor">Background Color (for transparent PNGs)</label>
-          <input type="color" id="bgColor" value="#ffffff">
-        </div>
-        <div class="option-group">
-          <label for="siteName">Site Name (for manifest)</label>
-          <input type="text" id="siteName" placeholder="My Website" value="">
-        </div>
-        <div class="option-group" style="justify-content: flex-end;">
-          <label class="checkbox-label">
-            <input type="checkbox" id="includeIco" checked>
-            Include favicon.ico (legacy)
-          </label>
-          <label class="checkbox-label">
-            <input type="checkbox" id="includeMsTile" checked>
-            Include Windows tile
-          </label>
-        </div>
-      </div>
-    </section>
-
-    <!-- Preview Section -->
-    <section class="preview-section hidden" id="previewSection">
-      <div class="section-title">👁️ Preview</div>
-      
-      <!-- Browser Tab Preview -->
-      <div class="browser-preview">
-        <div class="browser-tab-bar">
-          <div class="browser-dots">
-            <div class="browser-dot red"></div>
-            <div class="browser-dot yellow"></div>
-            <div class="browser-dot green"></div>
+        <section class="panel" aria-labelledby="options-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="options-title">Export Options</h2>
           </div>
-          <div class="browser-tab">
-            <img id="tabPreviewIcon" src="" alt="">
-            <span id="tabPreviewTitle">Your Website</span>
+
+          <div class="control-grid">
+            <div class="field">
+              <label for="fitMode">Image fit</label>
+              <select id="fitMode">
+                <option value="contain">Contain full image</option>
+                <option value="cover">Cover square</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="backgroundMode">Standard icon background</label>
+              <select id="backgroundMode">
+                <option value="transparent">Transparent when possible</option>
+                <option value="solid">Always solid</option>
+              </select>
+            </div>
+            <div class="field">
+              <div class="range-top">
+                <label for="paddingRange">Standard padding</label>
+                <span class="range-value" id="paddingValue">8%</span>
+              </div>
+              <input type="range" id="paddingRange" min="0" max="32" step="1" value="8">
+            </div>
+            <div class="field">
+              <div class="range-top">
+                <label for="maskPaddingRange">Maskable padding</label>
+                <span class="range-value" id="maskPaddingValue">18%</span>
+              </div>
+              <input type="range" id="maskPaddingRange" min="10" max="28" step="1" value="18">
+            </div>
+            <label class="checkbox-card">
+              <input type="checkbox" id="includeIco" checked>
+              <span><strong>favicon.ico</strong><span>Multi-size ICO with 16, 32, and 48 pixel entries.</span></span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="includeMaskable" checked>
+              <span><strong>Maskable PWA icons</strong><span>Opaque 192 and 512 pixel icons padded for adaptive masks.</span></span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="includeExtended" checked>
+              <span><strong>Extended legacy sizes</strong><span>48, 72, 96, 128, 144, 150, 256, 384, and 1024 pixel PNGs.</span></span>
+            </label>
+            <label class="checkbox-card">
+              <input type="checkbox" id="includeMsTile" checked>
+              <span><strong>Windows tile config</strong><span>browserconfig.xml plus a 150 pixel tile image.</span></span>
+            </label>
           </div>
-        </div>
-        <div class="browser-content"></div>
+
+          <div class="quick-actions">
+            <button class="btn btn-primary" type="button" id="generateBtn" disabled>Generate And Download ZIP</button>
+            <button class="btn btn-secondary" type="button" id="refreshBtn" disabled>Refresh Preview</button>
+          </div>
+        </section>
       </div>
 
-      <!-- Size Previews -->
-      <div class="preview-grid" id="previewGrid">
-        <!-- Generated dynamically -->
+      <div class="stack">
+        <section class="quality-card" aria-labelledby="quality-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="quality-title">Readiness</h2>
+            <span class="panel-kicker" id="qualityScore">Waiting for image</span>
+          </div>
+          <div class="quality-list" id="qualityList">
+            <div class="quality-row"><span class="quality-dot warn"></span><span>Upload a source image to check size, shape, transparency, and maskable readiness.</span></div>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="previewSection" aria-labelledby="preview-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="preview-title">Live Preview</h2>
+            <span class="panel-kicker">Generated from current options</span>
+          </div>
+
+          <div class="device-preview">
+            <div class="device-card">
+              <div class="device-icon tab">
+                <img id="tabIcon" alt="">
+                <span class="tab-title" id="tabTitle">My Website</span>
+              </div>
+              <strong>Browser tab</strong>
+            </div>
+            <div class="device-card">
+              <div class="device-icon ios">
+                <img id="iosIcon" alt="">
+              </div>
+              <strong>Apple touch</strong>
+            </div>
+            <div class="device-card">
+              <div class="device-icon android">
+                <img id="maskIcon" alt="">
+              </div>
+              <strong>Maskable crop</strong>
+            </div>
+          </div>
+
+          <div class="preview-grid" id="previewGrid"></div>
+        </section>
+
+        <section class="panel hidden" id="outputSection" aria-labelledby="output-title">
+          <div class="panel-header">
+            <h2 class="panel-title" id="output-title">Generated Kit</h2>
+            <span class="panel-kicker" id="outputCount">0 files</span>
+          </div>
+          <div class="status-banner" id="outputStatus">Your ZIP downloaded. The files and install snippet are listed below.</div>
+
+          <div class="output-layout">
+            <div class="files-list" id="filesList"></div>
+            <div class="code-block">
+              <button class="btn btn-secondary copy-code" type="button" id="copyCodeBtn">Copy</button>
+              <textarea id="htmlCode" readonly spellcheck="false"></textarea>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
-
-    <!-- Generate Button -->
-    <section class="generate-section">
-      <button class="btn btn-success" id="generateBtn" disabled onclick="generateFavicons()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Generate & Download ZIP
-      </button>
-    </section>
-
-    <!-- Output Section -->
-    <section class="output-section hidden" id="outputSection">
-      <div class="section-title">📦 Generated Files</div>
-      
-      <div class="files-list" id="filesList">
-        <!-- Generated dynamically -->
-      </div>
-
-      <div class="section-title mt-1">📋 HTML Code</div>
-      <div class="code-block">
-        <button class="btn btn-secondary btn-sm copy-btn" onclick="copyCode()">Copy</button>
-        <pre id="htmlCode"></pre>
-      </div>
-    </section>
-
-    <footer>
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
-    </footer>
+    </main>
   </div>
 
+  <script src="jszip.min.js"></script>
   <script>
-    // ============================================
-    // Configuration
-    // ============================================
-    const FAVICON_SIZES = [
-      { name: 'favicon-16x16.png', size: 16, type: 'png' },
-      { name: 'favicon-32x32.png', size: 32, type: 'png' },
-      { name: 'apple-touch-icon.png', size: 180, type: 'png', useBackground: true },
-      { name: 'android-chrome-192x192.png', size: 192, type: 'png' },
-      { name: 'android-chrome-512x512.png', size: 512, type: 'png' },
-      { name: 'mstile-150x150.png', size: 150, type: 'png', useBackground: true },
+    const STANDARD_PNGS = [
+      { name: "favicon-16x16.png", size: 16, purpose: "Browser tab" },
+      { name: "favicon-32x32.png", size: 32, purpose: "Browser tab" },
+      { name: "apple-touch-icon.png", size: 180, purpose: "Apple touch", solid: true, padding: 10 },
+      { name: "android-chrome-192x192.png", size: 192, purpose: "PWA" },
+      { name: "android-chrome-512x512.png", size: 512, purpose: "PWA" }
+    ];
+
+    const EXTENDED_PNGS = [
+      { name: "icons/icon-48x48.png", size: 48, purpose: "Legacy" },
+      { name: "icons/icon-72x72.png", size: 72, purpose: "Legacy" },
+      { name: "icons/icon-96x96.png", size: 96, purpose: "Legacy" },
+      { name: "icons/icon-128x128.png", size: 128, purpose: "Legacy" },
+      { name: "icons/icon-144x144.png", size: 144, purpose: "Legacy" },
+      { name: "icons/mstile-150x150.png", size: 150, purpose: "Windows tile", solid: true, padding: 10 },
+      { name: "icons/icon-256x256.png", size: 256, purpose: "Legacy" },
+      { name: "icons/icon-384x384.png", size: 384, purpose: "PWA" },
+      { name: "icons/icon-1024x1024.png", size: 1024, purpose: "High resolution" }
+    ];
+
+    const MASKABLE_PNGS = [
+      { name: "icons/maskable-192x192.png", size: 192, purpose: "Maskable PWA", solid: true, maskable: true },
+      { name: "icons/maskable-512x512.png", size: 512, purpose: "Maskable PWA", solid: true, maskable: true }
     ];
 
     const ICO_SIZES = [16, 32, 48];
 
-    let sourceImage = null;
-    let sourceFileName = '';
+    const state = {
+      sourceImage: null,
+      sourceFile: null,
+      sourceDataUrl: "",
+      sourceSvgText: "",
+      generatedFiles: []
+    };
 
-    // ============================================
-    // File Upload & Drop Zone
-    // ============================================
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const dropZoneContent = document.getElementById('dropZoneContent');
-    const sourcePreview = document.getElementById('sourcePreview');
+    const els = {
+      dropZone: document.getElementById("dropZone"),
+      fileInput: document.getElementById("fileInput"),
+      dropZoneContent: document.getElementById("dropZoneContent"),
+      sourcePreview: document.getElementById("sourcePreview"),
+      sourceImage: document.getElementById("sourceImage"),
+      sourceFileName: document.getElementById("sourceFileName"),
+      sourceFileInfo: document.getElementById("sourceFileInfo"),
+      sourceAdvice: document.getElementById("sourceAdvice"),
+      generateBtn: document.getElementById("generateBtn"),
+      refreshBtn: document.getElementById("refreshBtn"),
+      previewSection: document.getElementById("previewSection"),
+      previewGrid: document.getElementById("previewGrid"),
+      outputSection: document.getElementById("outputSection"),
+      outputCount: document.getElementById("outputCount"),
+      outputStatus: document.getElementById("outputStatus"),
+      filesList: document.getElementById("filesList"),
+      htmlCode: document.getElementById("htmlCode"),
+      qualityList: document.getElementById("qualityList"),
+      qualityScore: document.getElementById("qualityScore"),
+      tabIcon: document.getElementById("tabIcon"),
+      iosIcon: document.getElementById("iosIcon"),
+      maskIcon: document.getElementById("maskIcon"),
+      tabTitle: document.getElementById("tabTitle"),
+      paddingRange: document.getElementById("paddingRange"),
+      maskPaddingRange: document.getElementById("maskPaddingRange"),
+      paddingValue: document.getElementById("paddingValue"),
+      maskPaddingValue: document.getElementById("maskPaddingValue")
+    };
 
-    dropZone.addEventListener('click', () => fileInput.click());
+    bindEvents();
+    syncRangeLabels();
 
-    dropZone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      dropZone.classList.add('dragover');
-    });
+    function bindEvents() {
+      els.dropZone.addEventListener("click", event => {
+        if (event.target.closest("button")) return;
+        els.fileInput.click();
+      });
 
-    dropZone.addEventListener('dragleave', () => {
-      dropZone.classList.remove('dragover');
-    });
+      els.dropZone.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          els.fileInput.click();
+        }
+      });
 
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      dropZone.classList.remove('dragover');
-      const file = e.dataTransfer.files[0];
-      if (file && file.type.startsWith('image/')) {
-        handleFile(file);
-      }
-    });
+      els.fileInput.addEventListener("change", event => {
+        const file = event.target.files[0];
+        if (file) handleFile(file);
+      });
 
-    fileInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        handleFile(file);
-      }
-    });
+      ["dragenter", "dragover"].forEach(type => {
+        els.dropZone.addEventListener(type, event => {
+          event.preventDefault();
+          els.dropZone.classList.add("dragover");
+        });
+      });
+
+      ["dragleave", "drop"].forEach(type => {
+        els.dropZone.addEventListener(type, event => {
+          event.preventDefault();
+          els.dropZone.classList.remove("dragover");
+        });
+      });
+
+      els.dropZone.addEventListener("drop", event => {
+        const file = event.dataTransfer.files[0];
+        if (file) handleFile(file);
+      });
+
+      document.getElementById("replaceBtn").addEventListener("click", () => els.fileInput.click());
+      document.getElementById("clearBtn").addEventListener("click", clearImage);
+      els.generateBtn.addEventListener("click", generateFavicons);
+      els.refreshBtn.addEventListener("click", generatePreviews);
+      document.getElementById("copyCodeBtn").addEventListener("click", copyCode);
+
+      [
+        "siteName", "shortName", "startUrl", "displayMode", "themeColor", "backgroundColor",
+        "fitMode", "backgroundMode", "paddingRange", "maskPaddingRange", "includeIco",
+        "includeMaskable", "includeExtended", "includeMsTile"
+      ].forEach(id => {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          syncRangeLabels();
+          if (state.sourceImage) generatePreviews();
+        });
+        input.addEventListener("change", () => {
+          syncRangeLabels();
+          if (state.sourceImage) generatePreviews();
+        });
+      });
+    }
+
+    function syncRangeLabels() {
+      els.paddingValue.textContent = `${els.paddingRange.value}%`;
+      els.maskPaddingValue.textContent = `${els.maskPaddingRange.value}%`;
+    }
 
     function handleFile(file) {
-      sourceFileName = file.name;
-      
+      if (!file.type.startsWith("image/")) {
+        showToast("Please choose an image file");
+        return;
+      }
+
       const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          sourceImage = img;
-          showSourcePreview(file, img);
+      reader.onload = event => {
+        const dataUrl = event.target.result;
+        const image = new Image();
+        image.onload = () => {
+          state.sourceFile = file;
+          state.sourceImage = image;
+          state.sourceDataUrl = dataUrl;
+          state.sourceSvgText = "";
+
+          if (file.type === "image/svg+xml") {
+            file.text().then(text => {
+              state.sourceSvgText = text;
+            }).catch(() => {
+              state.sourceSvgText = "";
+            });
+          }
+
+          showSourcePreview(file, image);
+          updateQuality();
           generatePreviews();
-          document.getElementById('generateBtn').disabled = false;
+          els.generateBtn.disabled = false;
+          els.refreshBtn.disabled = false;
         };
-        img.src = e.target.result;
+        image.onerror = () => showToast("That image could not be loaded");
+        image.src = dataUrl;
       };
       reader.readAsDataURL(file);
     }
 
-    function showSourcePreview(file, img) {
-      document.getElementById('sourceImage').src = img.src;
-      document.getElementById('sourceFileName').textContent = file.name;
-      
-      const sizeKB = (file.size / 1024).toFixed(1);
-      const format = file.type.split('/')[1].toUpperCase();
-      document.getElementById('sourceFileInfo').textContent = 
-        `${img.width} × ${img.height} • ${format} • ${sizeKB} KB`;
+    function showSourcePreview(file, image) {
+      const sizeKb = file.size >= 1024 ? `${(file.size / 1024).toFixed(1)} KB` : `${file.size} B`;
+      const format = file.type.split("/")[1] ? file.type.split("/")[1].toUpperCase() : "IMAGE";
 
-      dropZoneContent.classList.add('hidden');
-      sourcePreview.classList.remove('hidden');
-      dropZone.classList.add('has-image');
+      els.sourceImage.src = image.src;
+      els.sourceFileName.textContent = file.name;
+      els.sourceFileInfo.textContent = `${image.width} x ${image.height} - ${format} - ${sizeKb}`;
+      els.sourceAdvice.textContent = sourceAdvice(image);
+      els.dropZoneContent.classList.add("hidden");
+      els.sourcePreview.classList.remove("hidden");
+      els.outputSection.classList.add("hidden");
+    }
+
+    function sourceAdvice(image) {
+      if (image.width !== image.height) return "Non-square images are supported, but square source art is sharper.";
+      if (Math.min(image.width, image.height) < 512) return "This will work, but 1024 x 1024 or larger is ideal.";
+      return "Great source size. Ready for crisp browser and app icons.";
     }
 
     function clearImage() {
-      sourceImage = null;
-      sourceFileName = '';
-      fileInput.value = '';
-      
-      dropZoneContent.classList.remove('hidden');
-      sourcePreview.classList.add('hidden');
-      dropZone.classList.remove('has-image');
-      
-      document.getElementById('previewSection').classList.add('hidden');
-      document.getElementById('outputSection').classList.add('hidden');
-      document.getElementById('generateBtn').disabled = true;
+      state.sourceImage = null;
+      state.sourceFile = null;
+      state.sourceDataUrl = "";
+      state.sourceSvgText = "";
+      els.fileInput.value = "";
+      els.dropZoneContent.classList.remove("hidden");
+      els.sourcePreview.classList.add("hidden");
+      els.previewSection.classList.add("hidden");
+      els.outputSection.classList.add("hidden");
+      els.generateBtn.disabled = true;
+      els.refreshBtn.disabled = true;
+      els.qualityScore.textContent = "Waiting for image";
+      els.qualityList.innerHTML = `<div class="quality-row"><span class="quality-dot warn"></span><span>Upload a source image to check size, shape, transparency, and maskable readiness.</span></div>`;
     }
 
-    // ============================================
-    // Preview Generation
-    // ============================================
-    function generatePreviews() {
-      const previewSection = document.getElementById('previewSection');
-      const previewGrid = document.getElementById('previewGrid');
-      
-      // Update browser tab preview
-      const tabIcon = document.getElementById('tabPreviewIcon');
-      tabIcon.src = resizeImage(sourceImage, 16);
-      
-      const siteName = document.getElementById('siteName').value || 'Your Website';
-      document.getElementById('tabPreviewTitle').textContent = siteName;
+    function updateQuality() {
+      const image = state.sourceImage;
+      if (!image) return;
 
-      // Generate size previews
-      previewGrid.innerHTML = '';
-      
-      const previewSizes = [
-        { name: 'favicon.ico', size: 32, label: 'ICO' },
-        { name: '16×16', size: 16, label: 'Browser' },
-        { name: '32×32', size: 32, label: 'Browser' },
-        { name: '180×180', size: 180, label: 'Apple' },
-        { name: '192×192', size: 192, label: 'Android' },
-        { name: '512×512', size: 512, label: 'PWA' },
-      ];
+      const rows = [];
+      const minDimension = Math.min(image.width, image.height);
+      const isSquare = image.width === image.height;
+      const isLarge = minDimension >= 1024;
+      const isGood = minDimension >= 512;
+      const fileIsSvg = state.sourceFile && state.sourceFile.type === "image/svg+xml";
+      const maskPadding = Number(document.getElementById("maskPaddingRange").value);
 
-      previewSizes.forEach(preview => {
-        const div = document.createElement('div');
-        div.className = 'preview-item';
-        div.innerHTML = `
-          <div class="preview-item-image ${preview.size > 64 ? 'large' : ''}">
-            <img src="${resizeImage(sourceImage, Math.min(preview.size, 64))}" alt="${preview.name}">
-          </div>
-          <h4>${preview.name}</h4>
-          <p>${preview.label}</p>
-        `;
-        previewGrid.appendChild(div);
+      rows.push({
+        type: isGood ? "good" : "bad",
+        text: isGood ? "Source is large enough for app icons." : "Source is under 512px. Icons may look soft on high-density displays."
+      });
+      rows.push({
+        type: isSquare ? "good" : "warn",
+        text: isSquare ? "Source is square, which is ideal for favicon output." : "Source is not square. The generator will center and pad or crop based on your fit setting."
+      });
+      rows.push({
+        type: maskPadding >= 16 ? "good" : "warn",
+        text: maskPadding >= 16 ? "Maskable padding keeps important artwork inside the adaptive icon safe zone." : "Consider more maskable padding so Android masks do not crop important details."
+      });
+      rows.push({
+        type: fileIsSvg || isLarge ? "good" : "warn",
+        text: fileIsSvg ? "SVG source can scale cleanly before raster export." : isLarge ? "Large raster source should export cleanly." : "A 1024px source gives the best 512px and 1024px exports."
       });
 
-      previewSection.classList.remove('hidden');
+      const good = rows.filter(row => row.type === "good").length;
+      els.qualityScore.textContent = `${good}/${rows.length} checks strong`;
+      els.qualityList.innerHTML = rows.map(row => `
+        <div class="quality-row">
+          <span class="quality-dot ${row.type === "good" ? "" : row.type}"></span>
+          <span>${escapeHTML(row.text)}</span>
+        </div>
+      `).join("");
     }
 
-    function resizeImage(img, size, useBackground = false) {
-      const canvas = document.createElement('canvas');
+    function getOptions() {
+      return {
+        siteName: document.getElementById("siteName").value.trim() || "My Website",
+        shortName: document.getElementById("shortName").value.trim() || "Website",
+        startUrl: document.getElementById("startUrl").value.trim() || "/",
+        displayMode: document.getElementById("displayMode").value,
+        themeColor: document.getElementById("themeColor").value,
+        backgroundColor: document.getElementById("backgroundColor").value,
+        fitMode: document.getElementById("fitMode").value,
+        backgroundMode: document.getElementById("backgroundMode").value,
+        padding: Number(document.getElementById("paddingRange").value),
+        maskPadding: Number(document.getElementById("maskPaddingRange").value),
+        includeIco: document.getElementById("includeIco").checked,
+        includeMaskable: document.getElementById("includeMaskable").checked,
+        includeExtended: document.getElementById("includeExtended").checked,
+        includeMsTile: document.getElementById("includeMsTile").checked
+      };
+    }
+
+    function getOutputConfigs(options) {
+      const configs = [...STANDARD_PNGS];
+      if (options.includeExtended) {
+        configs.push(...EXTENDED_PNGS.filter(config => options.includeMsTile || !config.name.includes("mstile")));
+      } else if (options.includeMsTile) {
+        configs.push({ name: "icons/mstile-150x150.png", size: 150, purpose: "Windows tile", solid: true, padding: 10 });
+      }
+      if (options.includeMaskable) configs.push(...MASKABLE_PNGS);
+      return configs;
+    }
+
+    function generatePreviews() {
+      if (!state.sourceImage) return;
+
+      const options = getOptions();
+      updateQuality();
+      els.tabTitle.textContent = options.siteName;
+      els.tabIcon.src = renderIconDataUrl(16, options, { padding: options.padding });
+      els.iosIcon.src = renderIconDataUrl(180, options, { solid: true, padding: 10 });
+      els.maskIcon.src = renderIconDataUrl(192, options, { solid: true, padding: options.maskPadding });
+
+      const previewItems = [
+        { label: "16 x 16", detail: "Browser tab", size: 16, className: "small" },
+        { label: "32 x 32", detail: "Bookmark", size: 32 },
+        { label: "48 x 48", detail: "Desktop", size: 48 },
+        { label: "180 x 180", detail: "Apple touch", size: 180, solid: true, padding: 10 },
+        { label: "192 x 192", detail: "PWA", size: 192 },
+        { label: "512 x 512", detail: "PWA", size: 512 },
+        { label: "Mask circle", detail: "Safe-zone check", size: 192, solid: true, padding: options.maskPadding, className: "circle" },
+        { label: "Mask rounded", detail: "Adaptive check", size: 192, solid: true, padding: options.maskPadding, className: "rounded" }
+      ];
+
+      els.previewGrid.innerHTML = previewItems.map(item => `
+        <article class="preview-item">
+          <div class="preview-swatch ${item.className || ""}">
+            <img src="${renderIconDataUrl(item.size, options, item)}" alt="">
+          </div>
+          <strong>${item.label}</strong>
+          <span>${item.detail}</span>
+        </article>
+      `).join("");
+
+      els.previewSection.classList.remove("hidden");
+    }
+
+    function renderIconDataUrl(size, options, override = {}) {
+      const canvas = document.createElement("canvas");
       canvas.width = size;
       canvas.height = size;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
+      renderIconToContext(ctx, size, options, override);
+      return canvas.toDataURL("image/png");
+    }
 
-      // Fill background if needed
-      if (useBackground) {
-        ctx.fillStyle = document.getElementById('bgColor').value;
+    function renderIconBlob(size, options, override = {}) {
+      return Promise.resolve(dataUrlToBlob(renderIconDataUrl(size, options, override)));
+    }
+
+    function renderIconToContext(ctx, size, options, override = {}) {
+      const image = state.sourceImage;
+      const paddingPercent = override.padding !== undefined
+        ? override.padding
+        : override.maskable
+          ? options.maskPadding
+          : options.padding;
+      const padding = Math.round(size * (paddingPercent / 100));
+      const solid = override.solid || options.backgroundMode === "solid";
+
+      ctx.clearRect(0, 0, size, size);
+      if (solid) {
+        ctx.fillStyle = options.backgroundColor;
         ctx.fillRect(0, 0, size, size);
       }
 
-      // Calculate scaling to fit and center
-      const scale = Math.min(size / img.width, size / img.height);
-      const x = (size - img.width * scale) / 2;
-      const y = (size - img.height * scale) / 2;
+      const target = {
+        x: padding,
+        y: padding,
+        w: Math.max(1, size - padding * 2),
+        h: Math.max(1, size - padding * 2)
+      };
+
+      const sourceRatio = image.width / image.height;
+      const targetRatio = target.w / target.h;
+      let drawW;
+      let drawH;
+
+      if (options.fitMode === "cover") {
+        if (sourceRatio > targetRatio) {
+          drawH = target.h;
+          drawW = target.h * sourceRatio;
+        } else {
+          drawW = target.w;
+          drawH = target.w / sourceRatio;
+        }
+      } else {
+        if (sourceRatio > targetRatio) {
+          drawW = target.w;
+          drawH = target.w / sourceRatio;
+        } else {
+          drawH = target.h;
+          drawW = target.h * sourceRatio;
+        }
+      }
+
+      const drawX = target.x + (target.w - drawW) / 2;
+      const drawY = target.y + (target.h - drawH) / 2;
 
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-
-      return canvas.toDataURL('image/png');
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(image, drawX, drawY, drawW, drawH);
     }
 
-    // ============================================
-    // Favicon Generation
-    // ============================================
     async function generateFavicons() {
-      if (!sourceImage) return;
+      if (!state.sourceImage) return;
+      if (!window.JSZip) {
+        showToast("ZIP engine did not load");
+        return;
+      }
 
-      const btn = document.getElementById('generateBtn');
-      btn.disabled = true;
-      btn.innerHTML = `
-        <svg class="spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="animation: spin 1s linear infinite">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-        Generating...
-      `;
-
-      // Add spin animation
-      const style = document.createElement('style');
-      style.textContent = `@keyframes spin { to { transform: rotate(360deg); } }`;
-      document.head.appendChild(style);
+      const options = getOptions();
+      els.generateBtn.disabled = true;
+      els.generateBtn.textContent = "Generating...";
 
       try {
         const zip = new JSZip();
         const files = [];
-        const bgColor = document.getElementById('bgColor').value;
-        const includeIco = document.getElementById('includeIco').checked;
-        const includeMsTile = document.getElementById('includeMsTile').checked;
+        const configs = getOutputConfigs(options);
 
-        // Generate PNGs
-        for (const config of FAVICON_SIZES) {
-          if (config.name.includes('mstile') && !includeMsTile) continue;
-          
-          const dataUrl = resizeImage(sourceImage, config.size, config.useBackground);
-          const blob = dataURLtoBlob(dataUrl);
+        for (const config of configs) {
+          const blob = await renderIconBlob(config.size, options, {
+            solid: config.solid,
+            padding: config.maskable ? options.maskPadding : (config.padding !== undefined ? config.padding : options.padding),
+            maskable: config.maskable
+          });
           zip.file(config.name, blob);
-          files.push({ name: config.name, size: blob.size });
+          files.push({ name: config.name, size: blob.size, kind: "PNG" });
         }
 
-        // Generate ICO
-        if (includeIco) {
-          const icoBlob = await generateICO(sourceImage, ICO_SIZES);
-          zip.file('favicon.ico', icoBlob);
-          files.push({ name: 'favicon.ico', size: icoBlob.size });
+        if (options.includeIco) {
+          const icoBlob = await generateICO(options);
+          zip.file("favicon.ico", icoBlob);
+          files.push({ name: "favicon.ico", size: icoBlob.size, kind: "ICO" });
         }
 
-        // Generate site.webmanifest
-        const siteName = document.getElementById('siteName').value || 'My Website';
-        const manifest = {
-          name: siteName,
-          short_name: siteName,
-          icons: [
-            { src: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-            { src: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
-          ],
-          theme_color: bgColor,
-          background_color: bgColor,
-          display: 'standalone'
-        };
-        const manifestBlob = new Blob([JSON.stringify(manifest, null, 2)], { type: 'application/json' });
-        zip.file('site.webmanifest', manifestBlob);
-        files.push({ name: 'site.webmanifest', size: manifestBlob.size });
+        if (state.sourceSvgText) {
+          zip.file("source-icon.svg", state.sourceSvgText);
+          files.push({ name: "source-icon.svg", size: new Blob([state.sourceSvgText]).size, kind: "SVG" });
+        }
 
-        // Generate browserconfig.xml if MS tile is included
-        if (includeMsTile) {
-          const browserconfig = `<?xml version="1.0" encoding="utf-8"?>
+        const manifestText = JSON.stringify(createManifest(options), null, 2);
+        const manifestBlob = new Blob([manifestText], { type: "application/manifest+json" });
+        zip.file("site.webmanifest", manifestBlob);
+        files.push({ name: "site.webmanifest", size: manifestBlob.size, kind: "JSON" });
+
+        if (options.includeMsTile) {
+          const browserConfig = createBrowserConfig(options);
+          const browserBlob = new Blob([browserConfig], { type: "application/xml" });
+          zip.file("browserconfig.xml", browserBlob);
+          files.push({ name: "browserconfig.xml", size: browserBlob.size, kind: "XML" });
+        }
+
+        const snippet = createHtmlSnippet(options);
+        const readme = createReadme(options, snippet);
+        const assetManifest = JSON.stringify({
+          generated_at: new Date().toISOString(),
+          source: state.sourceFile ? state.sourceFile.name : "uploaded image",
+          files: files.map(file => file.name)
+        }, null, 2);
+
+        zip.file("html-snippet.txt", snippet);
+        zip.file("README.md", readme);
+        zip.file("asset-manifest.json", assetManifest);
+        files.push(
+          { name: "html-snippet.txt", size: new Blob([snippet]).size, kind: "TXT" },
+          { name: "README.md", size: new Blob([readme]).size, kind: "MD" },
+          { name: "asset-manifest.json", size: new Blob([assetManifest]).size, kind: "JSON" }
+        );
+
+        const zipBlob = await zip.generateAsync({ type: "blob" });
+        downloadBlob(zipBlob, "favicon-kit.zip");
+        state.generatedFiles = files;
+        showOutput(files, snippet, zipBlob.size);
+        showToast("Favicon kit downloaded");
+      } catch (error) {
+        console.error(error);
+        showToast("Could not generate the kit");
+      } finally {
+        els.generateBtn.disabled = false;
+        els.generateBtn.textContent = "Generate And Download ZIP";
+      }
+    }
+
+    function createManifest(options) {
+      const icons = [
+        { src: "/android-chrome-192x192.png", sizes: "192x192", type: "image/png" },
+        { src: "/android-chrome-512x512.png", sizes: "512x512", type: "image/png" }
+      ];
+
+      if (options.includeExtended) {
+        icons.push(
+          { src: "/icons/icon-384x384.png", sizes: "384x384", type: "image/png" },
+          { src: "/icons/icon-1024x1024.png", sizes: "1024x1024", type: "image/png" }
+        );
+      }
+
+      if (options.includeMaskable) {
+        icons.push(
+          { src: "/icons/maskable-192x192.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+          { src: "/icons/maskable-512x512.png", sizes: "512x512", type: "image/png", purpose: "maskable" }
+        );
+      }
+
+      return {
+        name: options.siteName,
+        short_name: options.shortName,
+        start_url: options.startUrl,
+        display: options.displayMode,
+        theme_color: options.themeColor,
+        background_color: options.backgroundColor,
+        icons
+      };
+    }
+
+    function createBrowserConfig(options) {
+      return `<?xml version="1.0" encoding="utf-8"?>
 <browserconfig>
   <msapplication>
     <tile>
-      <square150x150logo src="/mstile-150x150.png"/>
-      <TileColor>${bgColor}</TileColor>
+      <square150x150logo src="/icons/mstile-150x150.png"/>
+      <TileColor>${options.backgroundColor}</TileColor>
     </tile>
   </msapplication>
 </browserconfig>`;
-          const bcBlob = new Blob([browserconfig], { type: 'application/xml' });
-          zip.file('browserconfig.xml', bcBlob);
-          files.push({ name: 'browserconfig.xml', size: bcBlob.size });
-        }
+    }
 
-        // Generate HTML code
-        const htmlCode = generateHTMLCode(includeIco, includeMsTile);
-        document.getElementById('htmlCode').textContent = htmlCode;
+    function createHtmlSnippet(options) {
+      const lines = [];
+      if (options.includeIco) {
+        lines.push(`<link rel="icon" href="/favicon.ico" sizes="any">`);
+      }
+      lines.push(`<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">`);
+      lines.push(`<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">`);
+      lines.push(`<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">`);
+      lines.push(`<link rel="manifest" href="/site.webmanifest">`);
+      if (options.includeMsTile) {
+        lines.push(`<meta name="msapplication-TileColor" content="${options.backgroundColor}">`);
+        lines.push(`<meta name="msapplication-config" content="/browserconfig.xml">`);
+      }
+      lines.push(`<meta name="theme-color" content="${options.themeColor}">`);
+      return lines.join("\n");
+    }
 
-        // Generate ZIP and download
-        const zipBlob = await zip.generateAsync({ type: 'blob' });
-        const url = URL.createObjectURL(zipBlob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'favicons.zip';
-        a.click();
-        URL.revokeObjectURL(url);
+    function createReadme(options, snippet) {
+      return `# Favicon Kit
 
-        // Show output section
-        showOutput(files);
-        showToast('Favicons generated and downloaded!');
+Generated by Matt Livingston's Favicon Generator.
 
-      } catch (error) {
-        console.error('Error generating favicons:', error);
-        showToast('Error generating favicons. Please try again.');
+## Install
+
+1. Upload every generated file and folder to your site's public root.
+2. Paste this inside the <head> of your HTML:
+
+\`\`\`html
+${snippet}
+\`\`\`
+
+## Included
+
+- favicon.ico for classic browser fallback.
+- 16x16 and 32x32 PNG favicons.
+- 180x180 Apple touch icon.
+- 192x192 and 512x512 PWA icons.
+${options.includeMaskable ? "- Maskable PWA icons with safe-zone padding.\n" : ""}${options.includeExtended ? "- Extended legacy and high-resolution PNG sizes.\n" : ""}${options.includeMsTile ? "- browserconfig.xml and Windows tile image.\n" : ""}- site.webmanifest for installable web apps.
+
+All source processing happened locally in your browser.`;
+    }
+
+    async function generateICO(options) {
+      const pngBuffers = [];
+
+      for (const size of ICO_SIZES) {
+        const blob = await renderIconBlob(size, options, { padding: options.padding });
+        const buffer = await blob.arrayBuffer();
+        pngBuffers.push({ size, data: new Uint8Array(buffer) });
       }
 
-      btn.disabled = false;
-      btn.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-        </svg>
-        Generate & Download ZIP
-      `;
-    }
-
-    function generateHTMLCode(includeIco, includeMsTile) {
-      let code = '';
-      
-      if (includeIco) {
-        code += '<link rel="icon" type="image/x-icon" href="/favicon.ico">\n';
-      }
-      code += '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">\n';
-      code += '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">\n';
-      code += '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">\n';
-      code += '<link rel="manifest" href="/site.webmanifest">\n';
-      
-      if (includeMsTile) {
-        code += '<meta name="msapplication-TileColor" content="' + document.getElementById('bgColor').value + '">\n';
-        code += '<meta name="msapplication-config" content="/browserconfig.xml">\n';
-      }
-      
-      code += '<meta name="theme-color" content="' + document.getElementById('bgColor').value + '">';
-      
-      return code;
-    }
-
-    function showOutput(files) {
-      const filesList = document.getElementById('filesList');
-      filesList.innerHTML = '';
-
-      files.forEach(file => {
-        const ext = file.name.split('.').pop().toUpperCase();
-        const sizeStr = file.size > 1024 
-          ? (file.size / 1024).toFixed(1) + ' KB'
-          : file.size + ' B';
-
-        const div = document.createElement('div');
-        div.className = 'file-item';
-        div.innerHTML = `
-          <div class="file-icon">${getFileEmoji(ext)}</div>
-          <div class="file-info">
-            <h5>${file.name}</h5>
-            <p>${sizeStr}</p>
-          </div>
-        `;
-        filesList.appendChild(div);
-      });
-
-      document.getElementById('outputSection').classList.remove('hidden');
-    }
-
-    function getFileEmoji(ext) {
-      const map = {
-        'PNG': '🖼️',
-        'ICO': '⭐',
-        'WEBMANIFEST': '📄',
-        'XML': '📋'
-      };
-      return map[ext] || '📁';
-    }
-
-    // ============================================
-    // ICO Generation
-    // ============================================
-    async function generateICO(img, sizes) {
-      const images = sizes.map(size => {
-        const canvas = document.createElement('canvas');
-        canvas.width = size;
-        canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        
-        const scale = Math.min(size / img.width, size / img.height);
-        const x = (size - img.width * scale) / 2;
-        const y = (size - img.height * scale) / 2;
-        
-        ctx.drawImage(img, x, y, img.width * scale, img.height * scale);
-        
-        return ctx.getImageData(0, 0, size, size);
-      });
-
-      return createICO(images);
-    }
-
-    function createICO(images) {
-      // ICO file format:
-      // - ICONDIR (6 bytes)
-      // - ICONDIRENTRY for each image (16 bytes each)
-      // - Image data (PNG or BMP)
-
-      const pngBlobs = images.map(imgData => {
-        const canvas = document.createElement('canvas');
-        canvas.width = imgData.width;
-        canvas.height = imgData.height;
-        const ctx = canvas.getContext('2d');
-        ctx.putImageData(imgData, 0, 0);
-        
-        const dataUrl = canvas.toDataURL('image/png');
-        const binary = atob(dataUrl.split(',')[1]);
-        const array = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) {
-          array[i] = binary.charCodeAt(i);
-        }
-        return array;
-      });
-
-      // Calculate total size
       const headerSize = 6;
-      const dirEntrySize = 16 * images.length;
-      let dataOffset = headerSize + dirEntrySize;
-      
-      const totalSize = dataOffset + pngBlobs.reduce((sum, blob) => sum + blob.length, 0);
+      const entrySize = 16 * pngBuffers.length;
+      let imageOffset = headerSize + entrySize;
+      const totalSize = imageOffset + pngBuffers.reduce((sum, item) => sum + item.data.length, 0);
       const buffer = new ArrayBuffer(totalSize);
       const view = new DataView(buffer);
 
-      // ICONDIR header
-      view.setUint16(0, 0, true);      // Reserved
-      view.setUint16(2, 1, true);      // Type: 1 = ICO
-      view.setUint16(4, images.length, true); // Number of images
+      view.setUint16(0, 0, true);
+      view.setUint16(2, 1, true);
+      view.setUint16(4, pngBuffers.length, true);
 
-      // ICONDIRENTRY for each image
-      let offset = headerSize;
-      let imageDataOffset = dataOffset;
+      let entryOffset = headerSize;
+      for (const item of pngBuffers) {
+        view.setUint8(entryOffset, item.size === 256 ? 0 : item.size);
+        view.setUint8(entryOffset + 1, item.size === 256 ? 0 : item.size);
+        view.setUint8(entryOffset + 2, 0);
+        view.setUint8(entryOffset + 3, 0);
+        view.setUint16(entryOffset + 4, 1, true);
+        view.setUint16(entryOffset + 6, 32, true);
+        view.setUint32(entryOffset + 8, item.data.length, true);
+        view.setUint32(entryOffset + 12, imageOffset, true);
 
-      for (let i = 0; i < images.length; i++) {
-        const imgData = images[i];
-        const pngData = pngBlobs[i];
-
-        view.setUint8(offset, imgData.width === 256 ? 0 : imgData.width);  // Width
-        view.setUint8(offset + 1, imgData.height === 256 ? 0 : imgData.height); // Height
-        view.setUint8(offset + 2, 0);     // Color palette
-        view.setUint8(offset + 3, 0);     // Reserved
-        view.setUint16(offset + 4, 1, true);  // Color planes
-        view.setUint16(offset + 6, 32, true); // Bits per pixel
-        view.setUint32(offset + 8, pngData.length, true);  // Image size
-        view.setUint32(offset + 12, imageDataOffset, true); // Image offset
-
-        offset += 16;
-        imageDataOffset += pngData.length;
+        new Uint8Array(buffer, imageOffset, item.data.length).set(item.data);
+        imageOffset += item.data.length;
+        entryOffset += 16;
       }
 
-      // Write image data
-      let dataPos = dataOffset;
-      for (const pngData of pngBlobs) {
-        const uint8View = new Uint8Array(buffer, dataPos, pngData.length);
-        uint8View.set(pngData);
-        dataPos += pngData.length;
-      }
-
-      return new Blob([buffer], { type: 'image/x-icon' });
+      return new Blob([buffer], { type: "image/x-icon" });
     }
 
-    // ============================================
-    // Utilities
-    // ============================================
-    function dataURLtoBlob(dataURL) {
-      const binary = atob(dataURL.split(',')[1]);
-      const array = new Uint8Array(binary.length);
+    function showOutput(files, snippet, zipSize) {
+      const zipLabel = formatBytes(zipSize);
+      els.outputCount.textContent = `${files.length} files`;
+      els.outputStatus.textContent = `Downloaded favicon-kit.zip (${zipLabel}). Upload these assets to your public root and paste the snippet into your site head.`;
+      els.filesList.innerHTML = files.map(file => `
+        <article class="file-item">
+          <div class="file-thumb">${escapeHTML(file.kind)}</div>
+          <div>
+            <strong title="${escapeHTML(file.name)}">${escapeHTML(file.name)}</strong>
+            <span>${formatBytes(file.size)}</span>
+          </div>
+        </article>
+      `).join("");
+      els.htmlCode.value = snippet;
+      els.outputSection.classList.remove("hidden");
+      els.outputSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function downloadBlob(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function dataUrlToBlob(dataUrl) {
+      const parts = dataUrl.split(",");
+      const mime = parts[0].match(/:(.*?);/)[1];
+      const binary = atob(parts[1]);
+      const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) {
-        array[i] = binary.charCodeAt(i);
+        bytes[i] = binary.charCodeAt(i);
       }
-      return new Blob([array], { type: 'image/png' });
+      return new Blob([bytes], { type: mime });
     }
 
     function copyCode() {
-      const code = document.getElementById('htmlCode').textContent;
-      navigator.clipboard.writeText(code).then(() => {
-        showToast('HTML code copied to clipboard!');
-      });
+      const text = els.htmlCode.value;
+      if (!text) return;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => showToast("Install code copied")).catch(() => fallbackCopy(text));
+      } else {
+        fallbackCopy(text);
+      }
+    }
+
+    function fallbackCopy(text) {
+      els.htmlCode.focus();
+      els.htmlCode.select();
+      document.execCommand("copy");
+      window.getSelection().removeAllRanges();
+      showToast("Install code copied");
     }
 
     function showToast(message) {
-      const existing = document.querySelector('.toast');
+      const existing = document.querySelector(".toast");
       if (existing) existing.remove();
 
-      const toast = document.createElement('div');
-      toast.className = 'toast';
+      const toast = document.createElement("div");
+      toast.className = "toast";
       toast.textContent = message;
       document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2000);
+      setTimeout(() => toast.remove(), 2200);
     }
 
-    // Update previews when options change
-    document.getElementById('bgColor').addEventListener('change', () => {
-      if (sourceImage) generatePreviews();
-    });
+    function formatBytes(bytes) {
+      if (bytes < 1024) return `${bytes} B`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    }
 
-    document.getElementById('siteName').addEventListener('input', () => {
-      const siteName = document.getElementById('siteName').value || 'Your Website';
-      document.getElementById('tabPreviewTitle').textContent = siteName;
-    });
+    function escapeHTML(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
   </script>
 </body>
 </html>

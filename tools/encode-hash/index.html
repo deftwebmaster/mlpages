@@ -3,1298 +3,1249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Encode & Hash | Base64, URL Encode, SHA256, MD5</title>
-  <meta name="description" content="Encode and decode Base64, URL components, and generate hashes (MD5, SHA-1, SHA-256, SHA-512). Free, private, runs locally in your browser.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Encode & Hash Lab | Matt Livingston</title>
+  <meta name="description" content="A private browser-based developer lab for Base64, URL encoding, JWT inspection, hex conversion, SHA hashes, MD5 checksums, HMACs, file checksums, and hash comparison.">
+  <meta name="keywords" content="encode hash lab, base64 encoder, url encoder, jwt decoder, sha256 hash, md5 checksum, file checksum, hmac generator, hex converter">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mattlivingston.com/tools/encode-hash/">
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      color-scheme: dark;
+      --bg: #08090f;
+      --panel: #131822;
+      --panel-2: #1b2330;
+      --panel-3: #243146;
+      --line: rgba(247, 248, 255, 0.14);
+      --line-strong: rgba(247, 248, 255, 0.24);
+      --text: #f7f8ff;
+      --muted: #b9c2d0;
+      --faint: #7f8b9b;
+      --cyan: #5aa7ff;
+      --violet: #a78bfa;
+      --green: #7cf7bd;
+      --rose: #ff647f;
+      --yellow: #f4d35e;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+      --radius: 8px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
     }
 
-    :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-input: #0f172a;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.3);
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.3);
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --purple: #8b5cf6;
-      --text-primary: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --border: #475569;
-      --radius: 12px;
-      --radius-sm: 8px;
-    }
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.6;
+      margin: 0;
       min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(247, 248, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(247, 248, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at 12% 4%, rgba(90, 167, 255, 0.19), transparent 31rem),
+        radial-gradient(circle at 88% 0%, rgba(167, 139, 250, 0.21), transparent 31rem),
+        linear-gradient(135deg, #08090f 0%, #0e121b 50%, #071414 100%);
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
     }
 
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%);
-      pointer-events: none;
-      z-index: 0;
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
     }
 
-    .container {
-      max-width: 900px;
+    button { color: inherit; }
+    a { color: inherit; }
+    code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+    .app {
+      width: min(1160px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 2rem 1.5rem;
-      position: relative;
-      z-index: 1;
+      padding: 18px 0 72px;
     }
 
-    /* Header */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
-      border-radius: var(--radius);
+    .top-nav {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: 0 4px 20px var(--accent-glow);
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 38px;
     }
 
-    header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .back-link,
+    .creator-link {
+      color: var(--faint);
+      font-size: 0.9rem;
+      font-weight: 850;
+      text-decoration: none;
     }
 
-    .tagline {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      margin-top: 0.25rem;
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    .trust-badges {
+    .hero {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--violet);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 860px;
+      margin: 0;
+      font-size: clamp(3.2rem, 15vw, 6.8rem);
+      line-height: 0.9;
+      letter-spacing: 0;
+    }
+
+    .hero-text {
+      max-width: 850px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 3.6vw, 1.35rem);
+      line-height: 1.45;
+    }
+
+    .hero-actions,
+    .row-actions,
+    .tabs,
+    .chip-row,
+    .result-actions,
+    .toggle-row {
       display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 1rem;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .trust-badge {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--text-muted);
-      font-size: 0.8rem;
+    .hero-actions {
+      margin-top: 22px;
     }
 
-    .trust-badge span {
-      color: var(--accent);
-    }
-
-    /* Tab Navigation */
-    .tab-nav {
-      display: flex;
-      justify-content: center;
-      gap: 0.25rem;
-      margin-bottom: 1.5rem;
-      background: var(--bg-secondary);
-      padding: 0.375rem;
+    .btn,
+    .tab-btn,
+    .chip,
+    .algo-btn {
+      min-height: 44px;
+      border: 1px solid var(--line-strong);
       border-radius: var(--radius);
-      width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
+      background: var(--panel-2);
+      color: var(--text);
+      font-weight: 850;
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .btn,
+    .tab-btn,
+    .algo-btn {
+      padding: 0.72rem 1rem;
+    }
+
+    .chip {
+      min-height: 36px;
+      padding: 0.42rem 0.66rem;
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+    }
+
+    .btn:hover,
+    .tab-btn:hover,
+    .chip:hover,
+    .algo-btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(46, 246, 226, 0.58);
+    }
+
+    .btn:disabled,
+    .btn:disabled:hover {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+      border-color: var(--line);
+      background: transparent;
+    }
+
+    .btn.primary,
+    .tab-btn.active,
+    .algo-btn.active {
+      color: #06100f;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+    }
+
+    .btn.secondary {
+      background: linear-gradient(135deg, rgba(46, 246, 226, 0.15), rgba(179, 108, 255, 0.18));
+    }
+
+    .btn.ghost {
+      background: transparent;
+    }
+
+    .btn.danger {
+      color: #ffc0cc;
+    }
+
+    .btn.full {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .card,
+    .panel,
+    .output-card,
+    .result-card,
+    .trust-card,
+    .file-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(19, 24, 34, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      padding: 16px;
+      background:
+        linear-gradient(135deg, rgba(46, 246, 226, 0.1), rgba(179, 108, 255, 0.12)),
+        rgba(19, 24, 34, 0.82);
+    }
+
+    .hero-panel strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--cyan);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .tabs {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      padding: 8px 0;
+      background: linear-gradient(to bottom, rgba(8, 9, 15, 0.98), rgba(8, 9, 15, 0.76));
+      backdrop-filter: blur(16px);
     }
 
     .tab-btn {
-      padding: 0.75rem 1.25rem;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: var(--radius-sm);
-      transition: all 0.2s;
-      font-family: inherit;
+      flex: 1 1 auto;
+      min-width: 118px;
+      min-height: 40px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.88rem;
+    }
+
+    .workspace {
+      display: grid;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .left-stack,
+    .right-stack,
+    .form-grid,
+    .two-grid,
+    .three-grid,
+    .result-list,
+    .trust-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      padding: 16px;
+      box-shadow: none;
+    }
+
+    .panel-header {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .tab-btn:hover {
-      color: var(--text-primary);
-      background: var(--bg-card);
-    }
-
-    .tab-btn.active {
-      background: var(--accent);
-      color: white;
-    }
-
-    .tab-btn .tab-icon {
-      font-size: 1.1rem;
-    }
-
-    /* Main Panel */
-    .tool-panel {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-    }
-
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
-
-    /* Section Headers */
-    .section-header {
-      display: flex;
+      align-items: flex-start;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.75rem;
+      gap: 14px;
+      margin-bottom: 16px;
     }
 
-    .section-title {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .panel-header h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      line-height: 1.05;
     }
 
-    /* Text Areas */
-    .input-group {
-      margin-bottom: 1rem;
+    .panel-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
     }
 
-    .input-group label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 0.5rem;
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 850;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      padding: 0.72rem 0.82rem;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #070a0f;
     }
 
     textarea {
-      width: 100%;
-      min-height: 120px;
-      padding: 1rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      line-height: 1.6;
+      min-height: 190px;
       resize: vertical;
-      transition: all 0.2s;
+      line-height: 1.45;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9rem;
     }
 
+    input:focus,
+    select:focus,
     textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-glow);
+      outline: 2px solid rgba(46, 246, 226, 0.25);
+      border-color: rgba(46, 246, 226, 0.72);
     }
 
-    textarea::placeholder {
-      color: var(--text-muted);
+    .hint,
+    .counter {
+      color: var(--faint);
+      font-size: 0.84rem;
+      line-height: 1.45;
     }
 
-    textarea.output {
-      background: var(--bg-card);
-      min-height: 100px;
+    .counter {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
     }
 
-    /* File Drop Zone */
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.4;
+    }
+
+    .checkbox input {
+      width: 18px;
+      min-height: 18px;
+      margin-top: 2px;
+      accent-color: var(--cyan);
+    }
+
+    .output-card,
+    .result-card,
+    .trust-card,
+    .file-card {
+      padding: 14px;
+      box-shadow: none;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .output-value,
+    .hash-value {
+      margin: 8px 0 0;
+      color: var(--text);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .output-card.featured {
+      background:
+        linear-gradient(135deg, rgba(46, 246, 226, 0.09), rgba(179, 108, 255, 0.12)),
+        rgba(19, 24, 34, 0.82);
+    }
+
+    .output-card span,
+    .result-card span,
+    .trust-card span,
+    .file-card span {
+      display: block;
+      color: var(--faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .output-card strong,
+    .trust-card strong,
+    .file-card strong {
+      display: block;
+      margin: 5px 0;
+      font-size: 1rem;
+    }
+
+    .output-card p,
+    .trust-card p,
+    .file-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
     .file-drop {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-sm);
-      padding: 1.5rem;
+      display: grid;
+      place-items: center;
+      min-height: 138px;
+      padding: 18px;
+      border: 1px dashed var(--line-strong);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.025);
       text-align: center;
       cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 1rem;
     }
 
     .file-drop:hover,
     .file-drop.dragover {
-      border-color: var(--accent);
-      background: rgba(59, 130, 246, 0.05);
-    }
-
-    .file-drop-icon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      opacity: 0.7;
-    }
-
-    .file-drop p {
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      border-color: rgba(46, 246, 226, 0.72);
+      background: rgba(46, 246, 226, 0.06);
     }
 
     .file-drop input {
       display: none;
     }
 
-    .file-info {
+    .algo-grid {
       display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.75rem;
-      background: var(--bg-card);
-      border-radius: var(--radius-sm);
-      margin-bottom: 1rem;
-    }
-
-    .file-info-icon {
-      font-size: 1.5rem;
-    }
-
-    .file-info-details {
-      flex: 1;
-    }
-
-    .file-info-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-
-    .file-info-size {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .file-info-remove {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 0.25rem;
-      font-size: 1.25rem;
-      line-height: 1;
-    }
-
-    .file-info-remove:hover {
-      color: var(--danger);
-    }
-
-    /* Buttons */
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.6rem 1.25rem;
-      border: none;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-
-    .btn svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-      transform: translateY(-1px);
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    .btn-success:hover {
-      background: #059669;
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      color: var(--text-primary);
-      border: 1px solid var(--border);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-input);
-      border-color: var(--accent);
-    }
-
-    .btn-sm {
-      padding: 0.4rem 0.75rem;
-      font-size: 0.8rem;
-    }
-
-    /* Button Groups */
-    .btn-group {
-      display: flex;
-      gap: 0.5rem;
       flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .action-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      margin: 1rem 0;
-      flex-wrap: wrap;
+    .algo-btn {
+      min-height: 38px;
+      padding: 0.54rem 0.72rem;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
     }
 
-    /* Direction Toggle */
-    .direction-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem;
-      background: var(--bg-card);
-      border-radius: var(--radius-sm);
+    .compare-card.match {
+      border-color: rgba(85, 233, 150, 0.62);
+      color: var(--green);
     }
 
-    .direction-toggle span {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
+    .compare-card.mismatch {
+      border-color: rgba(255, 100, 127, 0.62);
+      color: #ffc0cc;
     }
 
-    .direction-toggle span.active-direction {
-      color: var(--accent);
-      font-weight: 600;
+    .hidden {
+      display: none !important;
     }
 
-    .toggle-btn {
-      width: 50px;
-      height: 28px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      position: relative;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .toggle-btn::before {
-      content: '⇄';
-      position: absolute;
-      top: 50%;
+    .toast {
+      position: fixed;
       left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 0.9rem;
-      color: var(--text-muted);
+      bottom: 24px;
+      z-index: 20;
+      transform: translateX(-50%);
+      padding: 0.74rem 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-3);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      font-weight: 850;
     }
 
-    .toggle-btn:hover {
-      border-color: var(--accent);
-    }
-
-    /* Hash Options */
-    .hash-options {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-
-    .hash-option {
-      padding: 0.5rem 1rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .hash-option:hover {
-      border-color: var(--accent);
-    }
-
-    .hash-option.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    /* Hash Results */
-    .hash-results {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
-    .hash-result {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 0.75rem 1rem;
-    }
-
-    .hash-result-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.5rem;
-    }
-
-    .hash-result-label {
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .hash-result-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-      color: var(--text-primary);
-      word-break: break-all;
-      line-height: 1.5;
-    }
-
-    /* Status Messages */
-    .status {
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1rem;
-    }
-
-    .status-success {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--success);
-    }
-
-    .status-error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: var(--danger);
-    }
-
-    .status-info {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      color: var(--accent);
-    }
-
-    /* Byte Counter */
-    .byte-counter {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Compare Section */
-    .compare-section {
-      margin-top: 1.5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-
-    .compare-inputs {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .compare-inputs input {
-      padding: 0.75rem;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
-    }
-
-    .compare-inputs input:focus {
-      outline: none;
-      border-color: var(--accent);
-    }
-
-    .compare-result {
-      padding: 0.75rem 1rem;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
-      font-weight: 500;
+    .footer {
+      margin-top: 42px;
+      padding: 18px 0;
+      color: var(--faint);
       text-align: center;
+      font-size: 0.86rem;
     }
 
-    .compare-match {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--success);
-    }
-
-    .compare-mismatch {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: var(--danger);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 2rem 0;
-      margin-top: 2rem;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 0.85rem;
-    }
-
-    footer a {
-      color: var(--accent);
+    .footer a {
+      color: var(--violet);
+      font-weight: 900;
       text-decoration: none;
     }
 
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Toast */
-    .toast {
-      position: fixed;
-      bottom: 2rem;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--success);
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      z-index: 1000;
-      animation: fadeInOut 2s ease;
-    }
-
-    @keyframes fadeInOut {
-      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
-      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-    }
-
-    /* Responsive */
-    @media (max-width: 600px) {
-      .container {
-        padding: 1rem;
+    @media (min-width: 880px) {
+      .app {
+        width: min(1160px, calc(100% - 40px));
+        padding-top: 28px;
       }
 
-      header h1 {
-        font-size: 1.5rem;
+      .top-nav {
+        margin-bottom: 58px;
       }
 
-      .tab-nav {
+      .hero {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        align-items: end;
+        gap: 34px;
+      }
+
+      .workspace {
+        grid-template-columns: 410px minmax(0, 1fr);
+        align-items: start;
+      }
+
+      .left-stack {
+        position: sticky;
+        top: 12px;
+      }
+
+      .two-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .three-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .hero-actions .btn,
+      .result-actions .btn,
+      .row-actions .btn,
+      .chip-row .chip {
         width: 100%;
       }
 
       .tab-btn {
-        flex: 1;
-        justify-content: center;
-        padding: 0.6rem 0.5rem;
-        font-size: 0.8rem;
-      }
-
-      .tab-btn .tab-label {
-        display: none;
-      }
-
-      .action-row {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .btn-group {
-        justify-content: center;
-      }
-
-      .compare-inputs {
-        grid-template-columns: 1fr;
+        flex: 1 1 calc(50% - 6px);
       }
     }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: var(--bg-primary); }
-    ::-webkit-scrollbar-thumb { background: var(--bg-card); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border); }
-
-    .hidden { display: none !important; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">#</div>
-        <h1>Encode & Hash</h1>
-      </div>
-      <p class="tagline">Base64, URL encoding, and hash generation in one place</p>
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> 100% Private</div>
-        <div class="trust-badge"><span>💻</span> Runs Locally</div>
-        <div class="trust-badge"><span>⚡</span> Instant Results</div>
-      </div>
-    </header>
-
-    <!-- Tab Navigation -->
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="base64">
-        <span class="tab-icon">📦</span>
-        <span class="tab-label">Base64</span>
-      </button>
-      <button class="tab-btn" data-tab="url">
-        <span class="tab-icon">🔗</span>
-        <span class="tab-label">URL</span>
-      </button>
-      <button class="tab-btn" data-tab="hash">
-        <span class="tab-icon">#️⃣</span>
-        <span class="tab-label">Hash</span>
-      </button>
+  <div class="app">
+    <nav class="top-nav" aria-label="Tool navigation">
+      <a class="back-link" href="../">Tools</a>
+      <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
     </nav>
 
-    <div class="tool-panel">
-      <!-- Base64 Tab -->
-      <div id="base64" class="tab-content active">
-        <div class="section-header">
-          <div class="section-title">📦 Base64 Encode / Decode</div>
-          <div class="direction-toggle">
-            <span id="base64EncodeLabel" class="active-direction">Encode</span>
-            <button class="toggle-btn" id="base64Toggle" onclick="toggleBase64Direction()"></button>
-            <span id="base64DecodeLabel">Decode</span>
-          </div>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Encode, Decode, Verify</p>
+        <h1>Encode & Hash Lab</h1>
+        <p class="hero-text">A private browser workbench for Base64, URL encoding, JWT inspection, hex conversion, hashes, HMACs, file checksums, and fast comparisons.</p>
+        <div class="hero-actions">
+          <button class="btn primary" type="button" data-mode-jump="codec">Open Codec Lab</button>
+          <button class="btn secondary" type="button" data-mode-jump="hash">Generate Hashes</button>
         </div>
-
-        <!-- File Upload -->
-        <div class="file-drop" id="base64FileDrop">
-          <div class="file-drop-icon">📁</div>
-          <p>Drop a file here or click to upload</p>
-          <input type="file" id="base64FileInput">
-        </div>
-        <div class="file-info hidden" id="base64FileInfo">
-          <span class="file-info-icon">📄</span>
-          <div class="file-info-details">
-            <div class="file-info-name" id="base64FileName">file.txt</div>
-            <div class="file-info-size" id="base64FileSize">0 KB</div>
-          </div>
-          <button class="file-info-remove" onclick="clearBase64File()">×</button>
-        </div>
-
-        <div class="input-group">
-          <div class="section-header">
-            <label for="base64Input" id="base64InputLabel">Text to encode</label>
-            <span class="byte-counter" id="base64InputBytes">0 bytes</span>
-          </div>
-          <textarea id="base64Input" placeholder="Enter text or drop a file above..."></textarea>
-        </div>
-
-        <div class="action-row">
-          <div class="btn-group">
-            <button class="btn btn-primary" onclick="processBase64()">
-              <span id="base64ActionText">Encode</span>
-            </button>
-            <button class="btn btn-secondary" onclick="clearBase64()">Clear</button>
-          </div>
-          <label class="trust-badge" style="cursor: pointer;">
-            <input type="checkbox" id="base64UrlSafe" style="margin-right: 0.25rem;">
-            URL-safe Base64
-          </label>
-        </div>
-
-        <div class="input-group">
-          <div class="section-header">
-            <label for="base64Output" id="base64OutputLabel">Encoded result</label>
-            <span class="byte-counter" id="base64OutputBytes">0 bytes</span>
-          </div>
-          <textarea id="base64Output" class="output" readonly placeholder="Result will appear here..."></textarea>
-        </div>
-
-        <div class="btn-group">
-          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('base64Output')">📋 Copy</button>
-          <button class="btn btn-secondary btn-sm" onclick="downloadBase64Output()">💾 Download</button>
-        </div>
-
-        <div id="base64Status"></div>
       </div>
+      <aside class="card hero-panel">
+        <strong>Local-first</strong>
+        <p>Text and files are processed in your browser. Nothing is uploaded, and generated outputs are yours to copy or discard.</p>
+      </aside>
+    </header>
 
-      <!-- URL Encode Tab -->
-      <div id="url" class="tab-content">
-        <div class="section-header">
-          <div class="section-title">🔗 URL Encode / Decode</div>
-          <div class="direction-toggle">
-            <span id="urlEncodeLabel" class="active-direction">Encode</span>
-            <button class="toggle-btn" id="urlToggle" onclick="toggleUrlDirection()"></button>
-            <span id="urlDecodeLabel">Decode</span>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <div class="section-header">
-            <label for="urlInput" id="urlInputLabel">Text to encode</label>
-            <span class="byte-counter" id="urlInputBytes">0 chars</span>
-          </div>
-          <textarea id="urlInput" placeholder="Enter text or URL to encode..."></textarea>
-        </div>
-
-        <div class="action-row">
-          <div class="btn-group">
-            <button class="btn btn-primary" onclick="processUrl()">
-              <span id="urlActionText">Encode</span>
-            </button>
-            <button class="btn btn-secondary" onclick="clearUrl()">Clear</button>
-          </div>
-          <div class="btn-group">
-            <button class="btn btn-secondary btn-sm" onclick="encodeUrlComponent()">encodeURIComponent</button>
-            <button class="btn btn-secondary btn-sm" onclick="encodeFullUrl()">encodeURI</button>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <div class="section-header">
-            <label for="urlOutput" id="urlOutputLabel">Encoded result</label>
-            <span class="byte-counter" id="urlOutputBytes">0 chars</span>
-          </div>
-          <textarea id="urlOutput" class="output" readonly placeholder="Result will appear here..."></textarea>
-        </div>
-
-        <div class="btn-group">
-          <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('urlOutput')">📋 Copy</button>
-        </div>
-
-        <div id="urlStatus"></div>
-      </div>
-
-      <!-- Hash Tab -->
-      <div id="hash" class="tab-content">
-        <div class="section-header">
-          <div class="section-title">#️⃣ Hash Generator</div>
-        </div>
-
-        <!-- File Upload for Hash -->
-        <div class="file-drop" id="hashFileDrop">
-          <div class="file-drop-icon">📁</div>
-          <p>Drop a file to hash, or enter text below</p>
-          <input type="file" id="hashFileInput">
-        </div>
-        <div class="file-info hidden" id="hashFileInfo">
-          <span class="file-info-icon">📄</span>
-          <div class="file-info-details">
-            <div class="file-info-name" id="hashFileName">file.txt</div>
-            <div class="file-info-size" id="hashFileSize">0 KB</div>
-          </div>
-          <button class="file-info-remove" onclick="clearHashFile()">×</button>
-        </div>
-
-        <div class="input-group">
-          <div class="section-header">
-            <label for="hashInput">Text to hash</label>
-            <span class="byte-counter" id="hashInputBytes">0 bytes</span>
-          </div>
-          <textarea id="hashInput" placeholder="Enter text or drop a file above..."></textarea>
-        </div>
-
-        <div class="section-header" style="margin-top: 1rem;">
-          <span class="section-title">Select algorithms</span>
-        </div>
-        <div class="hash-options">
-          <button class="hash-option active" data-algo="MD5">MD5</button>
-          <button class="hash-option active" data-algo="SHA-1">SHA-1</button>
-          <button class="hash-option active" data-algo="SHA-256">SHA-256</button>
-          <button class="hash-option" data-algo="SHA-384">SHA-384</button>
-          <button class="hash-option" data-algo="SHA-512">SHA-512</button>
-        </div>
-
-        <div class="action-row">
-          <div class="btn-group">
-            <button class="btn btn-primary" onclick="generateHashes()">Generate Hashes</button>
-            <button class="btn btn-secondary" onclick="clearHash()">Clear</button>
-          </div>
-          <label class="trust-badge" style="cursor: pointer;">
-            <input type="checkbox" id="hashUppercase" style="margin-right: 0.25rem;">
-            Uppercase output
-          </label>
-        </div>
-
-        <div class="hash-results" id="hashResults">
-          <!-- Results generated dynamically -->
-        </div>
-
-        <!-- Hash Compare -->
-        <div class="compare-section">
-          <div class="section-title" style="margin-bottom: 0.75rem;">🔍 Compare Hashes</div>
-          <div class="compare-inputs">
-            <input type="text" id="compareHash1" placeholder="First hash...">
-            <input type="text" id="compareHash2" placeholder="Second hash...">
-          </div>
-          <button class="btn btn-secondary" onclick="compareHashes()" style="width: 100%;">Compare</button>
-          <div id="compareResult" class="hidden"></div>
-        </div>
-
-        <div id="hashStatus"></div>
-      </div>
+    <div class="tabs" role="tablist" aria-label="Encode and hash workflows">
+      <button class="tab-btn active" type="button" data-mode="codec">Codec</button>
+      <button class="tab-btn" type="button" data-mode="url">URL & JWT</button>
+      <button class="tab-btn" type="button" data-mode="hash">Hash</button>
+      <button class="tab-btn" type="button" data-mode="file">File</button>
     </div>
 
-    <footer>
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
+    <main class="workspace">
+      <div class="left-stack">
+        <section class="panel" data-panel="codec">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Text Codec</p>
+              <h2>Transform text</h2>
+              <p>Base64, Base64URL, hex, binary, and common case conversions.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="codecInput">Input</label>
+              <textarea id="codecInput">Hello MattLivingston.com/tools</textarea>
+              <span class="counter" id="codecCounter">0 chars · 0 bytes</span>
+            </div>
+            <div class="two-grid">
+              <div class="field">
+                <label for="codecType">Operation</label>
+                <select id="codecType">
+                  <option value="base64-encode">Base64 encode</option>
+                  <option value="base64-decode">Base64 decode</option>
+                  <option value="base64url-encode">Base64URL encode</option>
+                  <option value="base64url-decode">Base64URL decode</option>
+                  <option value="hex-encode">Text to hex</option>
+                  <option value="hex-decode">Hex to text</option>
+                  <option value="binary-encode">Text to binary</option>
+                  <option value="binary-decode">Binary to text</option>
+                  <option value="lowercase">Lowercase</option>
+                  <option value="uppercase">Uppercase</option>
+                  <option value="slug">URL slug</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="codecWrap">Wrap Output</label>
+                <select id="codecWrap">
+                  <option value="none">No wrap</option>
+                  <option value="64">64 chars</option>
+                  <option value="76">76 chars</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn primary full" type="button" id="runCodec">Transform</button>
+            <div class="chip-row" aria-label="Codec presets">
+              <button class="chip" type="button" data-codec-preset="jwt">JWT Sample</button>
+              <button class="chip" type="button" data-codec-preset="json">JSON</button>
+              <button class="chip" type="button" data-codec-preset="url">URL</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel hidden" data-panel="url">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">URL & JWT</p>
+              <h2>Inspect strings</h2>
+              <p>Encode URL parts, decode messy URLs, and inspect JWT payloads without verifying signatures.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="urlInput">Input</label>
+              <textarea id="urlInput">https://example.com/search?q=hello world&tag=tools</textarea>
+              <span class="counter" id="urlCounter">0 chars</span>
+            </div>
+            <div class="two-grid">
+              <div class="field">
+                <label for="urlOperation">Operation</label>
+                <select id="urlOperation">
+                  <option value="component-encode">encodeURIComponent</option>
+                  <option value="component-decode">decodeURIComponent</option>
+                  <option value="uri-encode">encodeURI</option>
+                  <option value="uri-decode">decodeURI</option>
+                  <option value="query-parse">Parse query params</option>
+                  <option value="jwt-inspect">Inspect JWT</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="jsonSpacing">JSON Spacing</label>
+                <select id="jsonSpacing">
+                  <option value="2">Pretty</option>
+                  <option value="0">Compact</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn primary full" type="button" id="runUrl">Process URL / JWT</button>
+            <div class="chip-row" aria-label="URL presets">
+              <button class="chip" type="button" data-url-preset="component">Component</button>
+              <button class="chip" type="button" data-url-preset="query">Query</button>
+              <button class="chip" type="button" data-url-preset="jwt">JWT</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel hidden" data-panel="hash">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Hash & Verify</p>
+              <h2>Generate hashes</h2>
+              <p>Text hashes, HMACs, and normalized hash comparison.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="hashInput">Text to hash</label>
+              <textarea id="hashInput">Matt Livingston tools</textarea>
+              <span class="counter" id="hashCounter">0 chars · 0 bytes</span>
+            </div>
+            <div class="field">
+              <label>Algorithms</label>
+              <div class="algo-grid" id="algoGrid">
+                <button class="algo-btn active" type="button" data-algo="MD5">MD5</button>
+                <button class="algo-btn active" type="button" data-algo="SHA-1">SHA-1</button>
+                <button class="algo-btn active" type="button" data-algo="SHA-256">SHA-256</button>
+                <button class="algo-btn" type="button" data-algo="SHA-384">SHA-384</button>
+                <button class="algo-btn" type="button" data-algo="SHA-512">SHA-512</button>
+              </div>
+            </div>
+            <div class="two-grid">
+              <label class="checkbox">
+                <input id="hashUppercase" type="checkbox">
+                <span>Uppercase output</span>
+              </label>
+              <label class="checkbox">
+                <input id="hashHmac" type="checkbox">
+                <span>Generate HMAC instead of plain hash</span>
+              </label>
+            </div>
+            <div class="field hidden" id="hmacKeyField">
+              <label for="hmacKey">HMAC Secret</label>
+              <input id="hmacKey" type="text" placeholder="secret key">
+              <span class="hint">HMAC is supported for SHA algorithms. MD5 will be skipped in HMAC mode.</span>
+            </div>
+            <button class="btn primary full" type="button" id="runHash">Generate Hashes</button>
+          </div>
+        </section>
+
+        <section class="panel hidden" data-panel="file">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">File Checksum</p>
+              <h2>Hash a file</h2>
+              <p>Drop a local file to generate checksums without uploading it.</p>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <label class="file-drop" id="fileDrop">
+              <input id="fileInput" type="file">
+              <span class="eyebrow">Choose File</span>
+              <strong id="fileDropTitle">Drop a file here or tap to browse</strong>
+              <p class="hint">Large files may take a moment depending on your device.</p>
+            </label>
+            <div class="file-card hidden" id="fileInfo">
+              <span>Selected file</span>
+              <strong id="fileName">No file selected</strong>
+              <p id="fileDetails"></p>
+            </div>
+            <button class="btn primary full" type="button" id="runFileHash" disabled>Generate File Checksums</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="right-stack">
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow" id="resultEyebrow">Output</p>
+              <h2 id="resultTitle">Result</h2>
+              <p id="resultSummary">Transform or hash something to see copy-ready output here.</p>
+            </div>
+          </div>
+          <div class="result-list" id="results">
+            <article class="output-card featured">
+              <span>Ready</span>
+              <strong>Choose an operation</strong>
+              <p>Base64, URL tools, JWT inspection, hashes, and file checksums are all available locally.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Compare</p>
+              <h2>Verify hashes</h2>
+              <p>Whitespace, colon separators, and case are normalized before comparison.</p>
+            </div>
+          </div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="compareA">Expected</label>
+              <input id="compareA" type="text" placeholder="Paste expected hash">
+            </div>
+            <div class="field">
+              <label for="compareB">Actual</label>
+              <input id="compareB" type="text" placeholder="Paste actual hash">
+            </div>
+            <div class="output-card compare-card hidden" id="compareResult">
+              <span>Comparison</span>
+              <strong id="compareText">Waiting</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Trust Layer</p>
+              <h2>Private by default</h2>
+              <p>No server calls are needed for the tool’s core work.</p>
+            </div>
+          </div>
+          <div class="trust-grid">
+            <article class="trust-card">
+              <span>Web Crypto</span>
+              <strong>SHA and HMAC</strong>
+              <p>SHA-family hashes and HMACs use the browser’s Web Crypto API.</p>
+            </article>
+            <article class="trust-card">
+              <span>Compatibility</span>
+              <strong>MD5 included</strong>
+              <p>MD5 is provided for legacy checksum comparison, not password storage or security decisions.</p>
+            </article>
+            <article class="trust-card">
+              <span>JWT</span>
+              <strong>Inspection only</strong>
+              <p>JWT decoding shows readable header and payload data. It does not verify signatures.</p>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      Built by <a href="https://mattlivingston.com">Matt Livingston</a> · Encode & Hash Lab · Local-only, no accounts, no tracking.
     </footer>
   </div>
 
   <script>
-    // ============================================
-    // Tab Navigation
-    // ============================================
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById(btn.dataset.tab).classList.add('active');
-      });
-    });
+    const TOOL_URL = 'https://mattlivingston.com/tools/encode-hash/';
+    const textEncoder = new TextEncoder();
+    const textDecoder = new TextDecoder();
+    const $ = (selector, root = document) => root.querySelector(selector);
+    const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-    // ============================================
-    // Hash Options Toggle
-    // ============================================
-    document.querySelectorAll('.hash-option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-      });
-    });
+    const state = {
+      mode: 'codec',
+      file: null,
+      lastOutput: '',
+    };
 
-    // ============================================
-    // Base64 Tab
-    // ============================================
-    let base64Direction = 'encode';
-    let base64File = null;
+    const presets = {
+      codec: {
+        jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYXR0LXRvb2xzIiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE3MjAwMDAwMDB9.signature',
+        json: '{"tool":"Encode & Hash Lab","private":true,"formats":["base64","hex","sha256"]}',
+        url: 'https://mattlivingston.com/tools/encode-hash/?q=hello world&mode=hash',
+      },
+      url: {
+        component: 'hello world & tools = useful',
+        query: 'https://example.com/search?q=hello%20world&tag=encode&tag=hash',
+        jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYXR0LXRvb2xzIiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE3MjAwMDAwMDB9.signature',
+      },
+    };
 
-    function toggleBase64Direction() {
-      base64Direction = base64Direction === 'encode' ? 'decode' : 'encode';
-      updateBase64Labels();
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+      bindEvents();
+      updateCounters();
     }
 
-    function updateBase64Labels() {
-      const isEncode = base64Direction === 'encode';
-      document.getElementById('base64EncodeLabel').classList.toggle('active-direction', isEncode);
-      document.getElementById('base64DecodeLabel').classList.toggle('active-direction', !isEncode);
-      document.getElementById('base64InputLabel').textContent = isEncode ? 'Text to encode' : 'Base64 to decode';
-      document.getElementById('base64OutputLabel').textContent = isEncode ? 'Encoded result' : 'Decoded result';
-      document.getElementById('base64ActionText').textContent = isEncode ? 'Encode' : 'Decode';
-      document.getElementById('base64Input').placeholder = isEncode ? 'Enter text or drop a file above...' : 'Enter Base64 string to decode...';
+    function bindEvents() {
+      $$('[data-mode]').forEach((button) => button.addEventListener('click', () => setMode(button.dataset.mode)));
+      $$('[data-mode-jump]').forEach((button) => button.addEventListener('click', () => setMode(button.dataset.modeJump)));
+      $$('[data-codec-preset]').forEach((button) => button.addEventListener('click', () => {
+        $('#codecInput').value = presets.codec[button.dataset.codecPreset];
+        updateCounters();
+      }));
+      $$('[data-url-preset]').forEach((button) => button.addEventListener('click', () => {
+        $('#urlInput').value = presets.url[button.dataset.urlPreset];
+        if (button.dataset.urlPreset === 'jwt') $('#urlOperation').value = 'jwt-inspect';
+        if (button.dataset.urlPreset === 'query') $('#urlOperation').value = 'query-parse';
+        updateCounters();
+      }));
+
+      $('#runCodec').addEventListener('click', runCodec);
+      $('#runUrl').addEventListener('click', runUrl);
+      $('#runHash').addEventListener('click', runHash);
+      $('#runFileHash').addEventListener('click', runFileHash);
+      $('#hashHmac').addEventListener('change', () => $('#hmacKeyField').classList.toggle('hidden', !$('#hashHmac').checked));
+      $$('.algo-btn').forEach((button) => button.addEventListener('click', () => button.classList.toggle('active')));
+      ['codecInput', 'urlInput', 'hashInput'].forEach((id) => $('#' + id).addEventListener('input', updateCounters));
+      ['compareA', 'compareB'].forEach((id) => $('#' + id).addEventListener('input', compareHashes));
+
+      const fileDrop = $('#fileDrop');
+      const fileInput = $('#fileInput');
+      fileDrop.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        fileDrop.classList.add('dragover');
+      });
+      fileDrop.addEventListener('dragleave', () => fileDrop.classList.remove('dragover'));
+      fileDrop.addEventListener('drop', (event) => {
+        event.preventDefault();
+        fileDrop.classList.remove('dragover');
+        handleFile(event.dataTransfer.files[0]);
+      });
+      fileInput.addEventListener('change', (event) => handleFile(event.target.files[0]));
     }
 
-    // File handling
-    const base64FileDrop = document.getElementById('base64FileDrop');
-    const base64FileInput = document.getElementById('base64FileInput');
+    function setMode(mode) {
+      state.mode = mode;
+      $$('[data-mode]').forEach((button) => button.classList.toggle('active', button.dataset.mode === mode));
+      $$('[data-panel]').forEach((panel) => panel.classList.toggle('hidden', panel.dataset.panel !== mode));
 
-    base64FileDrop.addEventListener('click', () => base64FileInput.click());
-    base64FileDrop.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      base64FileDrop.classList.add('dragover');
-    });
-    base64FileDrop.addEventListener('dragleave', () => base64FileDrop.classList.remove('dragover'));
-    base64FileDrop.addEventListener('drop', (e) => {
-      e.preventDefault();
-      base64FileDrop.classList.remove('dragover');
-      handleBase64File(e.dataTransfer.files[0]);
-    });
-    base64FileInput.addEventListener('change', (e) => handleBase64File(e.target.files[0]));
+      const labels = {
+        codec: ['Output', 'Codec result', 'Transform text into copy-ready encodings and formats.'],
+        url: ['Output', 'URL or JWT result', 'Encode URLs, parse query strings, or inspect JWT header and payload data.'],
+        hash: ['Output', 'Hash results', 'Generate plain hashes or HMACs for pasted text.'],
+        file: ['Output', 'File checksums', 'Generate checksums from a selected local file.'],
+      };
+      updateResultHeader(...labels[mode]);
+      document.querySelector('.tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 
-    function handleBase64File(file) {
-      if (!file) return;
-      base64File = file;
-      
-      document.getElementById('base64FileName').textContent = file.name;
-      document.getElementById('base64FileSize').textContent = formatBytes(file.size);
-      document.getElementById('base64FileInfo').classList.remove('hidden');
-      base64FileDrop.classList.add('hidden');
-      
-      // Read file and put in input
-      const reader = new FileReader();
-      if (base64Direction === 'encode') {
-        reader.onload = (e) => {
-          // For encoding, we'll handle the raw bytes
-          const base64 = e.target.result.split(',')[1];
-          document.getElementById('base64Output').value = base64;
-          updateBase64Bytes();
-          showStatus('base64Status', 'success', `✓ File encoded to Base64 (${formatBytes(base64.length)})`);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        reader.onload = (e) => {
-          document.getElementById('base64Input').value = e.target.result;
-          updateBase64Bytes();
-        };
-        reader.readAsText(file);
+    function updateResultHeader(eyebrow, title, summary) {
+      $('#resultEyebrow').textContent = eyebrow;
+      $('#resultTitle').textContent = title;
+      $('#resultSummary').textContent = summary;
+    }
+
+    function updateCounters() {
+      const codec = $('#codecInput').value;
+      const url = $('#urlInput').value;
+      const hash = $('#hashInput').value;
+      $('#codecCounter').textContent = `${codec.length} chars · ${formatBytes(textEncoder.encode(codec).length)}`;
+      $('#urlCounter').textContent = `${url.length} chars`;
+      $('#hashCounter').textContent = `${hash.length} chars · ${formatBytes(textEncoder.encode(hash).length)}`;
+    }
+
+    function runCodec() {
+      const input = $('#codecInput').value;
+      const operation = $('#codecType').value;
+      const wrap = Number($('#codecWrap').value) || 0;
+      try {
+        let output = '';
+        if (operation === 'base64-encode') output = bytesToBase64(textEncoder.encode(input));
+        if (operation === 'base64-decode') output = bytesToText(base64ToBytes(input));
+        if (operation === 'base64url-encode') output = toBase64Url(bytesToBase64(textEncoder.encode(input)));
+        if (operation === 'base64url-decode') output = bytesToText(base64ToBytes(fromBase64Url(input)));
+        if (operation === 'hex-encode') output = bytesToHex(textEncoder.encode(input));
+        if (operation === 'hex-decode') output = bytesToText(hexToBytes(input));
+        if (operation === 'binary-encode') output = bytesToBinary(textEncoder.encode(input));
+        if (operation === 'binary-decode') output = bytesToText(binaryToBytes(input));
+        if (operation === 'lowercase') output = input.toLowerCase();
+        if (operation === 'uppercase') output = input.toUpperCase();
+        if (operation === 'slug') output = slugify(input);
+        if (wrap > 0) output = wrapText(output, wrap);
+        renderOutputs([{ label: titleCase(operation), value: output, featured: true }]);
+      } catch (error) {
+        renderError(error.message);
       }
     }
 
-    function clearBase64File() {
-      base64File = null;
-      base64FileInput.value = '';
-      document.getElementById('base64FileInfo').classList.add('hidden');
-      base64FileDrop.classList.remove('hidden');
+    function runUrl() {
+      const input = $('#urlInput').value;
+      const operation = $('#urlOperation').value;
+      const spacing = Number($('#jsonSpacing').value);
+      try {
+        let output = '';
+        if (operation === 'component-encode') output = encodeURIComponent(input);
+        if (operation === 'component-decode') output = decodeURIComponent(input);
+        if (operation === 'uri-encode') output = encodeURI(input);
+        if (operation === 'uri-decode') output = decodeURI(input);
+        if (operation === 'query-parse') output = parseQuery(input, spacing);
+        if (operation === 'jwt-inspect') output = inspectJwt(input, spacing);
+        renderOutputs([{ label: titleCase(operation), value: output, featured: true }]);
+      } catch (error) {
+        renderError(error.message);
+      }
     }
 
-    function processBase64() {
-      const input = document.getElementById('base64Input').value;
-      const urlSafe = document.getElementById('base64UrlSafe').checked;
-      
-      if (!input.trim()) {
-        showStatus('base64Status', 'error', '❌ Please enter some text');
-        return;
-      }
+    async function runHash() {
+      const input = $('#hashInput').value;
+      const bytes = textEncoder.encode(input);
+      const uppercase = $('#hashUppercase').checked;
+      const hmacMode = $('#hashHmac').checked;
+      const key = $('#hmacKey').value;
+      const algorithms = selectedAlgorithms();
+
+      if (!input) return renderError('Add text to hash.');
+      if (!algorithms.length) return renderError('Select at least one algorithm.');
+      if (hmacMode && !key) return renderError('Add an HMAC secret.');
 
       try {
-        let result;
-        if (base64Direction === 'encode') {
-          result = btoa(unescape(encodeURIComponent(input)));
-          if (urlSafe) {
-            result = result.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-          }
-        } else {
-          let toDecode = input;
-          if (urlSafe) {
-            toDecode = input.replace(/-/g, '+').replace(/_/g, '/');
-            while (toDecode.length % 4) toDecode += '=';
-          }
-          result = decodeURIComponent(escape(atob(toDecode)));
+        const results = [];
+        for (const algorithm of algorithms) {
+          if (hmacMode && algorithm === 'MD5') continue;
+          const value = hmacMode
+            ? await hmac(algorithm, key, bytes)
+            : await digest(algorithm, bytes);
+          results.push({ label: hmacMode ? `HMAC ${algorithm}` : algorithm, value: uppercase ? value.toUpperCase() : value });
         }
-        
-        document.getElementById('base64Output').value = result;
-        updateBase64Bytes();
-        showStatus('base64Status', 'success', `✓ ${base64Direction === 'encode' ? 'Encoded' : 'Decoded'} successfully`);
-      } catch (e) {
-        showStatus('base64Status', 'error', `❌ Error: ${e.message}`);
+        if (!results.length) return renderError('HMAC mode supports SHA algorithms. Select a SHA option.');
+        renderOutputs(results);
+      } catch (error) {
+        renderError(error.message);
       }
     }
 
-    function clearBase64() {
-      document.getElementById('base64Input').value = '';
-      document.getElementById('base64Output').value = '';
-      document.getElementById('base64Status').innerHTML = '';
-      clearBase64File();
-      updateBase64Bytes();
+    async function runFileHash() {
+      if (!state.file) return renderError('Choose a file first.');
+      const algorithms = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512'];
+      try {
+        const buffer = await state.file.arrayBuffer();
+        const bytes = new Uint8Array(buffer);
+        const results = [];
+        for (const algorithm of algorithms) {
+          results.push({ label: algorithm, value: await digest(algorithm, bytes) });
+        }
+        renderOutputs(results, `Checksums for ${state.file.name}`);
+      } catch (error) {
+        renderError(error.message);
+      }
     }
 
-    function updateBase64Bytes() {
-      const input = document.getElementById('base64Input').value;
-      const output = document.getElementById('base64Output').value;
-      document.getElementById('base64InputBytes').textContent = formatBytes(new Blob([input]).size);
-      document.getElementById('base64OutputBytes').textContent = formatBytes(new Blob([output]).size);
+    function renderOutputs(items, heading = 'Copy-ready output') {
+      state.lastOutput = items.map((item) => `${item.label}: ${item.value}`).join('\n');
+      $('#results').innerHTML = `
+        ${items.map((item) => `
+          <article class="output-card ${item.featured ? 'featured' : ''}">
+            <span>${escapeHtml(item.label)}</span>
+            <div class="output-value">${escapeHtml(item.value)}</div>
+            <div class="result-actions" style="margin-top: 12px;">
+              <button class="btn secondary" type="button" data-copy-output="${escapeAttribute(item.value)}">Copy</button>
+              <button class="btn ghost" type="button" data-send-compare="${escapeAttribute(item.value)}">Compare</button>
+            </div>
+          </article>
+        `).join('')}
+        <article class="output-card">
+          <span>Batch</span>
+          <strong>${escapeHtml(heading)}</strong>
+          <div class="result-actions" style="margin-top: 12px;">
+            <button class="btn primary" type="button" id="copyAllOutputs">Copy All Outputs</button>
+            <button class="btn secondary" type="button" id="downloadOutputs">Download TXT</button>
+          </div>
+        </article>
+      `;
+      $$('[data-copy-output]').forEach((button) => button.addEventListener('click', () => copyText(button.dataset.copyOutput, button)));
+      $$('[data-send-compare]').forEach((button) => button.addEventListener('click', () => {
+        $('#compareB').value = button.dataset.sendCompare;
+        compareHashes();
+        $('#compareB').focus();
+      }));
+      $('#copyAllOutputs').addEventListener('click', () => copyText(state.lastOutput, $('#copyAllOutputs')));
+      $('#downloadOutputs').addEventListener('click', downloadOutputs);
     }
 
-    document.getElementById('base64Input').addEventListener('input', updateBase64Bytes);
+    function renderError(message) {
+      $('#results').innerHTML = `
+        <article class="output-card featured">
+          <span>Error</span>
+          <strong>Could not process input</strong>
+          <p>${escapeHtml(message)}</p>
+        </article>
+      `;
+    }
 
-    function downloadBase64Output() {
-      const output = document.getElementById('base64Output').value;
-      if (!output) return;
-      
-      const blob = new Blob([output], { type: 'text/plain' });
+    function handleFile(file) {
+      if (!file) return;
+      state.file = file;
+      $('#fileInfo').classList.remove('hidden');
+      $('#fileName').textContent = file.name;
+      $('#fileDetails').textContent = `${formatBytes(file.size)} · ${file.type || 'unknown type'} · modified ${new Date(file.lastModified).toLocaleString()}`;
+      $('#fileDropTitle').textContent = 'File selected';
+      $('#runFileHash').disabled = false;
+    }
+
+    function compareHashes() {
+      const a = normalizeHash($('#compareA').value);
+      const b = normalizeHash($('#compareB').value);
+      const result = $('#compareResult');
+      const text = $('#compareText');
+      result.classList.toggle('hidden', !a || !b);
+      if (!a || !b) return;
+      const match = a === b;
+      result.classList.toggle('match', match);
+      result.classList.toggle('mismatch', !match);
+      text.textContent = match ? 'Hashes match' : 'Hashes do not match';
+    }
+
+    function selectedAlgorithms() {
+      return $$('.algo-btn.active').map((button) => button.dataset.algo);
+    }
+
+    async function digest(algorithm, bytes) {
+      if (algorithm === 'MD5') return md5(bytes);
+      const buffer = await crypto.subtle.digest(algorithm, bytes);
+      return bytesToHex(new Uint8Array(buffer));
+    }
+
+    async function hmac(algorithm, secret, bytes) {
+      const key = await crypto.subtle.importKey(
+        'raw',
+        textEncoder.encode(secret),
+        { name: 'HMAC', hash: algorithm },
+        false,
+        ['sign']
+      );
+      const signature = await crypto.subtle.sign('HMAC', key, bytes);
+      return bytesToHex(new Uint8Array(signature));
+    }
+
+    function inspectJwt(input, spacing) {
+      const parts = input.trim().split('.');
+      if (parts.length < 2) throw new Error('JWT should contain at least header and payload segments.');
+      const header = JSON.parse(bytesToText(base64ToBytes(fromBase64Url(parts[0]))));
+      const payload = JSON.parse(bytesToText(base64ToBytes(fromBase64Url(parts[1]))));
+      return JSON.stringify({
+        header,
+        payload,
+        signature_present: Boolean(parts[2]),
+        note: 'Decoded for inspection only. Signature is not verified.',
+      }, null, spacing);
+    }
+
+    function parseQuery(input, spacing) {
+      const query = input.includes('?') ? input.split('?')[1].split('#')[0] : input;
+      const params = new URLSearchParams(query);
+      const output = {};
+      for (const [key, value] of params.entries()) {
+        if (Object.prototype.hasOwnProperty.call(output, key)) {
+          output[key] = Array.isArray(output[key]) ? [...output[key], value] : [output[key], value];
+        } else {
+          output[key] = value;
+        }
+      }
+      return JSON.stringify(output, null, spacing);
+    }
+
+    function bytesToBase64(bytes) {
+      let binary = '';
+      const chunk = 0x8000;
+      for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode(...bytes.slice(i, i + chunk));
+      }
+      return btoa(binary);
+    }
+
+    function base64ToBytes(value) {
+      const clean = value.replace(/\s+/g, '');
+      const binary = atob(clean);
+      return Uint8Array.from(binary, (char) => char.charCodeAt(0));
+    }
+
+    function toBase64Url(value) {
+      return value.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
+    }
+
+    function fromBase64Url(value) {
+      let output = value.trim().replace(/-/g, '+').replace(/_/g, '/');
+      while (output.length % 4) output += '=';
+      return output;
+    }
+
+    function bytesToText(bytes) {
+      return textDecoder.decode(bytes);
+    }
+
+    function bytesToHex(bytes) {
+      return Array.from(bytes).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    function hexToBytes(input) {
+      const clean = input.replace(/[^a-fA-F0-9]/g, '');
+      if (clean.length % 2) throw new Error('Hex input must have an even number of digits.');
+      const bytes = new Uint8Array(clean.length / 2);
+      for (let i = 0; i < clean.length; i += 2) {
+        bytes[i / 2] = parseInt(clean.slice(i, i + 2), 16);
+      }
+      return bytes;
+    }
+
+    function bytesToBinary(bytes) {
+      return Array.from(bytes).map((byte) => byte.toString(2).padStart(8, '0')).join(' ');
+    }
+
+    function binaryToBytes(input) {
+      const parts = input.trim().split(/\s+/).filter(Boolean);
+      if (!parts.length || parts.some((part) => !/^[01]{8}$/.test(part))) {
+        throw new Error('Binary input should be 8-bit groups separated by spaces.');
+      }
+      return Uint8Array.from(parts.map((part) => parseInt(part, 2)));
+    }
+
+    function slugify(input) {
+      return input.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    }
+
+    function wrapText(input, width) {
+      return input.replace(new RegExp(`(.{${width}})`, 'g'), '$1\n').trim();
+    }
+
+    function normalizeHash(value) {
+      return value.trim().toLowerCase().replace(/[^a-f0-9]/g, '');
+    }
+
+    function downloadOutputs() {
+      if (!state.lastOutput) return;
+      const blob = new Blob([state.lastOutput], { type: 'text/plain' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = base64Direction === 'encode' ? 'encoded.txt' : 'decoded.txt';
-      a.click();
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'encode-hash-output.txt';
+      link.click();
       URL.revokeObjectURL(url);
     }
 
-    // ============================================
-    // URL Encode Tab
-    // ============================================
-    let urlDirection = 'encode';
-
-    function toggleUrlDirection() {
-      urlDirection = urlDirection === 'encode' ? 'decode' : 'encode';
-      updateUrlLabels();
+    function copyText(text, button) {
+      if (!text) return;
+      navigator.clipboard?.writeText(text).then(() => flashButton(button, 'Copied')).catch(() => {
+        const area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        area.remove();
+        flashButton(button, 'Copied');
+      });
     }
 
-    function updateUrlLabels() {
-      const isEncode = urlDirection === 'encode';
-      document.getElementById('urlEncodeLabel').classList.toggle('active-direction', isEncode);
-      document.getElementById('urlDecodeLabel').classList.toggle('active-direction', !isEncode);
-      document.getElementById('urlInputLabel').textContent = isEncode ? 'Text to encode' : 'URL to decode';
-      document.getElementById('urlOutputLabel').textContent = isEncode ? 'Encoded result' : 'Decoded result';
-      document.getElementById('urlActionText').textContent = isEncode ? 'Encode' : 'Decode';
+    function flashButton(button, label) {
+      if (!button) return;
+      const original = button.textContent;
+      button.textContent = label;
+      setTimeout(() => { button.textContent = original; }, 1200);
     }
 
-    function processUrl() {
-      const input = document.getElementById('urlInput').value;
-      
-      if (!input.trim()) {
-        showStatus('urlStatus', 'error', '❌ Please enter some text');
-        return;
-      }
-
-      try {
-        let result;
-        if (urlDirection === 'encode') {
-          result = encodeURIComponent(input);
-        } else {
-          result = decodeURIComponent(input);
-        }
-        
-        document.getElementById('urlOutput').value = result;
-        updateUrlBytes();
-        showStatus('urlStatus', 'success', `✓ ${urlDirection === 'encode' ? 'Encoded' : 'Decoded'} successfully`);
-      } catch (e) {
-        showStatus('urlStatus', 'error', `❌ Error: ${e.message}`);
-      }
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 bytes';
+      if (bytes < 1024) return `${bytes} bytes`;
+      if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     }
 
-    function encodeUrlComponent() {
-      const input = document.getElementById('urlInput').value;
-      if (!input) return;
-      document.getElementById('urlOutput').value = encodeURIComponent(input);
-      updateUrlBytes();
-      showStatus('urlStatus', 'info', 'ℹ️ Used encodeURIComponent (encodes all special chars)');
+    function titleCase(value) {
+      return String(value || '').replace(/[-_]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
     }
 
-    function encodeFullUrl() {
-      const input = document.getElementById('urlInput').value;
-      if (!input) return;
-      document.getElementById('urlOutput').value = encodeURI(input);
-      updateUrlBytes();
-      showStatus('urlStatus', 'info', 'ℹ️ Used encodeURI (preserves URL structure chars like :/?#)');
+    function escapeHtml(value) {
+      const div = document.createElement('div');
+      div.textContent = value == null ? '' : String(value);
+      return div.innerHTML;
     }
 
-    function clearUrl() {
-      document.getElementById('urlInput').value = '';
-      document.getElementById('urlOutput').value = '';
-      document.getElementById('urlStatus').innerHTML = '';
-      updateUrlBytes();
+    function escapeAttribute(value) {
+      return escapeHtml(value).replace(/"/g, '&quot;');
     }
 
-    function updateUrlBytes() {
-      document.getElementById('urlInputBytes').textContent = document.getElementById('urlInput').value.length + ' chars';
-      document.getElementById('urlOutputBytes').textContent = document.getElementById('urlOutput').value.length + ' chars';
-    }
+    function md5(data) {
+      const bytes = data instanceof Uint8Array ? data : new Uint8Array(data);
 
-    document.getElementById('urlInput').addEventListener('input', updateUrlBytes);
-
-    // ============================================
-    // Hash Tab
-    // ============================================
-    let hashFile = null;
-
-    // File handling
-    const hashFileDrop = document.getElementById('hashFileDrop');
-    const hashFileInput = document.getElementById('hashFileInput');
-
-    hashFileDrop.addEventListener('click', () => hashFileInput.click());
-    hashFileDrop.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      hashFileDrop.classList.add('dragover');
-    });
-    hashFileDrop.addEventListener('dragleave', () => hashFileDrop.classList.remove('dragover'));
-    hashFileDrop.addEventListener('drop', (e) => {
-      e.preventDefault();
-      hashFileDrop.classList.remove('dragover');
-      handleHashFile(e.dataTransfer.files[0]);
-    });
-    hashFileInput.addEventListener('change', (e) => handleHashFile(e.target.files[0]));
-
-    function handleHashFile(file) {
-      if (!file) return;
-      hashFile = file;
-      
-      document.getElementById('hashFileName').textContent = file.name;
-      document.getElementById('hashFileSize').textContent = formatBytes(file.size);
-      document.getElementById('hashFileInfo').classList.remove('hidden');
-      hashFileDrop.classList.add('hidden');
-      document.getElementById('hashInput').value = '';
-      document.getElementById('hashInput').placeholder = `File loaded: ${file.name}`;
-      updateHashBytes();
-    }
-
-    function clearHashFile() {
-      hashFile = null;
-      hashFileInput.value = '';
-      document.getElementById('hashFileInfo').classList.add('hidden');
-      hashFileDrop.classList.remove('hidden');
-      document.getElementById('hashInput').placeholder = 'Enter text or drop a file above...';
-    }
-
-    async function generateHashes() {
-      const input = document.getElementById('hashInput').value;
-      const uppercase = document.getElementById('hashUppercase').checked;
-      
-      // Get selected algorithms
-      const selectedAlgos = Array.from(document.querySelectorAll('.hash-option.active'))
-        .map(btn => btn.dataset.algo);
-      
-      if (selectedAlgos.length === 0) {
-        showStatus('hashStatus', 'error', '❌ Please select at least one algorithm');
-        return;
-      }
-
-      if (!input.trim() && !hashFile) {
-        showStatus('hashStatus', 'error', '❌ Please enter text or upload a file');
-        return;
-      }
-
-      const resultsContainer = document.getElementById('hashResults');
-      resultsContainer.innerHTML = '<div class="status status-info">⏳ Generating hashes...</div>';
-
-      try {
-        let data;
-        if (hashFile) {
-          data = await hashFile.arrayBuffer();
-        } else {
-          data = new TextEncoder().encode(input);
-        }
-
-        const results = {};
-        
-        for (const algo of selectedAlgos) {
-          if (algo === 'MD5') {
-            results[algo] = await md5(data);
-          } else {
-            const hashBuffer = await crypto.subtle.digest(algo, data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            results[algo] = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-          }
-          
-          if (uppercase) {
-            results[algo] = results[algo].toUpperCase();
-          }
-        }
-
-        // Display results
-        resultsContainer.innerHTML = '';
-        for (const [algo, hash] of Object.entries(results)) {
-          const div = document.createElement('div');
-          div.className = 'hash-result';
-          div.innerHTML = `
-            <div class="hash-result-header">
-              <span class="hash-result-label">${algo}</span>
-              <button class="btn btn-secondary btn-sm" onclick="copyHash('${hash}')">📋 Copy</button>
-            </div>
-            <div class="hash-result-value">${hash}</div>
-          `;
-          resultsContainer.appendChild(div);
-        }
-
-        showStatus('hashStatus', 'success', `✓ Generated ${selectedAlgos.length} hash${selectedAlgos.length > 1 ? 'es' : ''}`);
-      } catch (e) {
-        showStatus('hashStatus', 'error', `❌ Error: ${e.message}`);
-      }
-    }
-
-    function copyHash(hash) {
-      navigator.clipboard.writeText(hash).then(() => showToast('Hash copied!'));
-    }
-
-    function clearHash() {
-      document.getElementById('hashInput').value = '';
-      document.getElementById('hashResults').innerHTML = '';
-      document.getElementById('hashStatus').innerHTML = '';
-      document.getElementById('compareHash1').value = '';
-      document.getElementById('compareHash2').value = '';
-      document.getElementById('compareResult').classList.add('hidden');
-      clearHashFile();
-      updateHashBytes();
-    }
-
-    function updateHashBytes() {
-      const input = document.getElementById('hashInput').value;
-      const bytes = hashFile ? hashFile.size : new Blob([input]).size;
-      document.getElementById('hashInputBytes').textContent = formatBytes(bytes);
-    }
-
-    document.getElementById('hashInput').addEventListener('input', () => {
-      if (hashFile) clearHashFile();
-      updateHashBytes();
-    });
-
-    // Compare hashes
-    function compareHashes() {
-      const hash1 = document.getElementById('compareHash1').value.trim().toLowerCase();
-      const hash2 = document.getElementById('compareHash2').value.trim().toLowerCase();
-      
-      if (!hash1 || !hash2) {
-        return;
-      }
-
-      const resultDiv = document.getElementById('compareResult');
-      resultDiv.classList.remove('hidden', 'compare-match', 'compare-mismatch');
-      
-      if (hash1 === hash2) {
-        resultDiv.classList.add('compare-result', 'compare-match');
-        resultDiv.textContent = '✓ Hashes match!';
-      } else {
-        resultDiv.classList.add('compare-result', 'compare-mismatch');
-        resultDiv.textContent = '✗ Hashes do not match';
-      }
-    }
-
-    // Auto-compare on input
-    document.getElementById('compareHash1').addEventListener('input', compareHashes);
-    document.getElementById('compareHash2').addEventListener('input', compareHashes);
-
-    // ============================================
-    // MD5 Implementation (not in Web Crypto API)
-    // ============================================
-    async function md5(data) {
-      const bytes = data instanceof ArrayBuffer ? new Uint8Array(data) : data;
-      
       function rotateLeft(x, n) {
         return (x << n) | (x >>> (32 - n));
       }
@@ -1303,74 +1254,69 @@
         return (x + y) >>> 0;
       }
 
-      const S = [
+      const shifts = [
         7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
         5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
         4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
-        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21
+        6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
       ];
 
-      const K = new Uint32Array(64);
-      for (let i = 0; i < 64; i++) {
-        K[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000);
-      }
+      const constants = new Uint32Array(64);
+      for (let i = 0; i < 64; i++) constants[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 0x100000000);
 
-      // Padding
-      const msgLen = bytes.length;
-      const bitLen = msgLen * 8;
-      const padLen = ((msgLen + 8) % 64 === 0) ? 64 : 64 - ((msgLen + 8) % 64);
-      const paddedLen = msgLen + padLen + 8;
-      const padded = new Uint8Array(paddedLen);
+      const messageLength = bytes.length;
+      const bitLength = messageLength * 8;
+      const paddingLength = ((messageLength + 8) % 64 === 0) ? 64 : 64 - ((messageLength + 8) % 64);
+      const paddedLength = messageLength + paddingLength + 8;
+      const padded = new Uint8Array(paddedLength);
       padded.set(bytes);
-      padded[msgLen] = 0x80;
-      
-      // Length in bits (little-endian)
+      padded[messageLength] = 0x80;
       const view = new DataView(padded.buffer);
-      view.setUint32(paddedLen - 8, bitLen >>> 0, true);
-      view.setUint32(paddedLen - 4, Math.floor(bitLen / 0x100000000), true);
+      view.setUint32(paddedLength - 8, bitLength >>> 0, true);
+      view.setUint32(paddedLength - 4, Math.floor(bitLength / 0x100000000), true);
 
       let a0 = 0x67452301;
       let b0 = 0xefcdab89;
       let c0 = 0x98badcfe;
       let d0 = 0x10325476;
 
-      for (let i = 0; i < paddedLen; i += 64) {
-        const M = new Uint32Array(16);
-        for (let j = 0; j < 16; j++) {
-          M[j] = view.getUint32(i + j * 4, true);
-        }
+      for (let i = 0; i < paddedLength; i += 64) {
+        const words = new Uint32Array(16);
+        for (let j = 0; j < 16; j++) words[j] = view.getUint32(i + j * 4, true);
 
-        let A = a0, B = b0, C = c0, D = d0;
+        let a = a0;
+        let b = b0;
+        let c = c0;
+        let d = d0;
 
         for (let j = 0; j < 64; j++) {
-          let F, g;
+          let f;
+          let g;
           if (j < 16) {
-            F = (B & C) | (~B & D);
+            f = (b & c) | (~b & d);
             g = j;
           } else if (j < 32) {
-            F = (D & B) | (~D & C);
+            f = (d & b) | (~d & c);
             g = (5 * j + 1) % 16;
           } else if (j < 48) {
-            F = B ^ C ^ D;
+            f = b ^ c ^ d;
             g = (3 * j + 5) % 16;
           } else {
-            F = C ^ (B | ~D);
+            f = c ^ (b | ~d);
             g = (7 * j) % 16;
           }
 
-          F = addUnsigned(F, A);
-          F = addUnsigned(F, K[j]);
-          F = addUnsigned(F, M[g]);
-          A = D;
-          D = C;
-          C = B;
-          B = addUnsigned(B, rotateLeft(F, S[j]));
+          f = addUnsigned(addUnsigned(addUnsigned(f, a), constants[j]), words[g]);
+          a = d;
+          d = c;
+          c = b;
+          b = addUnsigned(b, rotateLeft(f, shifts[j]));
         }
 
-        a0 = addUnsigned(a0, A);
-        b0 = addUnsigned(b0, B);
-        c0 = addUnsigned(c0, C);
-        d0 = addUnsigned(d0, D);
+        a0 = addUnsigned(a0, a);
+        b0 = addUnsigned(b0, b);
+        c0 = addUnsigned(c0, c);
+        d0 = addUnsigned(d0, d);
       }
 
       const result = new Uint8Array(16);
@@ -1379,39 +1325,7 @@
       resultView.setUint32(4, b0, true);
       resultView.setUint32(8, c0, true);
       resultView.setUint32(12, d0, true);
-
-      return Array.from(result).map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    // ============================================
-    // Utility Functions
-    // ============================================
-    function copyToClipboard(elementId) {
-      const text = document.getElementById(elementId).value;
-      if (!text) return;
-      navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
-    }
-
-    function showStatus(elementId, type, message) {
-      document.getElementById(elementId).innerHTML = `<div class="status status-${type}">${message}</div>`;
-    }
-
-    function showToast(message) {
-      const existing = document.querySelector('.toast');
-      if (existing) existing.remove();
-
-      const toast = document.createElement('div');
-      toast.className = 'toast';
-      toast.textContent = message;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 2000);
-    }
-
-    function formatBytes(bytes) {
-      if (bytes === 0) return '0 bytes';
-      if (bytes < 1024) return bytes + ' bytes';
-      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+      return bytesToHex(result);
     }
   </script>
 </body>

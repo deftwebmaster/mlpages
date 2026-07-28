@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JSON ↔ CSV Converter | Free Online Tool</title>
-  <meta name="description" content="Convert JSON to CSV and CSV to JSON instantly. Handles nested objects, arrays, and large files. Free, private, no upload required.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>JSON CSV Converter | Matt Livingston Tools</title>
+  <meta name="description" content="Convert JSON to CSV and CSV to JSON locally in your browser, with nested object flattening, delimiter detection, type inference, previews, and safe exports.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://mattlivingston.com/tools/json-csv/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="JSON CSV Converter | Matt Livingston Tools">
+  <meta property="og:description" content="A local-first data converter for moving between JSON and CSV without uploading your data.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/json-csv/">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2308090d'/%3E%3Cpath d='M6 10h9M6 16h9M6 22h9' stroke='%232df8e6' stroke-width='2.4' stroke-linecap='round'/%3E%3Cpath d='M18 9l5 7-5 7' fill='none' stroke='%23b86cff' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
   <style>
     * {
       box-sizing: border-box;
@@ -16,17 +21,17 @@
     }
 
     :root {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --bg-card: #334155;
-      --bg-input: #0f172a;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-glow: rgba(59, 130, 246, 0.3);
-      --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.3);
-      --warning: #f59e0b;
-      --danger: #ef4444;
+	      --bg-primary: #08090d;
+	      --bg-secondary: #151923;
+	      --bg-card: #1d2330;
+	      --bg-input: #050609;
+	      --accent: #2df8e6;
+	      --accent-hover: #7ffcf1;
+	      --accent-glow: rgba(45, 248, 230, 0.22);
+	      --success: #70ff9c;
+	      --success-glow: rgba(112, 255, 156, 0.18);
+	      --warning: #ffd166;
+	      --danger: #ff4f7b;
       --text-primary: #f1f5f9;
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
@@ -51,8 +56,8 @@
       right: 0;
       bottom: 0;
       background: 
-        radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 50%);
+	        radial-gradient(ellipse at 20% 20%, rgba(184, 108, 255, 0.12) 0%, transparent 50%),
+	        radial-gradient(ellipse at 80% 80%, rgba(45, 248, 230, 0.08) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
@@ -221,12 +226,12 @@
     }
 
     .format-tag.json {
-      background: rgba(251, 191, 36, 0.2);
-      color: #fbbf24;
+	      background: rgba(184, 108, 255, 0.16);
+	      color: #b86cff;
     }
 
     .format-tag.csv {
-      background: rgba(16, 185, 129, 0.2);
+	      background: rgba(45, 248, 230, 0.12);
       color: var(--success);
     }
 
@@ -261,7 +266,7 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       color: var(--text-primary);
-      font-family: 'JetBrains Mono', monospace;
+	      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-size: 0.85rem;
       line-height: 1.6;
       resize: vertical;
@@ -285,7 +290,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(59, 130, 246, 0.1);
+	      background: rgba(45, 248, 230, 0.1);
       border: 2px dashed var(--accent);
       border-radius: var(--radius-sm);
       display: flex;
@@ -529,7 +534,7 @@
     }
 
     .preview-table td {
-      font-family: 'JetBrains Mono', monospace;
+	      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       color: var(--text-primary);
     }
 
@@ -544,26 +549,26 @@
     }
 
     .status-success {
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
+	      background: rgba(112, 255, 156, 0.12);
+	      border: 1px solid rgba(112, 255, 156, 0.32);
       color: var(--success);
     }
 
     .status-error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid rgba(239, 68, 68, 0.3);
+	      background: rgba(255, 79, 123, 0.12);
+	      border: 1px solid rgba(255, 79, 123, 0.32);
       color: var(--danger);
     }
 
     .status-warning {
-      background: rgba(245, 158, 11, 0.1);
-      border: 1px solid rgba(245, 158, 11, 0.3);
+	      background: rgba(255, 209, 102, 0.12);
+	      border: 1px solid rgba(255, 209, 102, 0.32);
       color: var(--warning);
     }
 
     .status-info {
-      background: rgba(59, 130, 246, 0.1);
-      border: 1px solid rgba(59, 130, 246, 0.3);
+	      background: rgba(45, 248, 230, 0.1);
+	      border: 1px solid rgba(45, 248, 230, 0.28);
       color: var(--accent);
     }
 
@@ -636,35 +641,553 @@
       text-underline-offset: 2px;
     }
 
-    .sample-link:hover {
-      color: var(--accent);
-    }
-  </style>
+	    .sample-link:hover {
+	      color: var(--accent);
+	    }
+
+	    /* 2026 premium pass */
+	    :root {
+	      color-scheme: dark;
+	      --bg-primary: #08090d;
+	      --bg-secondary: rgba(21, 25, 35, 0.78);
+	      --bg-card: rgba(29, 35, 48, 0.82);
+	      --bg-input: #050609;
+	      --accent: #2df8e6;
+	      --accent-hover: #7ffcf1;
+	      --accent-glow: rgba(45, 248, 230, 0.22);
+	      --violet: #b86cff;
+	      --violet-soft: rgba(184, 108, 255, 0.16);
+	      --success: #70ff9c;
+	      --success-glow: rgba(112, 255, 156, 0.18);
+	      --warning: #ffd166;
+	      --danger: #ff4f7b;
+	      --text-primary: #f8f7ff;
+	      --text-secondary: #c4c8d8;
+	      --text-muted: #858b9c;
+	      --border: rgba(248, 247, 255, 0.14);
+	      --border-soft: rgba(248, 247, 255, 0.08);
+	      --radius: 10px;
+	      --radius-sm: 8px;
+	      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+	    }
+
+	    body {
+	      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+	      background:
+	        radial-gradient(circle at 14% 0%, rgba(184, 108, 255, 0.2), transparent 30rem),
+	        radial-gradient(circle at 86% 10%, rgba(45, 248, 230, 0.15), transparent 34rem),
+	        linear-gradient(135deg, #08090d 0%, #10131b 52%, #071214 100%);
+	    }
+
+	    body::before {
+	      opacity: 0.13;
+	      background:
+	        linear-gradient(rgba(248, 247, 255, 0.08) 1px, transparent 1px),
+	        linear-gradient(90deg, rgba(248, 247, 255, 0.08) 1px, transparent 1px);
+	      background-size: 44px 44px;
+	      mask-image: linear-gradient(to bottom, black, transparent 76%);
+	    }
+
+	    .container {
+	      max-width: 1280px;
+	      padding: 28px 20px 72px;
+	    }
+
+	    .top-nav {
+	      display: flex;
+	      align-items: center;
+	      justify-content: space-between;
+	      gap: 16px;
+	      margin-bottom: 46px;
+	    }
+
+	    .back-link,
+	    .creator-link {
+	      color: var(--text-muted);
+	      font-size: 14px;
+	      font-weight: 800;
+	      text-decoration: none;
+	    }
+
+	    .back-link::before {
+	      content: "<-";
+	      margin-right: 8px;
+	      color: var(--accent);
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	    }
+
+	    .back-link:hover,
+	    .creator-link:hover {
+	      color: var(--text-primary);
+	    }
+
+	    header {
+	      text-align: left;
+	      margin-bottom: 28px;
+	    }
+
+	    .hero-grid {
+	      display: grid;
+	      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+	      gap: 28px;
+	      align-items: end;
+	    }
+
+	    .eyebrow {
+	      color: var(--violet);
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	      font-size: 13px;
+	      font-weight: 900;
+	      letter-spacing: 0.06em;
+	      margin-bottom: 12px;
+	      text-transform: uppercase;
+	    }
+
+	    .logo {
+	      display: flex;
+	      align-items: flex-start;
+	      gap: 16px;
+	      margin-bottom: 14px;
+	    }
+
+	    .logo-icon {
+	      width: 58px;
+	      height: 58px;
+	      flex: 0 0 auto;
+	      border-radius: 14px;
+	      background: linear-gradient(135deg, var(--accent), var(--violet));
+	      box-shadow: 0 18px 56px rgba(45, 248, 230, 0.18);
+	      color: #08090d;
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	      font-size: 13px;
+	      font-weight: 950;
+	      letter-spacing: 0;
+	      text-transform: uppercase;
+	    }
+
+	    header h1 {
+	      max-width: 860px;
+	      color: var(--text-primary);
+	      font-size: clamp(3.15rem, 8vw, 6.8rem);
+	      font-weight: 900;
+	      line-height: 0.9;
+	      letter-spacing: 0;
+	      background: none;
+	      -webkit-text-fill-color: currentColor;
+	    }
+
+	    .tagline {
+	      max-width: 720px;
+	      color: var(--text-secondary);
+	      font-size: clamp(1rem, 2vw, 1.2rem);
+	      line-height: 1.65;
+	    }
+
+	    .trust-badges {
+	      justify-content: flex-start;
+	      gap: 0.65rem;
+	      margin-top: 20px;
+	    }
+
+	    .trust-badge {
+	      padding: 0.5rem 0.7rem;
+	      border: 1px solid var(--border);
+	      border-radius: 999px;
+	      background: rgba(21, 25, 35, 0.72);
+	      color: var(--text-secondary);
+	      font-size: 0.78rem;
+	      font-weight: 800;
+	    }
+
+	    .trust-badge span {
+	      color: var(--accent);
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	    }
+
+	    .hero-card {
+	      border: 1px solid var(--border);
+	      border-radius: var(--radius);
+	      background: rgba(21, 25, 35, 0.72);
+	      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+	      overflow: hidden;
+	    }
+
+	    .hero-card-row {
+	      display: grid;
+	      grid-template-columns: 82px 1fr;
+	      gap: 14px;
+	      padding: 16px;
+	      border-bottom: 1px solid var(--border-soft);
+	    }
+
+	    .hero-card-row:last-child {
+	      border-bottom: 0;
+	    }
+
+	    .hero-card-row span {
+	      color: var(--accent);
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	      font-size: 12px;
+	      font-weight: 900;
+	      text-transform: uppercase;
+	    }
+
+	    .hero-card-row strong {
+	      display: block;
+	      color: var(--text-primary);
+	      font-size: 0.95rem;
+	      margin-bottom: 3px;
+	    }
+
+	    .hero-card-row p {
+	      color: var(--text-muted);
+	      font-size: 0.84rem;
+	      line-height: 1.45;
+	    }
+
+	    .tab-nav {
+	      justify-content: flex-start;
+	      margin: 0 0 18px;
+	      border: 1px solid var(--border);
+	      background: rgba(21, 25, 35, 0.7);
+	      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.18);
+	    }
+
+	    .tab-btn {
+	      color: var(--text-secondary);
+	      font-weight: 800;
+	    }
+
+	    .tab-btn.active {
+	      background: linear-gradient(135deg, rgba(45, 248, 230, 0.95), rgba(184, 108, 255, 0.9));
+	      color: #08090d;
+	    }
+
+	    .tab-btn span {
+	      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+	      font-weight: 900;
+	    }
+
+	    .converter-layout {
+	      gap: 18px;
+	    }
+
+	    .panel {
+	      min-height: 540px;
+	      border-color: var(--border);
+	      background: var(--bg-secondary);
+	      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+	      overflow: hidden;
+	    }
+
+	    .panel-header {
+	      border-color: var(--border-soft);
+	      background: rgba(8, 9, 13, 0.22);
+	    }
+
+	    .panel-title {
+	      color: var(--text-primary);
+	      font-weight: 850;
+	    }
+
+	    .format-tag.json,
+	    .format-tag.csv {
+	      border: 1px solid currentColor;
+	      background: transparent;
+	    }
+
+	    .format-tag.json {
+	      color: var(--violet);
+	    }
+
+	    .format-tag.csv {
+	      color: var(--accent);
+	    }
+
+	    textarea {
+	      min-height: 340px;
+	      border-color: var(--border-soft);
+	      background:
+	        linear-gradient(rgba(248, 247, 255, 0.018) 50%, transparent 50%) 0 0 / 100% 3.2em,
+	        var(--bg-input);
+	      color: var(--text-primary);
+	      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	      font-size: 0.83rem;
+	      line-height: 1.6;
+	    }
+
+	    textarea:focus {
+	      border-color: var(--accent);
+	      box-shadow: 0 0 0 3px var(--accent-glow);
+	    }
+
+	    .drop-zone {
+	      background: rgba(45, 248, 230, 0.1);
+	      border-color: var(--accent);
+	      backdrop-filter: blur(8px);
+	    }
+
+	    .drop-zone-text {
+	      color: var(--text-primary);
+	      font-weight: 850;
+	    }
+
+	    .btn,
+	    .convert-btn {
+	      border-radius: var(--radius-sm);
+	      font-weight: 800;
+	    }
+
+	    .btn-primary,
+	    .convert-btn {
+	      background: linear-gradient(135deg, var(--accent), var(--violet));
+	      color: #08090d;
+	    }
+
+	    .btn-primary:hover,
+	    .convert-btn:hover {
+	      box-shadow: 0 16px 44px var(--accent-glow);
+	    }
+
+	    .btn-secondary,
+	    .btn-icon {
+	      border-color: var(--border);
+	      background: rgba(29, 35, 48, 0.82);
+	      color: var(--text-secondary);
+	    }
+
+	    .btn-secondary:hover,
+	    .btn-icon:hover {
+	      border-color: var(--accent);
+	      color: var(--text-primary);
+	    }
+
+	    .btn-success {
+	      background: rgba(112, 255, 156, 0.14);
+	      border: 1px solid rgba(112, 255, 156, 0.34);
+	      color: var(--success);
+	    }
+
+	    .btn-success:hover {
+	      background: rgba(112, 255, 156, 0.2);
+	    }
+
+	    .options-bar {
+	      gap: 0.8rem;
+	      border: 1px solid var(--border-soft);
+	      background: rgba(29, 35, 48, 0.72);
+	    }
+
+	    .option-group label,
+	    .checkbox-label {
+	      color: var(--text-secondary);
+	      font-weight: 650;
+	    }
+
+	    .option-group select {
+	      border-color: var(--border);
+	      background: var(--bg-input);
+	      color: var(--text-primary);
+	    }
+
+	    .checkbox-label input {
+	      accent-color: var(--violet);
+	    }
+
+	    .convert-section {
+	      padding: 20px 0;
+	    }
+
+	    .convert-btn {
+	      min-width: 220px;
+	      justify-content: center;
+	    }
+
+	    .preview-container {
+	      margin-top: 0;
+	      border-color: var(--border);
+	      background: rgba(21, 25, 35, 0.78);
+	      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.18);
+	    }
+
+	    .preview-header,
+	    .preview-table th {
+	      background: rgba(29, 35, 48, 0.86);
+	    }
+
+	    .preview-table th,
+	    .preview-table td {
+	      border-color: var(--border-soft);
+	    }
+
+	    .status {
+	      border-radius: var(--radius-sm);
+	      font-weight: 750;
+	    }
+
+	    .status-success {
+	      background: rgba(112, 255, 156, 0.12);
+	      border-color: rgba(112, 255, 156, 0.32);
+	      color: var(--success);
+	    }
+
+	    .status-error {
+	      background: rgba(255, 79, 123, 0.12);
+	      border-color: rgba(255, 79, 123, 0.32);
+	      color: var(--danger);
+	    }
+
+	    .status-warning {
+	      background: rgba(255, 209, 102, 0.12);
+	      border-color: rgba(255, 209, 102, 0.32);
+	      color: var(--warning);
+	    }
+
+	    .status-info {
+	      background: rgba(45, 248, 230, 0.1);
+	      border-color: rgba(45, 248, 230, 0.28);
+	      color: var(--accent);
+	    }
+
+	    .sample-link {
+	      color: var(--accent);
+	      font-weight: 800;
+	      text-decoration: none;
+	    }
+
+	    .sample-link:hover {
+	      color: var(--text-primary);
+	    }
+
+	    footer {
+	      border: 0;
+	      color: var(--text-muted);
+	    }
+
+	    footer a {
+	      color: var(--violet);
+	      font-weight: 800;
+	    }
+
+	    @media (max-width: 900px) {
+	      .hero-grid {
+	        grid-template-columns: 1fr;
+	      }
+
+	      .tab-nav {
+	        width: 100%;
+	      }
+
+	      .tab-btn {
+	        flex: 1;
+	        justify-content: center;
+	      }
+	    }
+
+	    @media (max-width: 600px) {
+	      .container {
+	        padding: 24px 20px 56px;
+	      }
+
+	      .top-nav {
+	        margin-bottom: 42px;
+	      }
+
+	      .logo {
+	        flex-direction: column;
+	      }
+
+	      header h1 {
+	        font-size: clamp(3rem, 15vw, 4.9rem);
+	      }
+
+	      .hero-card-row {
+	        grid-template-columns: 1fr;
+	      }
+
+	      .tab-nav {
+	        align-items: stretch;
+	      }
+
+	      .tab-btn {
+	        padding: 0.72rem 0.6rem;
+	        font-size: 0.8rem;
+	      }
+
+	      .panel {
+	        min-height: 0;
+	      }
+
+	      textarea {
+	        min-height: 310px;
+	      }
+
+	      .panel-actions {
+	        width: 100%;
+	      }
+	    }
+	  </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
-<body>
-  <div class="container">
-    <header>
-      <div class="logo">
-        <div class="logo-icon">⇄</div>
-        <h1>JSON ↔ CSV Converter</h1>
-      </div>
-      <p class="tagline">Convert between JSON and CSV instantly. Handles nested objects and arrays.</p>
-      <div class="trust-badges">
-        <div class="trust-badge"><span>🔒</span> 100% Private</div>
-        <div class="trust-badge"><span>💻</span> Runs Locally</div>
-        <div class="trust-badge"><span>⚡</span> No File Size Limit</div>
-      </div>
-    </header>
+	<body>
+	  <div class="container">
+	    <nav class="top-nav" aria-label="Tool navigation">
+	      <a class="back-link" href="../">Tools</a>
+	      <a class="creator-link" href="https://mattlivingston.com">Matt Livingston</a>
+	    </nav>
+
+	    <header>
+	      <div class="hero-grid">
+	        <div>
+	          <p class="eyebrow">Local data converter</p>
+	          <div class="logo">
+	            <div class="logo-icon" aria-hidden="true">Data</div>
+	            <h1>JSON to CSV, CSV to JSON.</h1>
+	          </div>
+	          <p class="tagline">Move structured data between developer-friendly JSON and spreadsheet-friendly CSV, with nested flattening, delimiter detection, type inference, previews, and exports that stay in your browser.</p>
+	          <div class="trust-badges" aria-label="Tool details">
+	            <div class="trust-badge"><span>01</span> Local-only</div>
+	            <div class="trust-badge"><span>02</span> Nested data ready</div>
+	            <div class="trust-badge"><span>03</span> Excel-safe option</div>
+	          </div>
+	        </div>
+
+	        <div class="hero-card" aria-label="Converter capabilities">
+	          <div class="hero-card-row">
+	            <span>Flatten</span>
+	            <div>
+	              <strong>Nested objects become columns</strong>
+	              <p>Turn address.city, metadata.created, and arrays into clean tabular output.</p>
+	            </div>
+	          </div>
+	          <div class="hero-card-row">
+	            <span>Detect</span>
+	            <div>
+	              <strong>CSV delimiter handling</strong>
+	              <p>Auto-detect comma, tab, semicolon, or pipe-separated data.</p>
+	            </div>
+	          </div>
+	          <div class="hero-card-row">
+	            <span>Export</span>
+	            <div>
+	              <strong>Copy or download results</strong>
+	              <p>Review the preview, then export clean JSON or CSV without uploading anything.</p>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
+	    </header>
 
     <!-- Tab Navigation -->
-    <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="json-to-csv">
-        <span>{ }</span> JSON → CSV
-      </button>
-      <button class="tab-btn" data-tab="csv-to-json">
-        <span>📄</span> CSV → JSON
-      </button>
-    </nav>
+	    <nav class="tab-nav" aria-label="Conversion direction">
+	      <button class="tab-btn active" data-tab="json-to-csv">
+	        <span>{ }</span> JSON → CSV
+	      </button>
+	      <button class="tab-btn" data-tab="csv-to-json">
+	        <span>CSV</span> CSV → JSON
+	      </button>
+	    </nav>
 
     <!-- JSON to CSV Tab -->
     <div id="json-to-csv" class="tab-content">
@@ -718,13 +1241,17 @@ Example:
                 <input type="checkbox" id="flattenNested" checked>
                 Flatten nested objects
               </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="includeHeaders" checked>
-                Include headers
-              </label>
-            </div>
-          </div>
-        </div>
+	              <label class="checkbox-label">
+	                <input type="checkbox" id="includeHeaders" checked>
+	                Include headers
+	              </label>
+	              <label class="checkbox-label">
+	                <input type="checkbox" id="guardFormulas" checked>
+	                Guard spreadsheet formulas
+	              </label>
+	            </div>
+	          </div>
+	        </div>
 
         <!-- Output Panel -->
         <div class="panel">
@@ -830,13 +1357,17 @@ Bob,25,LA'></textarea>
                 <input type="checkbox" id="firstRowHeaders" checked>
                 First row is headers
               </label>
-              <label class="checkbox-label">
-                <input type="checkbox" id="inferTypes" checked>
-                Infer types (numbers, booleans)
-              </label>
-            </div>
-          </div>
-        </div>
+	              <label class="checkbox-label">
+	                <input type="checkbox" id="inferTypes" checked>
+	                Infer types (numbers, booleans)
+	              </label>
+	              <label class="checkbox-label">
+	                <input type="checkbox" id="trimCells" checked>
+	                Trim cell values
+	              </label>
+	            </div>
+	          </div>
+	        </div>
 
         <!-- Output Panel -->
         <div class="panel">
@@ -878,10 +1409,9 @@ Bob,25,LA'></textarea>
         </button>
       </div>
 
-      <div id="csvToJsonStatus"></div>
-    </div>
+	    </div>
 
-    <footer>
+	    <footer>
       <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
     </footer>
   </div>
@@ -1047,14 +1577,27 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       }
     }
 
-    function copyToClipboard(textareaId) {
-      const textarea = document.getElementById(textareaId);
-      if (!textarea.value) return;
-      
-      navigator.clipboard.writeText(textarea.value).then(() => {
-        showToast('Copied to clipboard!');
-      });
-    }
+	    function copyToClipboard(textareaId) {
+	      const textarea = document.getElementById(textareaId);
+	      if (!textarea.value) return;
+
+	      if (navigator.clipboard && window.isSecureContext) {
+	        navigator.clipboard.writeText(textarea.value).then(() => {
+	          showToast('Copied to clipboard');
+	        }).catch(() => fallbackCopy(textarea));
+	        return;
+	      }
+
+	      fallbackCopy(textarea);
+	    }
+
+	    function fallbackCopy(textarea) {
+	      textarea.focus();
+	      textarea.select();
+	      document.execCommand('copy');
+	      window.getSelection().removeAllRanges();
+	      showToast('Copied to clipboard');
+	    }
 
     function showToast(message) {
       const existing = document.querySelector('.toast');
@@ -1093,10 +1636,14 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
     `;
     document.head.appendChild(style);
 
-    function showStatus(elementId, type, message) {
-      const el = document.getElementById(elementId);
-      el.innerHTML = `<div class="status status-${type}">${message}</div>`;
-    }
+	    function showStatus(elementId, type, message) {
+	      const el = document.getElementById(elementId);
+	      el.innerHTML = '';
+	      const status = document.createElement('div');
+	      status.className = `status status-${type}`;
+	      status.textContent = message;
+	      el.appendChild(status);
+	    }
 
     // ============================================
     // JSON to CSV Conversion
@@ -1132,13 +1679,20 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       return result;
     }
 
-    function escapeCSVValue(value, delimiter) {
-      if (value === null || value === undefined) return '';
-      
-      const str = String(value);
-      const needsQuotes = str.includes(delimiter) || 
-                          str.includes('"') || 
-                          str.includes('\n') || 
+	    function shouldGuardSpreadsheetFormula(value) {
+	      return typeof value === 'string' && /^[=+\-@]/.test(value.trimStart());
+	    }
+
+	    function escapeCSVValue(value, delimiter, guardFormulas = false) {
+	      if (value === null || value === undefined) return '';
+
+	      const safeValue = guardFormulas && shouldGuardSpreadsheetFormula(value)
+	        ? `'${value}`
+	        : value;
+	      const str = String(safeValue);
+	      const needsQuotes = str.includes(delimiter) || 
+	                          str.includes('"') || 
+	                          str.includes('\n') || 
                           str.includes('\r');
       
       if (needsQuotes) {
@@ -1151,37 +1705,38 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       const input = document.getElementById('jsonInput').value.trim();
       const statusEl = 'jsonToCsvStatus';
       
-      if (!input) {
-        showStatus(statusEl, 'warning', '⚠️ Please enter some JSON data');
-        return;
-      }
+	      if (!input) {
+	        showStatus(statusEl, 'warning', 'Please enter some JSON data');
+	        return;
+	      }
 
       let data;
-      try {
-        data = JSON.parse(input);
-      } catch (e) {
-        showStatus(statusEl, 'error', `❌ Invalid JSON: ${e.message}`);
-        return;
-      }
+	      try {
+	        data = JSON.parse(input);
+	      } catch (e) {
+	        showStatus(statusEl, 'error', `Invalid JSON: ${e.message}`);
+	        return;
+	      }
 
       // Ensure we have an array
       if (!Array.isArray(data)) {
-        if (typeof data === 'object' && data !== null) {
-          data = [data];
-        } else {
-          showStatus(statusEl, 'error', '❌ JSON must be an array of objects or a single object');
-          return;
-        }
-      }
+	        if (typeof data === 'object' && data !== null) {
+	          data = [data];
+	        } else {
+	          showStatus(statusEl, 'error', 'JSON must be an array of objects or a single object');
+	          return;
+	        }
+	      }
 
-      if (data.length === 0) {
-        showStatus(statusEl, 'warning', '⚠️ JSON array is empty');
-        return;
-      }
+	      if (data.length === 0) {
+	        showStatus(statusEl, 'warning', 'JSON array is empty');
+	        return;
+	      }
 
-      const delimiter = document.getElementById('delimiter').value;
-      const flattenNested = document.getElementById('flattenNested').checked;
-      const includeHeaders = document.getElementById('includeHeaders').checked;
+	      const delimiter = document.getElementById('delimiter').value;
+	      const flattenNested = document.getElementById('flattenNested').checked;
+	      const includeHeaders = document.getElementById('includeHeaders').checked;
+	      const guardFormulas = document.getElementById('guardFormulas').checked;
 
       // Process rows
       const processedData = data.map(row => {
@@ -1210,17 +1765,17 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
 
       // Build CSV
       const lines = [];
-      
-      if (includeHeaders) {
-        lines.push(headerArray.map(h => escapeCSVValue(h, delimiter)).join(delimiter));
-      }
+	      
+	      if (includeHeaders) {
+	        lines.push(headerArray.map(h => escapeCSVValue(h, delimiter)).join(delimiter));
+	      }
 
-      processedData.forEach(row => {
-        const values = headerArray.map(header => {
-          return escapeCSVValue(row[header], delimiter);
-        });
-        lines.push(values.join(delimiter));
-      });
+	      processedData.forEach(row => {
+	        const values = headerArray.map(header => {
+	          return escapeCSVValue(row[header], delimiter, guardFormulas);
+	        });
+	        lines.push(values.join(delimiter));
+	      });
 
       const csv = lines.join('\n');
       document.getElementById('csvOutput').value = csv;
@@ -1228,8 +1783,8 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       // Show preview
       showCSVPreview(headerArray, processedData);
 
-      showStatus(statusEl, 'success', `✓ Converted ${data.length} rows, ${headerArray.length} columns`);
-    }
+	      showStatus(statusEl, 'success', `Converted ${data.length} rows and ${headerArray.length} columns`);
+	    }
 
     function showCSVPreview(headers, data) {
       const preview = document.getElementById('csvPreview');
@@ -1284,23 +1839,25 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
     // ============================================
     // CSV to JSON Conversion
     // ============================================
-    function detectDelimiter(text) {
-      const delimiters = [',', '\t', ';', '|'];
-      const firstLine = text.split('\n')[0];
-      
-      let maxCount = 0;
-      let detected = ',';
-      
-      delimiters.forEach(d => {
-        const count = (firstLine.match(new RegExp(d === '|' ? '\\|' : d, 'g')) || []).length;
-        if (count > maxCount) {
-          maxCount = count;
-          detected = d;
-        }
-      });
-      
-      return detected;
-    }
+	    function detectDelimiter(text) {
+	      const delimiters = [',', '\t', ';', '|'];
+	      let best = { delimiter: ',', score: -1 };
+
+	      delimiters.forEach(delimiter => {
+	        const rows = parseCSV(text, delimiter).slice(0, 25);
+	        const multiColumnRows = rows.filter(row => row.length > 1);
+	        const fieldCounts = multiColumnRows.map(row => row.length);
+	        const averageFields = fieldCounts.reduce((sum, count) => sum + count, 0) / Math.max(fieldCounts.length, 1);
+	        const consistency = fieldCounts.filter(count => count === fieldCounts[0]).length;
+	        const score = multiColumnRows.length * 10 + consistency * 4 + averageFields;
+
+	        if (score > best.score) {
+	          best = { delimiter, score };
+	        }
+	      });
+
+	      return best.delimiter;
+	    }
 
     function parseCSVLine(line, delimiter) {
       const result = [];
@@ -1338,37 +1895,59 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       return result;
     }
 
-    function parseCSV(text, delimiter) {
-      const lines = [];
-      let current = '';
-      let inQuotes = false;
-      
-      for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        
-        if (char === '"') {
-          inQuotes = !inQuotes;
-          current += char;
-        } else if ((char === '\n' || char === '\r') && !inQuotes) {
-          if (current.trim()) {
-            lines.push(current);
-          }
-          current = '';
-          // Skip \r\n as single newline
-          if (char === '\r' && text[i + 1] === '\n') {
-            i++;
-          }
-        } else {
-          current += char;
-        }
-      }
-      
-      if (current.trim()) {
-        lines.push(current);
-      }
-      
-      return lines.map(line => parseCSVLine(line, delimiter));
-    }
+	    function parseCSV(text, delimiter) {
+	      const rows = [];
+	      let row = [];
+	      let field = '';
+	      let inQuotes = false;
+	      
+	      for (let i = 0; i < text.length; i++) {
+	        const char = text[i];
+	        const nextChar = text[i + 1];
+	        
+	        if (char === '"') {
+	          if (inQuotes && nextChar === '"') {
+	            field += '"';
+	            i++;
+	          } else {
+	            inQuotes = !inQuotes;
+	          }
+	        } else if (char === delimiter && !inQuotes) {
+	          row.push(field);
+	          field = '';
+	        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+	          row.push(field);
+	          if (row.some(value => value !== '')) {
+	            rows.push(row);
+	          }
+	          row = [];
+	          field = '';
+	          if (char === '\r' && text[i + 1] === '\n') {
+	            i++;
+	          }
+	        } else {
+	          field += char;
+	        }
+	      }
+	      
+	      row.push(field);
+	      if (row.some(value => value !== '')) {
+	        rows.push(row);
+	      }
+	      
+	      return rows;
+	    }
+
+	    function makeUniqueHeaders(headers) {
+	      const seen = new Map();
+	      return headers.map((header, index) => {
+	        const fallback = `column${index + 1}`;
+	        const base = (header || fallback).trim() || fallback;
+	        const count = seen.get(base) || 0;
+	        seen.set(base, count + 1);
+	        return count === 0 ? base : `${base}_${count + 1}`;
+	      });
+	    }
 
     function inferType(value) {
       if (value === '') return null;
@@ -1389,51 +1968,59 @@ Eva Martinez,29,Phoenix,eva@example.com,Marketing,72000`;
       const input = document.getElementById('csvInput').value.trim();
       const statusEl = 'csvToJsonStatus';
       
-      if (!input) {
-        showStatus(statusEl, 'warning', '⚠️ Please enter some CSV data');
-        return;
-      }
+	      if (!input) {
+	        showStatus(statusEl, 'warning', 'Please enter some CSV data');
+	        return;
+	      }
 
       const delimiterSetting = document.getElementById('csvDelimiter').value;
       const delimiter = delimiterSetting === 'auto' ? detectDelimiter(input) : delimiterSetting;
-      const firstRowHeaders = document.getElementById('firstRowHeaders').checked;
-      const inferTypes = document.getElementById('inferTypes').checked;
+	      const firstRowHeaders = document.getElementById('firstRowHeaders').checked;
+	      const inferTypes = document.getElementById('inferTypes').checked;
+	      const trimCells = document.getElementById('trimCells').checked;
 
-      const rows = parseCSV(input, delimiter);
-      
-      if (rows.length === 0) {
-        showStatus(statusEl, 'error', '❌ No data found in CSV');
-        return;
-      }
+	      const rows = parseCSV(input, delimiter);
+	      
+	      if (rows.length === 0) {
+	        showStatus(statusEl, 'error', 'No data found in CSV');
+	        return;
+	      }
 
-      let headers;
-      let dataRows;
-      
-      if (firstRowHeaders) {
-        headers = rows[0].map(h => h.trim());
-        dataRows = rows.slice(1);
-      } else {
-        headers = rows[0].map((_, i) => `column${i + 1}`);
-        dataRows = rows;
-      }
+	      let headers;
+	      let dataRows;
+	      const maxColumns = rows.reduce((max, row) => Math.max(max, row.length), 0);
+	      
+	      if (firstRowHeaders) {
+	        headers = makeUniqueHeaders(rows[0]);
+	        dataRows = rows.slice(1);
+	      } else {
+	        headers = makeUniqueHeaders(Array.from({ length: maxColumns }, (_, i) => `column${i + 1}`));
+	        dataRows = rows;
+	      }
 
-      const result = dataRows.map(row => {
-        const obj = {};
-        headers.forEach((header, i) => {
-          let value = row[i] !== undefined ? row[i].trim() : '';
-          if (inferTypes) {
-            value = inferType(value);
-          }
+	      while (headers.length < maxColumns) {
+	        headers.push(`column${headers.length + 1}`);
+	      }
+
+	      const result = dataRows.map(row => {
+	        const obj = {};
+	        headers.forEach((header, i) => {
+	          const rawValue = row[i] !== undefined ? row[i] : '';
+	          let value = trimCells ? rawValue.trim() : rawValue;
+	          if (inferTypes) {
+	            value = inferType(value);
+	          }
           obj[header] = value;
         });
         return obj;
       });
 
-      const json = JSON.stringify(result, null, 2);
-      document.getElementById('jsonOutput').value = json;
+	      const json = JSON.stringify(result, null, 2);
+	      document.getElementById('jsonOutput').value = json;
 
-      showStatus(statusEl, 'success', `✓ Converted ${result.length} rows, ${headers.length} columns`);
-    }
+	      const delimiterLabel = delimiter === '\t' ? 'tab' : `"${delimiter}"`;
+	      showStatus(statusEl, 'success', `Converted ${result.length} rows and ${headers.length} columns using ${delimiterLabel} delimiter`);
+	    }
 
     function downloadJSON() {
       const json = document.getElementById('jsonOutput').value;

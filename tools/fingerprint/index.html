@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Browser Fingerprint Viewer - What Your Browser Reveals</title>
+  <title>Browser Fingerprint Viewer | Privacy Exposure Lab</title>
+  <meta name="description" content="See what your browser reveals through canvas, WebGL, audio, fonts, storage, permissions, screen, timezone, network, and other fingerprinting signals.">
   <style>
     * {
       margin: 0;
@@ -12,133 +13,295 @@
     }
 
     :root {
-      --bg-dark: #0a0a0f;
-      --bg-surface: #141420;
-      --bg-elevated: #1a1a2e;
-      --accent-primary: #00ff88;
-      --accent-danger: #ff3366;
-      --accent-warning: #ffaa00;
-      --accent-info: #00aaff;
-      --text-primary: #ffffff;
-      --text-muted: #8b8b9e;
-      --border: #2a2a3e;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      --glow: 0 0 20px rgba(0, 255, 136, 0.3);
+      color-scheme: dark;
+      --bg: #050812;
+      --panel: rgba(13, 20, 34, 0.86);
+      --panel-strong: rgba(17, 27, 47, 0.94);
+      --panel-soft: rgba(26, 38, 63, 0.68);
+      --line: rgba(116, 198, 255, 0.2);
+      --line-strong: rgba(118, 255, 191, 0.4);
+      --text: #f8fbff;
+      --muted: #aeb9cc;
+      --faint: #7f8aa1;
+      --cyan: #74dfff;
+      --violet: #a993ff;
+      --green: #76ffbf;
+      --rose: #ff7aa8;
+      --amber: #f4d35e;
+      --ink: #06101b;
+      --radius: 8px;
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
-      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
-      background: var(--bg-dark);
-      color: var(--text-primary);
-      line-height: 1.6;
       min-height: 100vh;
-      padding: 2rem 1rem;
-      background-image: 
-        radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255, 51, 102, 0.05) 0%, transparent 50%);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 0%, rgba(116, 223, 255, 0.22), transparent 32rem),
+        radial-gradient(circle at 88% 8%, rgba(118, 255, 191, 0.16), transparent 30rem),
+        radial-gradient(circle at 52% 102%, rgba(169, 147, 255, 0.2), transparent 34rem),
+        linear-gradient(180deg, #07101e 0%, #050812 46%, #06110f 100%);
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(248, 251, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248, 251, 255, 0.035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.2));
     }
 
     .container {
-      max-width: 1400px;
+      width: min(1180px, calc(100% - 28px));
       margin: 0 auto;
+      padding: 18px 0 42px;
     }
 
-    /* Header */
+    a {
+      color: inherit;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 46px;
+    }
+
+    .back-link,
+    .site-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .back-link {
+      color: var(--cyan);
+    }
+
+    .back-link span {
+      font-size: 1.55rem;
+      line-height: 0;
+      transform: translateY(-1px);
+    }
+
+    .back-link:hover,
+    .site-link:hover {
+      color: var(--text);
+    }
+
     header {
-      text-align: center;
-      margin-bottom: 3rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.74fr);
+      gap: 28px;
+      align-items: stretch;
     }
 
     h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-info) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.02em;
+      max-width: 9.5ch;
+      margin: 0;
+      font-size: clamp(4rem, 9.4vw, 8rem);
+      font-weight: 900;
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    h1 .dot {
+      color: var(--green);
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--green);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.82rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
     }
 
     .subtitle {
-      color: var(--text-muted);
-      font-size: 1rem;
-      margin-bottom: 1.5rem;
+      max-width: 780px;
+      margin: 26px 0 0;
+      color: #d8e1ef;
+      font-size: clamp(1.08rem, 2vw, 1.38rem);
+      line-height: 1.58;
     }
 
-    .warning-banner {
-      background: rgba(255, 51, 102, 0.1);
-      border: 1px solid rgba(255, 51, 102, 0.3);
-      border-radius: 0.5rem;
-      padding: 1rem 1.5rem;
-      margin: 1.5rem auto;
-      max-width: 800px;
+    .hero-actions {
       display: flex;
-      align-items: center;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
     }
 
-    .warning-icon {
-      font-size: 1.5rem;
-      flex-shrink: 0;
+    .hero-panel {
+      position: relative;
+      min-height: 390px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(116, 223, 255, 0.11), rgba(169, 147, 255, 0.13)),
+        var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
     }
 
-    .warning-text {
-      font-size: 0.9rem;
-      color: var(--text-muted);
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 49%, rgba(116, 223, 255, 0.1) 50%, transparent 51% 100%),
+        linear-gradient(rgba(248, 251, 255, 0.055) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 38px;
+      pointer-events: none;
     }
 
-    /* Incognito Alert */
-    .incognito-alert {
-      background: rgba(255, 51, 102, 0.2);
-      border: 2px solid var(--accent-danger);
-      border-radius: 0.5rem;
-      padding: 1rem 1.5rem;
-      margin: 1rem auto;
-      max-width: 800px;
+    .signal-stack {
+      position: relative;
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal-row {
       display: none;
+      justify-content: space-between;
       align-items: center;
-      gap: 1rem;
-      animation: pulse 2s infinite;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(248, 251, 255, 0.1);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 18, 0.56);
+    }
+
+    .signal-row:nth-child(-n+5) {
+      display: flex;
+    }
+
+    .signal-row span {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .signal-row strong {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      color: var(--green);
+    }
+
+    .hero-note {
+      position: relative;
+      margin-top: 18px;
+      padding: 14px;
+      border: 1px solid rgba(118, 255, 191, 0.2);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 18, 0.72);
+      color: var(--muted);
+    }
+
+    .hero-note strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .sponsor-slot {
+      display: none;
+      margin: 0 0 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(116, 223, 255, 0.22);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 18, 0.72);
+      color: var(--muted);
+    }
+
+    .notice-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 26px 0;
+    }
+
+    .warning-banner,
+    .incognito-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      grid-column: 1 / -1;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(244, 211, 94, 0.08);
+      border: 1px solid rgba(244, 211, 94, 0.24);
+      color: #f8e9a7;
+    }
+
+    .warning-banner strong,
+    .incognito-alert .alert-title {
+      color: var(--amber);
+    }
+
+    .warning-icon,
+    .alert-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--amber), var(--green));
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .warning-text,
+    .alert-desc {
+      color: inherit;
+      font-size: 0.94rem;
+    }
+
+    .incognito-alert {
+      display: none;
+      border-color: rgba(255, 122, 168, 0.42);
+      background: rgba(255, 122, 168, 0.09);
+      color: #ffd0dd;
     }
 
     .incognito-alert.detected {
       display: flex;
     }
 
-    @keyframes pulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255, 51, 102, 0.4); }
-      50% { box-shadow: 0 0 20px 5px rgba(255, 51, 102, 0.2); }
-    }
-
     .incognito-alert .alert-icon {
-      font-size: 2rem;
+      background: linear-gradient(135deg, var(--rose), var(--violet));
     }
 
-    .incognito-alert .alert-text {
-      flex: 1;
-    }
-
-    .incognito-alert .alert-title {
-      font-weight: 700;
-      color: var(--accent-danger);
-      margin-bottom: 0.25rem;
-    }
-
-    .incognito-alert .alert-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* Status Card */
     .status-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 2rem;
-      margin-bottom: 2rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 18px;
+      background: var(--panel);
       box-shadow: var(--shadow);
     }
 
@@ -146,100 +309,118 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      gap: 18px;
+      margin-bottom: 16px;
     }
 
     .status-title {
-      font-size: 1.2rem;
-      font-weight: 600;
+      margin: 0;
+      font-size: clamp(1.5rem, 3.4vw, 2.4rem);
+      line-height: 1;
+      letter-spacing: 0;
     }
 
-    .scan-btn {
-      background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-info) 100%);
-      color: var(--bg-dark);
+    .status-subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+    }
+
+    .scan-btn,
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
       border: none;
-      padding: 0.75rem 2rem;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      font-weight: 700;
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--cyan), var(--green));
+      font-weight: 900;
       cursor: pointer;
-      transition: all 0.3s;
-      font-family: inherit;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      text-decoration: none;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
     }
 
-    .scan-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--glow);
+    .btn {
+      color: var(--text);
+      border: 1px solid rgba(248, 251, 255, 0.14);
+      background: rgba(248, 251, 255, 0.06);
+    }
+
+    .scan-btn:hover,
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 54px rgba(116, 223, 255, 0.16);
     }
 
     .scan-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.58;
       cursor: not-allowed;
       transform: none;
     }
 
     .fingerprint-display {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1.5rem;
-      font-family: 'Courier New', monospace;
+      position: relative;
+      margin-bottom: 14px;
+      padding: 36px 14px 14px;
+      border: 1px solid rgba(116, 223, 255, 0.28);
+      border-radius: var(--radius);
+      color: var(--green);
+      background: linear-gradient(180deg, rgba(116, 223, 255, 0.08), rgba(5, 8, 18, 0.72));
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
       font-size: 0.9rem;
       word-break: break-all;
-      color: var(--accent-primary);
-      margin-bottom: 1rem;
-      position: relative;
       overflow: hidden;
     }
 
     .fingerprint-display::before {
       content: 'FINGERPRINT HASH';
       position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
+      top: 12px;
+      left: 14px;
+      color: var(--faint);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
     }
 
     .uniqueness-score {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 1rem;
-      margin-top: 1.5rem;
+      gap: 10px;
+      margin-top: 14px;
     }
 
     .score-item {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: center;
+      padding: 14px;
+      border: 1px solid rgba(248, 251, 255, 0.1);
+      border-radius: var(--radius);
+      background: rgba(248, 251, 255, 0.045);
     }
 
     .score-value {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
+      margin-bottom: 4px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 1.8rem;
+      font-weight: 900;
     }
 
-    .score-value.high { color: var(--accent-danger); }
-    .score-value.medium { color: var(--accent-warning); }
-    .score-value.low { color: var(--accent-primary); }
+    .score-value.high { color: var(--rose); }
+    .score-value.medium { color: var(--amber); }
+    .score-value.low { color: var(--green); }
 
     .score-label {
-      font-size: 0.75rem;
-      color: var(--text-muted);
+      color: var(--faint);
+      font-size: 0.74rem;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.12em;
     }
 
-    /* Scanning Progress */
     .scanning-progress {
       display: none;
-      margin: 2rem 0;
+      margin: 18px 0;
     }
 
     .scanning-progress.active {
@@ -247,33 +428,32 @@
     }
 
     .progress-bar {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      height: 4px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(248, 251, 255, 0.08);
       overflow: hidden;
-      margin-bottom: 1rem;
+      margin-bottom: 12px;
     }
 
     .progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-primary), var(--accent-info));
+      background: linear-gradient(90deg, var(--green), var(--cyan), var(--violet));
       width: 0%;
       transition: width 0.3s ease;
     }
 
     .current-scan {
-      font-size: 0.9rem;
-      color: var(--text-muted);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
     .scan-spinner {
-      width: 12px;
-      height: 12px;
-      border: 2px solid var(--accent-primary);
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--green);
       border-top-color: transparent;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
@@ -283,273 +463,325 @@
       to { transform: rotate(360deg); }
     }
 
-    /* Results Grid */
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .insight-card {
+      padding: 14px;
+      border: 1px solid rgba(248, 251, 255, 0.1);
+      border-radius: var(--radius);
+      background: rgba(248, 251, 255, 0.045);
+    }
+
+    .insight-card span {
+      display: block;
+      color: var(--faint);
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .insight-card strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 1.02rem;
+    }
+
+    .insight-card p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      margin-top: 18px;
     }
 
     .result-category {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1.5rem;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
       box-shadow: var(--shadow);
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.5s forwards;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .category-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border);
+      gap: 14px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(248, 251, 255, 0.1);
     }
 
     .category-title {
       font-size: 1.1rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .category-icon {
-      font-size: 1.2rem;
+      font-weight: 900;
     }
 
     .risk-badge {
-      padding: 0.25rem 0.75rem;
-      border-radius: 1rem;
-      font-size: 0.75rem;
-      font-weight: 700;
+      flex: 0 0 auto;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
     }
 
     .risk-high {
-      background: rgba(255, 51, 102, 0.2);
-      color: var(--accent-danger);
-      border: 1px solid var(--accent-danger);
+      background: rgba(255, 122, 168, 0.12);
+      color: var(--rose);
+      border: 1px solid rgba(255, 122, 168, 0.42);
     }
 
     .risk-medium {
-      background: rgba(255, 170, 0, 0.2);
-      color: var(--accent-warning);
-      border: 1px solid var(--accent-warning);
+      background: rgba(244, 211, 94, 0.12);
+      color: var(--amber);
+      border: 1px solid rgba(244, 211, 94, 0.4);
     }
 
     .risk-low {
-      background: rgba(0, 255, 136, 0.2);
-      color: var(--accent-primary);
-      border: 1px solid var(--accent-primary);
+      background: rgba(118, 255, 191, 0.11);
+      color: var(--green);
+      border: 1px solid rgba(118, 255, 191, 0.34);
     }
 
     .risk-critical {
-      background: rgba(255, 51, 102, 0.3);
-      color: #ff6699;
-      border: 2px solid var(--accent-danger);
-      animation: pulse 2s infinite;
+      background: rgba(255, 122, 168, 0.16);
+      color: #ffd4df;
+      border: 1px solid rgba(255, 122, 168, 0.6);
     }
 
     .data-point {
-      margin-bottom: 1rem;
+      margin-bottom: 10px;
     }
 
     .data-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 0.25rem;
+      margin-bottom: 5px;
+      color: var(--faint);
+      font-size: 0.74rem;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.1em;
     }
 
     .data-value {
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      word-break: break-word;
-      font-family: 'Courier New', monospace;
-      background: var(--bg-elevated);
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.25rem;
-      border: 1px solid var(--border);
+      padding: 9px 10px;
+      border: 1px solid rgba(248, 251, 255, 0.1);
+      border-radius: 6px;
+      color: var(--text);
+      background: rgba(5, 8, 18, 0.62);
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 0.9rem;
+      overflow-wrap: anywhere;
     }
 
     .data-value.danger {
-      border-color: var(--accent-danger);
-      color: var(--accent-danger);
+      border-color: rgba(255, 122, 168, 0.54);
+      color: #ffc9d8;
     }
 
     .data-explanation {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-      font-style: italic;
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
       line-height: 1.4;
     }
 
-    /* Action Buttons */
     .actions {
       display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
       flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
     }
 
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border: 1px solid var(--border);
-      border-radius: 0.5rem;
-      background: var(--bg-surface);
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: inherit;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .btn:hover {
-      background: var(--bg-elevated);
-      border-color: var(--accent-primary);
-      transform: translateY(-2px);
-    }
-
-    /* Mitigation Tips */
     .tips-section {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 2rem;
-      margin-top: 3rem;
+      padding: 18px;
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
       box-shadow: var(--shadow);
     }
 
     .tips-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      margin-bottom: 14px;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1;
+    }
+
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
 
     .tip-item {
-      background: var(--bg-elevated);
-      border-left: 3px solid var(--accent-primary);
-      padding: 1rem 1.5rem;
-      margin-bottom: 1rem;
-      border-radius: 0.25rem;
+      padding: 14px;
+      border: 1px solid rgba(248, 251, 255, 0.1);
+      border-left: 3px solid var(--green);
+      border-radius: var(--radius);
+      background: rgba(248, 251, 255, 0.045);
     }
 
     .tip-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--accent-primary);
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 900;
     }
 
     .tip-description {
-      color: var(--text-muted);
-      font-size: 0.9rem;
+      color: var(--muted);
+      font-size: 0.93rem;
       line-height: 1.6;
     }
 
-    /* Footer */
     .footer {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid var(--border);
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      display: none;
     }
 
-    .footer a {
-      color: var(--accent-primary);
-      text-decoration: none;
+    .hidden {
+      display: none !important;
     }
 
-    .footer a:hover {
-      text-decoration: underline;
+    @media (max-width: 920px) {
+      .hero,
+      .notice-row,
+      .tips-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-panel {
+        min-height: auto;
+      }
     }
 
-    /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
+      .container {
+        width: min(100% - 22px, 1180px);
+        padding-top: 14px;
+      }
+
+      .topbar {
+        margin-bottom: 34px;
+      }
+
       h1 {
-        font-size: 1.8rem;
+        font-size: clamp(3.25rem, 15.2vw, 5.2rem);
+      }
+
+      .hero-actions,
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .scan-btn,
+      .btn {
+        width: 100%;
+      }
+
+      .status-header {
+        display: grid;
+      }
+
+      .uniqueness-score,
+      .insight-grid {
+        grid-template-columns: 1fr;
       }
 
       .results-grid {
         grid-template-columns: 1fr;
       }
 
-      .status-header {
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .scan-btn {
-        width: 100%;
-      }
-
-      .uniqueness-score {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
       .warning-banner,
       .incognito-alert {
-        flex-direction: column;
-        text-align: center;
+        display: grid;
+        grid-template-columns: auto 1fr;
+      }
+
+      .incognito-alert:not(.detected) {
+        display: none;
       }
     }
-
-    /* Hidden */
-    .hidden {
-      display: none !important;
-    }
   </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
   <div class="container">
+    <nav class="topbar" aria-label="Page navigation">
+      <a class="back-link" href="../"><span aria-hidden="true">&larr;</span> Tools</a>
+      <a class="site-link" href="https://mattlivingston.com">Matt Livingston</a>
+    </nav>
+
     <header>
-      <h1>🔍 Browser Fingerprint Viewer</h1>
-      <p class="subtitle">Discover what your browser reveals about you</p>
-      
+      <div class="sponsor-slot" data-sponsor-slot="privacy-top">
+        Future privacy sponsor placement.
+      </div>
+
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Privacy exposure lab</p>
+          <h1>Browser Fingerprint Viewer<span class="dot">.</span></h1>
+          <p class="subtitle">See the signals websites can read before you log in, accept cookies, or click anything. Scan canvas, WebGL, audio, fonts, storage, screen, timezone, permissions, media devices, and browser hints locally in your own browser.</p>
+          <div class="hero-actions">
+            <button id="scan-btn" class="scan-btn" type="button">Scan My Browser</button>
+            <a class="btn" href="#tips-section">Reduce My Fingerprint</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel" aria-label="Fingerprint signal preview">
+          <div class="signal-stack">
+            <div class="signal-row"><span>Canvas</span><strong id="hero-canvas">waiting</strong></div>
+            <div class="signal-row"><span>WebGL</span><strong id="hero-webgl">waiting</strong></div>
+            <div class="signal-row"><span>Fonts</span><strong id="hero-fonts">waiting</strong></div>
+            <div class="signal-row"><span>Timezone</span><strong id="hero-timezone">waiting</strong></div>
+            <div class="signal-row"><span>Privacy mode</span><strong id="hero-private">unknown</strong></div>
+          </div>
+          <div class="hero-note">
+            <strong>A VPN helps, but it is not the whole story.</strong>
+            Your IP address is only one signal. Fingerprinting can still correlate browser, device, graphics, audio, locale, and permission surfaces.
+          </div>
+        </aside>
+      </section>
+
+      <div class="notice-row">
       <div class="warning-banner">
-        <span class="warning-icon">⚠️</span>
+        <span class="warning-icon" aria-hidden="true">!</span>
         <div class="warning-text">
-          <strong>Privacy Alert:</strong> Your browser leaks a unique digital fingerprint that can track you across the web — even without cookies. This tool shows you exactly what's exposed.
+          <strong>Privacy alert:</strong> Your browser can leak a reusable fingerprint that tracks you across the web, even without cookies. This tool shows what is exposed and why each signal matters.
         </div>
       </div>
 
       <div id="incognito-alert" class="incognito-alert">
-        <span class="alert-icon">🕵️</span>
+        <span class="alert-icon" aria-hidden="true">P</span>
         <div class="alert-text">
           <div class="alert-title">Private/Incognito Mode Detected</div>
-          <div class="alert-desc">You're using private browsing, but we can still detect it. This means websites know you're trying to hide — which itself is identifying information.</div>
+          <div class="alert-desc">This browser appears to be in private mode. Sites may be able to infer that state, which can become another identifying signal.</div>
         </div>
+      </div>
       </div>
     </header>
 
-    <!-- Status Card -->
     <div class="status-card">
       <div class="status-header">
-        <h2 class="status-title">Your Digital Fingerprint</h2>
-        <button id="scan-btn" class="scan-btn">Start Scan</button>
+        <div>
+          <p class="eyebrow">Live report</p>
+          <h2 class="status-title">Your browser exposure summary</h2>
+          <p class="status-subtitle">Run the scan to generate a local fingerprint hash, risk score, tracker-facing insights, and exportable evidence.</p>
+        </div>
       </div>
 
       <div id="scanning-progress" class="scanning-progress">
@@ -586,62 +818,57 @@
           </div>
         </div>
 
+        <div class="insight-grid" id="insight-grid"></div>
+
         <div class="actions">
-          <button class="btn" id="export-btn">📥 Export JSON</button>
-          <button class="btn" id="rescan-btn">🔄 Scan Again</button>
-          <button class="btn" id="copy-hash-btn">📋 Copy Hash</button>
+          <button class="btn" id="export-btn" type="button">Export JSON</button>
+          <button class="btn" id="copy-report-btn" type="button">Copy Privacy Report</button>
+          <button class="btn" id="copy-hash-btn" type="button">Copy Hash</button>
+          <button class="btn" id="rescan-btn" type="button">Scan Again</button>
         </div>
       </div>
     </div>
 
-    <!-- Results Grid -->
     <div id="results-grid" class="results-grid hidden">
-      <!-- Results will be dynamically inserted here -->
     </div>
 
-    <!-- Mitigation Tips -->
     <div id="tips-section" class="tips-section hidden">
-      <h3 class="tips-title">🛡️ How to Reduce Your Fingerprint</h3>
-      
-      <div class="tip-item">
-        <div class="tip-title">Use Privacy-Focused Browsers</div>
-        <div class="tip-description">
-          Browsers like Brave, Firefox with privacy extensions, or Tor Browser actively resist fingerprinting by normalizing or randomizing detectable attributes.
+      <p class="eyebrow">Mitigation playbook</p>
+      <h3 class="tips-title">How to reduce your fingerprint</h3>
+      <div class="tips-grid">
+        <div class="tip-item">
+          <div class="tip-title">Use fingerprint resistance, not only privacy mode</div>
+          <div class="tip-description">Private windows usually clear storage after the session, but they do not automatically normalize canvas, WebGL, fonts, timezone, or hardware signals.</div>
         </div>
-      </div>
 
-      <div class="tip-item">
-        <div class="tip-title">Disable WebGL & Canvas</div>
-        <div class="tip-description">
-          These are major fingerprinting vectors. Use browser extensions like CanvasBlocker or configure Firefox's privacy.resistFingerprinting setting.
+        <div class="tip-item">
+          <div class="tip-title">Be careful with canvas, WebGL, and audio</div>
+          <div class="tip-description">These APIs expose rendering and processing differences from your graphics stack, drivers, fonts, and audio pipeline. They are some of the strongest fingerprint inputs.</div>
         </div>
-      </div>
 
-      <div class="tip-item">
-        <div class="tip-title">Limit Browser Extensions</div>
-        <div class="tip-description">
-          Each extension can be detected and adds to your unique fingerprint. Only install essential extensions and use them sparingly.
+        <div class="tip-item">
+          <div class="tip-title">Reduce permission surfaces</div>
+          <div class="tip-description">Camera, microphone, notification, and geolocation states can all add context. Keep defaults strict and grant access only when a site truly needs it.</div>
         </div>
-      </div>
 
-      <div class="tip-item">
-        <div class="tip-title">Use VPN + Privacy Mode</div>
-        <div class="tip-description">
-          While VPNs hide your IP, combine them with private browsing and fingerprint resistance for maximum privacy. Your fingerprint can still identify you even behind a VPN.
+        <div class="tip-item">
+          <div class="tip-title">Limit extensions and custom fonts</div>
+          <div class="tip-description">Extensions, unusual installed fonts, and custom browser settings can make you stand out. A boring browser profile is often harder to separate from the crowd.</div>
         </div>
-      </div>
 
-      <div class="tip-item">
-        <div class="tip-title">Regular Browser Rotation</div>
-        <div class="tip-description">
-          Switch between different browsers and devices for sensitive activities. This makes it harder to build a consistent profile of your browsing behavior.
+        <div class="tip-item">
+          <div class="tip-title">Use a VPN for network privacy</div>
+          <div class="tip-description">A VPN can hide your IP address from sites, but it does not erase browser-level fingerprints. Pair it with browser protections for a more complete privacy posture.</div>
+        </div>
+
+        <div class="tip-item">
+          <div class="tip-title">Separate identities by browser profile</div>
+          <div class="tip-description">For sensitive work, use separate browser profiles or browsers so logins, extensions, storage, and fingerprint surfaces do not all reinforce the same identity.</div>
         </div>
       </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
-      <p>Built by <a href="https://mattlivingston.com">Matt Livingston</a> • All processing happens locally in your browser</p>
     </footer>
   </div>
 
@@ -838,6 +1065,45 @@
         };
       },
 
+      async scanClientHints() {
+        const uaData = navigator.userAgentData;
+        if (!uaData) {
+          return { clientHintsSupported: false };
+        }
+
+        const hints = {
+          clientHintsSupported: true,
+          mobile: uaData.mobile,
+          brands: (uaData.brands || []).map(brand => `${brand.brand} ${brand.version}`).join(', '),
+          platform: uaData.platform || 'Unknown'
+        };
+
+        try {
+          if (uaData.getHighEntropyValues) {
+            const highEntropy = await uaData.getHighEntropyValues([
+              'architecture',
+              'bitness',
+              'model',
+              'platformVersion',
+              'uaFullVersion',
+              'fullVersionList',
+              'wow64'
+            ]);
+            hints.architecture = highEntropy.architecture || 'Unknown';
+            hints.bitness = highEntropy.bitness || 'Unknown';
+            hints.model = highEntropy.model || 'Unknown';
+            hints.platformVersion = highEntropy.platformVersion || 'Unknown';
+            hints.fullVersion = highEntropy.uaFullVersion || 'Unknown';
+            hints.fullVersionList = (highEntropy.fullVersionList || []).map(brand => `${brand.brand} ${brand.version}`).join(', ') || 'Unknown';
+            hints.wow64 = highEntropy.wow64 ?? 'Unknown';
+          }
+        } catch (error) {
+          hints.highEntropyError = error.message;
+        }
+
+        return hints;
+      },
+
       // Screen & display info
       async scanScreen() {
         return {
@@ -858,6 +1124,18 @@
           timezone: timezone,
           timezoneOffset: `UTC${offset > 0 ? '-' : '+'}${Math.abs(offset / 60)}`,
           locale: Intl.DateTimeFormat().resolvedOptions().locale
+        };
+      },
+
+      async scanPrivacyPreferences() {
+        return {
+          doNotTrack: navigator.doNotTrack || 'Not set',
+          globalPrivacyControl: navigator.globalPrivacyControl ?? 'Not exposed',
+          reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+          reducedTransparency: window.matchMedia('(prefers-reduced-transparency: reduce)').matches,
+          colorScheme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+          contrast: window.matchMedia('(prefers-contrast: more)').matches ? 'more' : 'default',
+          cookiesEnabled: navigator.cookieEnabled
         };
       },
 
@@ -888,7 +1166,7 @@
         ctx.shadowOffsetX = 2;
         ctx.shadowOffsetY = 2;
         ctx.fillStyle = '#069';
-        ctx.fillText('Browser Fingerprint 🔍', 2, 15);
+        ctx.fillText('Browser Fingerprint Lab', 2, 15);
         ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
         ctx.fillText('Canvas Test αβγ', 4, 35);
 
@@ -1105,7 +1383,7 @@
             
             // Render multiple frames
             for (let i = 0; i < 100; i++) {
-              gl.clearColor(Math.random(), Math.random(), Math.random(), 1);
+              gl.clearColor((i % 7) / 7, (i % 11) / 11, (i % 13) / 13, 1);
               gl.clear(gl.COLOR_BUFFER_BIT);
             }
             gl.finish(); // Force GPU sync
@@ -1160,6 +1438,26 @@
         };
       },
 
+      async scanPermissions() {
+        const permissionNames = ['geolocation', 'notifications', 'camera', 'microphone', 'persistent-storage'];
+        const results = {};
+
+        if (!navigator.permissions || !navigator.permissions.query) {
+          return { permissionsSupported: false };
+        }
+
+        for (const name of permissionNames) {
+          try {
+            const status = await navigator.permissions.query({ name });
+            results[name] = status.state;
+          } catch (error) {
+            results[name] = 'not queryable';
+          }
+        }
+
+        return results;
+      },
+
       // Battery API
       async scanBattery() {
         try {
@@ -1205,6 +1503,7 @@
         
         // Weight by actual uniqueness contribution
         if (this.results.basicInfo) bits += 10; // User agent varies widely
+        if (this.results.clientHints?.clientHintsSupported) bits += 4;
         if (this.results.screen) bits += 6; // Screen resolution
         if (this.results.canvas) bits += 12; // Canvas is highly unique
         if (this.results.webgl) bits += 10; // WebGL renderer + extensions
@@ -1219,6 +1518,7 @@
         if (this.results.incognito?.detected) bits += 2; // Incognito detection
         if (this.results.battery?.batterySupported !== false) bits += 2;
         if (this.results.mediaDevices?.mediaDevicesSupported !== false) bits += 3;
+        if (this.results.permissions?.permissionsSupported !== false) bits += 2;
         
         return bits;
       }
@@ -1238,6 +1538,7 @@
       entropyBits: document.getElementById('entropy-bits'),
       dataPoints: document.getElementById('data-points'),
       fontsDetected: document.getElementById('fonts-detected'),
+      insightGrid: document.getElementById('insight-grid'),
       incognitoAlert: document.getElementById('incognito-alert'),
 
       init() {
@@ -1245,6 +1546,7 @@
         document.getElementById('export-btn')?.addEventListener('click', () => this.exportResults());
         document.getElementById('rescan-btn')?.addEventListener('click', () => this.startScan());
         document.getElementById('copy-hash-btn')?.addEventListener('click', () => this.copyHash());
+        document.getElementById('copy-report-btn')?.addEventListener('click', () => this.copyReport());
       },
 
       async startScan() {
@@ -1259,8 +1561,10 @@
         const scans = [
           { name: 'Private Browsing Detection', fn: 'detectIncognito', key: 'incognito' },
           { name: 'Basic Browser Info', fn: 'scanBasicInfo', key: 'basicInfo' },
+          { name: 'Client Hints', fn: 'scanClientHints', key: 'clientHints' },
           { name: 'Screen & Display', fn: 'scanScreen', key: 'screen' },
           { name: 'Timezone Data', fn: 'scanTimezone', key: 'timezone' },
+          { name: 'Privacy Preferences', fn: 'scanPrivacyPreferences', key: 'privacyPreferences' },
           { name: 'Canvas Fingerprint', fn: 'scanCanvas', key: 'canvas' },
           { name: 'WebGL Capabilities', fn: 'scanWebGL', key: 'webgl' },
           { name: 'Audio Fingerprint', fn: 'scanAudio', key: 'audio' },
@@ -1268,6 +1572,7 @@
           { name: 'Hardware Fingerprint', fn: 'scanHardware', key: 'hardware' },
           { name: 'Storage APIs', fn: 'scanStorage', key: 'storage' },
           { name: 'Network Info', fn: 'scanNetwork', key: 'network' },
+          { name: 'Permission States', fn: 'scanPermissions', key: 'permissions' },
           { name: 'Battery Status', fn: 'scanBattery', key: 'battery' },
           { name: 'Media Devices', fn: 'scanMediaDevices', key: 'mediaDevices' }
         ];
@@ -1277,7 +1582,18 @@
           this.currentScanText.textContent = `Scanning: ${scan.name}...`;
           this.progressFill.style.width = `${((i + 1) / scans.length) * 100}%`;
           
-          FingerprintScanner.results[scan.key] = await FingerprintScanner[scan.fn]();
+          try {
+            FingerprintScanner.results[scan.key] = await this.withTimeout(
+              FingerprintScanner[scan.fn](),
+              3500,
+              `${scan.name} timed out`
+            );
+          } catch (error) {
+            FingerprintScanner.results[scan.key] = {
+              supported: false,
+              error: error.message || 'Scan failed'
+            };
+          }
           
           // Check incognito immediately
           if (scan.key === 'incognito' && FingerprintScanner.results.incognito.detected) {
@@ -1296,6 +1612,15 @@
 
       delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+      },
+
+      withTimeout(promise, ms, message) {
+        return Promise.race([
+          promise,
+          new Promise((resolve) => {
+            setTimeout(() => resolve({ supported: false, error: message }), ms);
+          })
+        ]);
       },
 
       displayResults() {
@@ -1319,10 +1644,12 @@
         this.dataPoints.textContent = Object.keys(FingerprintScanner.results).length;
         this.fontsDetected.textContent = fontCount;
         this.fontsDetected.className = 'score-value ' + (fontCount > 40 ? 'high' : fontCount > 20 ? 'medium' : 'low');
+        this.renderInsights(entropy, uniqueness, fontCount);
+        this.updateHeroSignals();
 
         // Render categories
         if (FingerprintScanner.results.incognito?.detected) {
-          this.renderCategory('🕵️ Private Browsing', {
+          this.renderCategory('Private Browsing', {
             detected: 'YES - You are detected!',
             confidence: FingerprintScanner.results.incognito.confidence + '%',
             methods: FingerprintScanner.results.incognito.methods.join(', ') || 'Multiple signals',
@@ -1331,76 +1658,113 @@
           'Your private/incognito mode was detected! Websites can tell you\'re trying to hide, which itself is identifying information.');
         }
 
-        this.renderCategory('🌐 Basic Info', FingerprintScanner.results.basicInfo, 'medium', 
+        this.renderCategory('Basic Info', FingerprintScanner.results.basicInfo, 'medium', 
           'User agent and platform info can identify your browser, OS, and device type. Combined with other data, this creates a unique profile.');
+
+        this.renderCategory('Client Hints', FingerprintScanner.results.clientHints, FingerprintScanner.results.clientHints?.clientHintsSupported ? 'medium' : 'low',
+          'Client hints can expose browser brand, platform, architecture, device model, and version details when supported.');
         
-        this.renderCategory('🖥️ Screen & Display', FingerprintScanner.results.screen, 'medium',
+        this.renderCategory('Screen & Display', FingerprintScanner.results.screen, 'medium',
           'Screen resolution and pixel ratio are highly identifying, especially on less common displays or multi-monitor setups.');
         
-        this.renderCategory('🕐 Timezone', FingerprintScanner.results.timezone, 'low',
+        this.renderCategory('Timezone', FingerprintScanner.results.timezone, 'low',
           'Timezone narrows down your geographic location and adds to fingerprint uniqueness.');
+
+        this.renderCategory('Privacy Preferences', FingerprintScanner.results.privacyPreferences, 'low',
+          'Privacy preference headers and OS accessibility settings can be useful protections, but they can also add more observable state.');
         
-        this.renderCategory('🎨 Canvas Fingerprint', FingerprintScanner.results.canvas, 'high',
+        this.renderCategory('Canvas Fingerprint', FingerprintScanner.results.canvas, 'high',
           'Canvas rendering is highly unique due to GPU, driver, and font rendering differences. This is a major tracking vector.');
         
-        this.renderCategory('🎮 WebGL', FingerprintScanner.results.webgl, 'high',
-          'WebGL exposes your GPU model, driver version, and supported extensions — creating a highly unique identifier.');
+        this.renderCategory('WebGL', FingerprintScanner.results.webgl, 'high',
+          'WebGL exposes your GPU model, driver version, and supported extensions, creating a highly unique identifier.');
         
-        this.renderCategory('🔊 Audio', FingerprintScanner.results.audio, 'high',
+        this.renderCategory('Audio', FingerprintScanner.results.audio, 'high',
           'Audio processing creates unique signatures based on your hardware and drivers.');
         
-        this.renderCategory('🔤 Fonts (' + fontCount + ' detected)', FingerprintScanner.results.fonts, 'high',
-          'We tested ' + (FingerprintScanner.results.fonts?.fontsTested || 0) + ' fonts. Your installed fonts are highly identifying — different OS and software installs create unique font sets.');
+        this.renderCategory('Fonts (' + fontCount + ' detected)', FingerprintScanner.results.fonts, 'high',
+          'We tested ' + (FingerprintScanner.results.fonts?.fontsTested || 0) + ' fonts. Your installed fonts are highly identifying because different OS and software installs create unique font sets.');
 
-        this.renderCategory('⚡ Hardware', FingerprintScanner.results.hardware, 'high',
-          'CPU and GPU benchmarks, math precision, and timer resolution vary by hardware — even identical models show subtle differences.');
+        this.renderCategory('Hardware', FingerprintScanner.results.hardware, 'high',
+          'CPU and GPU benchmarks, math precision, and timer resolution vary by hardware. Even identical models show subtle differences.');
         
-        this.renderCategory('💾 Storage', FingerprintScanner.results.storage, 'low',
+        this.renderCategory('Storage', FingerprintScanner.results.storage, 'low',
           'Storage API availability and quota can indicate browser settings and private browsing mode.');
         
-        this.renderCategory('📡 Network', FingerprintScanner.results.network, 'low',
+        this.renderCategory('Network', FingerprintScanner.results.network, 'low',
           'Connection type and speed provide additional tracking data points.');
+
+        this.renderCategory('Permissions', FingerprintScanner.results.permissions, 'medium',
+          'Permission states can reveal whether you have interacted with certain APIs before, even without asking for access during this scan.');
         
         if (FingerprintScanner.results.battery?.batterySupported !== false) {
-          this.renderCategory('🔋 Battery', FingerprintScanner.results.battery, 'medium',
+          this.renderCategory('Battery', FingerprintScanner.results.battery, 'medium',
             'Battery status can track you across sites and sessions. Exact charge level + charging state is surprisingly unique.');
         }
         
         if (FingerprintScanner.results.mediaDevices?.mediaDevicesSupported !== false) {
-          this.renderCategory('🎥 Media Devices', FingerprintScanner.results.mediaDevices, 'low',
+          this.renderCategory('Media Devices', FingerprintScanner.results.mediaDevices, 'low',
             'Number and type of cameras/microphones adds to your fingerprint.');
         }
       },
 
+      renderInsights(entropy, uniqueness, fontCount) {
+        const webglRenderer = FingerprintScanner.results.webgl?.renderer || 'Unknown';
+        const canvasHash = FingerprintScanner.results.canvas?.canvasHash || 'Unavailable';
+        const trackerRead = Number(uniqueness) > 80
+          ? 'Highly distinctive'
+          : Number(uniqueness) > 50
+            ? 'Moderately distinctive'
+            : 'Less distinctive';
+        const vpnRead = 'A VPN can hide your IP, but canvas, WebGL, fonts, timezone, and browser hints can still correlate sessions.';
+        const nextMove = Number(uniqueness) > 70
+          ? 'Try a fingerprint-resistant browser profile and compare this report again.'
+          : 'Keep permissions strict and avoid adding unusual extensions or fonts.';
+
+        this.insightGrid.innerHTML = [
+          ['Tracker read', trackerRead, `${entropy} entropy bits across ${Object.keys(FingerprintScanner.results).length} signal groups.`],
+          ['Strongest clues', 'Canvas, WebGL, fonts', `${canvasHash} / ${webglRenderer} / ${fontCount} fonts.`],
+          ['VPN note', 'Network privacy is separate', vpnRead],
+          ['Next move', Number(uniqueness) > 70 ? 'Harden browser' : 'Maintain defaults', nextMove]
+        ].map(([label, value, detail]) => `
+          <article class="insight-card">
+            <span>${this.escapeHtml(label)}</span>
+            <strong>${this.escapeHtml(value)}</strong>
+            <p>${this.escapeHtml(detail)}</p>
+          </article>
+        `).join('');
+      },
+
+      updateHeroSignals() {
+        document.getElementById('hero-canvas').textContent = FingerprintScanner.results.canvas?.canvasHash || 'blocked';
+        document.getElementById('hero-webgl').textContent = FingerprintScanner.results.webgl?.renderer || 'blocked';
+        document.getElementById('hero-fonts').textContent = String(FingerprintScanner.results.fonts?.fontsDetected || 0);
+        document.getElementById('hero-timezone').textContent = FingerprintScanner.results.timezone?.timezone || 'unknown';
+        document.getElementById('hero-private').textContent = FingerprintScanner.results.incognito?.detected ? 'detected' : 'not detected';
+      },
+
       renderCategory(title, data, risk, explanation) {
-        const icon = title.split(' ')[0];
-        const name = title.substring(title.indexOf(' ') + 1);
-        
         const card = document.createElement('div');
         card.className = 'result-category';
-        card.style.animationDelay = `${Math.random() * 0.3}s`;
 
         let dataHTML = '';
         for (const [key, value] of Object.entries(data)) {
           const isDanger = key === 'detected' && value.toString().includes('YES');
           dataHTML += `
             <div class="data-point">
-              <div class="data-label">${this.formatLabel(key)}</div>
-              <div class="data-value ${isDanger ? 'danger' : ''}">${this.formatValue(value)}</div>
+              <div class="data-label">${this.escapeHtml(this.formatLabel(key))}</div>
+              <div class="data-value ${isDanger ? 'danger' : ''}">${this.escapeHtml(this.formatValue(value))}</div>
             </div>
           `;
         }
 
         card.innerHTML = `
           <div class="category-header">
-            <div class="category-title">
-              <span class="category-icon">${icon}</span>
-              ${name}
-            </div>
+            <div class="category-title">${this.escapeHtml(title)}</div>
             <span class="risk-badge risk-${risk}">${risk} risk</span>
           </div>
           ${dataHTML}
-          <div class="data-explanation">${explanation}</div>
+          <div class="data-explanation">${this.escapeHtml(explanation)}</div>
         `;
 
         this.resultsGrid.appendChild(card);
@@ -1421,6 +1785,16 @@
           return 'N/A';
         }
         return String(value);
+      },
+
+      escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;'
+        }[char]));
       },
 
       exportResults() {
@@ -1462,14 +1836,54 @@
           const btn = document.getElementById('copy-hash-btn');
           btn.textContent = '✓ Copied!';
           setTimeout(() => {
-            btn.textContent = '📋 Copy Hash';
+            btn.textContent = 'Copy Hash';
           }, 2000);
         }
+      },
+
+      buildReport() {
+        const entropy = FingerprintScanner.calculateEntropy();
+        const uniqueness = Math.min(99.9, (entropy / 70) * 100).toFixed(1);
+        const lines = [
+          '# Browser Fingerprint Report',
+          '',
+          `Fingerprint hash: ${FingerprintScanner.fingerprint}`,
+          `Uniqueness estimate: ${uniqueness}%`,
+          `Entropy bits: ${entropy}`,
+          `Signal groups: ${Object.keys(FingerprintScanner.results).length}`,
+          `Fonts detected: ${FingerprintScanner.results.fonts?.fontsDetected || 0}`,
+          `Private mode detected: ${FingerprintScanner.results.incognito?.detected ? 'Yes' : 'No'}`,
+          '',
+          'Strong signals:',
+          `- Canvas: ${FingerprintScanner.results.canvas?.canvasHash || 'Unavailable'}`,
+          `- WebGL renderer: ${FingerprintScanner.results.webgl?.renderer || 'Unavailable'}`,
+          `- Audio: ${FingerprintScanner.results.audio?.audioHash || 'Unavailable'}`,
+          `- Timezone: ${FingerprintScanner.results.timezone?.timezone || 'Unavailable'}`,
+          '',
+          'VPN note: a VPN can hide your network address, but browser-level signals can still correlate sessions.',
+          '',
+          'Generated locally with Browser Fingerprint Viewer: https://mattlivingston.com/tools/fingerprint/'
+        ];
+
+        return lines.join('\n');
+      },
+
+      async copyReport() {
+        const button = document.getElementById('copy-report-btn');
+        const originalText = button.textContent;
+        await navigator.clipboard.writeText(this.buildReport());
+        button.textContent = 'Copied Report';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1600);
       }
     };
 
     // Initialize
     UI.init();
+    if (new URLSearchParams(window.location.search).get('scan') === '1') {
+      setTimeout(() => UI.startScan(), 100);
+    }
   </script>
 </body>
 </html>

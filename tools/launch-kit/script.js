@@ -461,39 +461,225 @@
     // Tab Management
     // =========================================================================
 
-    function initTabs() {
+    function switchTab(tabId, persist = true) {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabPanels = document.querySelectorAll('.tab-panel');
+        const btn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+        const panel = document.getElementById(`${tabId}-panel`);
+
+        if (!btn || !panel) return;
+
+        tabBtns.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+
+        tabPanels.forEach(item => item.classList.remove('active'));
+        panel.classList.add('active');
+
+        if (persist) {
+            localStorage.setItem('launchKit_activeTab', tabId);
+        }
+    }
+
+    function initTabs() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
-
-                // Update buttons
-                tabBtns.forEach(b => {
-                    b.classList.remove('active');
-                    b.setAttribute('aria-selected', 'false');
-                });
-                btn.classList.add('active');
-                btn.setAttribute('aria-selected', 'true');
-
-                // Update panels
-                tabPanels.forEach(panel => {
-                    panel.classList.remove('active');
-                });
-                document.getElementById(`${tabId}-panel`).classList.add('active');
-
-                // Save to localStorage
-                localStorage.setItem('launchKit_activeTab', tabId);
+                switchTab(btn.dataset.tab);
             });
         });
 
         // Restore active tab
         const savedTab = localStorage.getItem('launchKit_activeTab');
         if (savedTab) {
-            const btn = document.querySelector(`[data-tab="${savedTab}"]`);
-            if (btn) btn.click();
+            switchTab(savedTab, false);
         }
+    }
+
+    // =========================================================================
+    // Preflight Module
+    // =========================================================================
+
+    function normalizeUrl(url) {
+        const trimmed = (url || '').trim();
+        if (!trimmed) return '';
+        return /^https?:\/\//i.test(trimmed) ? trimmed.replace(/\/+$/, '') : `https://${trimmed.replace(/\/+$/, '')}`;
+    }
+
+    function getPreflight() {
+        const siteUrl = normalizeUrl(document.getElementById('siteUrl').value);
+        return {
+            name: document.getElementById('siteName').value.trim(),
+            url: siteUrl,
+            description: document.getElementById('siteDescription').value.trim(),
+            type: document.getElementById('siteType').value,
+            platform: document.getElementById('hostingPlatform').value,
+            email: document.getElementById('siteContactEmail').value.trim(),
+            region: document.getElementById('siteRegion').value,
+            analytics: document.getElementById('profileAnalytics').checked,
+            payments: document.getElementById('profilePayments').checked,
+            accounts: document.getElementById('profileAccounts').checked,
+            affiliate: document.getElementById('profileAffiliate').checked,
+            sponsored: document.getElementById('profileSponsored').checked,
+            cookies: document.getElementById('profileCookies').checked
+        };
+    }
+
+    function platformLabel(platform) {
+        return {
+            cloudflare: 'Cloudflare Pages',
+            netlify: 'Netlify',
+            vercel: 'Vercel',
+            apache: 'Apache / cPanel',
+            nginx: 'Nginx'
+        }[platform] || 'your host';
+    }
+
+    function platformSecurityFormat(platform) {
+        return {
+            cloudflare: 'cloudflare',
+            netlify: 'netlify',
+            vercel: 'vercel',
+            apache: 'htaccess',
+            nginx: 'nginx'
+        }[platform] || 'cloudflare';
+    }
+
+    function platformFiles(platform) {
+        const securityFile = {
+            cloudflare: '_headers',
+            netlify: '_headers',
+            vercel: 'vercel.json',
+            apache: '.htaccess + security-headers.htaccess',
+            nginx: 'security-headers.nginx.conf'
+        }[platform] || '_headers';
+
+        return [
+            'meta-tags.html',
+            'robots.txt',
+            'sitemap.xml',
+            securityFile,
+            'privacy-policy / terms / disclosures',
+            'README.txt'
+        ];
+    }
+
+    function updatePreflightPreview() {
+        const data = getPreflight();
+        const descriptionCount = document.getElementById('siteDescriptionCount');
+        if (descriptionCount) descriptionCount.textContent = data.description.length;
+
+        const files = platformFiles(data.platform);
+        const list = document.getElementById('packagePreviewList');
+        if (list) {
+            list.innerHTML = files.map(file => `<li>${escapeHtml(file)}</li>`).join('');
+        }
+
+        const text = document.getElementById('packagePreviewText');
+        if (text) {
+            text.textContent = `${platformLabel(data.platform)} package with crawl files, metadata, security headers, legal drafts, and install notes.`;
+        }
+
+        const global = document.getElementById('globalPackageSummary');
+        if (global) {
+            const name = data.name || 'this site';
+            global.textContent = `${name} is set for ${platformLabel(data.platform)}. Generate core files, review legal copy, then download the ZIP.`;
+        }
+    }
+
+    function applySecurityPresetForProfile(data) {
+        const preset = data.type === 'saas' ? 'saas'
+            : data.type === 'ecommerce' ? 'commerce'
+            : data.type === 'blog' || data.type === 'portfolio' || data.type === 'static' ? 'static'
+            : 'basic';
+
+        applySecurityPreset(preset);
+        document.getElementById('securityOutputFormat').value = platformSecurityFormat(data.platform);
+    }
+
+    function applyPreflightBasics() {
+        const data = getPreflight();
+        const siteName = data.name || 'My Website';
+        const siteUrl = data.url || 'https://example.com';
+        const description = data.description || 'A concise description of this website for search results and social previews.';
+        const email = data.email || 'contact@example.com';
+
+        document.getElementById('siteUrl').value = siteUrl;
+
+        document.getElementById('metaTitle').value = siteName.slice(0, 60);
+        document.getElementById('metaDescription').value = description.slice(0, 160);
+        document.getElementById('metaCanonical').value = siteUrl;
+        document.getElementById('ogTitle').value = siteName;
+        document.getElementById('ogDescription').value = description;
+        document.getElementById('ogSiteName').value = siteName;
+        document.getElementById('metaRobots').checked = true;
+        document.getElementById('metaThemeColor').checked = true;
+        document.getElementById('metaThemeColorValue').value = '#b86cff';
+        document.getElementById('robotsOptions').style.display = 'block';
+        document.getElementById('themeColorOption').style.display = 'block';
+
+        document.getElementById('robotsSitemap').value = `${siteUrl}/sitemap.xml`;
+        document.getElementById('robotsHost').value = siteUrl;
+        document.getElementById('sitemapBaseUrl').value = siteUrl;
+
+        document.getElementById('legalSiteName').value = siteName;
+        document.getElementById('legalSiteUrl').value = siteUrl;
+        document.getElementById('legalContactEmail').value = email;
+        document.getElementById('legalCountry').value = data.region;
+        document.getElementById('privacyCollectsAnalytics').checked = data.analytics;
+        document.getElementById('privacyUsesGoogleAnalytics').checked = data.analytics;
+        document.getElementById('privacyCollectsPayment').checked = data.payments;
+        document.getElementById('privacyUsesStripe').checked = data.payments;
+        document.getElementById('termsPayments').checked = data.payments;
+        document.getElementById('termsAccounts').checked = data.accounts;
+        document.getElementById('termsSiteType').value = data.type === 'static' || data.type === 'portfolio' || data.type === 'blog' ? 'informational' : data.type;
+        document.getElementById('cookiesAnalytics').checked = data.analytics;
+        document.getElementById('cookiesMarketing').checked = data.affiliate || data.sponsored;
+        document.getElementById('affiliateGeneric').checked = data.affiliate;
+        document.getElementById('affiliateSponsored').checked = data.sponsored;
+
+        applySecurityPresetForProfile(data);
+        updateMetaPreview();
+        updatePreflightPreview();
+        saveToLocalStorage();
+    }
+
+    function generateCoreFiles() {
+        applyPreflightBasics();
+        generateMetaTags();
+        generateRobots();
+        generateSitemap();
+        generateSecurity();
+        generateLegal();
+    }
+
+    function initPreflight() {
+        const tracked = [
+            'siteName', 'siteUrl', 'siteDescription', 'siteType', 'hostingPlatform',
+            'siteContactEmail', 'siteRegion', 'profileAnalytics', 'profilePayments',
+            'profileAccounts', 'profileAffiliate', 'profileSponsored', 'profileCookies'
+        ];
+
+        tracked.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', updatePreflightPreview);
+                el.addEventListener('change', updatePreflightPreview);
+            }
+        });
+
+        document.querySelectorAll('[data-flow-tab]').forEach(btn => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.flowTab));
+        });
+
+        document.getElementById('applyPreflightBtn').addEventListener('click', applyPreflightBasics);
+        document.getElementById('generateCoreBtn').addEventListener('click', generateCoreFiles);
+        document.getElementById('heroDownloadBtn').addEventListener('click', downloadAll);
+        updatePreflightPreview();
     }
 
     // =========================================================================
@@ -544,6 +730,21 @@
                 lineEnding: document.getElementById('lineEnding').value,
                 commentVerbosity: document.getElementById('commentVerbosity').value,
                 timestampFormat: document.getElementById('timestampFormat').value
+            },
+            preflight: {
+                siteName: document.getElementById('siteName').value,
+                siteUrl: document.getElementById('siteUrl').value,
+                siteDescription: document.getElementById('siteDescription').value,
+                siteType: document.getElementById('siteType').value,
+                hostingPlatform: document.getElementById('hostingPlatform').value,
+                siteContactEmail: document.getElementById('siteContactEmail').value,
+                siteRegion: document.getElementById('siteRegion').value,
+                profileAnalytics: document.getElementById('profileAnalytics').checked,
+                profilePayments: document.getElementById('profilePayments').checked,
+                profileAccounts: document.getElementById('profileAccounts').checked,
+                profileAffiliate: document.getElementById('profileAffiliate').checked,
+                profileSponsored: document.getElementById('profileSponsored').checked,
+                profileCookies: document.getElementById('profileCookies').checked
             },
             placeholder: {
                 paragraphCount: document.getElementById('paragraphCount').value,
@@ -601,6 +802,21 @@
                 const el = document.getElementById(key);
                 if (el) el.value = value;
             });
+        }
+
+        // Preflight
+        if (config.preflight) {
+            Object.entries(config.preflight).forEach(([key, value]) => {
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.type === 'checkbox') {
+                        el.checked = value;
+                    } else {
+                        el.value = value;
+                    }
+                }
+            });
+            updatePreflightPreview();
         }
 
         // Placeholder settings
@@ -719,7 +935,7 @@
         // 1. robots.txt
         generateRobots();
         const robotsContent = document.getElementById('robotsOutput').querySelector('pre')?.textContent;
-        if (robotsContent && !robotsContent.startsWith('#')) {
+        if (robotsContent && robotsContent.includes('User-agent:')) {
             zip.file('robots.txt', robotsContent);
             files.push('robots.txt');
         }
@@ -735,7 +951,7 @@
         // 3. .htaccess
         generateHtaccess();
         const htaccessContent = document.getElementById('htaccessOutput').querySelector('pre')?.textContent;
-        if (htaccessContent && !htaccessContent.startsWith('#')) {
+        if (htaccessContent && !/Configure options|click Generate|Fill in/i.test(htaccessContent)) {
             zip.file('.htaccess', htaccessContent);
             files.push('.htaccess');
         }
@@ -752,7 +968,7 @@
         generateSecurity();
         const securityContent = document.getElementById('securityOutput').querySelector('pre')?.textContent;
         const securityFormat = document.getElementById('securityOutputFormat').value;
-        if (securityContent && !securityContent.startsWith('#')) {
+        if (securityContent && !/Configure options|click Generate|Fill in/i.test(securityContent)) {
             let securityFilename;
             switch (securityFormat) {
                 case 'htaccess':
@@ -761,11 +977,17 @@
                 case 'netlify':
                     securityFilename = '_headers';
                     break;
+                case 'cloudflare':
+                    securityFilename = '_headers';
+                    break;
+                case 'vercel':
+                    securityFilename = 'vercel.json';
+                    break;
                 case 'nginx':
                     securityFilename = 'security-headers.nginx.conf';
                     break;
-                case 'cloudflare':
-                    securityFilename = 'cloudflare-headers.txt';
+                case 'cloudflare-transform':
+                    securityFilename = 'cloudflare-transform-rules.txt';
                     break;
                 default:
                     securityFilename = 'security-headers.txt';
@@ -799,7 +1021,7 @@
                 generateLegal();
                 const content = document.getElementById('legalOutput').querySelector('pre')?.textContent;
                 
-                if (content && !content.startsWith('#')) {
+                if (content && !/^# Fill in/i.test(content)) {
                     const ext = legalFormat === 'html' ? 'html' : legalFormat === 'markdown' ? 'md' : 'txt';
                     const filenames = {
                         privacy: `privacy-policy.${ext}`,
@@ -847,6 +1069,8 @@
     }
 
     function generateReadme(files, le) {
+        const preflight = getPreflight();
+        const platform = platformLabel(preflight.platform);
         const lines = [
             'WEBSITE LAUNCH KIT',
             '==================',
@@ -871,17 +1095,18 @@
         lines.push('');
         lines.push('1. robots.txt - Upload to your site root');
         lines.push('2. sitemap.xml - Upload to site root, submit to Google Search Console');
-        lines.push('3. .htaccess - Upload to site root (Apache servers only)');
+        lines.push(`3. Security headers - Use the included host-specific file for ${platform}`);
         lines.push('4. humans.txt - Upload to site root');
-        lines.push('5. _headers - Upload to site root (Netlify only)');
-        lines.push('6. meta-tags.html - Copy contents into your <head> tag');
-        lines.push('7. Legal docs - Create pages and paste content');
+        lines.push('5. meta-tags.html - Copy contents into your <head> tag or framework metadata config');
+        lines.push('6. Legal docs - Create pages and paste content after review');
         lines.push('');
         lines.push('IMPORTANT:');
         lines.push('----------');
         lines.push('• Always backup existing files before replacing');
         lines.push('• Test on staging environment first');
+        lines.push('• Review generated headers against your scripts, fonts, embeds, APIs, and payment providers');
         lines.push('• Legal documents are templates - consult a lawyer for compliance');
+        lines.push('• Affiliate disclosures should be close to affiliate links or recommendations, not only in a footer');
         lines.push('');
         lines.push('---');
         lines.push('Built by Matt Livingston');
@@ -896,6 +1121,7 @@
     function init() {
         loadFromLocalStorage();
         initTabs();
+        initPreflight();
         initGenerators();
         initConfigButtons();
         initAutoSave();
@@ -2356,6 +2582,85 @@
                 document.getElementById('securityPermissions').checked = false;
                 break;
 
+            case 'static':
+                document.getElementById('securityCSP').checked = true;
+                document.getElementById('cspOptions').style.display = 'block';
+                document.getElementById('cspDefaultSrc').value = "'self'";
+                document.getElementById('cspScriptSrc').value = "'self' 'unsafe-inline'";
+                document.getElementById('cspStyleSrc').value = "'self' 'unsafe-inline' https://fonts.googleapis.com";
+                document.getElementById('cspImgSrc').value = "'self' data: https:";
+                document.getElementById('cspFontSrc').value = "'self' https://fonts.gstatic.com";
+                document.getElementById('cspConnectSrc').value = "'self'";
+                document.getElementById('cspFrameSrc').value = "'none'";
+                document.getElementById('cspObjectSrc').value = "'none'";
+                document.getElementById('cspUpgradeInsecure').checked = true;
+                document.getElementById('cspBlockMixed').checked = true;
+                document.getElementById('securityXFrame').checked = true;
+                document.getElementById('xFrameValue').value = 'SAMEORIGIN';
+                document.getElementById('securityXContentType').checked = true;
+                document.getElementById('securityReferrer').checked = true;
+                document.getElementById('referrerValue').value = 'strict-origin-when-cross-origin';
+                document.getElementById('securityHSTS').checked = true;
+                document.getElementById('hstsMaxAge').value = '31536000';
+                document.getElementById('hstsSubdomains').checked = true;
+                document.getElementById('hstsPreload').checked = false;
+                document.getElementById('securityPermissions').checked = true;
+                document.getElementById('permissionsOptions').style.display = 'block';
+                break;
+
+            case 'saas':
+                document.getElementById('securityCSP').checked = true;
+                document.getElementById('cspOptions').style.display = 'block';
+                document.getElementById('cspDefaultSrc').value = "'self'";
+                document.getElementById('cspScriptSrc').value = "'self' 'unsafe-inline'";
+                document.getElementById('cspStyleSrc').value = "'self' 'unsafe-inline' https://fonts.googleapis.com";
+                document.getElementById('cspImgSrc').value = "'self' data: https:";
+                document.getElementById('cspFontSrc').value = "'self' https://fonts.gstatic.com";
+                document.getElementById('cspConnectSrc').value = "'self' https://api.example.com";
+                document.getElementById('cspFrameSrc').value = "'self'";
+                document.getElementById('cspObjectSrc').value = "'none'";
+                document.getElementById('cspUpgradeInsecure').checked = true;
+                document.getElementById('cspBlockMixed').checked = true;
+                document.getElementById('securityXFrame').checked = true;
+                document.getElementById('xFrameValue').value = 'SAMEORIGIN';
+                document.getElementById('securityXContentType').checked = true;
+                document.getElementById('securityReferrer').checked = true;
+                document.getElementById('referrerValue').value = 'strict-origin-when-cross-origin';
+                document.getElementById('securityHSTS').checked = true;
+                document.getElementById('hstsMaxAge').value = '31536000';
+                document.getElementById('hstsSubdomains').checked = true;
+                document.getElementById('hstsPreload').checked = false;
+                document.getElementById('securityPermissions').checked = true;
+                document.getElementById('permissionsOptions').style.display = 'block';
+                break;
+
+            case 'commerce':
+                document.getElementById('securityCSP').checked = true;
+                document.getElementById('cspOptions').style.display = 'block';
+                document.getElementById('cspDefaultSrc').value = "'self'";
+                document.getElementById('cspScriptSrc').value = "'self' 'unsafe-inline' https://js.stripe.com";
+                document.getElementById('cspStyleSrc').value = "'self' 'unsafe-inline' https://fonts.googleapis.com";
+                document.getElementById('cspImgSrc').value = "'self' data: https:";
+                document.getElementById('cspFontSrc').value = "'self' https://fonts.gstatic.com";
+                document.getElementById('cspConnectSrc').value = "'self' https://api.stripe.com";
+                document.getElementById('cspFrameSrc').value = "https://js.stripe.com https://hooks.stripe.com";
+                document.getElementById('cspObjectSrc').value = "'none'";
+                document.getElementById('cspUpgradeInsecure').checked = true;
+                document.getElementById('cspBlockMixed').checked = true;
+                document.getElementById('securityXFrame').checked = true;
+                document.getElementById('xFrameValue').value = 'SAMEORIGIN';
+                document.getElementById('securityXContentType').checked = true;
+                document.getElementById('securityReferrer').checked = true;
+                document.getElementById('referrerValue').value = 'strict-origin-when-cross-origin';
+                document.getElementById('securityHSTS').checked = true;
+                document.getElementById('hstsMaxAge').value = '31536000';
+                document.getElementById('hstsSubdomains').checked = true;
+                document.getElementById('hstsPreload').checked = false;
+                document.getElementById('securityPermissions').checked = true;
+                document.getElementById('permissionsOptions').style.display = 'block';
+                document.getElementById('permPayment').checked = false;
+                break;
+
             case 'strict':
                 document.getElementById('securityCSP').checked = true;
                 document.getElementById('cspOptions').style.display = 'block';
@@ -2406,6 +2711,10 @@
                 document.getElementById('hstsPreload').checked = false;
                 document.getElementById('securityPermissions').checked = false;
                 break;
+        }
+
+        if (preset !== 'commerce') {
+            document.getElementById('permPayment').checked = true;
         }
 
         // Update visibility
@@ -2516,7 +2825,9 @@
         const titles = {
             htaccess: '.htaccess',
             netlify: 'Netlify _headers',
-            cloudflare: 'Cloudflare Transform Rules',
+            cloudflare: 'Cloudflare Pages _headers',
+            vercel: 'Vercel vercel.json',
+            'cloudflare-transform': 'Cloudflare Transform Rules',
             nginx: 'nginx.conf'
         };
 
@@ -2530,7 +2841,13 @@
                 output = generateNetlifyHeaders(headers, le, verbosity);
                 break;
             case 'cloudflare':
-                output = generateCloudflareHeaders(headers, le, verbosity);
+                output = generateCloudflarePagesHeaders(headers, le, verbosity);
+                break;
+            case 'vercel':
+                output = generateVercelHeaders(headers);
+                break;
+            case 'cloudflare-transform':
+                output = generateCloudflareTransformRules(headers, le, verbosity);
                 break;
             case 'nginx':
                 output = generateNginxHeaders(headers, le, verbosity);
@@ -2583,7 +2900,45 @@
         return lines.join(le);
     }
 
-    function generateCloudflareHeaders(headers, le, verbosity) {
+    function generateCloudflarePagesHeaders(headers, le, verbosity) {
+        const lines = [];
+
+        if (verbosity !== 'minimal') {
+            lines.push('# Cloudflare Pages _headers file');
+            lines.push('# Place this file in your static assets or build output directory.');
+            lines.push('# These rules apply to static asset responses, not Pages Functions.');
+            lines.push('');
+        }
+
+        lines.push('/*');
+
+        headers.forEach(h => {
+            if (verbosity === 'teach') {
+                lines.push(`  # ${h.comment}`);
+            }
+            lines.push(`  ${h.name}: ${h.value}`);
+        });
+
+        return lines.join(le);
+    }
+
+    function generateVercelHeaders(headers) {
+        const config = {
+            headers: [
+                {
+                    source: '/(.*)',
+                    headers: headers.map(h => ({
+                        key: h.name,
+                        value: h.value
+                    }))
+                }
+            ]
+        };
+
+        return JSON.stringify(config, null, 2);
+    }
+
+    function generateCloudflareTransformRules(headers, le, verbosity) {
         const lines = [];
         
         lines.push('# Cloudflare Transform Rules - Response Headers');
@@ -2926,35 +3281,58 @@
         const br = format === 'html' ? '\n' : '\n\n';
 
         if (affiliateFormat === 'short') {
-            let short = `This post may contain affiliate links. If you make a purchase through these links, we may earn a commission at no extra cost to you.`;
+            let short = `This page contains affiliate links. If you buy through them, we may earn a commission at no extra cost to you.`;
             if (amazon) short += ` As an Amazon Associate, we earn from qualifying purchases.`;
             return short;
         }
 
+        if (affiliateFormat === 'near-link') {
+            let nearLink = `Paid link: We may earn a commission if you buy through this link, at no extra cost to you.`;
+            if (amazon) nearLink += ` Amazon links may qualify for Amazon Associates earnings.`;
+            return nearLink;
+        }
+
+        if (affiliateFormat === 'review-note') {
+            let review = `Disclosure: This review may include affiliate links. If you purchase through those links, ${siteName} may earn a commission at no extra cost to you. Our opinions should reflect our honest assessment of the product or service.`;
+            if (sponsored) {
+                review += ` If a brand sponsored the review or provided compensation, that relationship should be disclosed at the beginning of the review and near any relevant recommendation.`;
+            }
+            if (amazon) {
+                review += ` As an Amazon Associate, we earn from qualifying purchases.`;
+            }
+            return review;
+        }
+
         let content = `${h1}Affiliate Disclosure${h1e}${br}`;
         content += `${p}Last updated: ${date}${pe}${br}`;
-        content += `${p}${siteName} may earn money or products from the companies mentioned in this post or on this website.${pe}${br}`;
+        content += `${p}${siteName} may earn compensation when you click certain links or buy products and services mentioned on ${siteUrl}. This compensation may include affiliate commissions, free or discounted products, sponsorship fees, or other benefits.${pe}${br}`;
 
-        content += `${h2}FTC Disclosure${h2e}${br}`;
-        content += `${p}In accordance with the FTC guidelines, we disclose that we may have a financial relationship with some of the companies mentioned on this website. This means if you click on a link and make a purchase, we may receive a small commission at no extra cost to you.${pe}${br}`;
+        content += `${h2}Clear Disclosure Standard${h2e}${br}`;
+        content += `${p}Whenever we have a financial or material relationship connected to a recommendation, we aim to disclose it clearly and close to the recommendation or link. A disclosure should be easy to notice, easy to understand, and written in plain language.${pe}${br}`;
+
+        content += `${h2}Affiliate Links${h2e}${br}`;
+        content += `${p}Some links on this website may be affiliate links. If you click one of those links and make a purchase, ${siteName} may receive a commission at no extra cost to you. A simple disclosure near those links may say: “This page contains affiliate links. If you buy through them, we may earn a commission at no extra cost to you.”${pe}${br}`;
 
         if (amazon) {
             content += `${h2}Amazon Associates${h2e}${br}`;
-            content += `${p}${siteName} is a participant in the Amazon Services LLC Associates Program, an affiliate advertising program designed to provide a means for sites to earn advertising fees by advertising and linking to Amazon.com.${pe}${br}`;
+            content += `${p}${siteName} participates in the Amazon Services LLC Associates Program, an affiliate advertising program that allows sites to earn advertising fees by linking to Amazon.com and affiliated sites. As an Amazon Associate, we earn from qualifying purchases.${pe}${br}`;
         }
 
         if (generic) {
             content += `${h2}Other Affiliate Programs${h2e}${br}`;
-            content += `${p}We also participate in other affiliate programs and may earn commissions on purchases made through links on this site.${pe}${br}`;
+            content += `${p}We may also participate in other affiliate programs. Those relationships may result in commissions or referral fees when visitors purchase through links on this site.${pe}${br}`;
         }
 
         if (sponsored) {
             content += `${h2}Sponsored Content${h2e}${br}`;
-            content += `${p}Some content on this site may be sponsored. All sponsored content will be clearly marked as such.${pe}${br}`;
+            content += `${p}Some content may be sponsored or created in partnership with a brand. Sponsored content should be identified clearly, using plain terms such as “Sponsored,” “Ad,” “Advertisement,” or “Paid partnership,” placed where visitors are likely to see it before relying on the recommendation.${pe}${br}`;
         }
 
-        content += `${h2}Our Commitment${h2e}${br}`;
-        content += `${p}Affiliate relationships do not influence our editorial content. We only recommend products we genuinely believe will provide value to our readers.${pe}${br}`;
+        content += `${h2}Editorial Commitment${h2e}${br}`;
+        content += `${p}Compensation should not require false claims, unsupported claims, or recommendations that do not reflect our honest opinion. We should not claim personal experience with a product or service unless we have actually used it.${pe}${br}`;
+
+        content += `${h2}Where Disclosures Should Appear${h2e}${br}`;
+        content += `${p}Disclosures should appear close to the affiliate link, product recommendation, review, video, or sponsored mention. Do not rely only on a footer, a separate disclosure page, a comments section, or a vague link labeled “legal” or “disclosure.”${pe}${br}`;
 
         return content;
     }

@@ -6,9 +6,11 @@
   <title>Screenshot Metadata Cleaner | Private Image Scrubber</title>
   <meta name="description" content="Inspect and remove hidden metadata from screenshots and images locally in your browser. No uploads, no tracking, no accounts.">
   <link rel="canonical" href="https://mattlivingston.com/tools/screenshot-cleaner/">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Screenshot Metadata Cleaner | Matt Livingston">
+  <meta property="og:description" content="Inspect, triage, and strip hidden image metadata locally before sharing screenshots.">
+  <meta property="og:url" content="https://mattlivingston.com/tools/screenshot-cleaner/">
+  <meta name="twitter:card" content="summary">
   <style>
     * {
       box-sizing: border-box;
@@ -17,33 +19,51 @@
     }
 
     :root {
-      --bg: #0b1120;
-      --panel: #121a2b;
-      --panel-2: #182235;
-      --panel-3: #202b40;
-      --input: #0f172a;
-      --border: #334155;
-      --border-strong: #475569;
-      --text: #eef2ff;
-      --text-soft: #cbd5e1;
-      --text-muted: #8b9bb1;
-      --accent: #38bdf8;
-      --accent-2: #14b8a6;
-      --good: #22c55e;
-      --warn: #f59e0b;
-      --bad: #f43f5e;
-      --purple: #a78bfa;
-      --shadow: rgba(0, 0, 0, 0.28);
+      color-scheme: dark;
+      --bg: #08090d;
+      --panel: #151923;
+      --panel-2: #1d2330;
+      --panel-3: #242b3a;
+      --input: #0c0e14;
+      --border: rgba(248, 247, 255, 0.14);
+      --border-strong: rgba(248, 247, 255, 0.26);
+      --text: #f8f7ff;
+      --text-soft: #d3d6e4;
+      --text-muted: #8e95a6;
+      --accent: #2df8e6;
+      --accent-2: #b86cff;
+      --good: #70ff9c;
+      --warn: #ffd166;
+      --bad: #ff4f7b;
+      --purple: #b86cff;
+      --shadow: rgba(0, 0, 0, 0.34);
       --radius: 8px;
-      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      --font-stack: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: var(--bg);
+      background:
+        radial-gradient(circle at 82% 8%, rgba(45, 248, 230, 0.13), transparent 32rem),
+        radial-gradient(circle at 10% 2%, rgba(184, 108, 255, 0.18), transparent 30rem),
+        linear-gradient(135deg, #08090d 0%, #0f111a 48%, #081115 100%);
       color: var(--text);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: var(--font-stack);
       line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.15;
+      background-image:
+        linear-gradient(rgba(248, 247, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(248, 247, 255, 0.08) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 72%);
     }
 
     button,
@@ -57,6 +77,8 @@
     }
 
     .page {
+      position: relative;
+      z-index: 1;
       max-width: 1180px;
       margin: 0 auto;
       padding: 28px 18px 52px;
@@ -67,14 +89,22 @@
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      margin-bottom: 22px;
+      margin-bottom: 56px;
     }
 
     .back-link {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.875rem;
+      font-size: 0.95rem;
+      font-weight: 800;
       transition: color 0.2s ease;
+    }
+
+    .back-link::before {
+      content: "<-";
+      margin-right: 8px;
+      color: var(--accent);
+      font-family: var(--mono);
     }
 
     .back-link:hover {
@@ -91,9 +121,9 @@
     }
 
     .privacy-pill {
-      border: 1px solid rgba(20, 184, 166, 0.35);
-      color: #9ff5e7;
-      background: rgba(20, 184, 166, 0.1);
+      border: 1px solid rgba(112, 255, 156, 0.34);
+      color: var(--good);
+      background: rgba(112, 255, 156, 0.1);
       border-radius: 999px;
       padding: 4px 10px;
       white-space: nowrap;
@@ -101,32 +131,108 @@
 
     header {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
-      gap: 24px;
-      align-items: end;
-      margin-bottom: 24px;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr);
+      gap: 36px;
+      align-items: center;
+      margin-bottom: 34px;
     }
 
     .title-block h1 {
-      font-size: clamp(2rem, 4vw, 4.6rem);
+      font-size: clamp(3.1rem, 8vw, 6.9rem);
       letter-spacing: 0;
-      line-height: 0.95;
-      margin-bottom: 12px;
+      line-height: 0.9;
+      margin-bottom: 18px;
     }
 
     .title-block p {
       color: var(--text-soft);
-      max-width: 640px;
-      font-size: 1.02rem;
+      max-width: 720px;
+      font-size: clamp(1.05rem, 2.4vw, 1.28rem);
     }
 
     .warning-note {
-      background: rgba(245, 158, 11, 0.12);
-      border: 1px solid rgba(245, 158, 11, 0.38);
-      color: #fde68a;
+      background:
+        linear-gradient(135deg, rgba(184, 108, 255, 0.18), transparent 58%),
+        rgba(21, 25, 35, 0.86);
+      border: 1px solid var(--border);
+      color: var(--text-soft);
       border-radius: var(--radius);
-      padding: 14px 16px;
+      padding: 20px;
       font-size: 0.9rem;
+      box-shadow: 0 22px 70px var(--shadow);
+    }
+
+    .warning-note strong {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .proof-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 28px;
+      max-width: 820px;
+    }
+
+    .proof-row div {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(21, 25, 35, 0.74);
+      padding: 13px;
+    }
+
+    .proof-row strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .proof-row span {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .risk-list span {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(12, 14, 20, 0.72);
+      color: var(--text-soft);
+    }
+
+    .risk-list b {
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.78rem;
     }
 
     .workbench {
@@ -141,7 +247,7 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: 0 18px 48px var(--shadow);
+      box-shadow: 0 22px 70px var(--shadow);
     }
 
     .drop-panel {
@@ -160,7 +266,7 @@
       text-align: center;
       border: 2px dashed var(--border-strong);
       background:
-        linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(20, 184, 166, 0.05)),
+        linear-gradient(135deg, rgba(45, 248, 230, 0.12), rgba(184, 108, 255, 0.1)),
         var(--input);
       border-radius: var(--radius);
       padding: 28px 20px;
@@ -172,7 +278,7 @@
     .drop-zone.dragover {
       border-color: var(--accent);
       background:
-        linear-gradient(135deg, rgba(56, 189, 248, 0.14), rgba(20, 184, 166, 0.08)),
+        linear-gradient(135deg, rgba(45, 248, 230, 0.18), rgba(184, 108, 255, 0.13)),
         var(--input);
       transform: translateY(-1px);
     }
@@ -196,7 +302,7 @@
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
       font-weight: 800;
       letter-spacing: 0;
-      box-shadow: 0 16px 36px rgba(56, 189, 248, 0.22);
+      box-shadow: 0 16px 36px rgba(184, 108, 255, 0.22);
     }
 
     .drop-zone h2 {
@@ -276,8 +382,8 @@
       border-radius: var(--radius);
       padding: 10px 14px;
       font-weight: 700;
-      color: #03111f;
-      background: var(--accent);
+      color: #08090d;
+      background: var(--accent-2);
       cursor: pointer;
       text-decoration: none;
       transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
@@ -285,7 +391,7 @@
 
     .btn:hover {
       transform: translateY(-1px);
-      background: #7dd3fc;
+      background: #c98bff;
       text-decoration: none;
     }
 
@@ -297,6 +403,15 @@
 
     .btn.secondary:hover {
       background: #29364d;
+    }
+
+    .btn.accent {
+      background: var(--accent);
+      color: #08090d;
+    }
+
+    .btn.accent:hover {
+      background: #78fff1;
     }
 
     .btn:disabled {
@@ -444,6 +559,32 @@
       gap: 7px;
     }
 
+    .finding-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .finding-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(12, 14, 20, 0.72);
+      padding: 10px;
+    }
+
+    .finding-card strong {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--text);
+      font-size: 0.84rem;
+    }
+
+    .finding-card span {
+      color: var(--text-muted);
+      font-family: var(--mono);
+      font-size: 0.74rem;
+      overflow-wrap: anywhere;
+    }
+
     .meta-tag {
       border-radius: 999px;
       border: 1px solid var(--border);
@@ -506,6 +647,16 @@
       align-items: center;
       padding: 14px 18px;
       border-bottom: 1px solid var(--border);
+      transition: background-color 0.16s ease, border-color 0.16s ease;
+    }
+
+    .file-row:hover,
+    .file-row.selected {
+      background: rgba(45, 248, 230, 0.06);
+    }
+
+    .file-row.selected {
+      border-left: 3px solid var(--accent);
     }
 
     .file-row:last-child {
@@ -662,6 +813,10 @@
       .insight-grid {
         grid-template-columns: 1fr;
       }
+
+      .proof-row {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 620px) {
@@ -672,6 +827,11 @@
       .topbar {
         align-items: flex-start;
         flex-direction: column;
+        margin-bottom: 34px;
+      }
+
+      .title-block h1 {
+        font-size: clamp(3.2rem, 16vw, 4.7rem);
       }
 
       .drop-panel,
@@ -698,6 +858,8 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
   <div class="page">
@@ -712,16 +874,32 @@
 
     <header>
       <div class="title-block">
-        <h1>Screenshot Metadata Cleaner</h1>
-        <p>Inspect and strip hidden metadata from screenshots and images before you share them. It reads image bytes locally, flags privacy risks, then creates clean copies in your browser.</p>
+        <p class="eyebrow">Private image scrubber</p>
+        <h1>Clean screenshots before they share you.</h1>
+        <p>Inspect hidden metadata, triage privacy risk, and export clean copies without uploading a byte. Built for screenshots, shared mockups, support tickets, and “can I send this?” moments.</p>
+        <div class="hero-actions">
+          <a class="btn" href="#workbench">Start cleaning</a>
+          <button class="btn secondary" id="heroDemoBtn" type="button">Try demo</button>
+        </div>
+        <div class="proof-row" aria-label="Cleaner guarantees">
+          <div><strong>Local</strong><span>Image bytes stay on this device.</span></div>
+          <div><strong>Binary-safe</strong><span>Preserves pixels whenever possible.</span></div>
+          <div><strong>Batch-ready</strong><span>Clean one file or export a ZIP.</span></div>
+        </div>
       </div>
       <div class="warning-note">
+        <strong>Risk radar</strong>
         This removes hidden metadata, not visible information inside the pixels. Crop or blur sensitive on-screen text before cleaning.
+        <div class="risk-list" aria-label="Metadata signals this tool checks">
+          <span>GPS and location clues <b>HIGH</b></span>
+          <span>Author, app, timestamps <b>MED</b></span>
+          <span>Color profiles and density <b>LOW</b></span>
+        </div>
       </div>
     </header>
 
     <main>
-      <section class="workbench" aria-label="Metadata cleaner workbench">
+      <section class="workbench" id="workbench" aria-label="Metadata cleaner workbench">
         <div class="panel drop-panel">
           <label class="drop-zone" id="dropZone" tabindex="0">
             <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple>
@@ -741,6 +919,8 @@
           <div class="controls">
             <button class="btn" id="cleanAllBtn" type="button" disabled>Clean images</button>
             <button class="btn secondary" id="downloadAllBtn" type="button" disabled>Download ZIP</button>
+            <button class="btn secondary" id="reportBtn" type="button" disabled>Export report</button>
+            <button class="btn secondary" id="clearBtn" type="button" disabled>Clear list</button>
             <div class="option-row">
               <label class="toggle">
                 <input id="stripColorProfiles" type="checkbox">
@@ -757,7 +937,6 @@
                 </span>
               </label>
             </div>
-            <button class="btn secondary" id="clearBtn" type="button" disabled>Clear list</button>
             <button class="btn secondary" id="demoBtn" type="button">Load demo file</button>
           </div>
         </div>
@@ -854,8 +1033,10 @@
       fileInput: document.getElementById('fileInput'),
       cleanAllBtn: document.getElementById('cleanAllBtn'),
       downloadAllBtn: document.getElementById('downloadAllBtn'),
+      reportBtn: document.getElementById('reportBtn'),
       clearBtn: document.getElementById('clearBtn'),
       demoBtn: document.getElementById('demoBtn'),
+      heroDemoBtn: document.getElementById('heroDemoBtn'),
       stripColorProfiles: document.getElementById('stripColorProfiles'),
       addSuffix: document.getElementById('addSuffix'),
       fileList: document.getElementById('fileList'),
@@ -1410,6 +1591,65 @@
       downloadBytes(zipBytes, 'cleaned-images.zip', 'application/zip');
     }
 
+    function downloadReport() {
+      if (!state.files.length) return;
+      const report = createPrivacyReport();
+      downloadBytes(textEncoder.encode(report), 'screenshot-metadata-report.md', 'text/markdown');
+    }
+
+    function createPrivacyReport() {
+      const total = state.files.length;
+      const fields = state.files.reduce((sum, item) => sum + item.metadata.findings.length, 0);
+      const cleaned = state.files.filter(item => item.cleanedBytes).length;
+      const removed = state.files.reduce((sum, item) => sum + (item.cleanedBytes ? Math.max(0, item.bytes.length - item.cleanedBytes.length) : 0), 0);
+      const high = state.files.filter(item => item.metadata.risk === 'high').length;
+      const medium = state.files.filter(item => item.metadata.risk === 'medium').length;
+      const low = state.files.filter(item => item.metadata.risk === 'low').length;
+      const lines = [
+        '# Screenshot Metadata Report',
+        '',
+        `Generated: ${new Date().toLocaleString()}`,
+        '',
+        '## Summary',
+        '',
+        `- Files scanned: ${total}`,
+        `- Metadata fields found: ${fields}`,
+        `- Cleaned files: ${cleaned}`,
+        `- Bytes removed: ${formatBytes(removed)}`,
+        `- High risk files: ${high}`,
+        `- Medium risk files: ${medium}`,
+        `- Low risk files: ${low}`,
+        '',
+        '## Files',
+        ''
+      ];
+
+      state.files.forEach(item => {
+        lines.push(`### ${item.file.name}`);
+        lines.push('');
+        lines.push(`- Type: ${item.type.toUpperCase()}`);
+        lines.push(`- Size: ${formatBytes(item.file.size)}`);
+        lines.push(`- Dimensions: ${item.dimensions.width ? `${item.dimensions.width} x ${item.dimensions.height}` : 'Unavailable'}`);
+        lines.push(`- Risk: ${RISK_LABELS[item.metadata.risk]}`);
+        lines.push(`- Cleaned: ${item.cleanedBytes ? `Yes (${formatBytes(Math.max(0, item.bytes.length - item.cleanedBytes.length))} removed)` : 'No'}`);
+        if (item.metadata.findings.length) {
+          lines.push('');
+          lines.push('Findings:');
+          item.metadata.findings.forEach(finding => {
+            lines.push(`- [${finding.risk.toUpperCase()}] ${finding.group}: ${finding.label}${finding.value ? ` - ${finding.value}` : ''}`);
+          });
+        } else {
+          lines.push('');
+          lines.push('Findings: none detected.');
+        }
+        lines.push('');
+      });
+
+      lines.push('---');
+      lines.push('Generated locally by Screenshot Metadata Cleaner: https://mattlivingston.com/tools/screenshot-cleaner/');
+      return lines.join('\n');
+    }
+
     function downloadBytes(bytes, filename, type) {
       const blob = new Blob([bytes], { type });
       const url = URL.createObjectURL(blob);
@@ -1451,6 +1691,7 @@
       const hasCleaned = state.files.some(item => item.cleanedBytes);
       els.cleanAllBtn.disabled = !hasFiles;
       els.downloadAllBtn.disabled = !hasCleaned;
+      els.reportBtn.disabled = !hasFiles;
       els.clearBtn.disabled = !hasFiles;
     }
 
@@ -1467,7 +1708,7 @@
         const dimensions = item.dimensions.width ? `${item.dimensions.width}x${item.dimensions.height}` : 'Dimensions unavailable';
         const cleanText = item.cleanedBytes ? `Cleaned, ${formatBytes(removed)} removed` : 'Not cleaned yet';
         return `
-          <article class="file-row" data-id="${item.id}">
+          <article class="file-row ${item.id === state.selectedId ? 'selected' : ''}" data-id="${item.id}">
             <div class="thumb"><img src="${item.url}" alt=""></div>
             <div class="file-main">
               <div class="file-name" title="${escapeHtml(item.file.name)}">${escapeHtml(item.file.name)}</div>
@@ -1536,16 +1777,17 @@
         return;
       }
       const tags = item.metadata.findings.length
-        ? item.metadata.findings.map(finding => `
-            <span class="meta-tag ${finding.risk}" title="${escapeHtml(finding.value)}">
-              ${escapeHtml(finding.group)}: ${escapeHtml(finding.label)}
-            </span>
-          `).join('')
-        : '<span class="meta-tag low">No hidden metadata found</span>';
+        ? `<div class="finding-list">${item.metadata.findings.map(finding => `
+            <div class="finding-card">
+              <strong>${escapeHtml(finding.group)}: ${escapeHtml(finding.label)}</strong>
+              <span>${escapeHtml(finding.value || RISK_LABELS[finding.risk])}</span>
+            </div>
+          `).join('')}</div>`
+        : '<div class="tag-list"><span class="meta-tag low">No hidden metadata found</span></div>';
       const notes = item.metadata.cleanupNotes.map(note => `<span class="meta-tag">${escapeHtml(note)}</span>`).join('');
       els.detailPanel.innerHTML = `
         <h3>${escapeHtml(item.file.name)}</h3>
-        <div class="tag-list">${tags}</div>
+        ${tags}
         <h3 style="margin-top: 14px;">Cleanup notes</h3>
         <div class="tag-list">${notes}</div>
       `;
@@ -1794,10 +2036,20 @@
     });
     els.cleanAllBtn.addEventListener('click', cleanAll);
     els.downloadAllBtn.addEventListener('click', downloadAllZip);
+    els.reportBtn.addEventListener('click', downloadReport);
     els.clearBtn.addEventListener('click', clearList);
     els.demoBtn.addEventListener('click', () => addFiles([makeDemoPng()]));
+    els.heroDemoBtn.addEventListener('click', () => {
+      addFiles([makeDemoPng()]);
+      document.getElementById('workbench').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
     els.fileList.addEventListener('click', event => {
+      const row = event.target.closest('.file-row[data-id]');
       const button = event.target.closest('button[data-action]');
+      if (!button && row) {
+        selectItem(row.dataset.id);
+        return;
+      }
       if (!button) return;
       const id = button.dataset.id;
       if (button.dataset.action === 'inspect') selectItem(id);
