@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="A collection of original browser games designed and developed by Matt Livingston.">
   <meta name="theme-color" content="#080a0f">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Games by Matt Livingston">
+  <meta property="og:description" content="A collection of original browser games spanning arcade action, strategy, simulation, management, exploration, and optimization.">
+  <meta property="og:url" content="https://mattlivingston.com/games/">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/games-card.png">
+  <meta property="og:image:width" content="1672">
+  <meta property="og:image:height" content="941">
+  <meta property="og:image:alt" content="Games by Matt Livingston browser game collection preview.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Games by Matt Livingston">
+  <meta name="twitter:description" content="A collection of original browser games spanning arcade action, strategy, simulation, management, exploration, and optimization.">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/games-card.png">
   <title>Games by Matt Livingston</title>
   <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
 
@@ -130,20 +142,20 @@
       outline: none;
     }
 
-    main { padding: 48px 0 72px; }
-    .hero { max-width: 900px; padding: 56px 0 72px; }
+    main { padding: 24px 0 72px; }
+    .hero { max-width: 760px; padding: 34px 0 46px; }
 
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin: 0 0 20px;
-      padding: 8px 12px;
+      margin: 0 0 16px;
+      padding: 7px 11px;
       border: 1px solid rgba(0, 229, 255, 0.16);
       border-radius: 999px;
       color: var(--cyan);
       background: rgba(0, 229, 255, 0.05);
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 900;
       letter-spacing: 0.13em;
       text-transform: uppercase;
@@ -159,11 +171,11 @@
     }
 
     h1 {
-      max-width: 850px;
+      max-width: 760px;
       margin: 0;
-      font-size: clamp(3.2rem, 9vw, 7.5rem);
-      line-height: 0.88;
-      letter-spacing: -0.075em;
+      font-size: clamp(2.8rem, 6.8vw, 5.9rem);
+      line-height: 0.9;
+      letter-spacing: -0.065em;
     }
 
     .hero-highlight {
@@ -174,18 +186,18 @@
     }
 
     .hero-copy {
-      max-width: 690px;
-      margin: 28px 0 0;
+      max-width: 650px;
+      margin: 20px 0 0;
       color: var(--text-muted);
-      font-size: clamp(1.02rem, 2vw, 1.25rem);
-      line-height: 1.72;
+      font-size: clamp(0.98rem, 1.45vw, 1.12rem);
+      line-height: 1.62;
     }
 
     .hero-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 30px;
+      margin-top: 22px;
     }
 
     .meta-pill {
@@ -293,24 +305,39 @@
     .game-visual {
       position: relative;
       min-height: 190px;
+      aspect-ratio: 16 / 9;
       overflow: hidden;
-      display: grid;
-      place-items: center;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.12));
+      background: #05070c;
     }
 
     .game-visual::before {
       content: "";
       position: absolute;
       inset: 0;
-      opacity: 0.25;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-      background-size: 32px 32px;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, rgba(5, 7, 12, 0.28), transparent 34%, rgba(5, 7, 12, 0.72)),
+        radial-gradient(circle at 78% 18%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 44%);
+      pointer-events: none;
     }
 
+    .game-art {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.08) contrast(1.03);
+      transform: scale(1.01);
+      transition: transform 260ms ease, filter 260ms ease;
+    }
+
+    .game-card:hover .game-art,
+    .game-card:focus-visible .game-art {
+      filter: saturate(1.18) contrast(1.07) brightness(1.04);
+      transform: scale(1.045);
+    }
 
     .game-status {
       position: absolute;
@@ -356,38 +383,18 @@
       position: absolute;
       top: 16px;
       left: 17px;
-      z-index: 2;
-      color: var(--text-dim);
+      z-index: 3;
+      padding: 6px 8px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      color: rgba(247, 248, 251, 0.76);
+      background: rgba(8, 10, 15, 0.58);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.14em;
-    }
-
-    .game-symbol {
-      position: relative;
-      z-index: 1;
-      width: 112px;
-      height: 112px;
-      display: grid;
-      place-items: center;
-      border: 1px solid color-mix(in srgb, var(--accent) 38%, transparent);
-      border-radius: 28px;
-      color: var(--accent);
-      background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 12%, transparent), rgba(255, 255, 255, 0.018));
-      box-shadow: 0 0 48px color-mix(in srgb, var(--accent) 12%, transparent);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 2.5rem;
-      font-weight: 900;
-      transition: transform 220ms ease;
-    }
-
-    .game-card:hover .game-symbol,
-    .game-card:focus-visible .game-symbol {
-      transform: scale(1.06) rotate(-2deg);
-      box-shadow:
-        0 0 58px color-mix(in srgb, var(--accent) 20%, transparent),
-        inset 0 0 18px color-mix(in srgb, var(--accent) 6%, transparent);
     }
 
     .game-card:hover::after,
@@ -488,15 +495,9 @@
 
     .card-featured .game-visual {
       min-height: 100%;
+      aspect-ratio: auto;
       border-right: 1px solid var(--border);
       border-bottom: 0;
-    }
-
-    .card-featured .game-symbol {
-      width: 150px;
-      height: 150px;
-      border-radius: 36px;
-      font-size: 3.2rem;
     }
 
     .card-featured .game-body {
@@ -572,24 +573,21 @@
       .site-header { padding-top: 17px; }
       .brand-text { display: none; }
       .nav-link { padding: 9px 10px; font-size: 0.8rem; }
-      main { padding-top: 18px; }
-      .hero { padding: 40px 0 58px; }
-      h1 { font-size: clamp(3.1rem, 18vw, 5rem); }
+      main { padding-top: 8px; }
+      .hero { padding: 24px 0 38px; }
+      h1 { font-size: clamp(2.6rem, 14vw, 4rem); }
       .hero-copy { font-size: 1rem; }
       .game-footer { align-items: flex-start; flex-direction: column; }
       .game-card, .card-featured { min-height: 0; }
-      .game-visual, .card-featured .game-visual { min-height: 180px; }
+      .game-visual, .card-featured .game-visual {
+        min-height: 180px;
+        aspect-ratio: 16 / 9;
+      }
       .game-status {
         top: 14px;
         right: 14px;
         padding: 6px 9px;
         font-size: 0.61rem;
-      }
-      .game-symbol, .card-featured .game-symbol {
-        width: 100px;
-        height: 100px;
-        border-radius: 25px;
-        font-size: 2.2rem;
       }
       .collection-note { grid-template-columns: 1fr; }
       .collection-count { text-align: left; }
@@ -664,9 +662,9 @@
           aria-label="Play Salvage Zero"
         >
           <div class="game-visual">
+            <img class="game-art" src="img/salvage-zero.webp" alt="" width="1672" height="941" fetchpriority="high" aria-hidden="true">
             <span class="game-number">GAME 06</span>
             <span class="game-status">Featured</span>
-            <div class="game-symbol" aria-hidden="true">◇→</div>
           </div>
           <div class="game-body">
             <div class="game-type">Physics Arcade</div>
@@ -694,9 +692,9 @@
           aria-label="Play Treasure Hunter"
         >
           <div class="game-visual">
+            <img class="game-art" src="img/treasure-hunter.webp" alt="" width="1672" height="941" fetchpriority="high" aria-hidden="true">
             <span class="game-number">GAME 09</span>
             <span class="game-status">Flagship</span>
-            <div class="game-symbol" aria-hidden="true">✦⌖</div>
           </div>
           <div class="game-body">
             <div class="game-type">Expedition Management</div>
@@ -724,9 +722,9 @@
           aria-label="Play Lemonade Empire"
         >
           <div class="game-visual">
+            <img class="game-art" src="img/lemonade-empire.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true">
             <span class="game-number">GAME 08</span>
             <span class="game-status">Featured</span>
-            <div class="game-symbol" aria-hidden="true">🍋</div>
           </div>
           <div class="game-body">
             <div class="game-type">Business Simulation</div>
@@ -747,10 +745,8 @@
           </div>
         </a>
 
-        <div class="collection-group-label">More games</div>
-
         <a class="game-card" href="./circuit-breaker/" style="--accent: #8b5cf6; --accent-secondary: #00e5ff;" aria-label="Play Circuit Breaker">
-          <div class="game-visual"><span class="game-number">GAME 01</span><div class="game-symbol" aria-hidden="true">⚡</div></div>
+          <div class="game-visual"><img class="game-art" src="img/circuit-breaker.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 01</span></div>
           <div class="game-body">
             <div class="game-type">Match-Three Puzzle</div>
             <h3 class="game-title">Circuit Breaker</h3>
@@ -762,8 +758,10 @@
           </div>
         </a>
 
+        <div class="collection-group-label">More games</div>
+
         <a class="game-card" href="./dead-drop/" style="--accent: #38e8a1; --accent-secondary: #00e5ff;" aria-label="Play Dead Drop">
-          <div class="game-visual"><span class="game-number">GAME 02</span><div class="game-symbol" aria-hidden="true">⌖</div></div>
+          <div class="game-visual"><img class="game-art" src="img/dead-drop.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 02</span></div>
           <div class="game-body">
             <div class="game-type">Turn-Based Stealth</div>
             <h3 class="game-title">Dead Drop</h3>
@@ -776,7 +774,7 @@
         </a>
 
         <a class="game-card" href="./blackbox-courier/" style="--accent: #ff4d67; --accent-secondary: #8b5cf6;" aria-label="Play Blackbox Courier">
-          <div class="game-visual"><span class="game-number">GAME 03</span><div class="game-symbol" aria-hidden="true">»</div></div>
+          <div class="game-visual"><img class="game-art" src="img/blackbox-courier.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 03</span></div>
           <div class="game-body">
             <div class="game-type">Endless Arcade Runner</div>
             <h3 class="game-title">Blackbox Courier</h3>
@@ -789,7 +787,7 @@
         </a>
 
         <a class="game-card" href="./signal-runner/" style="--accent: #00e5ff; --accent-secondary: #8b5cf6;" aria-label="Play Signal Runner">
-          <div class="game-visual"><span class="game-number">GAME 04</span><div class="game-symbol" aria-hidden="true">⇡</div></div>
+          <div class="game-visual"><img class="game-art" src="img/signal-runner.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 04</span></div>
           <div class="game-body">
             <div class="game-type">Lane-Crossing Arcade</div>
             <h3 class="game-title">Signal Runner</h3>
@@ -802,7 +800,7 @@
         </a>
 
         <a class="game-card" href="./gridlock/" style="--accent: #ffd166; --accent-secondary: #ff4d67;" aria-label="Play Gridlock">
-          <div class="game-visual"><span class="game-number">GAME 05</span><div class="game-symbol" aria-hidden="true">⌘</div></div>
+          <div class="game-visual"><img class="game-art" src="img/gridlock.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 05</span></div>
           <div class="game-body">
             <div class="game-type">Maze-Chase Arcade</div>
             <h3 class="game-title">Gridlock</h3>
@@ -816,8 +814,8 @@
 
         <a class="game-card" href="./reactor-breach/" style="--accent: #ff8a3d; --accent-secondary: #8b5cf6;" aria-label="Play Reactor Breach">
           <div class="game-visual">
+            <img class="game-art" src="img/reactor-breach.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true">
             <span class="game-number">GAME 07</span>
-            <div class="game-symbol" aria-hidden="true">◉↗</div>
           </div>
           <div class="game-body">
             <div class="game-type">Ricochet Arcade</div>
@@ -846,8 +844,8 @@
           aria-label="Play Machine Works"
         >
           <div class="game-visual">
+            <img class="game-art" src="img/machine-works.webp" alt="" width="1672" height="940" loading="lazy" aria-hidden="true">
             <span class="game-number">GAME 10</span>
-            <div class="game-symbol" aria-hidden="true">⚙</div>
           </div>
           <div class="game-body">
             <div class="game-type">Industrial Optimization</div>
