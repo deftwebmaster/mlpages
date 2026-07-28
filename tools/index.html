@@ -5,384 +5,427 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Tools | Matt Livingston</title>
-  <meta name="description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat. Built by Matt Livingston.">
+  <meta name="description" content="Quick browser-based utilities for web development, privacy cleanup, data conversion, writing, planning, and decisions. Built by Matt Livingston.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://mattlivingston.com/tools/">
 
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Tools | Matt Livingston">
-  <meta property="og:description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat.">
+  <meta property="og:description" content="Quick utilities for the weird little jobs between bigger projects. Built by Matt Livingston.">
   <meta property="og:url" content="https://mattlivingston.com/tools/">
 
-  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Tools | Matt Livingston">
-  <meta name="twitter:description" content="Practical tools that solve real problems. No tracking, no accounts, no bloat.">
+  <meta name="twitter:description" content="Quick utilities for the weird little jobs between bigger projects. Built by Matt Livingston.">
 
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Category tag colors */
-    .tag-dev {
-      background-color: rgba(59, 130, 246, 0.15);
-      color: #3b82f6;
-    }
-    .tag-data {
-      background-color: rgba(245, 158, 11, 0.15);
-      color: #f59e0b;
-    }
-    .tag-utilities {
-      background-color: rgba(16, 185, 129, 0.15);
-      color: #10b981;
-    }
-    /* Privacy badge */
-    .privacy-badge {
-      position: absolute;
-      top: -1px;
-      right: var(--space-md);
-      background: rgba(139, 92, 246, 0.9);
-      color: white;
-      font-size: 0.6875rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 4px 10px;
-      border-radius: 0 0 6px 6px;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <header class="page-header">
-      <h1>Tools</h1>
-      <p class="tagline">Tools that solve real problems</p>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="top-nav" aria-label="Primary navigation">
+        <a class="brand-link" href="https://mattlivingston.com">Matt Livingston</a>
+        <div class="nav-links">
+          <a href="https://mattlivingston.com">Home</a>
+          <a href="https://mattlivingston.com/games/">Games</a>
+        </div>
+      </nav>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Local-first tools, freshly curated</p>
+          <h1 id="page-title">A toolbox for the weird little jobs between bigger projects.</h1>
+          <p class="hero-text">Quick utilities for web development, privacy cleanup, data conversion, writing, planning, and decisions. No accounts, no dashboards, no ceremony.</p>
+
+          <div class="hero-actions" aria-label="Featured destinations">
+            <a class="button" href="launch-kit/">Open Launch Kit</a>
+          </div>
+        </div>
+
+        <nav class="hero-panel" aria-label="Featured tool shortcuts">
+          <div class="panel-bar" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <a class="panel-line hot" href="https://mattlivingston.com/worldbuilder/"><span>create</span><strong>Sci-Fi Worldbuilder</strong></a>
+          <a class="panel-line" href="launch-kit/"><span>ship</span><strong>Website Launch Kit</strong></a>
+          <a class="panel-line" href="launch-doctor/"><span>audit</span><strong>Launch Doctor</strong></a>
+          <a class="panel-line" href="ats-lens/"><span>resume</span><strong>ATS Lens</strong></a>
+        </nav>
+      </section>
+
+      <dl class="trust-strip" aria-label="Tool collection details">
+        <div>
+          <dt>27</dt>
+          <dd>Tools</dd>
+        </div>
+        <div>
+          <dt>0</dt>
+          <dd>Accounts</dd>
+        </div>
+        <div>
+          <dt>Local</dt>
+          <dd>Browser-first</dd>
+        </div>
+      </dl>
     </header>
 
-    <!-- Why Section (compact) -->
-    <section class="why-section">
-      <p>Lightweight, private, and built to work. No accounts, no tracking, no data leaves your browser.</p>
-    </section>
+    <main>
+      <section class="catalog-controls" aria-label="Tool filters">
+        <label class="search-box">
+          <span class="sr-only">Search tools</span>
+          <input id="toolSearch" type="search" placeholder="Search the toolbox..." autocomplete="off">
+        </label>
 
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="dev">Dev Tools</button>
-      <button class="filter-btn" data-filter="data">Data & Ops</button>
-      <button class="filter-btn" data-filter="utilities">Utilities</button>
-    </div>
-
-    <div class="tools-grid" id="toolsGrid">
-      
-      <!-- FEATURED -->
-      
-      <article class="tool-card featured" data-category="dev" data-title="Website Launch Kit" data-tags="meta,robots,sitemap,htaccess,security,headers,privacy,legal,launch,checklist,seo">
-        <div class="featured-badge">Featured</div>
-        <h3>Website Launch Kit</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Everything you need before go-live. Meta tags, robots.txt, sitemap, .htaccess, security headers, legal boilerplate, and a 24-item launch checklist. Downloads as ZIP.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">9 Modules</span>
-          <span class="tech-badge">JSZip</span>
+        <div class="filter-bar" role="group" aria-label="Filter tools">
+          <button class="filter-btn active" type="button" data-filter="all">Curated</button>
+          <button class="filter-btn" type="button" data-filter="dev">Web dev</button>
+          <button class="filter-btn" type="button" data-filter="utility">Utilities</button>
+          <button class="filter-btn" type="button" data-filter="archive">Archive</button>
         </div>
-        <a href="/tools/launch-kit/" class="button button-small">Open tool →</a>
-      </article>
+      </section>
 
-      <article class="tool-card featured" data-category="data" data-title="Ops Data Toolkit" data-tags="csv,reconciliation,validation,duplicates,sumif,countif,lookup,cleaning,excel">
-        <div class="featured-badge">Featured</div>
-        <h3>Ops Data Toolkit</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Professional data analysis suite. 6 modules: reconciliation, validation, duplicates, SUMIF/COUNTIF, lookup, and data cleaning. Handles 10k+ rows with Excel-compatible exports.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">ES6</span>
-          <span class="tech-badge">PapaParse</span>
-          <span class="tech-badge">6 Modules</span>
+      <p class="result-count" id="resultCount" aria-live="polite">Showing the curated shelf.</p>
+
+      <section class="tool-section" aria-labelledby="featured-title" data-section="featured">
+        <div class="section-heading">
+          <p class="eyebrow">Start here</p>
+          <h2 id="featured-title">Featured tools</h2>
         </div>
-        <a href="/tools/ops-data-toolkit/" class="button button-small">Open tool →</a>
-      </article>
 
-      <article class="tool-card featured" data-category="dev" data-title="JSON CSV Converter" data-tags="json,csv,convert,data,export,import,flatten,nested">
-        <div class="featured-badge">Featured</div>
-        <h3>JSON ↔ CSV Converter</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Convert between JSON and CSV instantly. Handles nested objects with dot notation flattening, arrays, type inference, and large files.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Zero Dependencies</span>
+        <div class="tools-grid featured-grid">
+          <article class="tool-card spotlight" data-category="utility" data-title="Sci-Fi Worldbuilder" data-tags="sci-fi science fiction worldbuilder creative writing lore planets factions species timeline setting generator">
+            <div class="card-meta">
+              <span class="tag utility">Creative</span>
+              <span class="status-dot">Featured</span>
+            </div>
+            <h3>Sci-Fi Worldbuilder</h3>
+            <p>A larger creative workspace for shaping speculative settings, lore, factions, planets, timelines, and story-world systems.</p>
+            <div class="tech-badges">
+              <span>Worldbuilding</span>
+              <span>Creative lab</span>
+              <span>Lore systems</span>
+            </div>
+            <a href="https://mattlivingston.com/worldbuilder/" class="card-link">Open project</a>
+          </article>
+
+          <article class="tool-card spotlight" data-category="dev" data-title="Website Launch Kit" data-tags="meta robots sitemap htaccess security headers privacy legal launch checklist seo go-live web development">
+            <div class="card-meta">
+              <span class="tag dev">Web dev</span>
+              <span class="status-dot">Featured</span>
+            </div>
+            <h3>Website Launch Kit</h3>
+            <p>Generate the boring-but-critical launch pieces: meta tags, robots.txt, sitemap, security headers, legal boilerplate, and a final go-live checklist.</p>
+            <div class="tech-badges">
+              <span>SEO</span>
+              <span>Security</span>
+              <span>ZIP export</span>
+            </div>
+            <a href="launch-kit/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card spotlight" data-category="dev" data-title="Launch Doctor" data-tags="launch audit preflight static site github pages seo accessibility broken links security headers sitemap robots metadata fix pack report web development">
+            <div class="card-meta">
+              <span class="tag dev">Web dev</span>
+              <span class="status-dot">Flagship</span>
+            </div>
+            <h3>Launch Doctor</h3>
+            <p>Drop in a static site ZIP or folder and get a launch-readiness score, issue report, and downloadable fix pack before you publish.</p>
+            <div class="tech-badges">
+              <span>Audit</span>
+              <span>Fix pack</span>
+              <span>Local-only</span>
+            </div>
+            <a href="launch-doctor/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card spotlight" data-category="utility" data-title="ATS Lens" data-tags="resume ats analyzer parsing pdf docx txt job description match keywords score diagnostics privacy local pwa">
+            <div class="card-meta">
+              <span class="tag utility">Utility</span>
+              <span class="status-dot private">Private</span>
+            </div>
+            <h3>ATS Lens</h3>
+            <p>Upload a resume locally, inspect extracted ATS-style text, find parsing risks, and compare it against a pasted job description.</p>
+            <div class="tech-badges">
+              <span>PDF/DOCX/TXT</span>
+              <span>ATS view</span>
+              <span>Offline-ready</span>
+            </div>
+            <a href="ats-lens/" class="card-link">Open tool</a>
+          </article>
+
         </div>
-        <a href="/tools/json-csv/" class="button button-small">Open tool →</a>
-      </article>
+      </section>
 
-      <article class="tool-card featured" data-category="utilities" data-title="Screenshot Metadata Cleaner" data-tags="screenshot,image,metadata,exif,xmp,iptc,gps,privacy,cleaner,zip,batch">
-        <div class="featured-badge">Featured</div>
-        <h3>Screenshot Metadata Cleaner</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Inspect and strip hidden metadata from images before sharing. Flags EXIF, GPS, timestamps, software tags, and exports clean copies or ZIPs locally.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Binary Parsing</span>
-          <span class="tech-badge">Batch ZIP</span>
+      <section class="tool-section" aria-labelledby="dev-title" data-section="dev">
+        <div class="section-heading">
+          <p class="eyebrow">Build and debug</p>
+          <h2 id="dev-title">Web development tools</h2>
         </div>
-        <a href="/tools/screenshot-cleaner/" class="button button-small">Open tool →</a>
-      </article>
 
-      <article class="tool-card featured" data-category="dev" data-title="LogShare Sanitizer" data-tags="logs,redact,secrets,tokens,api keys,jwt,privacy,headers,env,security">
-        <div class="featured-badge">Featured</div>
-        <h3>LogShare Sanitizer</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Clean logs, stack traces, headers, and env dumps before sharing. Detects tokens, keys, emails, IPs, URLs, and connection strings locally.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Pattern Engine</span>
-          <span class="tech-badge">Stable Redaction</span>
-          <span class="tech-badge">Local-Only</span>
+        <div class="tools-grid">
+          <article class="tool-card" data-category="dev" data-title="Encode & Hash Lab" data-tags="base64 url encode decode hash md5 sha256 sha1 sha512 checksum crypto developer jwt hmac hex binary file">
+            <div class="card-meta"><span class="tag dev">Web dev</span></div>
+            <h3>Encode & Hash Lab</h3>
+            <p>Encode Base64, inspect URLs and JWTs, convert hex/binary, generate hashes and HMACs, and verify file checksums.</p>
+            <div class="tech-badges"><span>Web Crypto</span><span>JWT</span><span>Checksums</span></div>
+            <a href="encode-hash/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="dev" data-title="Favicon Generator" data-tags="favicon ico png apple touch icon pwa manifest icons website launch">
+            <div class="card-meta"><span class="tag dev">Web dev</span></div>
+            <h3>Favicon Generator</h3>
+            <p>Create ICO, PNG, Apple Touch Icon, Android Chrome icons, and a PWA manifest from one source image.</p>
+            <div class="tech-badges"><span>PWA</span><span>Icon set</span><span>ZIP export</span></div>
+            <a href="favicon/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="dev" data-title="QR Code Generator" data-tags="qr code privacy url text contact vcard website">
+            <div class="card-meta"><span class="tag dev">Web dev</span><span class="status-dot private">Private</span></div>
+            <h3>QR Code Generator</h3>
+            <p>Generate local QR codes for URLs, text, and contact cards without sending content to a server.</p>
+            <div class="tech-badges"><span>QR</span><span>Local-only</span></div>
+            <a href="qr-generator/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="dev" data-title="Cipher Workbench" data-tags="cipher caesar rot13 atbash vigenere rail fence playfair substitution morse cryptography reference analyzer frequency puzzles">
+            <div class="card-meta"><span class="tag dev">Web dev</span></div>
+            <h3>Cipher Workbench</h3>
+            <p>Encode, decode, analyze, and learn classical ciphers with references, frequency analysis, and Caesar brute force.</p>
+            <div class="tech-badges"><span>Reference</span><span>Analyzer</span><span>Classical ciphers</span></div>
+            <a href="cipher-workbench/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="dev" data-title="Browser Fingerprint Viewer" data-tags="fingerprint privacy tracking canvas webgl browser security developer">
+            <div class="card-meta"><span class="tag dev">Web dev</span><span class="status-dot private">Private</span></div>
+            <h3>Browser Fingerprint Viewer</h3>
+            <p>See what websites can learn about your browser without cookies: canvas, WebGL, client hints, and other tracking vectors.</p>
+            <div class="tech-badges"><span>Privacy</span><span>Browser APIs</span></div>
+            <a href="fingerprint/" class="card-link">Open tool</a>
+          </article>
         </div>
-        <a href="/tools/logshare-sanitizer/" class="button button-small">Open tool →</a>
-      </article>
+      </section>
 
-      <!-- DEV TOOLS -->
-
-      <article class="tool-card" data-category="dev" data-title="ZPL Label Designer" data-tags="zpl,zebra,label,barcode,thermal,printer,shipping,warehouse">
-        <h3>ZPL Label Designer</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Visual drag-and-drop label builder for Zebra printers. Add text, barcodes, QR codes, and shapes. Live ZPL code generation with import/export.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Canvas API</span>
+      <section class="tool-section" aria-labelledby="utility-title" data-section="utility">
+        <div class="section-heading">
+          <p class="eyebrow">Keep handy</p>
+          <h2 id="utility-title">Utility tools</h2>
         </div>
-        <a href="/tools/zpl-designer/" class="button button-small">Open tool →</a>
-      </article>
 
-      <article class="tool-card" data-category="dev" data-title="Encode & Hash" data-tags="base64,url,encode,decode,hash,md5,sha256,sha1,sha512,checksum">
-        <h3>Encode & Hash</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Base64 encode/decode, URL encoding, and hash generation (MD5, SHA-1, SHA-256, SHA-512) in one tool. Supports text and file input.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Web Crypto API</span>
+        <div class="tools-grid">
+          <article class="tool-card" data-category="utility" data-title="FADE Flow-State Writer" data-tags="writing focus draft editor localstorage export privacy flow state">
+            <div class="card-meta"><span class="tag utility">Utility</span><span class="status-dot private">Private</span></div>
+            <h3>FADE Flow-State Writer</h3>
+            <p>A minimal drafting space that fades completed paragraphs so you keep writing forward.</p>
+            <div class="tech-badges"><span>Writing</span><span>Local save</span></div>
+            <a href="fade/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Time Zone Call Planner" data-tags="timezone scheduling meetings conference calls international business travel overlap calendar">
+            <div class="card-meta"><span class="tag utility">Utility</span></div>
+            <h3>Time Zone Call Planner</h3>
+            <p>Find clean business-hour call windows across international time zones and copy a polished local-time proposal.</p>
+            <div class="tech-badges"><span>Conference calls</span><span>Local times</span></div>
+            <a href="timezone/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Random: Decision Lab" data-tags="random decision lab crypto rng weighted picker shortlist no repeat raffle teams bracket coin number generator sampling">
+            <div class="card-meta"><span class="tag utility">Utility</span></div>
+            <h3>Random: Decision Lab</h3>
+            <p>Use crypto-backed randomness for fair picks, weighted choices, no-repeat draws, teams, brackets, numbers, and copyable decision receipts.</p>
+            <div class="tech-badges"><span>Crypto RNG</span><span>Receipts</span><span>Decision tools</span></div>
+            <a href="random/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Finance: Decision Lab" data-tags="finance decision lab compound interest loan amortization savings debt rent buy lease subscription side hustle scenarios">
+            <div class="card-meta"><span class="tag utility">Utility</span></div>
+            <h3>Finance: Decision Lab</h3>
+            <p>Compare rent-vs-buy, loans, leases, subscriptions, inflation, and side-hustle scenarios with transparent assumptions.</p>
+            <div class="tech-badges"><span>Scenarios</span><span>Decision math</span></div>
+            <a href="finance/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Screenshot Metadata Cleaner" data-tags="screenshot image metadata exif xmp iptc gps privacy cleaner zip batch utility">
+            <div class="card-meta"><span class="tag utility">Utility</span><span class="status-dot private">Private</span></div>
+            <h3>Screenshot Metadata Cleaner</h3>
+            <p>Inspect and strip hidden image metadata before sharing. Flags EXIF, GPS, timestamps, software tags, and exports clean copies or ZIPs.</p>
+            <div class="tech-badges"><span>Images</span><span>Privacy</span><span>Batch ZIP</span></div>
+            <a href="screenshot-cleaner/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Smart Tip Calculator" data-tags="tip split bill restaurant alcohol tax discount payment memo itemized fair split utility">
+            <div class="card-meta"><span class="tag utility">Utility</span></div>
+            <h3>Smart Tip Calculator</h3>
+            <p>Calculate fair tips, split bills evenly or itemized, handle tax, discounts, alcohol pools, rounding, and copy payment-ready summaries.</p>
+            <div class="tech-badges"><span>Fair split</span><span>Payment memo</span></div>
+            <a href="tip-calculator/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="Pseudonym: Fictional Identity Creator" data-tags="pseudonym fictional identity creator pen name generator alias privacy persona test data fake identity address phone birthday zodiac">
+            <div class="card-meta"><span class="tag utility">Utility</span><span class="status-dot private">Private</span></div>
+            <h3>Pseudonym: Fictional Identity Creator</h3>
+            <p>Create polished pen names, fictional identity packs, safe phone numbers, birthdays, zodiac signs, and exportable test data.</p>
+            <div class="tech-badges"><span>Pen names</span><span>Identity packs</span><span>Test data</span></div>
+            <a href="pseudonym/" class="card-link">Open tool</a>
+          </article>
         </div>
-        <a href="/tools/encode-hash/" class="button button-small">Open tool →</a>
-      </article>
+      </section>
 
-      <article class="tool-card" data-category="dev" data-title="Favicon Generator" data-tags="favicon,ico,png,apple-touch-icon,pwa,manifest,icons">
-        <h3>Favicon Generator</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Generate all favicon sizes from one image. Creates ICO, PNG, Apple Touch Icon, Android Chrome icons, and PWA manifest. Downloads as ZIP.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">JSZip</span>
-        </div>
-        <a href="/tools/favicon/" class="button button-small">Open tool →</a>
-      </article>
+      <section class="tool-section archived-section" aria-labelledby="archived-title" id="archived-ops" data-section="archive">
+        <details>
+          <summary>
+            <span>
+              <span class="eyebrow">Still available</span>
+              <strong id="archived-title">Archived operations tools</strong>
+            </span>
+            <span class="summary-action">Open shelf</span>
+          </summary>
 
-      <article class="tool-card" data-category="dev" data-title="QR Code Generator" data-tags="qr,privacy,url,text,contact,vcard">
-        <h3>QR Code Generator</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Privacy-first QR code creation. Generates codes locally—no data sent to servers. Supports URLs, text, and contact cards.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">QRCode.js</span>
-        </div>
-        <a href="/tools/qr-generator/" class="button button-small">Open tool →</a>
-      </article>
+          <div class="archive-note">
+            These older warehouse and operations tools are preserved for anyone who still uses them. They are no longer the direction of this toolbox.
+          </div>
 
-      <article class="tool-card" data-category="dev" data-title="Cipher Workbench" data-tags="cipher,caesar,vigenere,rail fence,playfair,cryptography,education,visualizer,puzzles">
-        <h3>Cipher Workbench</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>Interactive classical cipher lab with Caesar, Vigenere, Rail Fence, and Playfair modes. Live encoding, decoding, and visual maps for each algorithm.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Algorithms</span>
-          <span class="tech-badge">Visual Explainers</span>
-        </div>
-        <a href="/tools/cipher-workbench/" class="button button-small">Open tool →</a>
-      </article>
+          <div class="tools-grid compact-grid">
+            <article class="tool-card compact" data-category="archive" data-title="Ops Data Toolkit" data-tags="csv reconciliation validation duplicates sumif countif lookup cleaning excel warehouse operations archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>Ops Data Toolkit</h3>
+              <p>CSV reconciliation, validation, duplicate detection, lookups, and cleaning for operations data.</p>
+              <a href="ops-data-toolkit/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="dev" data-title="Browser Fingerprint Viewer" data-tags="fingerprint,privacy,tracking,canvas,webgl">
-        <div class="privacy-badge">🔒 Private</div>
-        <h3>Browser Fingerprint Viewer</h3>
-        <span class="tag tag-dev">Dev Tools</span>
-        <p>See what websites can learn about your browser without cookies. Displays canvas fingerprint, WebGL info, and other tracking vectors.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Canvas API</span>
-        </div>
-        <a href="/tools/fingerprint/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="CSV Schema Guard" data-tags="csv schema validation data quality drift nulls duplicates columns types report developer ops warehouse archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>CSV Schema Guard</h3>
+              <p>Compare trusted CSVs against new files and catch schema drift, null spikes, duplicate keys, and row-count swings.</p>
+              <a href="csv-schema-guard/" class="card-link">Open tool</a>
+            </article>
 
-      <!-- DATA & OPS -->
+            <article class="tool-card compact" data-category="archive" data-title="ZPL Label Designer" data-tags="zpl zebra label barcode thermal printer shipping warehouse archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>ZPL Label Designer</h3>
+              <p>Visual label builder for Zebra printers with live ZPL output.</p>
+              <a href="zpl-designer/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="data" data-title="CSV Schema Guard" data-tags="csv,schema,validation,data quality,drift,nulls,duplicates,columns,types,report">
-        <h3>CSV Schema Guard</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Compare a trusted CSV against a new file before it enters a workflow. Catches missing columns, type drift, null spikes, duplicate keys, and row-count swings.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Schema Inference</span>
-          <span class="tech-badge">Drift Report</span>
-        </div>
-        <a href="/tools/csv-schema-guard/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="Pallet Load Calculator" data-tags="pallet palletization cube weight stacking 3d warehouse logistics archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>Pallet Load Calculator</h3>
+              <p>Plan pallet stacking, cube use, orientation, and weight limits.</p>
+              <a href="pallet-calculator/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="data" data-title="Pallet Load Calculator" data-tags="pallet,palletization,cube,weight,stacking,3d,visualization,warehouse,logistics">
-        <h3>Pallet Load Calculator</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Visual palletization planning with 3D preview. Calculate optimal box stacking, cube utilization, and weight limits. Supports multiple pallet sizes.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Three.js</span>
-          <span class="tech-badge">3D Visualization</span>
-          <span class="tech-badge">PDF Export</span>
-        </div>
-        <a href="/tools/pallet-calculator/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="EDI Document Viewer" data-tags="edi x12 850 856 810 820 997 purchase order asn invoice parser archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>EDI Document Viewer</h3>
+              <p>Parse common X12 documents including 850, 856, 810, 820, and 997.</p>
+              <a href="edi-viewer/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="data" data-title="EDI Document Viewer" data-tags="edi,x12,850,856,810,820,997,purchase order,asn,invoice,parser">
-        <h3>EDI Document Viewer</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Parse and understand X12 EDI documents instantly. Supports 850 (PO), 856 (ASN), 810 (Invoice), 820 (Payment), and 997 (Acknowledgment).</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">5 Doc Types</span>
-        </div>
-        <a href="/tools/edi-viewer/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="WMS Cheat Sheet" data-tags="wms oracle manhattan iht transaction codes glossary reference terminology archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>WMS Cheat Sheet</h3>
+              <p>Searchable WMS code and terminology reference.</p>
+              <a href="wms-cheat-sheet/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="data" data-title="WMS Cheat Sheet" data-tags="wms,oracle,manhattan,iht,transaction,codes,glossary,reference,terminology">
-        <h3>WMS Cheat Sheet</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Searchable reference for Oracle WMS Cloud IHT codes, Manhattan WMS transactions, and common warehouse terminology. Know what every code means.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">45+ Entries</span>
-        </div>
-        <a href="/tools/wms-cheat-sheet/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="Barcode Validator" data-tags="upc ean check digit scanning wms barcode archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>Barcode Validator</h3>
+              <p>Validate UPC-A, UPC-E, EAN-13, and EAN-8 check digits.</p>
+              <a href="barcode-validator/" class="card-link">Open tool</a>
+            </article>
 
-      <article class="tool-card" data-category="data" data-title="Barcode Validator" data-tags="upc,ean,check digit,scanning,wms">
-        <h3>Barcode Validator</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Validates UPC-A, UPC-E, EAN-13, and EAN-8 barcodes with check digit verification. Catches scanning errors before they cause problems.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Zero Dependencies</span>
-        </div>
-        <a href="/tools/barcode-validator/" class="button button-small">Open tool →</a>
-      </article>
+            <article class="tool-card compact" data-category="archive" data-title="Labor Cost per Unit Calculator" data-tags="labor cost cpu productivity uph efficiency warehouse operations archive">
+              <div class="card-meta"><span class="tag archive">Archive</span></div>
+              <h3>Labor Cost per Unit Calculator</h3>
+              <p>Break down labor cost per unit by operation and compare periods.</p>
+              <a href="labor-cost/" class="card-link">Open tool</a>
+            </article>
+          </div>
+        </details>
+      </section>
 
-      <article class="tool-card" data-category="data" data-title="Labor Cost Calculator" data-tags="labor,cost,cpu,productivity,uph,efficiency,warehouse,operations">
-        <h3>Labor Cost per Unit Calculator</h3>
-        <span class="tag tag-data">Data & Ops</span>
-        <p>Break down labor costs by operation. Calculate cost per unit across receiving, picking, packing, and shipping. Compare periods and export reports.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Comparison Mode</span>
-        </div>
-        <a href="/tools/labor-cost/" class="button button-small">Open tool →</a>
-      </article>
-
-      <!-- UTILITIES -->
-
-      <article class="tool-card" data-category="utilities" data-title="FinanceSmart Calculator Suite" data-tags="finance,compound,interest,loan,amortization,savings,debt">
-        <h3>FinanceSmart Calculator Suite</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Collection of financial calculators: compound interest, loan amortization, savings goals, and debt payoff planning.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">4-in-1 Suite</span>
-        </div>
-        <a href="/tools/finance/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="utilities" data-title="FADE Flow-State Writer" data-tags="writing,focus,draft,editor,localstorage,export,privacy,flow,state">
-        <div class="privacy-badge">🔒 Private</div>
-        <h3>FADE Flow-State Writer</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Minimal drafting space that fades completed paragraphs so you keep moving forward. Auto-saves locally and exports clean plain text.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">LocalStorage</span>
-          <span class="tech-badge">Plain Text Export</span>
-        </div>
-        <a href="/tools/fade/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="utilities" data-title="Smart Tip Calculator" data-tags="tip,split,bill,venmo,cashapp,restaurant">
-        <h3>Smart Tip Calculator</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Itemized bill splitting with alcohol adjustments, service quality sliders, and Venmo/Cash App payment link generator. Works offline.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">PWA-Ready</span>
-        </div>
-        <a href="/tools/tip-calculator/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="utilities" data-title="Time Zone Overlap Finder" data-tags="timezone,scheduling,meetings,distributed,remote">
-        <h3>Time Zone Overlap Finder</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Find overlapping work hours across time zones. Useful for scheduling meetings with distributed teams.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Dynamic UI</span>
-        </div>
-        <a href="/tools/timezone/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="utilities" data-title="Pseudonym Generator" data-tags="fake,identity,testing,privacy,persona">
-        <div class="privacy-badge">🔒 Private</div>
-        <h3>Pseudonym Generator</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Creates consistent fake identities for testing or privacy. Generates names, addresses, and other persona details locally.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">Seeded RNG</span>
-        </div>
-        <a href="/tools/pseudonym/" class="button button-small">Open tool →</a>
-      </article>
-
-      <article class="tool-card" data-category="utilities" data-title="Random Number Generator" data-tags="random,number,generator,picker,decision,food,tournament,dice,coin,rng,shuffle,sampling">
-        <h3>Random Number Generator</h3>
-        <span class="tag tag-utilities">Utilities</span>
-        <p>Generate random numbers, pick from lists, and run tournament brackets. Great for QA sampling, team assignments, raffles, and breaking ties.</p>
-        <div class="tech-badges">
-          <span class="tech-badge">Vanilla JS</span>
-          <span class="tech-badge">LocalStorage</span>
-        </div>
-        <a href="/tools/random/" class="button button-small">Open tool →</a>
-      </article>
-
-    </div>
+      <div class="empty-state hidden" id="emptyState">
+        <h2>No matching tools</h2>
+        <p>Try a different search term or switch back to the curated view.</p>
+      </div>
+    </main>
 
     <footer class="footer">
-      <div class="footer-content">
-        <span>&copy; 2026 Matt Livingston</span>
+      <div>
+        <strong>Built by <a href="https://mattlivingston.com">Matt Livingston</a></strong>
+        <p>Small tools, no accounts, no tracking, and a bias toward getting the work done.</p>
       </div>
+      <a href="https://mattlivingston.com">MattLivingston.com</a>
     </footer>
   </div>
 
   <script>
-    // Filter functionality
     (function() {
-      const filterBtns = document.querySelectorAll('.filter-btn');
-      const cards = document.querySelectorAll('.tool-card');
-      
+      const searchInput = document.getElementById('toolSearch');
+      const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
+      const cards = Array.from(document.querySelectorAll('.tool-card'));
+      const sections = Array.from(document.querySelectorAll('[data-section]'));
+      const archiveDetails = document.querySelector('.archived-section details');
+      const resultCount = document.getElementById('resultCount');
+      const emptyState = document.getElementById('emptyState');
+      let activeFilter = 'all';
+
+      function normalize(value) {
+        return value.toLowerCase().trim();
+      }
+
+      function cardMatches(card, query) {
+        const haystack = [
+          card.dataset.title,
+          card.dataset.tags,
+          card.textContent
+        ].join(' ').toLowerCase();
+        return !query || haystack.includes(query);
+      }
+
+      function updateView() {
+        const query = normalize(searchInput.value);
+        let visibleCount = 0;
+
+        cards.forEach(card => {
+          const category = card.dataset.category;
+          const filterMatch = activeFilter === 'all' || category === activeFilter;
+          const searchMatch = cardMatches(card, query);
+          const isVisible = filterMatch && searchMatch;
+
+          card.classList.toggle('is-hidden', !isVisible);
+          if (isVisible) visibleCount += 1;
+        });
+
+        sections.forEach(section => {
+          const visibleCards = section.querySelectorAll('.tool-card:not(.is-hidden)').length;
+          section.classList.toggle('is-hidden', visibleCards === 0);
+        });
+
+        if (archiveDetails) {
+          archiveDetails.open = activeFilter === 'archive' || query.length > 0;
+        }
+
+        emptyState.classList.toggle('hidden', visibleCount !== 0);
+        const mode = activeFilter === 'all' ? 'curated shelf' : activeFilter;
+        resultCount.textContent = query
+          ? `Showing ${visibleCount} matching ${visibleCount === 1 ? 'tool' : 'tools'} for "${searchInput.value}".`
+          : activeFilter === 'all'
+            ? 'Showing the curated shelf.'
+            : `Showing ${visibleCount} ${mode} ${visibleCount === 1 ? 'tool' : 'tools'}.`;
+      }
+
       filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          const filter = btn.dataset.filter;
-          
-          // Update active state
-          filterBtns.forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          
-          // Filter cards
-          cards.forEach(card => {
-            if (filter === 'all' || card.dataset.category === filter) {
-              card.style.display = '';
-            } else {
-              card.style.display = 'none';
-            }
-          });
+          activeFilter = btn.dataset.filter;
+          filterBtns.forEach(item => item.classList.toggle('active', item === btn));
+          updateView();
         });
       });
+
+      searchInput.addEventListener('input', updateView);
     })();
   </script>
 </body>
