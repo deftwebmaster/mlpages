@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Download Vault - Free PHP Script from Script Shed</title>
+    <meta name="description" content="Download Vault is a free self-hosted PHP script for protected file delivery with clean links, passwords, expiration dates, limits, and flat-file storage.">
+    <meta property="og:title" content="Download Vault">
+    <meta property="og:description" content="A free self-hosted PHP script for controlled, trackable file downloads.">
+    <meta property="og:image" content="assets/download-vault-preview.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="https://mattlivingston.com/shed/">Script Shed</a>
+        <nav aria-label="Page sections">
+            <a href="#features">Features</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="#install">Install</a>
+        </nav>
+        <a class="header-download" href="download-vault-1.0.0.zip" download>Download</a>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-media" aria-hidden="true"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <p class="script-label">Free PHP script for ordinary hosting</p>
+                <h1 id="hero-title">Download Vault</h1>
+                <p class="hero-copy">Protected file delivery without a database, framework, Composer, Node.js, recipient accounts, or cloud services.</p>
+                <div class="hero-actions">
+                    <a class="button primary" href="download-vault-1.0.0.zip" download>Download Free ZIP</a>
+                    <a class="button secondary" href="#install">Quick Install</a>
+                </div>
+                <ul class="hero-facts" aria-label="Script highlights">
+                    <li>PHP 8.2+</li>
+                    <li>JSON storage</li>
+                    <li>Apache-ready</li>
+                    <li>No SQL</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="intro-band" aria-label="Product summary">
+            <div>
+                <strong>Clean share links</strong>
+                <span>Example: <code>/d/client-brand-assets</code></span>
+            </div>
+            <div>
+                <strong>Controlled delivery</strong>
+                <span>Passwords, expirations, limits, and disabled links.</span>
+            </div>
+            <div>
+                <strong>Private storage</strong>
+                <span>Files stream through PHP instead of public file URLs.</span>
+            </div>
+        </section>
+
+        <section id="features" class="section">
+            <div class="section-head">
+                <p class="section-kicker">What It Does</p>
+                <h2>Everything needed for simple protected downloads.</h2>
+            </div>
+            <div class="feature-grid">
+                <article>
+                    <h3>Upload Protected Files</h3>
+                    <p>Upload files through the admin panel or register larger files placed in the import directory by FTP or your hosting file manager.</p>
+                </article>
+                <article>
+                    <h3>Create Clean Links</h3>
+                    <p>Give each download a friendly slug or generate a short random link when you want a less guessable URL.</p>
+                </article>
+                <article>
+                    <h3>Add Access Rules</h3>
+                    <p>Set optional passwords, expiration dates, maximum download counts, landing pages, direct downloads, and disabled states.</p>
+                </article>
+                <article>
+                    <h3>Track Download Starts</h3>
+                    <p>See totals, recent activity, daily stats, last downloaded timestamps, blocked attempts, and basic referrer domains.</p>
+                </article>
+                <article>
+                    <h3>Stay Database-Free</h3>
+                    <p>Records are stored in locked JSON files with atomic writes, backups, and no SQL setup.</p>
+                </article>
+                <article>
+                    <h3>Run on Shared Hosting</h3>
+                    <p>Upload the folder, edit one config file, set one admin password hash, and manage files from a responsive dashboard.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="use-cases" class="section use-section">
+            <div class="section-head">
+                <p class="section-kicker">Use Cases</p>
+                <h2>Built for website owners who need to deliver one file safely.</h2>
+            </div>
+            <div class="use-list">
+                <span>Client PDFs</span>
+                <span>ZIP archives</span>
+                <span>Free ebooks</span>
+                <span>Website assets</span>
+                <span>Software downloads</span>
+                <span>Private documents</span>
+                <span>Template packs</span>
+                <span>Time-limited files</span>
+                <span>Password-protected handoffs</span>
+                <span>Download-limited offers</span>
+            </div>
+        </section>
+
+        <section id="install" class="section install-section">
+            <div class="section-head">
+                <p class="section-kicker">Quick Install</p>
+                <h2>No installer. No database. No build process.</h2>
+            </div>
+            <ol class="install-steps">
+                <li>
+                    <strong>Upload the folder.</strong>
+                    <span>Place Download Vault on ordinary PHP hosting.</span>
+                </li>
+                <li>
+                    <strong>Move private storage when possible.</strong>
+                    <span>Keep storage, protected files, and imports outside the public web root.</span>
+                </li>
+                <li>
+                    <strong>Edit <code>config.php</code>.</strong>
+                    <span>Set the base URL, paths, timezone, privacy salt, and upload limits.</span>
+                </li>
+                <li>
+                    <strong>Generate the admin password hash.</strong>
+                    <span>Use <code>/tools/generate-password.php</code>, paste the hash into config, then delete the helper.</span>
+                </li>
+                <li>
+                    <strong>Log in and add a download.</strong>
+                    <span>Create a title, slug, access rules, and copy the public link.</span>
+                </li>
+            </ol>
+        </section>
+
+        <section class="section details-section">
+            <div class="detail-panel">
+                <h2>Included in the ZIP</h2>
+                <ul>
+                    <li>Admin dashboard and public download pages</li>
+                    <li>Flat-file storage, locking, backups, history, and daily stats</li>
+                    <li>Upload and import workflows</li>
+                    <li>Apache rewrite rules and fallback routes</li>
+                    <li>README, security notes, changelog, MIT license, and CLI tests</li>
+                </ul>
+            </div>
+            <div class="detail-panel quiet">
+                <h2>Version 1 Scope</h2>
+                <p>Download Vault focuses on one job: controlled file delivery through self-hosted PHP links. It is not a cloud drive, account system, or collaboration platform.</p>
+                <p class="version">Version 1.0.0</p>
+            </div>
+        </section>
+
+        <section class="download-cta" aria-labelledby="download-title">
+            <p class="section-kicker">Script Shed Download</p>
+            <h2 id="download-title">Add protected file delivery to your site today.</h2>
+            <p>Download the ZIP, edit the config, and you can start creating controlled file links from your own hosting account.</p>
+            <a class="button primary" href="download-vault-1.0.0.zip" download>Download Download Vault 1.0.0</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <span>Download Vault is offered free through Script Shed.</span>
+        <a href="https://mattlivingston.com/shed/">More free PHP scripts</a>
+    </footer>
+</body>
+</html>

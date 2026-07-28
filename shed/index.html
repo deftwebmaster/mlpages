@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Script Shed - Free PHP Scripts by Matt Livingston</title>
+    <meta name="description" content="Script Shed is Matt Livingston's dark little shelf of free, practical PHP scripts for website owners and webmasters.">
+    <meta property="og:title" content="Script Shed">
+    <meta property="og:description" content="Free PHP scripts for ordinary hosting, starting with Download Vault.">
+    <meta property="og:image" content="assets/download-vault-preview.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="/shed/" aria-label="Script Shed home">
+            <span class="brand-mark">SS</span>
+            <span>
+                <strong>Script Shed</strong>
+                <small>Tools online</small>
+            </span>
+        </a>
+        <nav aria-label="Main navigation">
+            <a href="#scripts">Scripts</a>
+            <a href="#install">Install Help</a>
+            <a href="#resources">Resources</a>
+            <a href="#about">About</a>
+        </nav>
+        <a class="top-button" href="download-vault/download-vault-1.0.0.zip" download>Download Vault</a>
+    </header>
+
+    <main>
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-copy">
+                <p class="eyebrow">MattLivingston.com/shed</p>
+                <h1 id="hero-title">Free PHP scripts from the darker shelf of the web.</h1>
+                <p>Script Shed is Matt Livingston’s self-hosted script corner: practical PHP tools for ordinary hosting accounts, built with fewer moving parts and a little more atmosphere.</p>
+                <div class="hero-actions">
+                    <a class="button primary" href="#scripts">Browse Scripts</a>
+                    <a class="button secondary" href="#install">How Setup Works</a>
+                </div>
+                <div class="signal-row" aria-label="Script Shed signals">
+                    <span>Online</span>
+                    <span>No accounts</span>
+                    <span>Plain PHP</span>
+                    <span>Built by Matt Livingston</span>
+                </div>
+            </div>
+            <aside class="hero-panel" aria-label="Current Script Shed status">
+                <div class="panel-topline">
+                    <span class="live-dot"></span>
+                    <span>Featured release</span>
+                </div>
+                <h2>Download Vault</h2>
+                <p>Protected file delivery through clean PHP download links.</p>
+                <pre aria-label="Download Vault install summary"><code>$ upload /shed/download-vault
+$ edit config.php
+$ create protected links</code></pre>
+                <dl>
+                    <div><dt>Version</dt><dd>1.0.0</dd></div>
+                    <div><dt>Price</dt><dd>Free</dd></div>
+                    <div><dt>Storage</dt><dd>JSON files</dd></div>
+                    <div><dt>Requires</dt><dd>PHP 8.2+</dd></div>
+                </dl>
+                <a class="button primary dark" href="download-vault/download-vault-1.0.0.zip" download>Download ZIP</a>
+            </aside>
+        </section>
+
+        <section class="trust-strip" aria-label="Script principles">
+            <div>
+                <strong>No Composer</strong>
+                <span>Upload-and-configure scripts.</span>
+            </div>
+            <div>
+                <strong>No SQL Required</strong>
+                <span>Simple storage for simple jobs.</span>
+            </div>
+            <div>
+                <strong>Shared Hosting Friendly</strong>
+                <span>Built for common PHP hosting.</span>
+            </div>
+            <div>
+                <strong>Free Downloads</strong>
+                <span>Useful tools, plain documentation.</span>
+            </div>
+        </section>
+
+        <section id="scripts" class="section scripts-section">
+            <div class="section-head">
+                <p class="eyebrow">Free PHP Scripts</p>
+                <h2>Available now</h2>
+                <p>Script Shed is just getting started. Download Vault is the first release and the flagship script while the collection grows.</p>
+            </div>
+
+            <article class="script-card featured">
+                <div class="script-content">
+                    <div class="script-meta">
+                        <span>Version 1.0.0</span>
+                        <span>Price: Free</span>
+                        <span>PHP 8.2+</span>
+                    </div>
+                    <h3>Download Vault</h3>
+                    <p class="script-summary">A polished, database-free PHP application for delivering private files through controlled, trackable download links.</p>
+                    <ul class="feature-list">
+                        <li>Password-protected links</li>
+                        <li>Expiration dates and max download limits</li>
+                        <li>Clean URLs with fallback routing</li>
+                        <li>Upload and FTP import workflows</li>
+                        <li>Recent history, daily stats, and backups</li>
+                        <li>No SQL database, Composer, Node.js, or cloud account</li>
+                    </ul>
+                    <div class="script-actions">
+                        <a class="button primary" href="download-vault/download-vault-1.0.0.zip" download>Download Now</a>
+                        <a class="button secondary" href="download-vault/">View Details</a>
+                    </div>
+                </div>
+                <figure class="script-preview">
+                    <img src="assets/download-vault-preview.png" alt="Download Vault dashboard preview showing protected links and download starts">
+                </figure>
+            </article>
+        </section>
+
+        <section id="install" class="section install-section">
+            <div class="section-head">
+                <p class="eyebrow">Quick Setup</p>
+                <h2>Built for the classic webmaster workflow.</h2>
+                <p>Download the ZIP, upload the files, edit the config, and start using the script from your own hosting account.</p>
+            </div>
+            <ol class="steps">
+                <li>
+                    <strong>Download the script ZIP.</strong>
+                    <span>Each Script Shed release includes source files, docs, and setup notes.</span>
+                </li>
+                <li>
+                    <strong>Upload it to your hosting account.</strong>
+                    <span>Use FTP, SFTP, cPanel File Manager, or your preferred deployment method.</span>
+                </li>
+                <li>
+                    <strong>Edit the configuration file.</strong>
+                    <span>Set paths, URLs, passwords, and options in one documented place.</span>
+                </li>
+                <li>
+                    <strong>Open the admin page.</strong>
+                    <span>Follow the README for permissions, security checks, and first-use steps.</span>
+                </li>
+            </ol>
+        </section>
+
+        <section id="resources" class="section resource-grid">
+            <article>
+                <h2>What belongs in the Shed?</h2>
+                <p>Small PHP tools that solve a real website-owner problem without trying to become a platform.</p>
+                <ul>
+                    <li>Installerless or very close to it</li>
+                    <li>Plain documentation</li>
+                    <li>Local storage when practical</li>
+                    <li>Responsive admin screens</li>
+                    <li>Security-conscious defaults</li>
+                </ul>
+            </article>
+            <article>
+                <h2>Coming later</h2>
+                <p>Future releases may include counters, content helpers, simple admin tools, and other compact utilities for self-hosted sites.</p>
+                <div class="future-list">
+                    <span>Click counters</span>
+                    <span>Form helpers</span>
+                    <span>Link tools</span>
+                    <span>File utilities</span>
+                </div>
+            </article>
+        </section>
+
+        <section id="about" class="about-band">
+            <div>
+                <p class="eyebrow">About Script Shed</p>
+                <h2>A practical corner of Matt Livingston’s site.</h2>
+                <p>Script Shed is for free PHP scripts that are easy to inspect, easy to upload, and useful without signing up for another service. The vibe is old-school webmaster usefulness, rebuilt with a darker interface, cleaner edges, and safer defaults.</p>
+            </div>
+            <a class="button primary dark" href="download-vault/download-vault-1.0.0.zip" download>Download the First Script</a>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <span>Script Shed: Free PHP Scripts by <a href="https://mattlivingston.com/">Matt Livingston</a></span>
+    </footer>
+</body>
+</html>

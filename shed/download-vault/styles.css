@@ -1,0 +1,453 @@
+:root {
+    --ink: #142033;
+    --muted: #667386;
+    --paper: #fbfcfe;
+    --panel: #ffffff;
+    --line: #dfe6ef;
+    --blue: #1d5fd7;
+    --blue-deep: #0d377c;
+    --green: #168a4a;
+    --amber: #b06a00;
+    --shadow: 0 20px 70px rgba(20, 32, 51, 0.14);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+a {
+    color: inherit;
+}
+
+.site-header {
+    position: absolute;
+    inset: 0 0 auto 0;
+    z-index: 5;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 1rem 0;
+    color: #ffffff;
+}
+
+.brand {
+    font-weight: 850;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+nav a,
+.header-download {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.94rem;
+}
+
+.header-download {
+    justify-self: end;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 0.52rem 0.8rem;
+}
+
+.hero {
+    position: relative;
+    min-height: 86svh;
+    display: grid;
+    align-items: center;
+    overflow: hidden;
+    color: #ffffff;
+    isolation: isolate;
+}
+
+.hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-image: url("assets/download-vault-preview.png");
+    background-size: cover;
+    background-position: center;
+    transform: scale(1.02);
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(90deg, rgba(6, 20, 45, 0.92) 0%, rgba(8, 27, 60, 0.78) 38%, rgba(8, 27, 60, 0.2) 100%),
+        linear-gradient(0deg, rgba(6, 20, 45, 0.45), rgba(6, 20, 45, 0.05));
+}
+
+.hero-content {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 6rem 0 3.5rem;
+}
+
+.script-label,
+.section-kicker {
+    margin: 0 0 0.65rem;
+    color: #9fd1ff;
+    font-size: 0.78rem;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+p {
+    overflow-wrap: anywhere;
+}
+
+h1 {
+    max-width: 720px;
+    margin: 0;
+    font-size: clamp(3.3rem, 9vw, 7.5rem);
+    line-height: 0.95;
+}
+
+.hero-copy {
+    max-width: 630px;
+    margin: 1.15rem 0 0;
+    font-size: clamp(1.08rem, 2vw, 1.35rem);
+    color: #e7eef9;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.6rem;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 46px;
+    border-radius: 8px;
+    padding: 0.78rem 1rem;
+    text-decoration: none;
+    font-weight: 850;
+}
+
+.button.primary {
+    background: #ffffff;
+    color: var(--blue-deep);
+    border: 1px solid #ffffff;
+}
+
+.button.secondary {
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    color: #ffffff;
+}
+
+.hero-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    margin: 1.5rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.hero-facts li {
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    padding: 0.4rem 0.65rem;
+    color: #f3f7fc;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.intro-band {
+    width: min(1180px, calc(100% - 2rem));
+    margin: -2.2rem auto 0;
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.intro-band div {
+    background: var(--panel);
+    padding: 1rem;
+}
+
+.intro-band strong,
+.intro-band span {
+    display: block;
+}
+
+.intro-band span {
+    margin-top: 0.25rem;
+    color: var(--muted);
+}
+
+code {
+    background: #edf3fb;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.1rem 0.3rem;
+}
+
+.section {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 4.5rem 0 0;
+}
+
+.section-head {
+    max-width: 760px;
+}
+
+.section-head h2,
+.download-cta h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.05;
+}
+
+.section-head .section-kicker,
+.download-cta .section-kicker {
+    color: var(--blue);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-top: 1.6rem;
+}
+
+.feature-grid article,
+.detail-panel {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 8px;
+    padding: 1.1rem;
+}
+
+.feature-grid h3,
+.detail-panel h2 {
+    margin: 0 0 0.45rem;
+    font-size: 1.04rem;
+}
+
+.feature-grid p,
+.detail-panel p {
+    margin: 0;
+    color: var(--muted);
+}
+
+.use-section {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.use-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+}
+
+.use-list span {
+    border: 1px solid var(--line);
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    font-weight: 750;
+}
+
+.install-section {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2rem;
+}
+
+.install-steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+    display: grid;
+    gap: 0.8rem;
+}
+
+.install-steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.2rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.install-steps li::before {
+    content: counter(step);
+    grid-row: span 2;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: var(--blue);
+    color: #ffffff;
+    font-weight: 850;
+}
+
+.install-steps span {
+    color: var(--muted);
+}
+
+.details-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.9rem;
+}
+
+.detail-panel ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--muted);
+}
+
+.detail-panel li + li {
+    margin-top: 0.35rem;
+}
+
+.detail-panel.quiet {
+    background: #eef5ff;
+}
+
+.version {
+    display: inline-flex;
+    margin-top: 1rem;
+    color: var(--blue-deep);
+    font-weight: 850;
+}
+
+.download-cta {
+    width: min(1180px, calc(100% - 2rem));
+    margin: 4.5rem auto;
+    border-radius: 8px;
+    padding: clamp(1.4rem, 5vw, 3rem);
+    background: #102449;
+    color: #ffffff;
+}
+
+.download-cta p {
+    max-width: 680px;
+    color: #d9e7fb;
+}
+
+.download-cta .button.primary {
+    margin-top: 0.6rem;
+}
+
+.site-footer {
+    border-top: 1px solid var(--line);
+    padding: 1.25rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    color: var(--muted);
+}
+
+.site-footer a {
+    color: var(--blue);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+a:focus-visible {
+    outline: 3px solid rgba(29, 95, 215, 0.35);
+    outline-offset: 3px;
+}
+
+@media (max-width: 880px) {
+    .site-header {
+        grid-template-columns: 1fr auto;
+    }
+
+    nav {
+        display: none;
+    }
+
+    .hero {
+        min-height: 82svh;
+    }
+
+    .hero-overlay {
+        background: linear-gradient(90deg, rgba(6, 20, 45, 0.94), rgba(8, 27, 60, 0.58));
+    }
+
+    .intro-band,
+    .feature-grid,
+    .use-section,
+    .install-section,
+    .details-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .site-header {
+        width: min(100% - 1rem, 1180px);
+    }
+
+    .header-download {
+        padding: 0.45rem 0.62rem;
+    }
+
+    .hero-content,
+    .section,
+    .intro-band,
+    .download-cta {
+        width: min(100% - 1rem, 1180px);
+    }
+
+    .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+    }
+
+    .site-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}
