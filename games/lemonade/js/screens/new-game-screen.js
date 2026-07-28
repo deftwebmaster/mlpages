@@ -1,4 +1,4 @@
-import { GAME_TITLE, GAME_SUBTITLE, DIFFICULTIES } from '../utils/constants.js';
+import { DIFFICULTIES } from '../utils/constants.js';
 import { sanitizeName } from '../utils/validation.js';
 import { formatMoney } from '../utils/format.js';
 
@@ -9,17 +9,11 @@ export function renderNewGameScreen(container, { onComplete }) {
   wrap.className = 'onboarding';
   wrap.innerHTML = `
     <div class="onboarding__brand">
-      <div class="onboarding__logo">🍋</div>
-      <div class="onboarding__title">${GAME_TITLE}</div>
-      <div class="onboarding__subtitle">${GAME_SUBTITLE}</div>
+      <div class="onboarding__title" style="font-size:var(--font-size-2xl);">Set Up Your Stand</div>
+      <div class="onboarding__subtitle">A few quick choices, then you're open for business.</div>
     </div>
 
     <div class="stack">
-      <p style="text-align:center;color:var(--color-charcoal);">
-        You've got a folding table, a pitcher, and a few dollars in your pocket.
-        Everything else is up to you.
-      </p>
-
       <div class="card stack">
         <label class="stack--tight">
           <div class="section-title">Business name</div>

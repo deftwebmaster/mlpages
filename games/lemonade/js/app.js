@@ -11,6 +11,7 @@ import { ensureDayBriefing } from './systems/briefing-system.js';
 import { WEATHER_TYPES } from './simulation/weather-model.js';
 import { GAME_TITLE } from './utils/constants.js';
 
+import { renderSplashScreen } from './screens/splash-screen.js';
 import { renderNewGameScreen } from './screens/new-game-screen.js';
 import { renderStandScreen } from './screens/stand-screen.js';
 import { renderRecipeScreen } from './screens/recipe-screen.js';
@@ -38,27 +39,27 @@ async function boot() {
   initToasts();
   initAudio(() => getState()?.settings?.soundEnabled ?? true);
   registerServiceWorker();
-  applyThemePreferenceEarly();
 
-  const slot = getActiveSlot();
-  let state = null;
+  let loadedState = null;
+
+  appRoot.innerHTML = '';
+  const splash = renderSplashScreen(appRoot, {
+    onContinue: () => {
+      if (loadedState) {
+        initStore(loadedState);
+        startGameShell();
+      } else {
+        renderOnboarding();
+      }
+    },
+  });
+
   try {
-    state = await loadFromSlot(slot);
+    loadedState = await loadFromSlot(getActiveSlot());
   } catch (err) {
     console.error('Failed to load save', err);
   }
-
-  if (state) {
-    initStore(state);
-    startGameShell();
-  } else {
-    renderOnboarding();
-  }
-}
-
-function applyThemePreferenceEarly() {
-  // Best-effort: real per-save theme is applied once state loads; this just
-  // avoids a flash of the wrong theme before that.
+  splash.markReady();
 }
 
 function renderOnboarding() {

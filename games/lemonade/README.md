@@ -51,6 +51,7 @@ Systems unlock gradually via milestones so a new player is never shown more than
 - Wholesale/bottling: produce bottles from your recipe (3 sizes), accept rotating contract offers from 7 client types (café, school, grocery, restaurant, sports venue, hotel chain, regional supermarket), deliver against quality/deadline requirements, with penalties for missed deadlines and reputation rewards for completion — gated behind the Production Facility location
 - Achievements (16) and milestones (7) that gate feature unlocks
 - Reports: 7-day trend, product performance, location performance, customer segment mix
+- Branded splash screen on every cold launch (covers the async save lookup, then leads into either the setup form or straight into a loaded save) — drop an image at `assets/images/splash-hero.png` to replace the built-in CSS illustration with custom artwork, no code changes needed
 - Contextual first-day tutorial (dismissible, resettable) — not a slideshow
 - One primary objective plus a couple of "also try" achievement-based optional goals shown on the Stand screen at all times
 - Synthesized sound effects (Web Audio API oscillators, no audio files to ship) for sales, purchases, achievements, milestones, and day start/end, respecting the sound toggle in Settings
@@ -216,6 +217,8 @@ This project has no automated test runner wired up (no bundler/CI in scope), but
 **Add a wholesale client:** add an entry to `js/data/contracts.js` (`CONTRACT_CLIENTS`) with `minReputation`, `quantityRange`, `deadlineDays`, `pricePerUnitRange`, `qualityRequirement`, `penalty`, and `reputationReward`. It will start appearing in rotating contract offers automatically once the player's reputation clears `minReputation` and they own the Production Facility.
 
 **Add a bottle size:** add an entry to `js/data/bottles.js` (`BOTTLE_SIZES`) with `ozSize` (used to scale ingredient consumption relative to a 9oz cup), `packagingCost`, `shelfLifeDays`, and an optional `unlockRequirement.reputation`.
+
+**Add custom splash artwork:** drop a portrait-oriented image at `assets/images/splash-hero.png` (roughly 1080×1920 or any tall aspect ratio — it's rendered with `object-fit: cover`). `js/screens/splash-screen.js` picks it up automatically on load and switches from the built-in CSS lemon illustration to your image with a dark scrim behind the title text for legibility. No code changes required; if the file is missing, the CSS fallback is used and nothing breaks.
 
 **Change the game title/branding:** edit `GAME_TITLE` and `GAME_SUBTITLE` in `js/utils/constants.js` (used throughout the UI and in `js/app.js`'s update banner). Also update `<title>` in `index.html` and `name`/`short_name` in `manifest.webmanifest`. The color palette lives entirely in `css/variables.css` as CSS custom properties.
 

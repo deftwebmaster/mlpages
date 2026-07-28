@@ -1,3 +1,175 @@
+/* Splash screen */
+.splash-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: calc(var(--space-6) + var(--safe-top)) var(--space-6) calc(var(--space-6) + var(--safe-bottom));
+  background: linear-gradient(160deg, var(--color-lemon-light) 0%, var(--color-lemon) 45%, var(--color-coral) 135%);
+  transition: opacity 260ms ease, transform 260ms ease;
+}
+
+.splash-screen--exit {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.splash-hero-image {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.splash-screen--has-image .splash-hero-image {
+  display: block;
+}
+
+.splash-screen--has-image .splash-screen__hero-fallback,
+.splash-screen--has-image .splash-screen__logo,
+.splash-screen--has-image .splash-screen__decor,
+.splash-screen--has-image .splash-screen__title {
+  display: none;
+}
+
+/* The artwork carries its own logo lockup in the upper portion, so push the
+   remaining text (subtitle/tagline/CTA) down into the open ground area at
+   the bottom instead of dead-centering it over the art. */
+.splash-screen--has-image {
+  justify-content: flex-end;
+  padding-bottom: calc(var(--space-8) + var(--safe-bottom));
+}
+
+.splash-screen--has-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(20, 14, 4, 0) 0%,
+    rgba(20, 14, 4, 0) 52%,
+    rgba(20, 14, 4, 0.5) 76%,
+    rgba(20, 14, 4, 0.78) 100%
+  );
+  z-index: 1;
+}
+
+.splash-screen__decor,
+.splash-screen__content,
+.splash-screen__cta {
+  position: relative;
+  z-index: 2;
+}
+
+.splash-screen__hero-fallback {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  height: 120px;
+  margin: 0 auto var(--space-4);
+}
+
+.splash-sun {
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7d6, var(--color-lemon-light));
+  box-shadow: 0 0 44px 12px rgba(255, 224, 92, 0.55);
+}
+
+.splash-stand {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3.4rem;
+}
+
+.splash-screen__logo {
+  font-size: 3.75rem;
+  margin-bottom: var(--space-2);
+}
+
+.splash-screen__title {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-navy);
+}
+
+.splash-screen__subtitle {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-4);
+}
+
+.splash-screen__tagline {
+  font-size: var(--font-size-sm);
+  color: var(--color-charcoal);
+  opacity: 0.85;
+  max-width: 320px;
+  margin: 0 auto var(--space-7);
+  line-height: 1.55;
+}
+
+.splash-screen--has-image .splash-screen__title,
+.splash-screen--has-image .splash-screen__subtitle,
+.splash-screen--has-image .splash-screen__tagline {
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.splash-screen__cta {
+  min-width: 260px;
+}
+
+.splash-screen__cta:disabled {
+  opacity: 0.7;
+}
+
+.splash-slice {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.55;
+  animation: splash-float 6s ease-in-out infinite;
+}
+
+.splash-slice.s1 { top: 12%; left: 8%; animation-delay: 0s; }
+.splash-slice.s2 { top: 20%; right: 10%; font-size: 1.5rem; animation-delay: 1.2s; }
+.splash-slice.s3 { bottom: 20%; left: 14%; font-size: 1.75rem; animation-delay: 2.4s; }
+
+.splash-bubble {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  animation: splash-float 8s ease-in-out infinite;
+}
+
+.splash-bubble.b1 { width: 24px; height: 24px; top: 30%; left: 22%; animation-delay: 0.5s; }
+.splash-bubble.b2 { width: 14px; height: 14px; top: 58%; right: 18%; animation-delay: 1.8s; }
+.splash-bubble.b3 { width: 18px; height: 18px; bottom: 14%; right: 28%; animation-delay: 3s; }
+
+@keyframes splash-float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(8deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-slice, .splash-bubble { animation: none; }
+}
+
 /* New game screen */
 .onboarding {
   min-height: 100vh;
