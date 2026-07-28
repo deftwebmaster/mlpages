@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hire Matt Livingston - Fast Website Fixes, Revamps & Design</title>
   <meta name="description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile-friendly improvements, conversion cleanup, SEO basics, and graphic or logo design. Based in the DFW area." />
+  <meta name="author" content="Matt Livingston" />
+  <link rel="canonical" href="https://mattlivingston.com/hire-me/" />
 
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png" />
@@ -50,7 +52,7 @@
       --rose: #fb7185;
       --text: #c8ccd8;
       --text-dim: #7a8093;
-      --text-muted: #4e5368;
+      --text-muted: #767d99;
       --white: #eef0f6;
     }
 
@@ -104,6 +106,34 @@
 
     a {
       color: inherit;
+    }
+
+    a:focus-visible,
+    .btn:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -48px;
+      left: 8px;
+      z-index: 100;
+      padding: 10px 16px;
+      border-radius: 4px;
+      background: var(--cyan);
+      color: #04121a;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus {
+      top: 8px;
     }
 
     .stage {
@@ -791,8 +821,35 @@
       }
     }
   </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Matt Livingston - Web Developer & Designer",
+    "url": "https://mattlivingston.com/hire-me/",
+    "image": "https://mattlivingston.com/assets/card.png",
+    "email": "hireme@mattlivingston.com",
+    "description": "Fast website fixes, modern revamps, mobile-friendly improvements, conversion cleanup, SEO basics, and graphic or logo design.",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Dallas-Fort Worth, TX"
+    },
+    "founder": {
+      "@type": "Person",
+      "name": "Matt Livingston"
+    },
+    "makesOffer": [
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website fixes and cleanup" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website revamps and modernization" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "New website builds" } },
+      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graphic and logo design" } }
+    ]
+  }
+  </script>
 </head>
 <body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="stage">
     <header>
       <a class="wordmark" href="/">Matt<em>.</em>Livingston</a>
@@ -803,7 +860,7 @@
       </nav>
     </header>
 
-    <main>
+    <main id="main-content">
       <section class="hero" aria-labelledby="hero-title">
         <div>
           <p class="eyebrow">Fast fixer - website revamps - design polish</p>

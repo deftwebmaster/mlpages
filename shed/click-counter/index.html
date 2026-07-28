@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Click Counter - Free PHP Click & Download Tracking Script</title>
+    <meta name="description" content="Download Click Counter, a free self-hosted PHP script for tracking link clicks, redirects, and download starts without a database.">
+    <link rel="stylesheet" href="assets/css/click-counter.css">
+    <script src="assets/js/click-counter-page.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+    <a class="shed-mark" href="../">Script Shed</a>
+    <nav aria-label="Page sections">
+        <a href="#features">Features</a>
+        <a href="#uses">Use cases</a>
+        <a href="#install">Install</a>
+        <a href="#faq">FAQ</a>
+    </nav>
+</header>
+
+<main id="main">
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">Free PHP script</p>
+            <h1>Click Counter</h1>
+            <p class="lede">A private, self-hosted click and download counter for ordinary websites.</p>
+            <p class="hero-text">Create clean tracking URLs, count redirects and download starts, view simple stats, and show public counters from your own hosting. No database, no Composer, no framework, no cloud account.</p>
+            <div class="hero-actions">
+                <a class="button primary" href="downloads/click-counter-1.0.0.zip" download>Download Free</a>
+                <a class="button secondary" href="#install">See Install Steps</a>
+            </div>
+            <ul class="quick-facts" aria-label="Script facts">
+                <li>PHP 8.2+</li>
+                <li>Flat-file JSON</li>
+                <li>Apache friendly</li>
+                <li>Private admin</li>
+            </ul>
+        </div>
+        <div class="product-preview" aria-label="Click Counter dashboard preview">
+            <div class="preview-top">
+                <span></span><span></span><span></span>
+                <strong>Dashboard</strong>
+            </div>
+            <div class="preview-metrics">
+                <div><b>24</b><span>Active links</span></div>
+                <div><b>8,431</b><span>Total clicks</span></div>
+                <div><b>146</b><span>Today</span></div>
+            </div>
+            <div class="preview-chart" aria-hidden="true">
+                <i style="height:34%"></i><i style="height:52%"></i><i style="height:40%"></i><i style="height:70%"></i><i style="height:62%"></i><i style="height:88%"></i><i style="height:58%"></i>
+            </div>
+            <div class="preview-table">
+                <div><span>summer-sale</span><em>302 redirect</em><b>1,204</b></div>
+                <div><span>free-guide</span><em>protected download</em><b>678</b></div>
+                <div><span>hosting-offer</span><em>affiliate link</em><b>423</b></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Highlights">
+        <p><strong>No SQL database</strong><span>Upload, configure, and go.</span></p>
+        <p><strong>Safe redirects</strong><span>Public URLs only resolve stored slugs.</span></p>
+        <p><strong>Privacy minded</strong><span>No third-party analytics or tracking pixels.</span></p>
+    </section>
+
+    <section id="features" class="section">
+        <div class="section-head">
+            <p class="eyebrow">What it does</p>
+            <h2>Simple tracking without turning your site into an analytics project</h2>
+        </div>
+        <div class="feature-grid">
+            <article>
+                <h3>Clean branded URLs</h3>
+                <p>Turn long URLs into memorable paths like <code>/go/summer-sale</code> or <code>/download/free-guide</code>.</p>
+            </article>
+            <article>
+                <h3>Click and download counts</h3>
+                <p>Count valid redirects, external download starts, and protected local downloads streamed through PHP.</p>
+            </article>
+            <article>
+                <h3>Useful admin dashboard</h3>
+                <p>See total clicks, daily counts, recent activity, link status, expiration, limits, and diagnostics.</p>
+            </article>
+            <article>
+                <h3>Public counter embeds</h3>
+                <p>Show a public count on another page with a small local JavaScript file and a simple HTML snippet.</p>
+            </article>
+            <article>
+                <h3>Backups and exports</h3>
+                <p>Create JSON backups, restore data, run maintenance, and export CSV reports with safer spreadsheet values.</p>
+            </article>
+            <article>
+                <h3>Built for shared hosting</h3>
+                <p>Plain PHP, local assets, Apache rewrite rules, query-string fallbacks, and clear setup instructions.</p>
+            </article>
+        </div>
+    </section>
+
+    <section id="uses" class="section split">
+        <div>
+            <p class="eyebrow">Good for</p>
+            <h2>Everyday website links worth measuring</h2>
+            <p>Click Counter is intentionally focused. It helps you answer, “How many people clicked this?” without adding a full analytics suite.</p>
+        </div>
+        <ul class="use-list">
+            <li>Homepage call-to-action buttons</li>
+            <li>Affiliate and sponsor links</li>
+            <li>PDF, ZIP, and media download counters</li>
+            <li>Email campaign links</li>
+            <li>Partner booking pages</li>
+            <li>Static website buttons</li>
+            <li>Public “downloaded X times” counters</li>
+            <li>Cleaner URLs for long query-string destinations</li>
+        </ul>
+    </section>
+
+    <section id="install" class="section install">
+        <div class="section-head">
+            <p class="eyebrow">Install</p>
+            <h2>Upload files, edit one config file, create your first link</h2>
+        </div>
+        <ol class="steps">
+            <li>
+                <b>Upload the folder</b>
+                <span>Put Click Counter on ordinary PHP hosting, such as <code>/shed/click-counter/</code>.</span>
+            </li>
+            <li>
+                <b>Set private storage</b>
+                <span>Place the storage folder outside the public web root when your host allows it.</span>
+            </li>
+            <li>
+                <b>Edit <code>config.php</code></b>
+                <span>Set your base URL, timezone, storage paths, and administrator password hash.</span>
+            </li>
+            <li>
+                <b>Generate the password hash</b>
+                <span>Use <code>/tools/generate-password.php</code> once, paste the hash, then delete the helper.</span>
+            </li>
+            <li>
+                <b>Log in and create a link</b>
+                <span>Create a slug, store a destination, copy the tracking URL, and start counting.</span>
+            </li>
+        </ol>
+        <div class="download-panel">
+            <div>
+                <h3>Download Click Counter 1.0.0</h3>
+                <p>Includes the PHP app, admin dashboard, public endpoints, assets, documentation, and test scripts.</p>
+            </div>
+            <a class="button primary" href="downloads/click-counter-1.0.0.zip" download>Download ZIP</a>
+        </div>
+    </section>
+
+    <section class="section includes">
+        <div>
+            <p class="eyebrow">Included</p>
+            <h2>A complete free script package</h2>
+        </div>
+        <div class="package-list">
+            <span>Admin dashboard</span>
+            <span>Redirect endpoint</span>
+            <span>Download endpoint</span>
+            <span>Public counter API</span>
+            <span>Counter embed JS</span>
+            <span>Apache .htaccess</span>
+            <span>Nginx example</span>
+            <span>Backups</span>
+            <span>Diagnostics</span>
+            <span>Maintenance script</span>
+            <span>README</span>
+            <span>Security notes</span>
+        </div>
+    </section>
+
+    <section id="faq" class="section faq">
+        <div class="section-head">
+            <p class="eyebrow">FAQ</p>
+            <h2>Quick answers before you install</h2>
+        </div>
+        <details>
+            <summary>Does Click Counter need MySQL?</summary>
+            <p>No. It stores link records, daily counts, recent events, rate limits, and backups as JSON files.</p>
+        </details>
+        <details>
+            <summary>Can visitors choose the redirect destination?</summary>
+            <p>No. Public links only contain a stored slug. The destination is read from the private link record.</p>
+        </details>
+        <details>
+            <summary>Does it track private visitor profiles?</summary>
+            <p>No. By default it stores aggregate counts only. Optional referrer and device data are limited, and raw IP addresses are not stored.</p>
+        </details>
+        <details>
+            <summary>Can it count local file downloads?</summary>
+            <p>Yes. Protected downloads are stored with randomized filenames and streamed through PHP so the private file path is not exposed.</p>
+        </details>
+        <details>
+            <summary>Is this a Bitly replacement?</summary>
+            <p>No. It is for private self-hosted links on your own website, not for running a public URL-shortening service.</p>
+        </details>
+    </section>
+</main>
+
+<footer class="page-footer">
+    <p><strong>Click Counter</strong> is a free Script Shed PHP script from MattLivingston.com.</p>
+    <a href="downloads/click-counter-1.0.0.zip" download>Download Free</a>
+</footer>
+</body>
+</html>

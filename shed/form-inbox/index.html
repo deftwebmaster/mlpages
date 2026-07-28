@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Form Inbox - Free PHP Form Backend for Static Websites</title>
+    <meta name="description" content="Download Form Inbox, a free self-hosted PHP form backend for GitHub Pages, Jamstack, and static HTML websites.">
+    <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <a class="brand" href="#top" aria-label="Form Inbox home">
+            <span class="brand-mark">FI</span>
+            <span>Form Inbox</span>
+        </a>
+        <nav aria-label="Page navigation">
+            <a href="#features">Features</a>
+            <a href="#install">Install</a>
+            <a href="#faq">FAQ</a>
+            <a class="nav-download" href="downloads/form-inbox-1.0.0.zip">Download</a>
+        </nav>
+    </header>
+
+    <main id="top">
+        <section class="hero" aria-label="Form Inbox overview">
+            <img class="hero-image" src="assets/form-inbox-product-shot.png" alt="Form Inbox admin dashboard showing submissions and form health">
+            <div class="hero-shade"></div>
+            <div class="hero-content">
+                <p class="script-shed">Script Shed free PHP script</p>
+                <h1>Form Inbox</h1>
+                <p class="lede">A private, self-hosted form backend for static websites. Point any HTML form at your endpoint and read submissions in your own browser-based inbox.</p>
+                <div class="hero-actions">
+                    <a class="button primary" href="downloads/form-inbox-1.0.0.zip" download>Download Free</a>
+                    <a class="button secondary" href="#install">View Install Steps</a>
+                </div>
+                <ul class="quick-facts" aria-label="Project facts">
+                    <li>No database</li>
+                    <li>No Composer</li>
+                    <li>No JavaScript framework</li>
+                    <li>PHP 8.2+</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="intro band">
+            <div class="section-inner split">
+                <div>
+                    <p class="eyebrow">What It Solves</p>
+                    <h2>Give static sites a real inbox.</h2>
+                </div>
+                <p>Form Inbox is made for GitHub Pages, static HTML sites, portfolio sites, landing pages, Jamstack projects, and small-business websites hosted somewhere without server-side form handling. You keep control of the files, settings, submissions, and attachments.</p>
+            </div>
+        </section>
+
+        <section id="features" class="section-inner">
+            <p class="eyebrow">Features</p>
+            <h2>Useful on day one, cautious by default.</h2>
+            <div class="feature-grid">
+                <article>
+                    <span class="feature-number">01</span>
+                    <h3>Registered Endpoints</h3>
+                    <p>Create named form endpoints like <code>/submit/contact</code>. Public requests cannot choose arbitrary notification recipients.</p>
+                </article>
+                <article>
+                    <span class="feature-number">02</span>
+                    <h3>Private Inbox</h3>
+                    <p>View, search, filter, archive, mark spam, trash, export, and inspect submissions from a password-protected admin panel.</p>
+                </article>
+                <article>
+                    <span class="feature-number">03</span>
+                    <h3>Flat-File Storage</h3>
+                    <p>Submissions are stored as segmented JSON files with locked atomic writes. No SQL database or installer is required.</p>
+                </article>
+                <article>
+                    <span class="feature-number">04</span>
+                    <h3>Static-Site Friendly</h3>
+                    <p>Works with ordinary HTML forms, multipart uploads, JavaScript <code>fetch()</code>, and cross-origin submissions from allowed origins.</p>
+                </article>
+                <article>
+                    <span class="feature-number">05</span>
+                    <h3>Spam Controls</h3>
+                    <p>Includes public tokens, origin checks, honeypot fields, timing checks, duplicate suppression, rate limiting, and transparent spam scoring.</p>
+                </article>
+                <article>
+                    <span class="feature-number">06</span>
+                    <h3>Notifications That Do Not Lose Mail</h3>
+                    <p>Email is attempted after the submission is saved. If PHP mail fails, the message remains safely stored in the inbox.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="band">
+            <div class="section-inner">
+                <p class="eyebrow">Best For</p>
+                <h2>Simple sites that still need dependable contact forms.</h2>
+                <div class="use-case-list">
+                    <p>GitHub Pages contact forms</p>
+                    <p>Static portfolio inquiries</p>
+                    <p>Small-business quote requests</p>
+                    <p>Jamstack landing pages</p>
+                    <p>Event or club signups</p>
+                    <p>Simple file-upload forms</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="install" class="section-inner install">
+            <p class="eyebrow">Install</p>
+            <h2>Upload, configure, create a form, paste the HTML.</h2>
+            <ol class="steps">
+                <li>
+                    <strong>Upload Form Inbox</strong>
+                    <span>Put the PHP files on ordinary shared hosting or a PHP-capable subdomain.</span>
+                </li>
+                <li>
+                    <strong>Protect private storage</strong>
+                    <span>Place <code>storage-private</code> outside the public web root when your host allows it.</span>
+                </li>
+                <li>
+                    <strong>Edit one config file</strong>
+                    <span>Set your base URL, timezone, storage paths, sender email, and password hash in <code>config.php</code>.</span>
+                </li>
+                <li>
+                    <strong>Create a form endpoint</strong>
+                    <span>Log in, create a form, add allowed origins, choose notification settings, and copy the generated code.</span>
+                </li>
+                <li>
+                    <strong>Paste into your static site</strong>
+                    <span>Set your HTML form action to the generated endpoint, then submit a test message.</span>
+                </li>
+            </ol>
+        </section>
+
+        <section class="section-inner code-section">
+            <div>
+                <p class="eyebrow">Example</p>
+                <h2>Plain HTML is enough.</h2>
+                <p>Use a normal form action, a public form token, and the honeypot field generated for that endpoint.</p>
+            </div>
+            <pre><code>&lt;form action="https://forms.example.com/submit/contact" method="post"&gt;
+    &lt;input type="hidden" name="_form_token" value="PUBLIC_FORM_TOKEN"&gt;
+    &lt;label&gt;Email &lt;input type="email" name="email" required&gt;&lt;/label&gt;
+    &lt;label&gt;Message &lt;textarea name="message" required&gt;&lt;/textarea&gt;&lt;/label&gt;
+    &lt;input type="text" name="_website" tabindex="-1" autocomplete="off"&gt;
+    &lt;button type="submit"&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+        </section>
+
+        <section id="faq" class="band">
+            <div class="section-inner">
+                <p class="eyebrow">FAQ</p>
+                <h2>Common questions before you install.</h2>
+                <div class="faq">
+                    <details open>
+                        <summary>Does Form Inbox need a database?</summary>
+                        <p>No. It stores configuration, submissions, indexes, backups, and rate-limit records in JSON files.</p>
+                    </details>
+                    <details>
+                        <summary>Will this work with GitHub Pages?</summary>
+                        <p>Yes. Host Form Inbox on a PHP-capable server, then point your GitHub Pages form action at the generated endpoint.</p>
+                    </details>
+                    <details>
+                        <summary>Is the public form token secret?</summary>
+                        <p>No. It appears in page HTML, so it is not treated as a password. Security comes from registered forms, server-side validation, allowed origins, rate limits, honeypots, and attachment checks.</p>
+                    </details>
+                    <details>
+                        <summary>What happens if email delivery fails?</summary>
+                        <p>The submission is saved first. The admin dashboard shows failed notifications so you can still read the message and retry the email.</p>
+                    </details>
+                    <details>
+                        <summary>Can visitors upload files?</summary>
+                        <p>Yes, when you enable attachments for a form. Files are stored privately, renamed internally, validated, and downloaded through the admin panel.</p>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="download section-inner" aria-label="Download Form Inbox">
+            <p class="eyebrow">Free Download</p>
+            <h2>Download Form Inbox 1.0.0</h2>
+            <p>MIT licensed, self-hosted, and built for ordinary PHP hosting. No account, service, build process, or database required.</p>
+            <a class="button primary" href="downloads/form-inbox-1.0.0.zip" download>Download ZIP</a>
+            <p class="download-note">After setup, delete the password helper and keep private storage outside the public web root when possible.</p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <span>Form Inbox by Matt Livingston</span>
+        <a href="https://mattlivingston.com/shed/">More Script Shed scripts</a>
+    </footer>
+</body>
+</html>
