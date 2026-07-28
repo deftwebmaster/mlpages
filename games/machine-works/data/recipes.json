@@ -1,0 +1,12 @@
+{
+  "mining_drill_iron": {
+    "inputs": [],
+    "outputs": [{ "resource": "iron_ore", "count": 1 }],
+    "time": 1
+  },
+  "smelter_iron_plate": {
+    "inputs": [{ "resource": "iron_ore", "count": 2 }],
+    "outputs": [{ "resource": "iron_plate", "count": 1 }],
+    "time": 2
+  }
+}

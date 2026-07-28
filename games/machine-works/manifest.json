@@ -1,0 +1,14 @@
+{
+  "name": "Machine Works",
+  "short_name": "Machine Works",
+  "description": "Restore abandoned factories one production line at a time.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#15171a",
+  "theme_color": "#15171a",
+  "icons": [
+    { "src": "assets/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

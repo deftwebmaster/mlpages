@@ -1,0 +1,38 @@
+{
+  "mining_drill": {
+    "name": "Mining Drill",
+    "behavior": "recipe",
+    "footprint": [1, 1],
+    "recipe": "mining_drill_iron",
+    "inputCapacity": 0,
+    "outputCapacity": 10,
+    "power": 25,
+    "priority": 1,
+    "color": "#6b5644"
+  },
+  "smelter": {
+    "name": "Smelter",
+    "behavior": "recipe",
+    "footprint": [1, 1],
+    "recipe": "smelter_iron_plate",
+    "inputCapacity": 20,
+    "outputCapacity": 10,
+    "power": 60,
+    "priority": 1,
+    "color": "#4a5a66"
+  },
+  "coal_generator": {
+    "name": "Coal Generator",
+    "behavior": "generator",
+    "footprint": [1, 1],
+    "powerOutput": 150,
+    "color": "#3a3f45"
+  },
+  "storage_bin": {
+    "name": "Storage Bin",
+    "behavior": "storage",
+    "footprint": [1, 1],
+    "capacity": 50,
+    "color": "#8a9199"
+  }
+}

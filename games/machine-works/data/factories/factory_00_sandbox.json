@@ -1,0 +1,48 @@
+{
+  "metadata": {
+    "id": "factory_00_sandbox",
+    "name": "Sandbox Preview",
+    "size": "small",
+    "dimensions": { "width": 40, "height": 40 },
+    "defaultFloor": "concrete_worn",
+    "story": "An engineering sandbox used to test restoration tools before deployment to a real facility."
+  },
+  "camera": { "x": 20, "y": 20, "zoom": 1 },
+  "tiles": [
+    { "x": 4, "y": 4, "floorType": "rusted_metal" },
+    { "x": 5, "y": 4, "floorType": "rusted_metal" },
+    { "x": 6, "y": 4, "floorType": "rusted_metal" },
+    { "x": 4, "y": 5, "floorType": "rusted_metal" },
+    { "x": 10, "y": 10, "floorType": "metal_grate" },
+    { "x": 11, "y": 10, "floorType": "metal_grate" },
+    { "x": 12, "y": 10, "floorType": "metal_grate" },
+    { "x": 10, "y": 11, "floorType": "metal_grate" },
+    { "x": 11, "y": 11, "floorType": "metal_grate" },
+    { "x": 20, "y": 20, "floorType": "concrete" },
+    { "x": 21, "y": 20, "floorType": "concrete" },
+    { "x": 22, "y": 20, "floorType": "concrete" },
+    { "x": 20, "y": 21, "floorType": "concrete" },
+    { "x": 21, "y": 21, "floorType": "concrete" },
+    { "x": 22, "y": 21, "floorType": "concrete" }
+  ],
+  "placedObjects": [
+    { "type": "sink", "x": 19, "y": 21, "rotation": 0 }
+  ],
+  "conveyors": [
+    { "x": 16, "y": 18, "rotation": 90, "tier": "basic" },
+    { "x": 17, "y": 18, "rotation": 90, "tier": "basic" },
+    { "x": 19, "y": 18, "rotation": 180, "tier": "basic" },
+    { "x": 19, "y": 20, "rotation": 180, "tier": "basic" }
+  ],
+  "machines": [
+    { "type": "mining_drill", "x": 15, "y": 18, "rotation": 90 },
+    { "type": "smelter", "x": 18, "y": 18, "rotation": 90 },
+    { "type": "storage_bin", "x": 19, "y": 19, "rotation": 180 },
+    { "type": "coal_generator", "x": 15, "y": 19, "rotation": 0 }
+  ],
+  "contract": {
+    "resource": "iron_plate",
+    "target": 15,
+    "description": "Produce Iron Plate"
+  }
+}

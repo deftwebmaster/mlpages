@@ -1,0 +1,4 @@
+{
+  "iron_ore": { "name": "Iron Ore", "category": "raw", "color": "#8a7460" },
+  "iron_plate": { "name": "Iron Plate", "category": "processed", "color": "#aeb5be" }
+}
