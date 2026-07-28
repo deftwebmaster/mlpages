@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hire Matt Livingston - Fast Website Fixes, Revamps & Design</title>
+  <meta name="description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile-friendly improvements, conversion cleanup, SEO basics, and graphic or logo design. Based in the DFW area." />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png" />
+  <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mattlivingston.com/hire-me/" />
+  <meta property="og:title" content="Hire Matt Livingston - Fast Website Fixes, Revamps & Design" />
+  <meta property="og:description" content="Fast, practical website fixes and modern revamps from a DFW-based web developer with almost two decades of experience." />
+  <meta property="og:image" content="https://mattlivingston.com/assets/card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://mattlivingston.com/hire-me/" />
+  <meta name="twitter:title" content="Hire Matt Livingston - Fast Website Fixes, Revamps & Design" />
+  <meta name="twitter:description" content="Fast, practical website fixes and modern revamps from a DFW-based web developer with almost two decades of experience." />
+  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png" />
+  <meta name="theme-color" content="#080a10" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #080a10;
+      --panel: #0d111d;
+      --panel-soft: rgba(13, 17, 29, 0.72);
+      --border: #181c2a;
+      --border-mid: #222740;
+      --cyan: #22d3ee;
+      --cyan-dim: #0e7490;
+      --cyan-glow: rgba(34, 211, 238, 0.22);
+      --violet: #a78bfa;
+      --violet-mid: #6d28d9;
+      --violet-glow: rgba(167, 139, 250, 0.2);
+      --amber: #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.18);
+      --emerald: #34d399;
+      --emerald-glow: rgba(52, 211, 153, 0.18);
+      --rose: #fb7185;
+      --text: #c8ccd8;
+      --text-dim: #7a8093;
+      --text-muted: #4e5368;
+      --white: #eef0f6;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100svh;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.055), transparent 28%),
+        linear-gradient(225deg, rgba(167, 139, 250, 0.07), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: 0.34;
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.7) 52%, transparent 100%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+      opacity: 0.022;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 34px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      opacity: 0;
+      animation: fadeUp 0.5s ease 0.05s forwards;
+    }
+
+    .wordmark {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .wordmark em {
+      color: var(--cyan);
+      font-style: normal;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .nav a {
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .nav a:hover {
+      color: var(--cyan);
+    }
+
+    .online {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.6);
+      animation: ripple 2.8s ease-in-out infinite;
+    }
+
+    .hero {
+      min-height: calc(100svh - 86px);
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+      gap: 34px;
+      align-items: center;
+      padding: 52px 0 58px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      line-height: 1.4;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.14s forwards;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+    }
+
+    h1 {
+      max-width: 760px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(42px, 7vw, 82px);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 0.96;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.22s forwards;
+    }
+
+    .accent-cyan {
+      color: var(--cyan);
+    }
+
+    .accent-violet {
+      color: var(--violet);
+    }
+
+    .lead {
+      max-width: 690px;
+      margin-top: 22px;
+      color: var(--text);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.32s forwards;
+    }
+
+    .lead strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 30px;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.42s forwards;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 12px 19px;
+      overflow: hidden;
+      border-radius: 3px;
+      border: 1px solid rgba(14, 116, 144, 0.72);
+      background: rgba(34, 211, 238, 0.08);
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.055) 50%, transparent 62%);
+      transform: translateX(-120%);
+      transition: transform 0.55s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+      background: rgba(34, 211, 238, 0.13);
+      color: #67e8f9;
+      box-shadow: 0 0 26px var(--cyan-glow);
+    }
+
+    .btn:hover::after {
+      transform: translateX(120%);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .btn-secondary {
+      border-color: rgba(167, 139, 250, 0.48);
+      background: rgba(167, 139, 250, 0.07);
+      color: var(--violet);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      color: #c4b5fd;
+      box-shadow: 0 0 24px var(--violet-glow);
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      line-height: 1.7;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.5s forwards;
+    }
+
+    .hero-panel {
+      position: relative;
+      padding: 24px;
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.08), rgba(167, 139, 250, 0.06)),
+        rgba(8, 10, 16, 0.68);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+      opacity: 0;
+      animation: fadeUp 0.58s ease 0.28s forwards;
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(34, 211, 238, 0.14);
+    }
+
+    .logo-disc {
+      position: relative;
+      width: 74px;
+      height: 74px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 35%, #141828, #09090f);
+    }
+
+    .logo-disc img {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 5px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center 8%;
+      filter: drop-shadow(0 6px 16px rgba(34, 211, 238, 0.14));
+    }
+
+    .panel-kicker {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .panel-title {
+      margin-top: 6px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.08;
+    }
+
+    .fix-list {
+      display: grid;
+      gap: 11px;
+      margin-top: 20px;
+      list-style: none;
+    }
+
+    .fix-list li {
+      display: grid;
+      grid-template-columns: 10px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .fix-list li::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      margin-top: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 15px var(--cyan-glow);
+    }
+
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      margin-top: 22px;
+      overflow: hidden;
+      border: 1px solid rgba(167, 139, 250, 0.18);
+      border-radius: 6px;
+      background: rgba(167, 139, 250, 0.16);
+    }
+
+    .metric {
+      min-height: 88px;
+      padding: 14px 10px;
+      background: rgba(8, 10, 16, 0.74);
+    }
+
+    .metric strong {
+      display: block;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 8px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.13em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    section {
+      padding: 54px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.85fr) minmax(260px, 1fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .label {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-top: 10px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(30px, 4.8vw, 54px);
+      font-weight: 850;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .section-copy {
+      color: var(--text-dim);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .service-card {
+      min-height: 238px;
+      padding: 20px;
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      background: var(--panel-soft);
+    }
+
+    .service-card:nth-child(2) {
+      border-color: rgba(167, 139, 250, 0.28);
+    }
+
+    .service-card:nth-child(3) {
+      border-color: rgba(52, 211, 153, 0.25);
+    }
+
+    .service-card:nth-child(4) {
+      border-color: rgba(251, 191, 36, 0.24);
+    }
+
+    .service-tag {
+      display: inline-block;
+      margin-bottom: 22px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .service-card p {
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .fit-band {
+      display: grid;
+      grid-template-columns: minmax(0, 0.88fr) minmax(280px, 1.12fr);
+      gap: 28px;
+      align-items: start;
+      padding: 28px;
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.065), rgba(167, 139, 250, 0.045)),
+        rgba(8, 10, 16, 0.58);
+    }
+
+    .fit-list {
+      display: grid;
+      gap: 10px;
+      list-style: none;
+    }
+
+    .fit-list li {
+      padding: 13px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.065);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .fit-list strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .process-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .step {
+      min-height: 218px;
+      padding: 22px;
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      background: rgba(13, 17, 29, 0.78);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(34, 211, 238, 0.42);
+      border-radius: 50%;
+      color: var(--cyan);
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      box-shadow: 0 0 24px rgba(34, 211, 238, 0.08);
+    }
+
+    .step p {
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .cta-section {
+      padding-bottom: 26px;
+    }
+
+    .final-cta {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 22px;
+      align-items: center;
+      padding: 30px;
+      border: 1px solid rgba(167, 139, 250, 0.24);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(167, 139, 250, 0.09), rgba(34, 211, 238, 0.055)),
+        rgba(8, 10, 16, 0.76);
+    }
+
+    .final-cta h2 {
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .final-cta p {
+      max-width: 690px;
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--cyan);
+    }
+
+    @keyframes ripple {
+      0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.6); }
+      60% { box-shadow: 0 0 0 7px rgba(34, 211, 238, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .section-head,
+      .fit-band,
+      .final-cta {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+        padding: 46px 0 48px;
+      }
+
+      .hero-panel {
+        max-width: 620px;
+      }
+
+      .service-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .process-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .final-cta {
+        align-items: start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .stage {
+        width: min(100% - 28px, 1120px);
+        padding-top: 14px;
+      }
+
+      header,
+      .eyebrow,
+      h1,
+      .lead,
+      .cta-row,
+      .hero-note,
+      .hero-panel {
+        opacity: 1;
+        animation: none;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 7px;
+      }
+
+      h1 {
+        font-size: clamp(40px, 13vw, 56px);
+      }
+
+      .hero {
+        padding-top: 34px;
+      }
+
+      .lead {
+        font-size: 16px;
+      }
+
+      .cta-row {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .hero-panel,
+      .fit-band,
+      .final-cta {
+        padding: 20px;
+      }
+
+      .panel-top {
+        align-items: flex-start;
+      }
+
+      .metric-strip,
+      .service-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .metric {
+        min-height: auto;
+      }
+
+      section {
+        padding: 42px 0;
+      }
+
+      .service-card,
+      .step {
+        min-height: auto;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header>
+      <a class="wordmark" href="/">Matt<em>.</em>Livingston</a>
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#services">Services</a>
+        <a href="#process">Process</a>
+        <span class="online"><span class="pulse-dot" aria-hidden="true"></span>DFW / Remote</span>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow">Fast fixer - website revamps - design polish</p>
+          <h1 id="hero-title">Your website should look modern, load cleanly, and <span class="accent-cyan">earn its keep</span>.</h1>
+          <p class="lead">
+            I'm <strong>Matt Livingston</strong>, a DFW-area web developer and designer with almost two decades of experience fixing, rebuilding, and sharpening websites that need to work better fast.
+          </p>
+          <div class="cta-row" aria-label="Contact options">
+            <a class="btn" href="mailto:hireme@mattlivingston.com?subject=Website%20help%20request">Email hireme@mattlivingston.com</a>
+            <a class="btn btn-secondary" href="#services">See what I fix</a>
+          </div>
+          <p class="hero-note">Website issues - mobile cleanup - conversion flow - SEO basics - logo and graphic design</p>
+        </div>
+
+        <aside class="hero-panel" aria-label="Website revamp summary">
+          <div class="panel-top">
+            <div class="logo-disc">
+              <img src="/assets/ml-logo.jpeg" alt="Matt Livingston" />
+            </div>
+            <div>
+              <p class="panel-kicker">Site Revamp Sprint</p>
+              <p class="panel-title">A practical pass on what is costing you clicks.</p>
+            </div>
+          </div>
+          <ul class="fix-list">
+            <li>Clean up outdated layouts, awkward spacing, broken sections, and inconsistent visuals.</li>
+            <li>Make the important pages easier to read, navigate, and act on from a phone.</li>
+            <li>Improve calls to action, page structure, search basics, and the first impression.</li>
+            <li>Polish graphics, logos, and brand details so the site feels more credible.</li>
+          </ul>
+          <div class="metric-strip" aria-label="Experience and location">
+            <div class="metric">
+              <strong>~20</strong>
+              <span>Years building</span>
+            </div>
+            <div class="metric">
+              <strong>DFW</strong>
+              <span>Local base</span>
+            </div>
+            <div class="metric">
+              <strong>Fast</strong>
+              <span>Fixer mode</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="services" aria-labelledby="services-title">
+        <div class="section-head">
+          <div>
+            <p class="label">What I Do</p>
+            <h2 id="services-title">Fix the site you have, or build the one you need.</h2>
+          </div>
+          <p class="section-copy">
+            Most websites do not need a dramatic reinvention before they can perform better. They need someone who can spot the friction, clean up the rough edges, and make the next best move without turning it into a six-month committee ritual.
+          </p>
+        </div>
+
+        <div class="service-grid">
+          <article class="service-card">
+            <span class="service-tag accent-cyan">01 - Fast Fixes</span>
+            <h3>Website issues and cleanup</h3>
+            <p>Broken layouts, weird mobile behavior, messy navigation, clunky pages, confusing forms, visual bugs, and the small problems that quietly make a site feel neglected.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-tag accent-violet">02 - Revamps</span>
+            <h3>Modern, mobile-friendly upgrades</h3>
+            <p>Refresh the look, tighten the page structure, improve the hierarchy, and make the site feel current without losing what already works.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-tag" style="color: var(--emerald);">03 - Builds</span>
+            <h3>New pages and websites</h3>
+            <p>Focused landing pages, service pages, lightweight business sites, and practical web builds that are clear, maintainable, and easy to understand.</p>
+          </article>
+
+          <article class="service-card">
+            <span class="service-tag" style="color: var(--amber);">04 - Design</span>
+            <h3>Graphic and logo polish</h3>
+            <p>Logo cleanup, brand graphics, simple visual systems, social assets, and the design details that help a website feel intentional instead of assembled.</p>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="fit-title">
+        <div class="fit-band">
+          <div>
+            <p class="label">Good Fit</p>
+            <h2 id="fit-title">Bring me the site that makes you wince a little.</h2>
+          </div>
+          <ul class="fit-list">
+            <li><strong>It looks dated.</strong> The business is solid, but the website is giving "we have not touched this in years."</li>
+            <li><strong>It falls apart on phones.</strong> Text is cramped, buttons are tiny, sections stack strangely, or the best content is buried.</li>
+            <li><strong>It is not converting.</strong> Visitors arrive, wander, and leave because the page does not guide them toward the next step.</li>
+            <li><strong>It needs search basics.</strong> Titles, structure, copy, internal links, metadata, and page clarity need a sensible cleanup.</li>
+            <li><strong>It needs a designer-developer brain.</strong> You need someone who can move between code, layout, messaging, graphics, and logo polish.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="process" aria-labelledby="process-title">
+        <div class="section-head">
+          <div>
+            <p class="label">How It Works</p>
+            <h2 id="process-title">A simple path from "this is bugging me" to "that is better."</h2>
+          </div>
+          <p class="section-copy">
+            No bloated ceremony. Send the site, the pain points, and what you want it to do better. I'll look for the highest-impact fixes and make the work concrete.
+          </p>
+        </div>
+
+        <div class="process-grid">
+          <article class="step">
+            <span class="step-number">1</span>
+            <h3>Diagnose</h3>
+            <p>I review the site for visual issues, mobile friction, conversion problems, technical rough spots, and obvious SEO misses.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">2</span>
+            <h3>Fix</h3>
+            <p>I make the practical improvements: layout, code, copy structure, calls to action, graphics, branding details, and performance-minded cleanup.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">3</span>
+            <h3>Polish</h3>
+            <p>You get a cleaner, sharper site with clearer next steps and fewer rough edges between your visitor and the action you want them to take.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="cta-section" aria-labelledby="contact-title">
+        <div class="final-cta">
+          <div>
+            <h2 id="contact-title">Need your website fixed, modernized, or finally made useful?</h2>
+            <p>
+              Send the link, what is bothering you, and what the site should help people do. I'll take a look and tell you the most useful next move.
+            </p>
+          </div>
+          <a class="btn" href="mailto:hireme@mattlivingston.com?subject=Website%20help%20request">Email Matt</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; 2026 Matt Livingston</span>
+      <a href="mailto:hireme@mattlivingston.com">hireme@mattlivingston.com</a>
+    </footer>
+  </div>
+</body>
+</html>
