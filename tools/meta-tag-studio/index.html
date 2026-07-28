@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta Tag Studio | Matt Livingston</title>
+<meta name="description" content="Design, preview, audit, import, and export SEO, social, browser, and JSON-LD metadata for your site before you launch. Runs entirely in your browser.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://mattlivingston.com/tools/meta-tag-studio/">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Meta Tag Studio | Matt Livingston">
+<meta property="og:description" content="Build the invisible layer that search engines, social cards, browsers, and link previews read before anyone sees your page.">
+<meta property="og:url" content="https://mattlivingston.com/tools/meta-tag-studio/">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Meta Tag Studio | Matt Livingston">
+<meta name="twitter:description" content="Build the invisible layer that search engines, social cards, browsers, and link previews read before anyone sees your page.">
+
+<link rel="stylesheet" href="../tool-modern.css">
+<script defer src="../tool-credit.js"></script>
+<style>
+  :root {
+    --bg: #050812;
+    --bg-alt: #07101e;
+    --bg-alt2: #06110f;
+    --panel: rgba(13, 20, 34, 0.86);
+    --panel-2: rgba(17, 27, 47, 0.94);
+    --text: #f8fbff;
+    --text-mid: #aeb9cc;
+    --text-dim: #7f8aa1;
+    --cyan: #74dfff;
+    --green: #76ffbf;
+    --violet: #a993ff;
+    --rose: #ff7aa8;
+    --border: rgba(116, 198, 255, 0.2);
+    --radius: 8px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: dark; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% -10%, rgba(116, 198, 255, 0.10), transparent 45%),
+      radial-gradient(circle at 100% 0%, rgba(169, 147, 255, 0.10), transparent 40%),
+      linear-gradient(rgba(116, 198, 255, 0.05) 1px, transparent 1px) 0 0 / 100% 42px,
+      linear-gradient(90deg, rgba(116, 198, 255, 0.05) 1px, transparent 1px) 0 0 / 42px 100%,
+      var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--cyan); }
+  h1, h2, h3, h4 { margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+  p { margin: 0; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  .page-shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 16px 48px;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 0;
+    flex-wrap: wrap;
+  }
+  .back-link {
+    color: var(--text-mid);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-link:hover { color: var(--cyan); }
+  .topbar-credit {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    text-decoration: none;
+  }
+  .topbar-credit a { color: var(--text-mid); font-weight: 700; text-decoration: none; }
+  .topbar-credit a:hover { color: var(--cyan); }
+
+  .sponsor-slot { display: none; }
+
+  /* Hero */
+  .hero {
+    padding: 8px 0 28px;
+  }
+  .eyebrow {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--cyan);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 2.9rem);
+    margin-bottom: 12px;
+  }
+  .hero-intro {
+    color: var(--text-mid);
+    font-size: 1.02rem;
+    max-width: 62ch;
+    margin-bottom: 20px;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .privacy-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--green);
+    font-size: 0.86rem;
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .privacy-note .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(118, 255, 191, 0.8);
+    flex: none;
+  }
+
+  .hero-preview-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: grid;
+    gap: 12px;
+  }
+  .hero-preview-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-alt);
+    border: 1px solid rgba(116, 198, 255, 0.12);
+    border-radius: 6px;
+  }
+  .hero-preview-row .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+  .hero-preview-row .value {
+    font-size: 0.86rem;
+    color: var(--text-mid);
+    text-align: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 62%;
+  }
+  .hero-score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    background: linear-gradient(135deg, rgba(116,198,255,0.14), rgba(169,147,255,0.10));
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .hero-score .num {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--cyan);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 11px 18px;
+    border-radius: 6px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    font-family: inherit;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.08s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--cyan), var(--violet));
+    color: #051018;
+  }
+  .btn-primary:hover { filter: brightness(1.06); }
+  .btn-secondary {
+    background: rgba(116, 198, 255, 0.08);
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .btn-secondary:hover { border-color: rgba(116, 198, 255, 0.5); }
+  .btn-ghost {
+    background: transparent;
+    border-color: rgba(255,255,255,0.14);
+    color: var(--text-mid);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.3); }
+  .btn-sm { padding: 7px 12px; font-size: 0.82rem; }
+  .btn-danger { color: var(--rose); background: rgba(255, 122, 168, 0.08); border-color: rgba(255, 122, 168, 0.3); }
+  .btn-danger:hover { border-color: var(--rose); }
+  .btn-block { width: 100%; }
+  .btn[disabled] { opacity: 0.6; cursor: default; }
+
+  /* App shell */
+  .app-shell { padding-top: 6px; }
+
+  .tablist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    background: rgba(7, 12, 22, 0.7);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+    position: sticky;
+    top: 8px;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+  }
+  .tab-btn {
+    flex: 1 1 auto;
+    min-width: 96px;
+    padding: 10px 12px;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.86rem;
+    cursor: pointer;
+  }
+  .tab-btn:hover { color: var(--text-mid); }
+  .tab-btn[aria-selected="true"] {
+    background: rgba(116, 198, 255, 0.12);
+    border-color: var(--border);
+    color: var(--cyan);
+  }
+
+  .workspace {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .editor-col { min-width: 0; }
+  .side-col { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+  .workspace.hide-side .side-col { display: none; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .panel-card {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .panel-card + .panel-card { margin-top: 16px; }
+  .panel-head { margin-bottom: 16px; }
+  .panel-head h2 { font-size: 1.1rem; margin-bottom: 4px; }
+  .panel-head p { color: var(--text-dim); font-size: 0.88rem; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .form-grid.cols-2 { grid-template-columns: 1fr; }
+  @media (min-width: 620px) {
+    .form-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.wide { grid-column: 1 / -1; }
+  .form-group label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--text-mid);
+  }
+  .form-group .optional { color: var(--text-dim); font-weight: 500; }
+
+  input[type="text"], input[type="url"], input[type="email"], input[type="date"],
+  input[type="search"], textarea, select {
+    width: 100%;
+    background: var(--bg-alt);
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 0.92rem;
+    font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 74px; }
+  input:focus, textarea:focus, select:focus { border-color: var(--cyan); }
+  input::placeholder, textarea::placeholder { color: var(--text-dim); }
+
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--text-dim) 50%), linear-gradient(135deg, var(--text-dim) 50%, transparent 50%); background-position: calc(100% - 18px) center, calc(100% - 13px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 32px; }
+
+  .field-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+    min-height: 16px;
+  }
+  .field-meta .count.ok { color: var(--green); }
+  .field-meta .count.warn { color: var(--rose); }
+
+  .field-warning {
+    font-size: 0.78rem;
+    color: var(--rose);
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .field-warning::before { content: "!"; font-weight: 800; }
+  .field-warning:empty { display: none; }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--bg-alt);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 6px;
+  }
+  .checkbox-row input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--cyan); flex: none; }
+  .checkbox-row .cb-text { display: flex; flex-direction: column; gap: 2px; }
+  .checkbox-row .cb-text strong { font-size: 0.86rem; }
+  .checkbox-row .cb-text span { font-size: 0.76rem; color: var(--text-dim); }
+
+  fieldset { border: none; padding: 0; margin: 0; }
+  fieldset legend { font-size: 0.82rem; font-weight: 700; color: var(--text-mid); padding: 0; margin-bottom: 10px; }
+  .checkbox-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+  @media (min-width: 620px) { .checkbox-grid { grid-template-columns: 1fr 1fr; } }
+
+  .inline-link-row {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(148, 163, 184, 0.2);
+    font-size: 0.86rem;
+    color: var(--text-dim);
+  }
+  .inline-link-row a { font-weight: 700; }
+
+  /* Audit card */
+  .audit-score-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .audit-score-ring {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; font-weight: 800;
+    background: conic-gradient(var(--score-color, var(--cyan)) calc(var(--score, 0) * 1%), rgba(255,255,255,0.08) 0);
+    flex: none;
+  }
+  .audit-score-ring::after {
+    content: "";
+    position: relative;
+  }
+  .audit-score-inner {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: var(--panel-2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+  }
+  .audit-score-label { font-size: 0.8rem; color: var(--text-dim); }
+  .audit-score-label strong { display: block; color: var(--text); font-size: 0.95rem; }
+
+  .audit-categories { display: grid; gap: 8px; margin-bottom: 16px; }
+  .audit-cat-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; font-size: 0.8rem; }
+  .audit-cat-row .bar { grid-column: 1 / -1; height: 5px; border-radius: 4px; background: rgba(255,255,255,0.08); overflow: hidden; }
+  .audit-cat-row .bar-fill { height: 100%; background: var(--cyan); }
+  .audit-cat-row .cat-name { color: var(--text-mid); }
+  .audit-cat-row .cat-score { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+  .audit-list-group { margin-top: 12px; }
+  .audit-list-group h4 {
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .audit-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 5px; }
+  .audit-list li {
+    font-size: 0.82rem;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    color: var(--text-mid);
+  }
+  .audit-list li::before { flex: none; margin-top: 2px; font-size: 0.7rem; }
+  .audit-list.critical li::before { content: "●"; color: var(--rose); }
+  .audit-list.improve li::before { content: "●"; color: var(--cyan); }
+  .audit-list.nice li::before { content: "●"; color: var(--violet); }
+  .audit-list.pass li::before { content: "●"; color: var(--green); }
+  .audit-empty { font-size: 0.8rem; color: var(--text-dim); }
+
+  /* Preview card */
+  .preview-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .preview-tab {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(148,163,184,0.2);
+    background: var(--bg-alt);
+    color: var(--text-dim);
+    font-family: inherit;
+    font-size: 0.76rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .preview-tab[aria-selected="true"] { color: var(--cyan); border-color: var(--border); background: rgba(116,198,255,0.1); }
+  .preview-body { display: none; }
+  .preview-body.active { display: block; }
+
+  .preview-google { background: #fff; color: #202124; border-radius: 8px; padding: 14px 16px; font-family: arial, sans-serif; }
+  .preview-google .g-url { font-size: 0.78rem; color: #202124; display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+  .preview-google .g-favicon { width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, var(--cyan), var(--violet)); flex: none; }
+  .preview-google .g-title { color: #1a0dab; font-size: 1.14rem; line-height: 1.3; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .preview-google .g-desc { font-size: 0.86rem; color: #4d5156; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .preview-google.mobile { max-width: 320px; padding: 12px; }
+  .preview-google.mobile .g-title { font-size: 1rem; white-space: normal; }
+
+  .preview-ogcard { border: 1px solid #2a3346; border-radius: 8px; overflow: hidden; background: #0e1420; max-width: 420px; }
+  .preview-ogcard .og-image { height: 180px; background: #131b2c; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .preview-ogcard .og-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-ogcard .og-placeholder { color: var(--text-dim); font-size: 0.78rem; text-align: center; padding: 10px; }
+  .preview-ogcard .og-body { padding: 12px 14px; }
+  .preview-ogcard .og-domain { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); margin-bottom: 4px; }
+  .preview-ogcard .og-title { font-size: 0.98rem; font-weight: 700; color: var(--text); margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .preview-ogcard .og-desc { font-size: 0.8rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+  .preview-twcard { border: 1px solid #2a3346; border-radius: 12px; overflow: hidden; background: #0e1420; max-width: 420px; }
+  .preview-twcard.summary { display: flex; }
+  .preview-twcard.summary .og-image { width: 108px; height: 108px; flex: none; }
+  .preview-twcard.summary .og-body { flex: 1; }
+  .preview-twcard .og-image { height: 180px; background: #131b2c; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .preview-twcard .og-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .preview-twcard .og-body { padding: 10px 12px; }
+  .preview-twcard .og-domain { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 4px; }
+  .preview-twcard .og-title { font-size: 0.92rem; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .preview-twcard .og-desc { font-size: 0.78rem; color: var(--text-dim); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+
+  .preview-tabline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #1b2230;
+    border-radius: 8px 8px 0 0;
+    padding: 10px 12px;
+    max-width: 300px;
+  }
+  .preview-tabline .tab-fav { width: 14px; height: 14px; border-radius: 3px; background: linear-gradient(135deg, var(--cyan), var(--violet)); flex: none; }
+  .preview-tabline .tab-title { font-size: 0.8rem; color: #d7dde7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .preview-tabline .tab-close { margin-left: auto; color: #6b7280; font-size: 0.9rem; }
+  .preview-barwrap { background: #11151d; border-radius: 0 0 8px 8px; padding: 8px 12px; max-width: 300px; }
+  .preview-bar { background: #232a38; border-radius: 12px; padding: 6px 10px; font-size: 0.74rem; color: #8b93a3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .img-note { font-size: 0.74rem; color: var(--text-dim); margin-top: 8px; }
+
+  /* Output */
+  .output-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .code-box {
+    background: #060a13;
+    border: 1px solid rgba(148,163,184,0.18);
+    border-radius: 6px;
+    padding: 14px;
+    max-height: 520px;
+    overflow: auto;
+  }
+  .code-box pre {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: #cbe6ff;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .action-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .manifest-preview { margin-top: 16px; }
+  .manifest-preview h3 { font-size: 0.9rem; margin-bottom: 8px; color: var(--text-mid); }
+
+  /* Import */
+  .import-status {
+    margin-top: 14px;
+    font-size: 0.84rem;
+    color: var(--text-mid);
+    background: var(--bg-alt);
+    border: 1px solid rgba(148,163,184,0.18);
+    border-radius: 6px;
+    padding: 12px 14px;
+    min-height: 20px;
+  }
+  .import-status.ok { color: var(--green); border-color: rgba(118,255,191,0.3); }
+  .import-status.err { color: var(--rose); border-color: rgba(255,122,168,0.3); }
+
+  /* FAQ rows */
+  .faq-row {
+    background: var(--bg-alt);
+    border: 1px solid rgba(148,163,184,0.18);
+    border-radius: 6px;
+    padding: 12px;
+    display: grid;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .faq-row-head { display: flex; justify-content: space-between; align-items: center; }
+  .faq-row-head span { font-size: 0.76rem; color: var(--text-dim); font-weight: 700; }
+
+  footer.tool-note { margin-top: 26px; font-size: 0.8rem; color: var(--text-dim); text-align: center; }
+
+  @media (min-width: 900px) {
+    .hero-grid { grid-template-columns: 1.3fr 1fr; }
+    .workspace { grid-template-columns: 1.35fr 1fr; align-items: start; }
+    .side-col { position: sticky; top: 74px; }
+  }
+
+  @media (min-width: 1200px) {
+    .page-shell { padding-left: 20px; padding-right: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-shell">
+
+  <nav class="topbar">
+    <a href="../" class="back-link">&larr; Tools</a>
+    <a href="https://mattlivingston.com" class="topbar-credit">Matt Livingston</a>
+  </nav>
+
+  <div class="sponsor-slot" data-sponsor-slot="metadata-top" hidden></div>
+
+  <header class="hero">
+    <p class="eyebrow">SEO, social, and structured data</p>
+    <h1>Meta Tag Studio.</h1>
+    <p class="hero-intro">Build the invisible layer that search engines, social cards, browsers, and link previews read before anyone sees your page.</p>
+
+    <div class="hero-grid">
+      <div>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-primary" id="heroLoadDemoBtn">Load demo</button>
+          <button type="button" class="btn btn-secondary" id="heroCopyHeadBtn">Copy full head</button>
+        </div>
+        <p class="privacy-note"><span class="dot" aria-hidden="true"></span> Everything runs locally in your browser. Nothing is uploaded or fetched.</p>
+      </div>
+
+      <div class="hero-preview-panel" aria-label="Live metadata snapshot">
+        <div class="hero-score">
+          <span class="hero-score-text">Audit score</span>
+          <span class="num" id="heroScoreNum">0</span>
+        </div>
+        <div class="hero-preview-row">
+          <span class="label">Search</span>
+          <span class="value" id="heroSearchTitle">Untitled page</span>
+        </div>
+        <div class="hero-preview-row">
+          <span class="label">Social</span>
+          <span class="value" id="heroSocialTitle">Untitled page</span>
+        </div>
+        <div class="hero-preview-row">
+          <span class="label">Browser tab</span>
+          <span class="value" id="heroTabTitle">Untitled page</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <nav class="tablist" role="tablist" aria-label="Meta Tag Studio sections">
+      <button class="tab-btn" role="tab" id="tabbtn-basics" data-tab="basics" aria-selected="true" aria-controls="panel-basics">Basics</button>
+      <button class="tab-btn" role="tab" id="tabbtn-social" data-tab="social" aria-selected="false" aria-controls="panel-social">Social</button>
+      <button class="tab-btn" role="tab" id="tabbtn-browser" data-tab="browser" aria-selected="false" aria-controls="panel-browser">Browser</button>
+      <button class="tab-btn" role="tab" id="tabbtn-schema" data-tab="schema" aria-selected="false" aria-controls="panel-schema">Schema</button>
+      <button class="tab-btn" role="tab" id="tabbtn-import" data-tab="import" aria-selected="false" aria-controls="panel-import">Import</button>
+      <button class="tab-btn" role="tab" id="tabbtn-output" data-tab="output" aria-selected="false" aria-controls="panel-output">Output</button>
+    </nav>
+
+    <div class="workspace" id="workspace">
+      <div class="editor-col">
+
+        <!-- BASICS -->
+        <section class="tab-panel active" id="panel-basics" data-panel="basics" role="tabpanel" aria-labelledby="tabbtn-basics">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Page basics</h2>
+              <p>The core title, description, and URL identity of this page.</p>
+            </div>
+            <div class="form-grid cols-2">
+              <div class="form-group wide">
+                <label for="f-pageTitle">Page title</label>
+                <input type="text" id="f-pageTitle" data-bind="basics.pageTitle" placeholder="Website Launch Kit | Matt Livingston">
+                <div class="field-meta"><span id="titleCount" class="count">0 characters</span><span>Target 30&ndash;60</span></div>
+                <div class="field-warning" id="titleWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-siteName">Site name</label>
+                <input type="text" id="f-siteName" data-bind="basics.siteName" placeholder="Matt Livingston Tools">
+              </div>
+              <div class="form-group">
+                <label for="f-author">Author / creator</label>
+                <input type="text" id="f-author" data-bind="basics.author" placeholder="Matt Livingston">
+              </div>
+              <div class="form-group wide">
+                <label for="f-description">Meta description</label>
+                <textarea id="f-description" data-bind="basics.description" rows="3" placeholder="A clear one or two sentence summary for search results."></textarea>
+                <div class="field-meta"><span id="descCount" class="count">0 characters</span><span>Target 120&ndash;160</span></div>
+                <div class="field-warning" id="descWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-pageUrl">Page URL</label>
+                <input type="url" id="f-pageUrl" data-bind="basics.pageUrl" placeholder="https://example.com/page/">
+                <div class="field-warning" id="pageUrlWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-canonicalUrl">Canonical URL</label>
+                <input type="url" id="f-canonicalUrl" data-bind="basics.canonicalUrl" placeholder="https://example.com/page/">
+                <div class="field-warning" id="canonicalWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-language">Language</label>
+                <input type="text" id="f-language" data-bind="basics.language" placeholder="en">
+              </div>
+              <div class="form-group">
+                <label for="f-themeColor">Theme color</label>
+                <input type="text" id="f-themeColor" data-bind="basics.themeColor" placeholder="#74dfff">
+              </div>
+            </div>
+
+            <fieldset style="margin-top:18px;">
+              <legend>Robots directives</legend>
+              <div class="checkbox-grid">
+                <label class="checkbox-row">
+                  <input type="checkbox" id="f-robotsNoindex" data-bind="basics.robots.noindex">
+                  <span class="cb-text"><strong>noindex</strong><span>Keep this page out of search results</span></span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" id="f-robotsNofollow" data-bind="basics.robots.nofollow">
+                  <span class="cb-text"><strong>nofollow</strong><span>Don't pass link authority from this page</span></span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" id="f-robotsNoarchive" data-bind="basics.robots.noarchive">
+                  <span class="cb-text"><strong>noarchive</strong><span>No cached copy in search results</span></span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" id="f-robotsNosnippet" data-bind="basics.robots.nosnippet">
+                  <span class="cb-text"><strong>nosnippet</strong><span>No text snippet or preview</span></span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" id="f-robotsNoimageindex" data-bind="basics.robots.noimageindex">
+                  <span class="cb-text"><strong>noimageindex</strong><span>Don't index images on this page</span></span>
+                </label>
+              </div>
+              <div class="field-warning" id="robotsWarning" style="margin-top:10px;"></div>
+            </fieldset>
+          </div>
+        </section>
+
+        <!-- SOCIAL -->
+        <section class="tab-panel" id="panel-social" data-panel="social" role="tabpanel" aria-labelledby="tabbtn-social">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Social sharing</h2>
+              <p>Open Graph and X/Twitter card metadata. Leave overrides blank to fall back to your Basics fields.</p>
+            </div>
+            <div class="form-grid cols-2">
+              <div class="form-group wide">
+                <label for="f-socialTitle">Social title <span class="optional">(defaults to page title)</span></label>
+                <input type="text" id="f-socialTitle" data-bind="social.socialTitle" placeholder="Override title for social cards">
+              </div>
+              <div class="form-group wide">
+                <label for="f-socialDescription">Social description <span class="optional">(defaults to meta description)</span></label>
+                <textarea id="f-socialDescription" data-bind="social.socialDescription" rows="2" placeholder="Override description for social cards"></textarea>
+              </div>
+              <div class="form-group wide">
+                <label for="f-imageUrl">Social image URL</label>
+                <input type="url" id="f-imageUrl" data-bind="social.imageUrl" placeholder="https://example.com/og-image.png">
+                <div class="field-warning" id="imageUrlWarning"></div>
+              </div>
+              <div class="form-group wide">
+                <label for="f-imageAlt">Image alt text</label>
+                <input type="text" id="f-imageAlt" data-bind="social.imageAlt" placeholder="Describe the image for screen readers">
+                <div class="field-warning" id="imageAltWarning"></div>
+              </div>
+              <div class="form-group">
+                <label for="f-locale">Locale</label>
+                <input type="text" id="f-locale" data-bind="social.locale" placeholder="en_US">
+              </div>
+              <div class="form-group">
+                <label for="f-twitterCard">X/Twitter card type</label>
+                <select id="f-twitterCard" data-bind="social.twitterCard">
+                  <option value="summary">summary</option>
+                  <option value="summary_large_image">summary_large_image</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="f-twitterCreator">X/Twitter creator handle</label>
+                <input type="text" id="f-twitterCreator" data-bind="social.twitterCreator" placeholder="@yourhandle">
+                <div class="field-warning" id="twitterHandleWarning"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- BROWSER -->
+        <section class="tab-panel" id="panel-browser" data-panel="browser" role="tabpanel" aria-labelledby="tabbtn-browser">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Browser &amp; PWA</h2>
+              <p>Favicon, touch icons, manifest, and theme metadata browsers and app switchers read.</p>
+            </div>
+            <div class="form-grid cols-2">
+              <div class="form-group">
+                <label for="f-faviconPath">Favicon path</label>
+                <input type="text" id="f-faviconPath" data-bind="browser.faviconPath" placeholder="/favicon.ico">
+              </div>
+              <div class="form-group">
+                <label for="f-appleTouchIconPath">Apple touch icon path</label>
+                <input type="text" id="f-appleTouchIconPath" data-bind="browser.appleTouchIconPath" placeholder="/apple-touch-icon.png">
+              </div>
+              <div class="form-group">
+                <label for="f-manifestPath">Web manifest path</label>
+                <input type="text" id="f-manifestPath" data-bind="browser.manifestPath" placeholder="/site.webmanifest">
+              </div>
+              <div class="form-group">
+                <label for="f-maskIconPath">Mask icon path <span class="optional">(Safari pinned tab)</span></label>
+                <input type="text" id="f-maskIconPath" data-bind="browser.maskIconPath" placeholder="/safari-pinned-tab.svg">
+              </div>
+              <div class="form-group">
+                <label for="f-appName">App name</label>
+                <input type="text" id="f-appName" data-bind="browser.appName" placeholder="Matt Livingston Tools">
+              </div>
+              <div class="form-group">
+                <label for="f-shortName">Short name</label>
+                <input type="text" id="f-shortName" data-bind="browser.shortName" placeholder="ML Tools">
+              </div>
+              <div class="form-group">
+                <label for="f-backgroundColor">Background color</label>
+                <input type="text" id="f-backgroundColor" data-bind="browser.backgroundColor" placeholder="#050812">
+              </div>
+              <div class="form-group">
+                <label>Theme color</label>
+                <div class="field-meta" style="min-height:auto;padding:10px 12px;background:var(--bg-alt);border:1px solid rgba(148,163,184,0.18);border-radius:6px;">
+                  <span id="browserThemeColorEcho">Not set &mdash; add one on the Basics tab</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="manifest-preview">
+              <h3>Manifest preview</h3>
+              <div class="code-box"><pre id="manifestOutput"></pre></div>
+            </div>
+
+            <p class="inline-link-row">Need icons? <a href="../favicon/">Open Favicon Generator</a>.</p>
+          </div>
+        </section>
+
+        <!-- SCHEMA -->
+        <section class="tab-panel" id="panel-schema" data-panel="schema" role="tabpanel" aria-labelledby="tabbtn-schema">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Structured data</h2>
+              <p>Generate JSON-LD schema markup for this page.</p>
+            </div>
+            <div class="form-group" style="max-width:340px;margin-bottom:16px;">
+              <label for="f-schemaType">Schema type</label>
+              <select id="f-schemaType">
+                <option value="none">None</option>
+                <option value="WebSite">WebSite</option>
+                <option value="WebPage">WebPage</option>
+                <option value="Article">Article</option>
+                <option value="Person">Person</option>
+                <option value="SoftwareApplication">SoftwareApplication</option>
+                <option value="FAQPage">FAQPage</option>
+              </select>
+            </div>
+
+            <div id="schemaFieldsContainer" class="form-grid cols-2"></div>
+            <div id="faqContainer" style="display:none;">
+              <div id="faqRows"></div>
+              <button type="button" class="btn btn-secondary btn-sm" id="addFaqRowBtn">+ Add FAQ row</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- IMPORT -->
+        <section class="tab-panel" id="panel-import" data-panel="import" role="tabpanel" aria-labelledby="tabbtn-import">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Import from existing head</h2>
+              <p>Paste an existing <code>&lt;head&gt;</code> block (or any HTML containing meta/link/script tags) to pull its metadata into this tool.</p>
+            </div>
+            <div class="form-group">
+              <label for="f-importHead">Paste HTML</label>
+              <textarea id="f-importHead" rows="10" placeholder="&lt;title&gt;My Page&lt;/title&gt;&#10;&lt;meta name=&quot;description&quot; content=&quot;...&quot;&gt;&#10;..."></textarea>
+            </div>
+            <div class="action-row">
+              <button type="button" class="btn btn-primary" id="importHeadBtn">Import head</button>
+              <button type="button" class="btn btn-ghost" id="clearImportBtn">Clear import</button>
+            </div>
+            <div class="import-status" id="importStatus" aria-live="polite">Paste HTML above, then click Import head.</div>
+          </div>
+        </section>
+
+        <!-- OUTPUT -->
+        <section class="tab-panel" id="panel-output" data-panel="output" role="tabpanel" aria-labelledby="tabbtn-output">
+          <div class="panel-card">
+            <div class="panel-head">
+              <h2>Generated output</h2>
+              <p>Copy-ready, escaped, production metadata.</p>
+            </div>
+            <div class="output-tabs" role="tablist" aria-label="Output sections">
+              <button class="preview-tab" role="tab" aria-selected="true" data-output="essential">Essential HTML</button>
+              <button class="preview-tab" role="tab" aria-selected="false" data-output="social">Social tags</button>
+              <button class="preview-tab" role="tab" aria-selected="false" data-output="browser">Browser/PWA tags</button>
+              <button class="preview-tab" role="tab" aria-selected="false" data-output="jsonld">JSON-LD</button>
+              <button class="preview-tab" role="tab" aria-selected="false" data-output="full">Full head</button>
+            </div>
+            <div class="code-box"><pre id="outputCode"></pre></div>
+            <div class="action-row">
+              <button type="button" class="btn btn-primary" id="copyCurrentBtn">Copy this tab</button>
+              <button type="button" class="btn btn-secondary" id="copyFullHeadBtn">Copy full head</button>
+              <button type="button" class="btn btn-secondary" id="downloadHtmlBtn">Download metadata.html</button>
+              <button type="button" class="btn btn-secondary" id="downloadJsonBtn">Download metadata.json</button>
+              <button type="button" class="btn btn-secondary" id="loadDemoBtn">Load demo</button>
+              <button type="button" class="btn btn-ghost" id="resetBtn">Reset</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <aside class="side-col">
+        <div class="panel-card audit-card">
+          <div class="panel-head">
+            <h2>Audit score</h2>
+            <p>Updates live as you edit.</p>
+          </div>
+          <div id="auditLive" aria-live="polite">
+            <div class="audit-score-row">
+              <div class="audit-score-ring" id="scoreRing" style="--score:0;">
+                <div class="audit-score-inner"><span id="scoreNum">0</span></div>
+              </div>
+              <div class="audit-score-label">
+                <strong id="scoreOutOf">0 / 100</strong>
+                <span id="scoreVerdict">Start filling in the Basics tab</span>
+              </div>
+            </div>
+            <div class="audit-categories" id="auditCategories"></div>
+            <div class="audit-list-group">
+              <h4>Critical issues</h4>
+              <ul class="audit-list critical" id="auditCritical"></ul>
+            </div>
+            <div class="audit-list-group">
+              <h4>Improvements</h4>
+              <ul class="audit-list improve" id="auditImprove"></ul>
+            </div>
+            <div class="audit-list-group">
+              <h4>Nice-to-haves</h4>
+              <ul class="audit-list nice" id="auditNice"></ul>
+            </div>
+            <div class="audit-list-group">
+              <h4>Passing checks</h4>
+              <ul class="audit-list pass" id="auditPass"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card preview-card">
+          <div class="panel-head">
+            <h2>Live preview</h2>
+            <p>How this page shows up across surfaces.</p>
+          </div>
+          <div class="preview-tabs" role="tablist" aria-label="Preview surfaces">
+            <button class="preview-tab" role="tab" aria-selected="true" data-preview="google">Search (desktop)</button>
+            <button class="preview-tab" role="tab" aria-selected="false" data-preview="mobile">Search (mobile)</button>
+            <button class="preview-tab" role="tab" aria-selected="false" data-preview="og">Open Graph</button>
+            <button class="preview-tab" role="tab" aria-selected="false" data-preview="twitter">X / Twitter</button>
+            <button class="preview-tab" role="tab" aria-selected="false" data-preview="tab">Browser tab</button>
+          </div>
+
+          <div class="preview-body active" data-preview-body="google">
+            <div class="preview-google">
+              <div class="g-url"><span class="g-favicon"></span><span id="pv-google-domain">example.com</span></div>
+              <div class="g-title" id="pv-google-title">Page title</div>
+              <div class="g-desc" id="pv-google-desc">Description will appear here.</div>
+            </div>
+          </div>
+          <div class="preview-body" data-preview-body="mobile">
+            <div class="preview-google mobile">
+              <div class="g-url"><span class="g-favicon"></span><span id="pv-mobile-domain">example.com</span></div>
+              <div class="g-title" id="pv-mobile-title">Page title</div>
+              <div class="g-desc" id="pv-mobile-desc">Description will appear here.</div>
+            </div>
+          </div>
+          <div class="preview-body" data-preview-body="og">
+            <div class="preview-ogcard">
+              <div class="og-image" id="pv-og-image"><span class="og-placeholder">No image set</span></div>
+              <div class="og-body">
+                <div class="og-domain" id="pv-og-domain">EXAMPLE.COM</div>
+                <div class="og-title" id="pv-og-title">Page title</div>
+                <div class="og-desc" id="pv-og-desc">Description will appear here.</div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-body" data-preview-body="twitter">
+            <div class="preview-twcard" id="pv-tw-card">
+              <div class="og-image" id="pv-tw-image"><span class="og-placeholder">No image set</span></div>
+              <div class="og-body">
+                <div class="og-domain" id="pv-tw-domain">example.com</div>
+                <div class="og-title" id="pv-tw-title">Page title</div>
+                <div class="og-desc" id="pv-tw-desc">Description will appear here.</div>
+              </div>
+            </div>
+          </div>
+          <div class="preview-body" data-preview-body="tab">
+            <div class="preview-tabline">
+              <span class="tab-fav"></span>
+              <span class="tab-title" id="pv-tab-title">Page title</span>
+              <span class="tab-close" aria-hidden="true">&times;</span>
+            </div>
+            <div class="preview-barwrap">
+              <div class="preview-bar" id="pv-tab-url">example.com</div>
+            </div>
+          </div>
+          <p class="img-note">Images are shown as-is; dimensions and reachability are not validated.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="tool-note">
+    <a href="../launch-kit/">Need the full launch checklist?</a> &middot;
+    <a href="../launch-doctor/">Audit the built site after export.</a> &middot;
+    <a href="../favicon/">Generate favicon assets first.</a>
+  </footer>
+
+  <div id="liveStatus" class="sr-only" aria-live="polite"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'meta-tag-studio-draft-v1';
+  var SUSPICIOUS_PARAMS = ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','fbclid','gclid','msclkid','mc_cid','mc_eid'];
+
+  function defaultState() {
+    return {
+      basics: {
+        pageTitle: '', siteName: '', description: '', pageUrl: '', canonicalUrl: '',
+        language: 'en', author: '', themeColor: '',
+        robots: { noindex: false, nofollow: false, noarchive: false, nosnippet: false, noimageindex: false }
+      },
+      social: {
+        socialTitle: '', socialDescription: '', imageUrl: '', imageAlt: '',
+        locale: 'en_US', twitterCard: 'summary_large_image', twitterCreator: ''
+      },
+      browser: {
+        faviconPath: '', appleTouchIconPath: '', manifestPath: '', maskIconPath: '',
+        appName: '', shortName: '', backgroundColor: ''
+      },
+      schema: {
+        type: 'none', fields: {}, faqItems: [{ q: '', a: '' }], rawJson: null
+      }
+    };
+  }
+
+  var state = defaultState();
+  var activeTab = 'basics';
+  var activeOutputTab = 'essential';
+
+  /* ---------- helpers ---------- */
+
+  function getPath(obj, path) {
+    var parts = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < parts.length; i++) {
+      if (cur == null) return undefined;
+      cur = cur[parts[i]];
+    }
+    return cur;
+  }
+
+  function setPath(obj, path, value) {
+    var parts = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < parts.length - 1; i++) {
+      if (cur[parts[i]] == null || typeof cur[parts[i]] !== 'object') cur[parts[i]] = {};
+      cur = cur[parts[i]];
+    }
+    cur[parts[parts.length - 1]] = value;
+  }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function escapeAttr(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function isAbsoluteUrl(value) {
+    if (!value) return false;
+    try {
+      var u = new URL(value);
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch (e) { return false; }
+  }
+
+  function isHttpsUrl(value) {
+    if (!isAbsoluteUrl(value)) return false;
+    try { return new URL(value).protocol === 'https:'; } catch (e) { return false; }
+  }
+
+  function getDomain(value) {
+    if (!value) return '';
+    try { return new URL(value).hostname; } catch (e) { return ''; }
+  }
+
+  function normalizeUrlForCompare(value) {
+    if (!value) return '';
+    try {
+      var u = new URL(value);
+      var path = u.pathname.replace(/\/$/, '');
+      return (u.hostname + path).toLowerCase();
+    } catch (e) { return String(value).toLowerCase(); }
+  }
+
+  function hasSuspiciousQueryParams(value) {
+    if (!value) return false;
+    try {
+      var u = new URL(value);
+      for (var i = 0; i < SUSPICIOUS_PARAMS.length; i++) {
+        if (u.searchParams.has(SUSPICIOUS_PARAMS[i])) return true;
+      }
+      return false;
+    } catch (e) { return false; }
+  }
+
+  function characterCount(value) { return (value || '').length; }
+
+  function truncatePreview(value, max) {
+    var v = value || '';
+    if (v.length <= max) return v;
+    return v.slice(0, Math.max(0, max - 1)).trim() + '…';
+  }
+
+  function isLocalhostUrl(value) {
+    var d = getDomain(value);
+    return d === 'localhost' || d === '127.0.0.1' || /\.local$/.test(d);
+  }
+
+  /* ---------- robots / json-ld / head builders ---------- */
+
+  function buildRobotsContent(st) {
+    var r = st.basics.robots;
+    var parts = [];
+    parts.push(r.noindex ? 'noindex' : 'index');
+    parts.push(r.nofollow ? 'nofollow' : 'follow');
+    if (r.noarchive) parts.push('noarchive');
+    if (r.nosnippet) parts.push('nosnippet');
+    if (r.noimageindex) parts.push('noimageindex');
+    return parts.join(', ');
+  }
+
+  function effectiveSocialTitle(st) { return st.social.socialTitle || st.basics.pageTitle; }
+  function effectiveSocialDescription(st) { return st.social.socialDescription || st.basics.description; }
+
+  var FAQ_TYPE = 'FAQPage';
+
+  function completeFaqItems(st) {
+    return (st.schema.faqItems || []).filter(function (item) {
+      return item && item.q && item.q.trim() && item.a && item.a.trim();
+    });
+  }
+
+  function buildJsonLdObject(st) {
+    var s = st.schema;
+    var f = s.fields || {};
+    if (s.type === 'none') {
+      return s.rawJson ? s.rawJson : null;
+    }
+    if (s.type === FAQ_TYPE) {
+      var items = completeFaqItems(st);
+      if (!items.length) return null;
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: items.map(function (item) {
+          return {
+            '@type': 'Question',
+            name: item.q.trim(),
+            acceptedAnswer: { '@type': 'Answer', text: item.a.trim() }
+          };
+        })
+      };
+    }
+    if (s.type === 'WebSite') {
+      if (!f.name && !f.url) return null;
+      var obj = { '@context': 'https://schema.org', '@type': 'WebSite' };
+      if (f.name) obj.name = f.name;
+      if (f.url) obj.url = f.url;
+      if (f.description) obj.description = f.description;
+      if (f.publisherName) obj.publisher = { '@type': 'Organization', name: f.publisherName };
+      return obj;
+    }
+    if (s.type === 'WebPage') {
+      if (!f.name && !f.url) return null;
+      var objp = { '@context': 'https://schema.org', '@type': 'WebPage' };
+      if (f.name) objp.name = f.name;
+      if (f.url) objp.url = f.url;
+      if (f.description) objp.description = f.description;
+      if (f.isPartOfSiteName) objp.isPartOf = { '@type': 'WebSite', name: f.isPartOfSiteName };
+      return objp;
+    }
+    if (s.type === 'Article') {
+      if (!f.headline) return null;
+      var obja = { '@context': 'https://schema.org', '@type': 'Article', headline: f.headline };
+      if (f.description) obja.description = f.description;
+      if (f.author) obja.author = { '@type': 'Person', name: f.author };
+      if (f.datePublished) obja.datePublished = f.datePublished;
+      if (f.dateModified) obja.dateModified = f.dateModified;
+      if (f.image) obja.image = f.image;
+      if (f.url) obja.url = f.url;
+      return obja;
+    }
+    if (s.type === 'Person') {
+      if (!f.name) return null;
+      var objper = { '@context': 'https://schema.org', '@type': 'Person', name: f.name };
+      if (f.url) objper.url = f.url;
+      if (f.jobTitle) objper.jobTitle = f.jobTitle;
+      if (f.description) objper.description = f.description;
+      if (f.sameAs) {
+        var links = f.sameAs.split('\n').map(function (s2) { return s2.trim(); }).filter(Boolean);
+        if (links.length) objper.sameAs = links;
+      }
+      return objper;
+    }
+    if (s.type === 'SoftwareApplication') {
+      if (!f.name) return null;
+      var objsa = { '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: f.name };
+      if (f.description) objsa.description = f.description;
+      if (f.applicationCategory) objsa.applicationCategory = f.applicationCategory;
+      if (f.operatingSystem) objsa.operatingSystem = f.operatingSystem;
+      if (f.url) objsa.url = f.url;
+      if (f.creator) objsa.creator = { '@type': 'Person', name: f.creator };
+      var isFree = !!f.free;
+      var price = isFree ? '0' : (f.price || '');
+      if (price !== '' || f.currency) {
+        objsa.offers = { '@type': 'Offer', price: price, priceCurrency: f.currency || 'USD' };
+      }
+      return objsa;
+    }
+    return null;
+  }
+
+  function buildJsonLdString(st) {
+    var obj = buildJsonLdObject(st);
+    if (!obj) return '';
+    var json = JSON.stringify(obj, null, 2);
+    json = json.replace(/</g, '\\u003c');
+    return json;
+  }
+
+  function metaTag(name, content, attr) {
+    if (!content) return '';
+    attr = attr || 'name';
+    return '<meta ' + attr + '="' + escapeAttr(name) + '" content="' + escapeAttr(content) + '">';
+  }
+
+  function linkTag(rel, href, extra) {
+    if (!href) return '';
+    var out = '<link rel="' + escapeAttr(rel) + '" href="' + escapeAttr(href) + '"';
+    if (extra) out += ' ' + extra;
+    out += '>';
+    return out;
+  }
+
+  function essentialHtmlLines(st) {
+    var lines = [];
+    if (st.basics.pageTitle) lines.push('<title>' + escapeHtml(st.basics.pageTitle) + '</title>');
+    if (st.basics.description) lines.push(metaTag('description', st.basics.description));
+    if (st.basics.canonicalUrl) lines.push(linkTag('canonical', st.basics.canonicalUrl));
+    lines.push(metaTag('robots', buildRobotsContent(st)));
+    if (st.basics.author) lines.push(metaTag('author', st.basics.author));
+    if (st.basics.language) lines.push('<!-- Set <html lang="' + escapeAttr(st.basics.language) + '"> on your page -->');
+    return lines.filter(Boolean);
+  }
+
+  function socialTagLines(st) {
+    var lines = [];
+    var title = effectiveSocialTitle(st);
+    var desc = effectiveSocialDescription(st);
+    lines.push(metaTag('og:type', 'website', 'property'));
+    if (title) lines.push(metaTag('og:title', title, 'property'));
+    if (desc) lines.push(metaTag('og:description', desc, 'property'));
+    if (st.basics.pageUrl) lines.push(metaTag('og:url', st.basics.pageUrl, 'property'));
+    if (st.basics.siteName) lines.push(metaTag('og:site_name', st.basics.siteName, 'property'));
+    if (st.social.imageUrl) lines.push(metaTag('og:image', st.social.imageUrl, 'property'));
+    if (st.social.imageUrl && st.social.imageAlt) lines.push(metaTag('og:image:alt', st.social.imageAlt, 'property'));
+    if (st.social.locale) lines.push(metaTag('og:locale', st.social.locale, 'property'));
+    lines.push(metaTag('twitter:card', st.social.twitterCard || 'summary_large_image'));
+    if (title) lines.push(metaTag('twitter:title', title));
+    if (desc) lines.push(metaTag('twitter:description', desc));
+    if (st.social.imageUrl) lines.push(metaTag('twitter:image', st.social.imageUrl));
+    if (st.social.imageUrl && st.social.imageAlt) lines.push(metaTag('twitter:image:alt', st.social.imageAlt));
+    if (st.social.twitterCreator) lines.push(metaTag('twitter:creator', st.social.twitterCreator));
+    return lines.filter(Boolean);
+  }
+
+  function browserTagLines(st) {
+    var lines = [];
+    if (st.browser.faviconPath) lines.push(linkTag('icon', st.browser.faviconPath));
+    if (st.browser.appleTouchIconPath) lines.push(linkTag('apple-touch-icon', st.browser.appleTouchIconPath));
+    if (st.browser.manifestPath) lines.push(linkTag('manifest', st.browser.manifestPath));
+    if (st.browser.maskIconPath) lines.push(linkTag('mask-icon', st.browser.maskIconPath, 'color="' + escapeAttr(st.basics.themeColor || '#000000') + '"'));
+    if (st.basics.themeColor) lines.push(metaTag('theme-color', st.basics.themeColor));
+    return lines.filter(Boolean);
+  }
+
+  function jsonLdBlockLines(st) {
+    var json = buildJsonLdString(st);
+    if (!json) return [];
+    return ['<script type="application/ld+json">', json, '<\/script>'];
+  }
+
+  function buildHeadLines(st) {
+    var lines = [];
+    lines = lines.concat(essentialHtmlLines(st));
+    var social = socialTagLines(st);
+    if (social.length) lines = lines.concat([''], social);
+    var browser = browserTagLines(st);
+    if (browser.length) lines = lines.concat([''], browser);
+    var jsonld = jsonLdBlockLines(st);
+    if (jsonld.length) lines = lines.concat([''], jsonld);
+    return lines;
+  }
+
+  function wrapHead(lines) {
+    return '<head>\n' + lines.map(function (l) { return l ? '  ' + l : ''; }).join('\n') + '\n</head>';
+  }
+
+  var OUTPUT_BUILDERS = {
+    essential: function (st) { return essentialHtmlLines(st).join('\n'); },
+    social: function (st) { return socialTagLines(st).join('\n'); },
+    browser: function (st) { return browserTagLines(st).join('\n'); },
+    jsonld: function (st) { return jsonLdBlockLines(st).join('\n'); },
+    full: function (st) { return wrapHead(buildHeadLines(st)); }
+  };
+
+  /* ---------- audit ---------- */
+
+  function auditState(st) {
+    var critical = [], improvements = [], niceToHaves = [], passing = [];
+    var categories = [];
+
+    function cat(name, max, fn) {
+      var res = fn();
+      categories.push({ name: name, score: res.score, max: max });
+    }
+
+    // SEO basics (25)
+    cat('SEO basics', 25, function () {
+      var score = 0;
+      var title = st.basics.pageTitle || '';
+      var desc = st.basics.description || '';
+      if (title) { score += 5; passing.push('Title is present'); } else critical.push('Missing page title');
+      if (title && title.length >= 30 && title.length <= 60) { score += 5; passing.push('Title length is in the 30–60 range'); }
+      else if (title) improvements.push('Title is ' + (title.length < 30 ? 'shorter' : 'longer') + ' than the ideal 30–60 characters');
+      if (desc) { score += 5; passing.push('Description is present'); } else critical.push('Missing meta description');
+      if (desc && desc.length >= 120 && desc.length <= 160) { score += 5; passing.push('Description length is in the 120–160 range'); }
+      else if (desc) improvements.push('Description is ' + (desc.length < 120 ? 'shorter' : 'longer') + ' than the ideal 120–160 characters');
+      if (st.basics.language) { score += 2; passing.push('Language is set'); } else improvements.push('Set a page language');
+      if (st.basics.author || st.basics.siteName) { score += 3; passing.push('Author or site name is set'); } else improvements.push('Add an author or site name');
+      return { score: score };
+    });
+
+    // URL hygiene (15)
+    cat('URL hygiene', 15, function () {
+      var score = 0;
+      var pageUrl = st.basics.pageUrl, canonical = st.basics.canonicalUrl;
+      if (isAbsoluteUrl(pageUrl)) { score += 4; passing.push('Page URL is a valid absolute URL'); }
+      else if (pageUrl) critical.push('Page URL is not a valid absolute URL');
+      if (isAbsoluteUrl(canonical)) { score += 4; passing.push('Canonical URL is a valid absolute URL'); }
+      else if (canonical) critical.push('Canonical URL is not a valid absolute URL');
+      if (canonical && isHttpsUrl(canonical)) { score += 3; passing.push('Canonical URL uses HTTPS'); }
+      else if (canonical && isAbsoluteUrl(canonical)) improvements.push('Canonical URL is not HTTPS');
+      if (!canonical || !pageUrl || normalizeUrlForCompare(pageUrl) === normalizeUrlForCompare(canonical)) score += 2;
+      else improvements.push('Page URL and canonical URL point to different paths');
+      if (!canonical || !hasSuspiciousQueryParams(canonical)) score += 2;
+      else improvements.push('Canonical URL contains tracking query parameters');
+      if (canonical && isLocalhostUrl(canonical)) improvements.push('Canonical URL points to localhost');
+      return { score: score };
+    });
+
+    // Social sharing (20)
+    cat('Social sharing', 20, function () {
+      var score = 0;
+      var title = effectiveSocialTitle(st), desc = effectiveSocialDescription(st);
+      if (title) { score += 3; passing.push('Open Graph title is set'); } else improvements.push('Missing Open Graph title');
+      if (desc) { score += 3; passing.push('Open Graph description is set'); } else improvements.push('Missing Open Graph description');
+      if (st.basics.pageUrl) { score += 3; passing.push('og:url is set'); } else improvements.push('Missing og:url');
+      if (st.social.imageUrl) { score += 4; passing.push('Social image is set'); } else critical.push('Missing social share image');
+      if (st.social.imageUrl && st.social.imageAlt) { score += 3; passing.push('Social image has alt text'); }
+      else if (st.social.imageUrl) improvements.push('Social image is missing alt text');
+      if (st.social.twitterCard) score += 2;
+      if (st.social.locale || st.basics.siteName) score += 2; else niceToHaves.push('Add a locale or site name');
+      return { score: score };
+    });
+
+    // Browser polish (15)
+    cat('Browser polish', 15, function () {
+      var score = 0;
+      if (st.browser.faviconPath) { score += 4; passing.push('Favicon is set'); } else improvements.push('Missing favicon');
+      if (st.browser.appleTouchIconPath) { score += 3; passing.push('Apple touch icon is set'); } else niceToHaves.push('Add an Apple touch icon');
+      if (st.basics.themeColor) { score += 3; passing.push('Theme color is set'); } else niceToHaves.push('Add a theme color');
+      if (st.browser.manifestPath) { score += 3; passing.push('Web manifest is set'); } else niceToHaves.push('Add a web manifest');
+      if (st.basics.pageTitle && st.basics.pageTitle.length <= 70) score += 2;
+      return { score: score };
+    });
+
+    // Structured data (15)
+    cat('Structured data', 15, function () {
+      var score = 0;
+      if (st.schema.type !== 'none') { score += 3; passing.push('A schema type is selected'); }
+      else niceToHaves.push('Add JSON-LD structured data');
+      var required = {
+        WebSite: ['name', 'url'], WebPage: ['name', 'url'], Article: ['headline', 'datePublished'],
+        Person: ['name'], SoftwareApplication: ['name', 'description']
+      };
+      if (st.schema.type === FAQ_TYPE) {
+        if (completeFaqItems(st).length) { score += 6; passing.push('FAQ items are complete'); }
+        else if (st.schema.type !== 'none') improvements.push('Add at least one complete FAQ question and answer');
+      } else if (required[st.schema.type]) {
+        var f = st.schema.fields || {};
+        var ok = required[st.schema.type].every(function (k) { return f[k] && String(f[k]).trim(); });
+        if (ok) { score += 6; passing.push('Required schema fields are complete'); }
+        else improvements.push('Fill in required fields for the selected schema type');
+      }
+      var jsonldObj = buildJsonLdObject(st);
+      if (jsonldObj) score += 4;
+      var urlFields = [(st.schema.fields || {}).url, (st.schema.fields || {}).image].filter(Boolean);
+      var urlOk = urlFields.every(function (u) { return isAbsoluteUrl(u); });
+      if (st.schema.type === 'none' || urlOk) score += 2;
+      else improvements.push('Schema URL/image fields should be absolute URLs');
+      return { score: score };
+    });
+
+    // Safety / accessibility (10)
+    cat('Safety / accessibility', 10, function () {
+      var score = 0;
+      if (!st.basics.robots.noindex) { score += 4; passing.push('Page is indexable'); }
+      else critical.push('noindex is enabled — this page will not appear in search results');
+      if (!st.social.imageUrl || st.social.imageAlt) score += 3;
+      if (st.basics.pageTitle && st.basics.description && st.basics.pageTitle.trim() !== st.basics.description.trim()) score += 2;
+      else if (st.basics.pageTitle && st.basics.description) improvements.push('Description duplicates the title');
+      score += 1; // local-first privacy note always visible
+      return { score: score };
+    });
+
+    var overall = categories.reduce(function (sum, c) { return sum + c.score; }, 0);
+
+    return {
+      overall: overall,
+      categories: categories,
+      critical: dedupe(critical),
+      improvements: dedupe(improvements),
+      niceToHaves: dedupe(niceToHaves),
+      passing: dedupe(passing)
+    };
+  }
+
+  function dedupe(arr) {
+    var seen = {}, out = [];
+    arr.forEach(function (v) { if (!seen[v]) { seen[v] = true; out.push(v); } });
+    return out;
+  }
+
+  /* ---------- rendering ---------- */
+
+  var els = {};
+  function $(id) { return document.getElementById(id); }
+
+  function cacheEls() {
+    ['titleCount','titleWarning','descCount','descWarning','pageUrlWarning','canonicalWarning',
+     'robotsWarning','imageUrlWarning','imageAltWarning','twitterHandleWarning','browserThemeColorEcho',
+     'manifestOutput','importStatus','outputCode','scoreRing','scoreNum','scoreOutOf','scoreVerdict',
+     'auditCategories','auditCritical','auditImprove','auditNice','auditPass','heroScoreNum',
+     'heroSearchTitle','heroSocialTitle','heroTabTitle','liveStatus'].forEach(function (id) { els[id] = $(id); });
+  }
+
+  function bindInputsFromState() {
+    document.querySelectorAll('[data-bind]').forEach(function (el) {
+      var path = el.dataset.bind;
+      var v = getPath(state, path);
+      if (el.type === 'checkbox') el.checked = !!v;
+      else el.value = v == null ? '' : v;
+    });
+  }
+
+  function announce(msg) { if (els.liveStatus) els.liveStatus.textContent = msg; }
+
+  function renderFieldWarnings() {
+    var b = state.basics, so = state.social;
+
+    var titleLen = characterCount(b.pageTitle);
+    els.titleCount.textContent = titleLen + ' characters';
+    els.titleCount.className = 'count' + (titleLen >= 30 && titleLen <= 60 ? ' ok' : (titleLen ? ' warn' : ''));
+    els.titleWarning.textContent = !b.pageTitle ? 'Add a page title.' : (titleLen < 30 ? 'Title is shorter than the recommended 30 characters.' : titleLen > 60 ? 'Title may be truncated in search results past 60 characters.' : '');
+
+    var descLen = characterCount(b.description);
+    els.descCount.textContent = descLen + ' characters';
+    els.descCount.className = 'count' + (descLen >= 120 && descLen <= 160 ? ' ok' : (descLen ? ' warn' : ''));
+    els.descWarning.textContent = !b.description ? 'Add a meta description.' : (descLen < 120 ? 'Description is shorter than the recommended 120 characters.' : descLen > 160 ? 'Description may be truncated past 160 characters.' : '');
+
+    var pageUrlMsgs = [];
+    if (b.pageUrl && !isAbsoluteUrl(b.pageUrl)) pageUrlMsgs.push('Page URL should be an absolute http(s) URL.');
+    if (b.pageUrl && isLocalhostUrl(b.pageUrl)) pageUrlMsgs.push('Page URL points to localhost.');
+    els.pageUrlWarning.textContent = pageUrlMsgs.join(' ');
+
+    var canonicalMsgs = [];
+    if (b.canonicalUrl && !isAbsoluteUrl(b.canonicalUrl)) canonicalMsgs.push('Canonical URL should be an absolute http(s) URL.');
+    else if (b.canonicalUrl && !isHttpsUrl(b.canonicalUrl)) canonicalMsgs.push('Canonical URL should use HTTPS.');
+    if (b.canonicalUrl && b.pageUrl && normalizeUrlForCompare(b.canonicalUrl) !== normalizeUrlForCompare(b.pageUrl)) canonicalMsgs.push('Canonical URL differs from the page URL.');
+    if (b.canonicalUrl && hasSuspiciousQueryParams(b.canonicalUrl)) canonicalMsgs.push('Canonical URL has tracking query parameters — consider removing them.');
+    els.canonicalWarning.textContent = canonicalMsgs.join(' ');
+
+    els.robotsWarning.textContent = b.robots.noindex ? 'noindex is enabled: this page will be excluded from search results.' : '';
+
+    els.imageUrlWarning.textContent = (so.imageUrl && !isAbsoluteUrl(so.imageUrl)) ? 'Social image should be an absolute URL.' : '';
+    els.imageAltWarning.textContent = (so.imageUrl && !so.imageAlt) ? 'Add alt text describing the social image.' : '';
+    els.twitterHandleWarning.textContent = (so.twitterCreator && so.twitterCreator.trim() && so.twitterCreator.trim()[0] !== '@') ? 'Handle usually starts with @ (not required).' : '';
+
+    els.browserThemeColorEcho.textContent = b.themeColor ? ('Using ' + b.themeColor + ' from Basics') : 'Not set — add one on the Basics tab';
+  }
+
+  function renderManifest() {
+    var br = state.browser, b = state.basics;
+    var manifest = {
+      name: br.appName || b.siteName || '',
+      short_name: br.shortName || br.appName || b.siteName || '',
+      start_url: '.',
+      display: 'standalone',
+      background_color: br.backgroundColor || '',
+      theme_color: b.themeColor || ''
+    };
+    els.manifestOutput.textContent = JSON.stringify(manifest, null, 2);
+  }
+
+  function setImgOrPlaceholder(container, url, alt) {
+    container.innerHTML = '';
+    if (url && isAbsoluteUrl(url)) {
+      var img = document.createElement('img');
+      img.alt = alt || '';
+      img.onerror = function () {
+        container.innerHTML = '';
+        var span = document.createElement('span');
+        span.className = 'og-placeholder';
+        span.textContent = 'Image failed to load';
+        container.appendChild(span);
+      };
+      img.src = url;
+      container.appendChild(img);
+    } else {
+      var span2 = document.createElement('span');
+      span2.className = 'og-placeholder';
+      span2.textContent = url ? 'Image URL is not absolute' : 'No image set';
+      container.appendChild(span2);
+    }
+  }
+
+  function renderPreviews() {
+    var b = state.basics, so = state.social;
+    var title = b.pageTitle || 'Untitled page';
+    var desc = b.description || 'Add a meta description to see it previewed here.';
+    var domain = getDomain(b.pageUrl || b.canonicalUrl) || 'example.com';
+
+    $('pv-google-domain').textContent = domain;
+    $('pv-google-title').textContent = truncatePreview(title, 65);
+    $('pv-google-desc').textContent = truncatePreview(desc, 160);
+
+    $('pv-mobile-domain').textContent = domain;
+    $('pv-mobile-title').textContent = truncatePreview(title, 50);
+    $('pv-mobile-desc').textContent = truncatePreview(desc, 120);
+
+    var socialTitle = effectiveSocialTitle(state) || 'Untitled page';
+    var socialDesc = effectiveSocialDescription(state) || 'Add a description to see it previewed here.';
+    var ogDomain = getDomain(b.pageUrl) || domain;
+
+    $('pv-og-domain').textContent = (b.siteName || ogDomain).toUpperCase();
+    $('pv-og-title').textContent = truncatePreview(socialTitle, 90);
+    $('pv-og-desc').textContent = truncatePreview(socialDesc, 160);
+    setImgOrPlaceholder($('pv-og-image'), so.imageUrl, so.imageAlt);
+
+    var twCard = $('pv-tw-card');
+    twCard.className = 'preview-twcard' + (so.twitterCard === 'summary' ? ' summary' : '');
+    $('pv-tw-domain').textContent = ogDomain;
+    $('pv-tw-title').textContent = truncatePreview(socialTitle, 70);
+    $('pv-tw-desc').textContent = truncatePreview(socialDesc, 125);
+    setImgOrPlaceholder($('pv-tw-image'), so.imageUrl, so.imageAlt);
+
+    $('pv-tab-title').textContent = truncatePreview(title, 32);
+    $('pv-tab-url').textContent = domain;
+
+    els.heroSearchTitle.textContent = truncatePreview(title, 40);
+    els.heroSocialTitle.textContent = truncatePreview(socialTitle, 40);
+    els.heroTabTitle.textContent = truncatePreview(title, 30);
+  }
+
+  function scoreColor(score) {
+    if (score >= 80) return getCssVar('--green');
+    if (score >= 55) return getCssVar('--cyan');
+    return getCssVar('--rose');
+  }
+  function getCssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  var lastAnnouncedScore = null;
+
+  function renderAudit() {
+    var result = auditState(state);
+    els.scoreRing.style.setProperty('--score', result.overall);
+    els.scoreRing.style.setProperty('--score-color', scoreColor(result.overall));
+    els.scoreNum.textContent = result.overall;
+    els.scoreOutOf.textContent = result.overall + ' / 100';
+    els.heroScoreNum.textContent = result.overall;
+    els.scoreVerdict.textContent = result.overall >= 80 ? 'Looking launch-ready.' : result.overall >= 55 ? 'Solid start, some gaps remain.' : 'Needs attention before launch.';
+
+    els.auditCategories.innerHTML = '';
+    result.categories.forEach(function (c) {
+      var row = document.createElement('div');
+      row.className = 'audit-cat-row';
+      var pct = Math.round((c.score / c.max) * 100);
+      row.innerHTML = '<span class="cat-name">' + escapeHtml(c.name) + '</span><span class="cat-score">' + c.score + ' / ' + c.max + '</span><div class="bar"><div class="bar-fill" style="width:' + pct + '%"></div></div>';
+      els.auditCategories.appendChild(row);
+    });
+
+    fillList(els.auditCritical, result.critical, 'No critical issues.');
+    fillList(els.auditImprove, result.improvements, 'No improvements flagged.');
+    fillList(els.auditNice, result.niceToHaves, 'Nothing extra to suggest.');
+    fillList(els.auditPass, result.passing, 'Nothing passing yet.');
+
+    if (lastAnnouncedScore !== result.overall) {
+      lastAnnouncedScore = result.overall;
+    }
+    return result;
+  }
+
+  function fillList(ul, items, emptyText) {
+    ul.innerHTML = '';
+    if (!items.length) {
+      var li = document.createElement('li');
+      li.className = 'audit-empty';
+      li.textContent = emptyText;
+      li.style.setProperty('--dummy', '');
+      li.style.listStyle = 'none';
+      li.style.color = 'var(--text-dim)';
+      ul.appendChild(li);
+      return;
+    }
+    items.forEach(function (text) {
+      var li = document.createElement('li');
+      li.textContent = text;
+      ul.appendChild(li);
+    });
+  }
+
+  function renderOutput() {
+    var builder = OUTPUT_BUILDERS[activeOutputTab] || OUTPUT_BUILDERS.essential;
+    var code = builder(state);
+    els.outputCode.textContent = code || '\/* Nothing to show yet for this section. *\/';
+  }
+
+  function renderSchemaFieldsUI() {
+    var container = $('schemaFieldsContainer');
+    var faqContainer = $('faqContainer');
+    var type = state.schema.type;
+    $('f-schemaType').value = type;
+
+    if (type === FAQ_TYPE) {
+      container.innerHTML = '';
+      container.style.display = 'none';
+      faqContainer.style.display = 'block';
+      renderFaqRows();
+      return;
+    }
+    faqContainer.style.display = 'none';
+    container.style.display = 'grid';
+
+    var defs = SCHEMA_FIELDS[type] || [];
+    container.innerHTML = '';
+    defs.forEach(function (def) {
+      var wrap = document.createElement('div');
+      wrap.className = 'form-group' + (def.type === 'textarea' ? ' wide' : '');
+      var id = 'schema-' + def.key;
+      var labelHtml = '<label for="' + id + '">' + escapeHtml(def.label || def.key) + '</label>';
+      var value = state.schema.fields[def.key] || '';
+      var fieldHtml = '';
+      if (def.type === 'textarea') {
+        fieldHtml = '<textarea id="' + id + '" data-schema-field="' + def.key + '" rows="2">' + escapeHtml(value) + '<\/textarea>';
+      } else if (def.type === 'checkbox') {
+        wrap.className = 'checkbox-row';
+        wrap.innerHTML = '<input type="checkbox" id="' + id + '" data-schema-field="' + def.key + '" ' + (state.schema.fields[def.key] ? 'checked' : '') + '><span class="cb-text"><strong>' + escapeHtml(def.label) + '<\/strong><\/span>';
+        container.appendChild(wrap);
+        return;
+      } else {
+        fieldHtml = '<input type="' + (def.type || 'text') + '" id="' + id + '" data-schema-field="' + def.key + '" value="' + escapeAttr(value) + '">';
+      }
+      wrap.innerHTML = labelHtml + fieldHtml;
+      container.appendChild(wrap);
+    });
+
+    container.querySelectorAll('[data-schema-field]').forEach(function (el) {
+      el.addEventListener('input', function () { onSchemaFieldInput(el); });
+      el.addEventListener('change', function () { onSchemaFieldInput(el); });
+    });
+  }
+
+  function onSchemaFieldInput(el) {
+    var key = el.dataset.schemaField;
+    var value = el.type === 'checkbox' ? el.checked : el.value;
+    state.schema.fields[key] = value;
+    if (key === 'free') renderSchemaFieldsUI();
+    onStateChange();
+  }
+
+  function renderFaqRows() {
+    var container = $('faqRows');
+    container.innerHTML = '';
+    state.schema.faqItems.forEach(function (item, idx) {
+      var row = document.createElement('div');
+      row.className = 'faq-row';
+      row.innerHTML =
+        '<div class="faq-row-head"><span>FAQ ' + (idx + 1) + '<\/span>' +
+        (state.schema.faqItems.length > 1 ? '<button type="button" class="btn btn-ghost btn-sm" data-faq-remove="' + idx + '">Remove<\/button>' : '') +
+        '<\/div>' +
+        '<div class="form-group"><label>Question<\/label><input type="text" data-faq-q="' + idx + '" value="' + escapeAttr(item.q) + '" placeholder="What does this do?"><\/div>' +
+        '<div class="form-group"><label>Answer<\/label><textarea data-faq-a="' + idx + '" rows="2" placeholder="A clear, direct answer.">' + escapeHtml(item.a) + '<\/textarea><\/div>';
+      container.appendChild(row);
+    });
+
+    container.querySelectorAll('[data-faq-q]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        state.schema.faqItems[Number(el.dataset.faqQ)].q = el.value;
+        onStateChange();
+      });
+    });
+    container.querySelectorAll('[data-faq-a]').forEach(function (el) {
+      el.addEventListener('input', function () {
+        state.schema.faqItems[Number(el.dataset.faqA)].a = el.value;
+        onStateChange();
+      });
+    });
+    container.querySelectorAll('[data-faq-remove]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        state.schema.faqItems.splice(Number(el.dataset.faqRemove), 1);
+        renderFaqRows();
+        onStateChange();
+      });
+    });
+  }
+
+  var SCHEMA_FIELDS = {
+    none: [],
+    WebSite: [
+      { key: 'name', label: 'Name' }, { key: 'url', label: 'URL', type: 'url' },
+      { key: 'description', label: 'Description', type: 'textarea' }, { key: 'publisherName', label: 'Publisher name' }
+    ],
+    WebPage: [
+      { key: 'name', label: 'Name' }, { key: 'url', label: 'URL', type: 'url' },
+      { key: 'description', label: 'Description', type: 'textarea' }, { key: 'isPartOfSiteName', label: 'Part of site (name)' }
+    ],
+    Article: [
+      { key: 'headline', label: 'Headline' }, { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'author', label: 'Author' }, { key: 'datePublished', label: 'Date published', type: 'date' },
+      { key: 'dateModified', label: 'Date modified', type: 'date' }, { key: 'image', label: 'Image URL', type: 'url' },
+      { key: 'url', label: 'URL', type: 'url' }
+    ],
+    Person: [
+      { key: 'name', label: 'Name' }, { key: 'url', label: 'URL', type: 'url' }, { key: 'jobTitle', label: 'Job title' },
+      { key: 'sameAs', label: 'Same-as URLs (one per line)', type: 'textarea' },
+      { key: 'description', label: 'Description', type: 'textarea' }
+    ],
+    SoftwareApplication: [
+      { key: 'name', label: 'Name' }, { key: 'description', label: 'Description', type: 'textarea' },
+      { key: 'applicationCategory', label: 'Application category' }, { key: 'operatingSystem', label: 'Operating system' },
+      { key: 'url', label: 'URL', type: 'url' }, { key: 'creator', label: 'Creator' },
+      { key: 'price', label: 'Price' }, { key: 'currency', label: 'Currency' },
+      { key: 'free', label: 'Free application', type: 'checkbox' }
+    ],
+    FAQPage: []
+  };
+
+  function renderAll() {
+    bindInputsFromState();
+    renderFieldWarnings();
+    renderManifest();
+    renderPreviews();
+    renderAudit();
+    renderOutput();
+  }
+
+  function onStateChange() {
+    saveDraft();
+    renderAll();
+  }
+
+  /* ---------- tabs ---------- */
+
+  function setActiveTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn[data-tab]').forEach(function (btn) {
+      var selected = btn.dataset.tab === tab;
+      btn.setAttribute('aria-selected', selected ? 'true' : 'false');
+    });
+    document.querySelectorAll('.tab-panel[data-panel]').forEach(function (panel) {
+      panel.classList.toggle('active', panel.dataset.panel === tab);
+    });
+    $('workspace').classList.toggle('hide-side', tab === 'output');
+  }
+
+  function setActivePreviewTab(name) {
+    document.querySelectorAll('.preview-card .preview-tab').forEach(function (btn) {
+      btn.setAttribute('aria-selected', btn.dataset.preview === name ? 'true' : 'false');
+    });
+    document.querySelectorAll('.preview-card [data-preview-body]').forEach(function (body) {
+      body.classList.toggle('active', body.dataset.previewBody === name);
+    });
+  }
+
+  function setActiveOutputTab(name) {
+    activeOutputTab = name;
+    document.querySelectorAll('.output-tabs .preview-tab').forEach(function (btn) {
+      btn.setAttribute('aria-selected', btn.dataset.output === name ? 'true' : 'false');
+    });
+    renderOutput();
+  }
+
+  /* ---------- copy / download ---------- */
+
+  function copyText(text, btn, label) {
+    label = label || 'Copied';
+    function done(success) {
+      if (!btn) return;
+      var original = btn.textContent;
+      btn.textContent = success ? label : 'Copy failed';
+      setTimeout(function () { btn.textContent = original; }, 1600);
+      announce(success ? label : 'Copy failed');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+
+  function fallbackCopy(text, done) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      done(ok);
+    } catch (e) { done(false); }
+  }
+
+  function downloadFile(filename, content, mime) {
+    var blob = new Blob([content], { type: mime });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
+  /* ---------- import ---------- */
+
+  function importHead(html) {
+    var status = els.importStatus;
+    if (!html || !html.trim()) {
+      status.className = 'import-status err';
+      status.textContent = 'Paste some HTML first.';
+      return;
+    }
+    var imported = [];
+    var doc;
+    try {
+      var parser = new DOMParser();
+      doc = parser.parseFromString('<!doctype html><html><head>' + html + '<\/head><body><\/body><\/html>', 'text/html');
+    } catch (e) {
+      status.className = 'import-status err';
+      status.textContent = 'Could not parse that HTML.';
+      return;
+    }
+
+    function q(sel) { return doc.querySelector(sel); }
+    function attr(sel, name) { var el = q(sel); return el ? el.getAttribute(name) : null; }
+
+    var title = q('title');
+    if (title && title.textContent.trim()) { state.basics.pageTitle = title.textContent.trim(); imported.push('title'); }
+
+    var desc = attr('meta[name="description"]', 'content');
+    if (desc) { state.basics.description = desc; imported.push('description'); }
+
+    var canonical = attr('link[rel="canonical"]', 'href');
+    if (canonical) { state.basics.canonicalUrl = canonical; imported.push('canonical'); }
+
+    var robots = attr('meta[name="robots"]', 'content');
+    if (robots) {
+      var rv = robots.toLowerCase();
+      state.basics.robots.noindex = rv.indexOf('noindex') !== -1;
+      state.basics.robots.nofollow = rv.indexOf('nofollow') !== -1;
+      state.basics.robots.noarchive = rv.indexOf('noarchive') !== -1;
+      state.basics.robots.nosnippet = rv.indexOf('nosnippet') !== -1;
+      state.basics.robots.noimageindex = rv.indexOf('noimageindex') !== -1;
+      imported.push('robots');
+    }
+
+    var author = attr('meta[name="author"]', 'content');
+    if (author) { state.basics.author = author; imported.push('author'); }
+
+    var themeColor = attr('meta[name="theme-color"]', 'content');
+    if (themeColor) { state.basics.themeColor = themeColor; imported.push('theme-color'); }
+
+    var ogTitle = attr('meta[property="og:title"]', 'content');
+    if (ogTitle) { state.social.socialTitle = ogTitle; imported.push('og:title'); }
+    var ogDesc = attr('meta[property="og:description"]', 'content');
+    if (ogDesc) { state.social.socialDescription = ogDesc; imported.push('og:description'); }
+    var ogUrl = attr('meta[property="og:url"]', 'content');
+    if (ogUrl) { state.basics.pageUrl = ogUrl; imported.push('og:url'); }
+    var ogSite = attr('meta[property="og:site_name"]', 'content');
+    if (ogSite) { state.basics.siteName = ogSite; imported.push('og:site_name'); }
+    var ogImage = attr('meta[property="og:image"]', 'content');
+    if (ogImage) { state.social.imageUrl = ogImage; imported.push('og:image'); }
+    var ogImageAlt = attr('meta[property="og:image:alt"]', 'content');
+    if (ogImageAlt) { state.social.imageAlt = ogImageAlt; imported.push('og:image:alt'); }
+    var ogLocale = attr('meta[property="og:locale"]', 'content');
+    if (ogLocale) { state.social.locale = ogLocale; imported.push('og:locale'); }
+
+    var twCard = attr('meta[name="twitter:card"]', 'content');
+    if (twCard) { state.social.twitterCard = twCard; imported.push('twitter:card'); }
+    var twTitle = attr('meta[name="twitter:title"]', 'content');
+    if (twTitle && !ogTitle) { state.social.socialTitle = twTitle; imported.push('twitter:title'); }
+    var twDesc = attr('meta[name="twitter:description"]', 'content');
+    if (twDesc && !ogDesc) { state.social.socialDescription = twDesc; imported.push('twitter:description'); }
+    var twImage = attr('meta[name="twitter:image"]', 'content');
+    if (twImage && !ogImage) { state.social.imageUrl = twImage; imported.push('twitter:image'); }
+    var twImageAlt = attr('meta[name="twitter:image:alt"]', 'content');
+    if (twImageAlt && !ogImageAlt) { state.social.imageAlt = twImageAlt; imported.push('twitter:image:alt'); }
+    var twCreator = attr('meta[name="twitter:creator"]', 'content');
+    if (twCreator) { state.social.twitterCreator = twCreator; imported.push('twitter:creator'); }
+
+    var favicon = attr('link[rel="icon"]', 'href');
+    if (favicon) { state.browser.faviconPath = favicon; imported.push('favicon'); }
+    var appleIcon = attr('link[rel="apple-touch-icon"]', 'href');
+    if (appleIcon) { state.browser.appleTouchIconPath = appleIcon; imported.push('apple-touch-icon'); }
+    var manifest = attr('link[rel="manifest"]', 'href');
+    if (manifest) { state.browser.manifestPath = manifest; imported.push('manifest'); }
+    var maskIcon = attr('link[rel="mask-icon"]', 'href');
+    if (maskIcon) { state.browser.maskIconPath = maskIcon; imported.push('mask-icon'); }
+
+    var scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+    var jsonLdImported = false;
+    scripts.forEach(function (scriptEl) {
+      if (jsonLdImported) return;
+      var raw = scriptEl.textContent;
+      var parsed;
+      try { parsed = JSON.parse(raw); } catch (e) { return; }
+      var mapped = mapJsonLdToSchema(parsed);
+      if (mapped) {
+        state.schema.type = mapped.type;
+        state.schema.fields = mapped.fields || {};
+        if (mapped.faqItems) state.schema.faqItems = mapped.faqItems;
+        state.schema.rawJson = null;
+      } else {
+        state.schema.type = 'none';
+        state.schema.rawJson = parsed;
+      }
+      jsonLdImported = true;
+      imported.push('JSON-LD');
+    });
+
+    if (!imported.length) {
+      status.className = 'import-status err';
+      status.textContent = 'No recognizable metadata tags found in that HTML.';
+      return;
+    }
+
+    status.className = 'import-status ok';
+    status.textContent = 'Imported: ' + imported.join(', ') + '.';
+    announce('Imported');
+    renderSchemaFieldsUI();
+    onStateChange();
+  }
+
+  function mapJsonLdToSchema(obj) {
+    if (!obj || typeof obj !== 'object') return null;
+    var type = obj['@type'];
+    if (Array.isArray(type)) type = type[0];
+    if (type === 'WebSite') {
+      return { type: 'WebSite', fields: { name: obj.name || '', url: obj.url || '', description: obj.description || '', publisherName: obj.publisher && obj.publisher.name || '' } };
+    }
+    if (type === 'WebPage') {
+      return { type: 'WebPage', fields: { name: obj.name || '', url: obj.url || '', description: obj.description || '', isPartOfSiteName: obj.isPartOf && obj.isPartOf.name || '' } };
+    }
+    if (type === 'Article') {
+      return { type: 'Article', fields: { headline: obj.headline || '', description: obj.description || '', author: obj.author && obj.author.name || (typeof obj.author === 'string' ? obj.author : ''), datePublished: obj.datePublished || '', dateModified: obj.dateModified || '', image: obj.image || '', url: obj.url || '' } };
+    }
+    if (type === 'Person') {
+      return { type: 'Person', fields: { name: obj.name || '', url: obj.url || '', jobTitle: obj.jobTitle || '', sameAs: Array.isArray(obj.sameAs) ? obj.sameAs.join('\n') : (obj.sameAs || ''), description: obj.description || '' } };
+    }
+    if (type === 'SoftwareApplication') {
+      var offers = obj.offers || {};
+      return { type: 'SoftwareApplication', fields: { name: obj.name || '', description: obj.description || '', applicationCategory: obj.applicationCategory || '', operatingSystem: obj.operatingSystem || '', url: obj.url || '', creator: obj.creator && obj.creator.name || '', price: offers.price || '', currency: offers.priceCurrency || '', free: offers.price === '0' || offers.price === 0 } };
+    }
+    if (type === 'FAQPage' && Array.isArray(obj.mainEntity)) {
+      var items = obj.mainEntity.map(function (q) {
+        return { q: q.name || '', a: (q.acceptedAnswer && q.acceptedAnswer.text) || '' };
+      }).filter(function (it) { return it.q || it.a; });
+      return { type: 'FAQPage', fields: {}, faqItems: items.length ? items : [{ q: '', a: '' }] };
+    }
+    return null;
+  }
+
+  /* ---------- demo / reset / storage ---------- */
+
+  function demoState() {
+    return {
+      basics: {
+        pageTitle: 'Website Launch Kit | Matt Livingston',
+        siteName: 'Matt Livingston Tools',
+        description: 'Generate launch-ready metadata, robots.txt, sitemap, privacy boilerplate, security headers, and a final go-live checklist for static websites.',
+        pageUrl: 'https://mattlivingston.com/tools/launch-kit/',
+        canonicalUrl: 'https://mattlivingston.com/tools/launch-kit/',
+        language: 'en',
+        author: 'Matt Livingston',
+        themeColor: '#74dfff',
+        robots: { noindex: false, nofollow: false, noarchive: false, nosnippet: false, noimageindex: false }
+      },
+      social: {
+        socialTitle: 'Website Launch Kit | Matt Livingston',
+        socialDescription: 'Build the launch files, metadata, checks, and policy boilerplate every static site needs before going live.',
+        imageUrl: 'https://mattlivingston.com/tools/assets/launch-kit-og.png',
+        imageAlt: 'Website Launch Kit interface preview',
+        locale: 'en_US',
+        twitterCard: 'summary_large_image',
+        twitterCreator: ''
+      },
+      browser: {
+        faviconPath: '/favicon.ico',
+        appleTouchIconPath: '/apple-touch-icon.png',
+        manifestPath: '/site.webmanifest',
+        maskIconPath: '',
+        appName: 'Matt Livingston Tools',
+        shortName: 'ML Tools',
+        backgroundColor: '#050812'
+      },
+      schema: {
+        type: 'SoftwareApplication',
+        fields: {
+          name: 'Website Launch Kit',
+          description: 'Generate launch-ready metadata, robots.txt, sitemap, privacy boilerplate, security headers, and a final go-live checklist for static websites.',
+          applicationCategory: 'DeveloperApplication',
+          operatingSystem: 'Web',
+          url: 'https://mattlivingston.com/tools/launch-kit/',
+          creator: 'Matt Livingston',
+          price: '0',
+          currency: 'USD',
+          free: true
+        },
+        faqItems: [{ q: '', a: '' }],
+        rawJson: null
+      }
+    };
+  }
+
+  function loadDemo(btn) {
+    state = demoState();
+    renderSchemaFieldsUI();
+    onStateChange();
+    if (btn) {
+      var original = btn.textContent;
+      btn.textContent = 'Demo loaded';
+      setTimeout(function () { btn.textContent = original; }, 1600);
+    }
+    announce('Demo loaded');
+  }
+
+  function resetAll() {
+    if (!window.confirm('Reset all fields? This clears your saved draft.')) return;
+    state = defaultState();
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    renderSchemaFieldsUI();
+    onStateChange();
+    announce('Reset');
+  }
+
+  function saveDraft() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function deepMerge(base, extra) {
+    if (typeof extra !== 'object' || extra === null || Array.isArray(extra)) return extra === undefined ? base : extra;
+    var out = {};
+    Object.keys(base).forEach(function (k) { out[k] = base[k]; });
+    Object.keys(extra).forEach(function (k) {
+      if (typeof base[k] === 'object' && base[k] !== null && !Array.isArray(base[k])) {
+        out[k] = deepMerge(base[k], extra[k]);
+      } else {
+        out[k] = extra[k];
+      }
+    });
+    return out;
+  }
+
+  function loadDraft() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var parsed = JSON.parse(raw);
+      state = deepMerge(defaultState(), parsed);
+      if (!state.schema.faqItems || !state.schema.faqItems.length) state.schema.faqItems = [{ q: '', a: '' }];
+    } catch (e) {}
+  }
+
+  /* ---------- events ---------- */
+
+  function attachEvents() {
+    document.body.addEventListener('input', function (e) {
+      var el = e.target.closest('[data-bind]');
+      if (!el) return;
+      var value = el.type === 'checkbox' ? el.checked : el.value;
+      setPath(state, el.dataset.bind, value);
+      onStateChange();
+    });
+    document.body.addEventListener('change', function (e) {
+      var el = e.target.closest('select[data-bind], input[type="checkbox"][data-bind]');
+      if (!el) return;
+      var value = el.type === 'checkbox' ? el.checked : el.value;
+      setPath(state, el.dataset.bind, value);
+      onStateChange();
+    });
+
+    document.querySelectorAll('.tablist .tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () { setActiveTab(btn.dataset.tab); });
+    });
+
+    document.querySelectorAll('.preview-card .preview-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () { setActivePreviewTab(btn.dataset.preview); });
+    });
+
+    document.querySelectorAll('.output-tabs .preview-tab').forEach(function (btn) {
+      btn.addEventListener('click', function () { setActiveOutputTab(btn.dataset.output); });
+    });
+
+    $('f-schemaType').addEventListener('change', function (e) {
+      state.schema.type = e.target.value;
+      renderSchemaFieldsUI();
+      onStateChange();
+    });
+
+    $('addFaqRowBtn').addEventListener('click', function () {
+      state.schema.faqItems.push({ q: '', a: '' });
+      renderFaqRows();
+      onStateChange();
+    });
+
+    $('importHeadBtn').addEventListener('click', function () { importHead($('f-importHead').value); });
+    $('clearImportBtn').addEventListener('click', function () {
+      $('f-importHead').value = '';
+      els.importStatus.className = 'import-status';
+      els.importStatus.textContent = 'Paste HTML above, then click Import head.';
+    });
+
+    $('copyCurrentBtn').addEventListener('click', function (e) {
+      var code = OUTPUT_BUILDERS[activeOutputTab](state);
+      copyText(code, e.currentTarget);
+    });
+    $('copyFullHeadBtn').addEventListener('click', function (e) {
+      copyText(wrapHead(buildHeadLines(state)), e.currentTarget);
+    });
+    $('heroCopyHeadBtn').addEventListener('click', function (e) {
+      copyText(wrapHead(buildHeadLines(state)), e.currentTarget);
+    });
+    $('downloadHtmlBtn').addEventListener('click', function () {
+      downloadFile('metadata.html', wrapHead(buildHeadLines(state)), 'text/html');
+      announce('Downloaded');
+      flashLabel($('downloadHtmlBtn'), 'Downloaded');
+    });
+    $('downloadJsonBtn').addEventListener('click', function () {
+      var audit = auditState(state);
+      var payload = {
+        state: state,
+        generatedAt: new Date().toISOString(),
+        generatedTags: {
+          essentialHtml: OUTPUT_BUILDERS.essential(state),
+          socialTags: OUTPUT_BUILDERS.social(state),
+          browserTags: OUTPUT_BUILDERS.browser(state),
+          jsonLd: OUTPUT_BUILDERS.jsonld(state),
+          fullHead: OUTPUT_BUILDERS.full(state)
+        },
+        audit: audit
+      };
+      downloadFile('metadata.json', JSON.stringify(payload, null, 2), 'application/json');
+      announce('Downloaded');
+      flashLabel($('downloadJsonBtn'), 'Downloaded');
+    });
+
+    $('loadDemoBtn').addEventListener('click', function (e) { loadDemo(e.currentTarget); });
+    $('heroLoadDemoBtn').addEventListener('click', function (e) { loadDemo(e.currentTarget); setActiveTab('basics'); });
+    $('resetBtn').addEventListener('click', resetAll);
+
+    window.addEventListener('keydown', function (e) {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.tablist .tab-btn'));
+      var focused = document.activeElement;
+      var idx = tabs.indexOf(focused);
+      if (idx === -1) return;
+      e.preventDefault();
+      var next = e.key === 'ArrowRight' ? (idx + 1) % tabs.length : (idx - 1 + tabs.length) % tabs.length;
+      tabs[next].focus();
+      setActiveTab(tabs[next].dataset.tab);
+    });
+  }
+
+  function flashLabel(btn, text) {
+    if (!btn) return;
+    var original = btn.textContent;
+    btn.textContent = text;
+    setTimeout(function () { btn.textContent = original; }, 1600);
+  }
+
+  /* ---------- init ---------- */
+
+  function init() {
+    cacheEls();
+    loadDraft();
+    attachEvents();
+    renderSchemaFieldsUI();
+    setActiveTab('basics');
+    setActivePreviewTab('google');
+    setActiveOutputTab('essential');
+    renderAll();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
