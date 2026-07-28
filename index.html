@@ -56,6 +56,18 @@
       --violet-mid:  #6d28d9;
       --violet-glow: rgba(167,139,250,0.2);
 
+      --amber:       #fbbf24;
+      --amber-dim:   #92400e;
+      --amber-glow:  rgba(251,191,36,0.18);
+
+      --emerald:     #34d399;
+      --emerald-dim: #047857;
+      --emerald-glow:rgba(52,211,153,0.18);
+
+      --rose:        #fb7185;
+      --rose-dim:    #be123c;
+      --rose-glow:   rgba(251,113,133,0.18);
+
       --text:        #c8ccd8;
       --text-dim:    #4e5368;
       --text-muted:  #282c3c;
@@ -380,7 +392,7 @@
     .btn:hover        { transform: translateY(-2px); }
     .btn:active       { transform: translateY(0); transition-duration: 0.08s; }
 
-    /* Cyan — Tools */
+    /* Cyan — Games */
     .btn-cyan {
       background: rgba(34,211,238,0.08);
       color: var(--cyan);
@@ -393,7 +405,7 @@
       box-shadow: 0 0 26px var(--cyan-glow), inset 0 0 12px rgba(34,211,238,0.04);
     }
 
-    /* Violet — Gravity Falls */
+    /* Violet — Tools */
     .btn-violet {
       background: rgba(167,139,250,0.07);
       color: var(--violet);
@@ -404,6 +416,45 @@
       border-color: var(--violet);
       color: #c4b5fd;
       box-shadow: 0 0 24px var(--violet-glow);
+    }
+
+    /* Amber — PHP Scripts */
+    .btn-amber {
+      background: rgba(251,191,36,0.075);
+      color: var(--amber);
+      border: 1px solid rgba(146,64,14,0.62);
+    }
+    .btn-amber:hover {
+      background: rgba(251,191,36,0.13);
+      border-color: var(--amber);
+      color: #fde68a;
+      box-shadow: 0 0 24px var(--amber-glow);
+    }
+
+    /* Emerald — Sci-Fi Worldbuilder */
+    .btn-emerald {
+      background: rgba(52,211,153,0.07);
+      color: var(--emerald);
+      border: 1px solid rgba(4,120,87,0.62);
+    }
+    .btn-emerald:hover {
+      background: rgba(52,211,153,0.13);
+      border-color: var(--emerald);
+      color: #a7f3d0;
+      box-shadow: 0 0 24px var(--emerald-glow);
+    }
+
+    /* Rose — Gravity Falls Archive */
+    .btn-rose {
+      background: rgba(251,113,133,0.075);
+      color: var(--rose);
+      border: 1px solid rgba(190,18,60,0.58);
+    }
+    .btn-rose:hover {
+      background: rgba(251,113,133,0.13);
+      border-color: var(--rose);
+      color: #fecdd3;
+      box-shadow: 0 0 24px var(--rose-glow);
     }
 
     /* Game — solid-fill violet so it pops */
@@ -423,6 +474,19 @@
       width: 13px; height: 13px;
       flex-shrink: 0;
       opacity: 0.85;
+    }
+
+    .btn-detached {
+      width: 100%;
+      max-width: 308px;
+      margin-top: 18px;
+      opacity: 0;
+      animation: fadeUp 0.52s ease 0.78s forwards;
+    }
+
+    .btn-detached + .btn-detached {
+      margin-top: 8px;
+      animation-delay: 0.84s;
     }
 
     .portal-link {
@@ -492,6 +556,7 @@
       .tagline { line-height: 1.65; }
       .rule { margin: 16px auto; }
       .btn { padding: 9px 17px; }
+      .btn-detached { margin-top: 14px; }
       .portal-link {
         margin-top: 8px;
         padding: 9px 12px;
@@ -561,20 +626,30 @@
 
       <nav class="btn-group" aria-label="Site navigation">
 
-        <a href="/tools/" class="btn btn-cyan">
+        <a href="/games/" class="btn btn-cyan">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="6" x2="10" y1="12" y2="12"/>
+            <line x1="8" x2="8" y1="10" y2="14"/>
+            <line x1="15" x2="15.01" y1="13" y2="13"/>
+            <line x1="18" x2="18.01" y1="11" y2="11"/>
+            <rect width="20" height="12" x="2" y="6" rx="2"/>
+          </svg>
+          Games
+        </a>
+
+        <a href="/tools/" class="btn btn-violet">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
           </svg>
           Tools
         </a>
 
-        <a href="/gravity-falls/" class="btn btn-violet">
+        <a href="/shed/" class="btn btn-amber">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
           </svg>
-          Gravity Falls
+          PHP Scripts
         </a>
 
         <!-- <a href="/gravity-falls/game/" class="btn btn-game">
@@ -587,6 +662,24 @@
         </a> -->
 
       </nav>
+
+      <a href="/worldbuilder/" class="btn btn-emerald btn-detached">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M2 12h20"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+        Sci-Fi Worldbuilder
+      </a>
+
+      <a href="/gravity-falls/" class="btn btn-rose btn-detached">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="5" rx="1"/>
+          <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/>
+          <path d="M10 13h4"/>
+        </svg>
+        Gravity Falls Archive
+      </a>
 
       <!-- <a
         href="https://manicwebmaster.com"
