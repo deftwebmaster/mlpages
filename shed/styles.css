@@ -393,6 +393,50 @@ dd {
     box-shadow: var(--shadow);
 }
 
+.script-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.script-card.compact {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    box-shadow: none;
+}
+
+.script-card.compact .script-content {
+    padding: 0;
+}
+
+.script-card.compact h3 {
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+}
+
+.script-card.compact .feature-list {
+    grid-template-columns: 1fr;
+}
+
+.script-card.compact .script-actions {
+    margin-top: auto;
+}
+
+.script-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 8px;
+    color: var(--cyan);
+    background: rgba(85, 214, 255, 0.08);
+    font-weight: 950;
+    font-size: 1.05rem;
+}
+
 .script-content {
     padding: clamp(0.4rem, 3vw, 1.4rem);
 }
@@ -619,6 +663,7 @@ a:focus-visible {
 
     .hero,
     .script-card,
+    .script-grid,
     .install-section,
     .resource-grid,
     .about-band {
