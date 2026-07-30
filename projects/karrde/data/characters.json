@@ -1,0 +1,877 @@
+[
+  {
+    "id": "talon-karrde",
+    "name": "Talon Karrde",
+    "species": "Human",
+    "affiliation": "Karrde Organization",
+    "currentStatus": "Active",
+    "knownLocation": "Mobile; last confirmed aboard Wild Karrde",
+    "politicalAlignment": "Independent",
+    "occupation": "Information broker",
+    "knownAssociates": [
+      "mara-jade",
+      "luke-skywalker",
+      "aves",
+      "ghent",
+      "han-solo"
+    ],
+    "knownAssets": [
+      "wild-karrde"
+    ],
+    "strategicImportance": "Controls one of the most disciplined private intelligence networks operating outside New Republic and Imperial channels.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-Bilbringi network reorganization",
+    "psychologicalNotes": "Negotiates from patience. Prefers leverage that keeps future routes open. Shows unusual loyalty when loyalty produces long-term informational advantage.",
+    "operationalSummary": "Karrde's value is not fleet strength, territory, or public influence. His strength is source discipline and the ability to know which fact matters before rival services know it exists.",
+    "recentIntelligence": [
+      "report-smuggler-alignment",
+      "report-source-discipline"
+    ],
+    "timelineEvents": [
+      "event-karrde-shelters-skywalker",
+      "event-smugglers-at-bilbringi"
+    ],
+    "relatedOperations": [
+      "op-smuggler-conference",
+      "op-bilbringi-intervention",
+      "op-obroa-skai-extraction",
+      "op-ferrier-asset-denial"
+    ],
+    "relatedShips": [
+      "wild-karrde"
+    ],
+    "relatedOrganizations": [
+      "karrde-organization",
+      "smugglers-alliance"
+    ],
+    "relatedWorlds": [
+      "myrkr"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Eyes Only",
+    "quote": "Information is not useful because it is secret. It is useful because it is accurate."
+  },
+  {
+    "id": "mara-jade",
+    "name": "Mara Jade",
+    "species": "Human",
+    "affiliation": "Karrde Organization",
+    "currentStatus": "Active",
+    "knownLocation": "Variable; Karrde network courier routes",
+    "politicalAlignment": "Independent, former Imperial service",
+    "occupation": "Executive operative",
+    "knownAssociates": [
+      "talon-karrde",
+      "luke-skywalker",
+      "grand-admiral-thrawn",
+      "aves",
+      "ghent",
+      "joruus-cbaoth"
+    ],
+    "knownAssets": [
+      "wild-karrde"
+    ],
+    "strategicImportance": "Former Imperial Hand with access patterns and operational instincts unavailable to conventional smugglers.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, coordination with New Republic contact channels",
+    "psychologicalNotes": "Hostility toward Skywalker remains tactically real but strategically altered. Subject responds poorly to manipulation and better to mission clarity.",
+    "operationalSummary": "Jade is the network's sharpest field instrument. She is not merely an enforcer; she reads political and tactical pressure before most commanders read orders.",
+    "recentIntelligence": [
+      "report-emperors-hand",
+      "report-smuggler-alignment"
+    ],
+    "timelineEvents": [
+      "event-karrde-shelters-skywalker",
+      "event-wayland-recovery"
+    ],
+    "relatedOperations": [
+      "op-mount-tantiss-recovery",
+      "op-smuggler-conference",
+      "op-cbaoth-containment"
+    ],
+    "relatedShips": [
+      "wild-karrde"
+    ],
+    "relatedOrganizations": [
+      "karrde-organization",
+      "galactic-empire"
+    ],
+    "relatedWorlds": [
+      "myrkr",
+      "wayland"
+    ],
+    "threatLevel": "High",
+    "classification": "Eyes Only",
+    "quote": "Some debts are tactical. Some become structural."
+  },
+  {
+    "id": "grand-admiral-thrawn",
+    "name": "Grand Admiral Thrawn",
+    "species": "Chiss",
+    "affiliation": "Imperial Remnant",
+    "currentStatus": "Deceased; confirmation accepted with narrow caveats",
+    "knownLocation": "Last confirmed aboard Chimaera near Bilbringi",
+    "politicalAlignment": "Imperial restoration",
+    "occupation": "Supreme military commander",
+    "knownAssociates": [
+      "gilad-pellaeon",
+      "mara-jade",
+      "joruus-cbaoth",
+      "niles-ferrier"
+    ],
+    "knownAssets": [
+      "chimaera",
+      "katana-fleet"
+    ],
+    "strategicImportance": "The only Imperial commander in this period capable of converting limited materiel into theater-scale initiative.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, Bilbringi engagement",
+    "psychologicalNotes": "Demonstrates extraordinary strategic pattern recognition. Consistently exploits overlooked variables. Political ambitions appear secondary to restoration of Imperial stability.",
+    "operationalSummary": "Avoid direct military engagement when possible. Deny artwork, source material, shipping irregularities, and cultural signals. Thrawn's battlefield is never only the battlefield.",
+    "recentIntelligence": [
+      "report-thrawn-patterns",
+      "report-bilbringi-afteraction"
+    ],
+    "timelineEvents": [
+      "event-thrawn-emerges",
+      "event-bilbringi"
+    ],
+    "relatedOperations": [
+      "op-katana-fleet-acquisition",
+      "op-bilbringi-intervention",
+      "op-sluis-van-raid",
+      "op-cbaoth-containment"
+    ],
+    "relatedShips": [
+      "chimaera",
+      "katana-fleet"
+    ],
+    "relatedOrganizations": [
+      "imperial-remnant"
+    ],
+    "relatedWorlds": [
+      "bilbringi",
+      "wayland"
+    ],
+    "threatLevel": "Severe",
+    "classification": "Restricted",
+    "quote": "The smallest neglected variable often becomes the campaign."
+  },
+  {
+    "id": "luke-skywalker",
+    "name": "Luke Skywalker",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Variable; New Republic and Jedi-related travel",
+    "politicalAlignment": "New Republic",
+    "occupation": "Jedi Knight",
+    "knownAssociates": [
+      "mara-jade",
+      "talon-karrde",
+      "leia-organa-solo",
+      "han-solo",
+      "joruus-cbaoth"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "High symbolic value. Operational effect exceeds rank, authority, and available assets.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, Wayland operation",
+    "psychologicalNotes": "Persistent optimism is not naivete. Subject repeatedly creates negotiation channels in environments where no channel should survive.",
+    "operationalSummary": "Skywalker changes the decision math around him. Treat encounters as political, psychological, and tactical events simultaneously.",
+    "recentIntelligence": [
+      "report-wayland-consequences"
+    ],
+    "timelineEvents": [
+      "event-karrde-shelters-skywalker",
+      "event-wayland-recovery"
+    ],
+    "relatedOperations": [
+      "op-mount-tantiss-recovery",
+      "op-cbaoth-containment"
+    ],
+    "relatedShips": [],
+    "relatedOrganizations": [
+      "new-republic",
+      "karrde-organization"
+    ],
+    "relatedWorlds": [
+      "myrkr",
+      "wayland"
+    ],
+    "threatLevel": "High",
+    "classification": "Confidential",
+    "quote": "A Jedi is rarely just a Jedi."
+  },
+  {
+    "id": "leia-organa-solo",
+    "name": "Leia Organa Solo",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Coruscant diplomatic circuit",
+    "politicalAlignment": "New Republic",
+    "occupation": "Councilor and diplomatic principal",
+    "knownAssociates": [
+      "luke-skywalker",
+      "talon-karrde",
+      "han-solo",
+      "lando-calrissian",
+      "borsk-feylya"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "Central legitimizing figure for New Republic policy and Noghri realignment.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-Thrawn consolidation",
+    "psychologicalNotes": "Maintains composure under direct personal threat. Diplomatic pressure increases rather than reduces operational clarity.",
+    "operationalSummary": "Organa Solo remains the New Republic's best bridge between legitimacy, intelligence, and moral authority.",
+    "recentIntelligence": [
+      "report-political-drift"
+    ],
+    "timelineEvents": [
+      "event-noghri-shift"
+    ],
+    "relatedOperations": [
+      "op-noghri-realignment",
+      "op-honoghr-disclosure",
+      "op-council-containment"
+    ],
+    "relatedShips": [],
+    "relatedOrganizations": [
+      "new-republic"
+    ],
+    "relatedWorlds": [
+      "coruscant"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Confidential",
+    "quote": "Diplomacy is not softer than force. It is simply harder to measure."
+  },
+  {
+    "id": "gilad-pellaeon",
+    "name": "Gilad Pellaeon",
+    "species": "Human",
+    "affiliation": "Imperial Remnant",
+    "currentStatus": "Active",
+    "knownLocation": "Chimaera command rotation",
+    "politicalAlignment": "Imperial",
+    "occupation": "Captain",
+    "knownAssociates": [
+      "grand-admiral-thrawn"
+    ],
+    "knownAssets": [
+      "chimaera"
+    ],
+    "strategicImportance": "Continuity figure for Imperial naval doctrine after command disruption.",
+    "reliabilityRating": "Probable",
+    "lastConfirmedActivity": "09 ABY, Bilbringi withdrawal",
+    "psychologicalNotes": "Professional, conservative, observant. More dangerous as an institutional memory than as an innovator.",
+    "operationalSummary": "Pellaeon preserves what survives. Track him for evidence of Imperial consolidation after charismatic command failure.",
+    "recentIntelligence": [
+      "report-bilbringi-afteraction"
+    ],
+    "timelineEvents": [
+      "event-bilbringi"
+    ],
+    "relatedOperations": [
+      "op-bilbringi-intervention"
+    ],
+    "relatedShips": [
+      "chimaera"
+    ],
+    "relatedOrganizations": [
+      "imperial-remnant"
+    ],
+    "relatedWorlds": [
+      "bilbringi"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Restricted",
+    "quote": "The retreat tells the next campaign where to begin."
+  },
+  {
+    "id": "han-solo",
+    "name": "Han Solo",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Variable; New Republic special liaison routes",
+    "politicalAlignment": "New Republic with independent habits",
+    "occupation": "General, courier, informal negotiator",
+    "knownAssociates": [
+      "leia-organa-solo",
+      "luke-skywalker",
+      "lando-calrissian",
+      "talon-karrde"
+    ],
+    "knownAssets": [
+      "millennium-falcon"
+    ],
+    "strategicImportance": "Moves between formal New Republic authority and fringe credibility with unusual ease.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-Nkllon and Noghri contact routes",
+    "psychologicalNotes": "Resists formal process but often delivers outcomes formal process cannot reach. Threat response improves when the stakes become personal.",
+    "operationalSummary": "Solo remains one of the few New Republic figures independent operators will hear without assuming immediate absorption into government channels.",
+    "recentIntelligence": [
+      "report-fringe-diplomacy"
+    ],
+    "timelineEvents": [
+      "event-nkllon-convoy",
+      "event-honoghr-disclosure"
+    ],
+    "relatedOperations": [
+      "op-nkllon-convoy",
+      "op-honoghr-disclosure"
+    ],
+    "relatedShips": [
+      "millennium-falcon"
+    ],
+    "relatedOrganizations": [
+      "new-republic",
+      "smugglers-alliance"
+    ],
+    "relatedWorlds": [
+      "nkllon",
+      "honoghr"
+    ],
+    "threatLevel": "High",
+    "classification": "Confidential",
+    "quote": "Some people call it improvisation when they missed the preparation."
+  },
+  {
+    "id": "lando-calrissian",
+    "name": "Lando Calrissian",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Nkllon industrial operations and variable commercial routes",
+    "politicalAlignment": "New Republic-aligned independent entrepreneur",
+    "occupation": "Administrator, investor, field negotiator",
+    "knownAssociates": [
+      "han-solo",
+      "leia-organa-solo",
+      "talon-karrde"
+    ],
+    "knownAssets": [
+      "lady-luck"
+    ],
+    "strategicImportance": "Commercial instincts expose military risks hidden inside supply-chain language.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, Nkllon industrial disruption assessment",
+    "psychologicalNotes": "Uses charm as camouflage for careful risk arithmetic. More disciplined than casual observers assume.",
+    "operationalSummary": "Calrissian is a useful bridge between capital, logistics, and covert access. Treat his enterprises as early-warning sensors.",
+    "recentIntelligence": [
+      "report-nkllon-industrial-risk"
+    ],
+    "timelineEvents": [
+      "event-nkllon-convoy"
+    ],
+    "relatedOperations": [
+      "op-nkllon-convoy"
+    ],
+    "relatedShips": [
+      "lady-luck"
+    ],
+    "relatedOrganizations": [
+      "new-republic"
+    ],
+    "relatedWorlds": [
+      "nkllon"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Internal",
+    "quote": "Profit and survival are not always separate ledgers."
+  },
+  {
+    "id": "aves",
+    "name": "Aves",
+    "species": "Human",
+    "affiliation": "Karrde Organization",
+    "currentStatus": "Active",
+    "knownLocation": "Karrde network relay routes",
+    "politicalAlignment": "Independent",
+    "occupation": "Senior lieutenant and logistics coordinator",
+    "knownAssociates": [
+      "talon-karrde",
+      "mara-jade",
+      "ghent"
+    ],
+    "knownAssets": [
+      "wild-karrde"
+    ],
+    "strategicImportance": "Operational continuity figure inside Karrde's distributed network.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-Bilbringi traffic stabilization",
+    "psychologicalNotes": "Practical, direct, and more comfortable with logistics than politics. Valuable because he keeps fragile systems ordinary.",
+    "operationalSummary": "Aves is the kind of lieutenant a private intelligence service survives on: unglamorous, informed, and difficult to replace quietly.",
+    "recentIntelligence": [
+      "report-source-discipline"
+    ],
+    "timelineEvents": [
+      "event-smugglers-at-bilbringi"
+    ],
+    "relatedOperations": [
+      "op-smuggler-conference"
+    ],
+    "relatedShips": [
+      "wild-karrde"
+    ],
+    "relatedOrganizations": [
+      "karrde-organization"
+    ],
+    "relatedWorlds": [
+      "myrkr"
+    ],
+    "threatLevel": "Low",
+    "classification": "Internal",
+    "quote": "The route works because someone boring kept it that way."
+  },
+  {
+    "id": "ghent",
+    "name": "Ghent",
+    "species": "Human",
+    "affiliation": "Karrde Organization",
+    "currentStatus": "Active",
+    "knownLocation": "Protected slicer workspace; route withheld",
+    "politicalAlignment": "Independent",
+    "occupation": "Slicer and cryptographic analyst",
+    "knownAssociates": [
+      "talon-karrde",
+      "mara-jade",
+      "aves"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "Exceptional technical access potential with limited political self-protection.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, source authentication support",
+    "psychologicalNotes": "Technically fearless and socially under-armored. Requires shielding from coercive recruitment and praise-based manipulation.",
+    "operationalSummary": "Ghent turns locked channels into usable evidence. His value rises whenever a faction believes encryption can substitute for operational discipline.",
+    "recentIntelligence": [
+      "report-slicer-exposure"
+    ],
+    "timelineEvents": [
+      "event-obroa-skai-archive"
+    ],
+    "relatedOperations": [
+      "op-obroa-skai-extraction"
+    ],
+    "relatedShips": [
+      "wild-karrde"
+    ],
+    "relatedOrganizations": [
+      "karrde-organization",
+      "new-republic-intelligence"
+    ],
+    "relatedWorlds": [
+      "obroa-skai"
+    ],
+    "threatLevel": "Low",
+    "classification": "Eyes Only",
+    "quote": "A locked door is still a statement about what someone fears."
+  },
+  {
+    "id": "niles-ferrier",
+    "name": "Niles Ferrier",
+    "species": "Human",
+    "affiliation": "Independent",
+    "currentStatus": "Active",
+    "knownLocation": "Unconfirmed fringe procurement lanes",
+    "politicalAlignment": "Transactional",
+    "occupation": "Ship thief and procurement broker",
+    "knownAssociates": [
+      "grand-admiral-thrawn"
+    ],
+    "knownAssets": [
+      "ferrier-cell"
+    ],
+    "strategicImportance": "Can move military hardware across ownership boundaries faster than formal registries can respond.",
+    "reliabilityRating": "Probable",
+    "lastConfirmedActivity": "09 ABY, post-Katana acquisition rumors",
+    "psychologicalNotes": "Greed is predictable; vanity is exploitable. Avoid deals that allow him to define proof of delivery.",
+    "operationalSummary": "Ferrier is not a grand strategist, which makes him useful to grand strategists. Watch him for the assets powerful actors cannot move openly.",
+    "recentIntelligence": [
+      "report-ferrier-theft-patterns"
+    ],
+    "timelineEvents": [
+      "event-ferrier-interdictions"
+    ],
+    "relatedOperations": [
+      "op-ferrier-asset-denial",
+      "op-katana-fleet-acquisition"
+    ],
+    "relatedShips": [
+      "katana-fleet"
+    ],
+    "relatedOrganizations": [
+      "imperial-remnant"
+    ],
+    "relatedWorlds": [
+      "bilbringi"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Confidential",
+    "quote": "A thief with good timing is an intelligence indicator."
+  },
+  {
+    "id": "joruus-cbaoth",
+    "name": "Joruus C'baoth",
+    "species": "Human clone",
+    "affiliation": "Imperial-contaminated independent actor",
+    "currentStatus": "Deceased; residual influence assessed",
+    "knownLocation": "Last confirmed on Wayland",
+    "politicalAlignment": "Personal dominion",
+    "occupation": "Dark Jedi and coercive force actor",
+    "knownAssociates": [
+      "grand-admiral-thrawn",
+      "luke-skywalker",
+      "mara-jade"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "Force capability paired with instability created unacceptable command-contamination risk.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, Mount Tantiss termination",
+    "psychologicalNotes": "Possessive, grandiose, and structurally unsuited to subordination. Cooperation with Imperial command was always temporary.",
+    "operationalSummary": "C'baoth was less an asset than a weaponized liability. His presence made every Thrawn plan involving Jedi variables more brittle.",
+    "recentIntelligence": [
+      "report-cbaoth-instability",
+      "report-wayland-consequences"
+    ],
+    "timelineEvents": [
+      "event-jomark-contact",
+      "event-wayland-recovery"
+    ],
+    "relatedOperations": [
+      "op-cbaoth-containment",
+      "op-mount-tantiss-recovery"
+    ],
+    "relatedShips": [],
+    "relatedOrganizations": [
+      "imperial-remnant",
+      "galactic-empire"
+    ],
+    "relatedWorlds": [
+      "jomark",
+      "wayland"
+    ],
+    "threatLevel": "Severe",
+    "classification": "Restricted",
+    "quote": "Power without discipline contaminates every command channel it touches."
+  },
+  {
+    "id": "borsk-feylya",
+    "name": "Borsk Fey'lya",
+    "species": "Bothan",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Coruscant political circuit",
+    "politicalAlignment": "New Republic; factional self-interest",
+    "occupation": "Councilor and political operator",
+    "knownAssociates": [
+      "leia-organa-solo"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "Political friction generator inside New Republic decision cycles.",
+    "reliabilityRating": "Probable",
+    "lastConfirmedActivity": "09 ABY, council influence maneuvering",
+    "psychologicalNotes": "Ambition is not incidental. Subject treats information as position before treating it as truth.",
+    "operationalSummary": "Fey'lya rarely changes military outcomes directly, but he changes how quickly others are allowed to respond to them.",
+    "recentIntelligence": [
+      "report-council-friction",
+      "report-political-drift"
+    ],
+    "timelineEvents": [
+      "event-coruscant-council-friction"
+    ],
+    "relatedOperations": [
+      "op-council-containment"
+    ],
+    "relatedShips": [],
+    "relatedOrganizations": [
+      "new-republic",
+      "new-republic-intelligence"
+    ],
+    "relatedWorlds": [
+      "coruscant"
+    ],
+    "threatLevel": "Low",
+    "classification": "Internal",
+    "quote": "A delay can be a weapon if nobody records who benefited."
+  },
+  {
+    "id": "wedge-antilles",
+    "name": "Wedge Antilles",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "New Republic fleet rotation",
+    "politicalAlignment": "New Republic",
+    "occupation": "Starfighter commander",
+    "knownAssociates": [
+      "luke-skywalker",
+      "han-solo",
+      "leia-organa-solo",
+      "garm-bel-iblis"
+    ],
+    "knownAssets": [
+      "home-one"
+    ],
+    "strategicImportance": "Translates small-unit initiative into fleet-level survival with unusual consistency.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-shipyard defense consultations",
+    "psychologicalNotes": "Low theatrical profile. High operational clarity. Treat calm estimates as compressed experience, not caution.",
+    "operationalSummary": "Antilles is one of the New Republic's most reliable indicators of whether a plan survives contact with competent pilots.",
+    "recentIntelligence": [
+      "report-wedge-response-tempo"
+    ],
+    "timelineEvents": [
+      "event-sluis-van-raid"
+    ],
+    "relatedOperations": [
+      "op-sluis-van-raid",
+      "op-bel-iblis-reintegration"
+    ],
+    "relatedShips": [
+      "home-one"
+    ],
+    "relatedOrganizations": [
+      "new-republic",
+      "bel-iblis-task-force"
+    ],
+    "relatedWorlds": [
+      "coruscant"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Confidential",
+    "quote": "Pilots find the lie in a plan before committees finish naming it."
+  },
+  {
+    "id": "mon-mothma",
+    "name": "Mon Mothma",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Coruscant executive circuit",
+    "politicalAlignment": "New Republic",
+    "occupation": "Chief of State",
+    "knownAssociates": [
+      "leia-organa-solo",
+      "borsk-feylya",
+      "garm-bel-iblis"
+    ],
+    "knownAssets": [
+      "home-one"
+    ],
+    "strategicImportance": "Stabilizes legitimacy while military and intelligence services absorb campaign shocks.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, post-Thrawn consolidation",
+    "psychologicalNotes": "Prefers institutional durability over dramatic movement. Vulnerable to timing pressure, not panic.",
+    "operationalSummary": "Mothma's value is continuity. Her approval turns urgent response into legitimate action, but the process creates exploitable delay.",
+    "recentIntelligence": [
+      "report-political-drift",
+      "report-bothan-credit-risk"
+    ],
+    "timelineEvents": [
+      "event-coruscant-council-friction"
+    ],
+    "relatedOperations": [
+      "op-council-containment",
+      "op-bel-iblis-reintegration"
+    ],
+    "relatedShips": [
+      "home-one"
+    ],
+    "relatedOrganizations": [
+      "new-republic",
+      "bothan-political-bloc"
+    ],
+    "relatedWorlds": [
+      "coruscant",
+      "chandrila"
+    ],
+    "threatLevel": "Low",
+    "classification": "Internal",
+    "quote": "A government survives by making victory governable."
+  },
+  {
+    "id": "garm-bel-iblis",
+    "name": "Garm Bel Iblis",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Reintegrating independent fleet command",
+    "politicalAlignment": "New Republic-aligned independent command",
+    "occupation": "General and fleet commander",
+    "knownAssociates": [
+      "mon-mothma",
+      "wedge-antilles",
+      "leia-organa-solo"
+    ],
+    "knownAssets": [
+      "bel-iblis-task-force"
+    ],
+    "strategicImportance": "Adds capable independent military weight while testing New Republic command cohesion.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, reintegration negotiations",
+    "psychologicalNotes": "Strategic pride remains real. Cooperation improves when autonomy is acknowledged rather than erased.",
+    "operationalSummary": "Bel Iblis represents the best and worst of independent command: fast judgment, high competence, and a standing question about integration.",
+    "recentIntelligence": [
+      "report-bel-iblis-reintegration"
+    ],
+    "timelineEvents": [
+      "event-bel-iblis-reemerges"
+    ],
+    "relatedOperations": [
+      "op-bel-iblis-reintegration"
+    ],
+    "relatedShips": [
+      "home-one"
+    ],
+    "relatedOrganizations": [
+      "new-republic",
+      "bel-iblis-task-force"
+    ],
+    "relatedWorlds": [
+      "corellia",
+      "coruscant"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Confidential",
+    "quote": "A friendly fleet can still be a command problem."
+  },
+  {
+    "id": "winter-celchu",
+    "name": "Winter Celchu",
+    "species": "Human",
+    "affiliation": "New Republic",
+    "currentStatus": "Active",
+    "knownLocation": "Coruscant intelligence support circuit",
+    "politicalAlignment": "New Republic",
+    "occupation": "Intelligence aide and memory specialist",
+    "knownAssociates": [
+      "leia-organa-solo",
+      "mon-mothma",
+      "wedge-antilles"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "Provides high-fidelity recall and quiet authentication support near senior political principals.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, Coruscant archive correlation",
+    "psychologicalNotes": "Low signature and high retention. Subject is most useful when nobody notices she has become the record.",
+    "operationalSummary": "Winter turns conversation, timing, and political room movement into retrievable intelligence.",
+    "recentIntelligence": [
+      "report-memory-chain-authentication"
+    ],
+    "timelineEvents": [
+      "event-coruscant-council-friction"
+    ],
+    "relatedOperations": [
+      "op-council-containment",
+      "op-obroa-skai-extraction"
+    ],
+    "relatedShips": [],
+    "relatedOrganizations": [
+      "new-republic",
+      "new-republic-intelligence"
+    ],
+    "relatedWorlds": [
+      "coruscant"
+    ],
+    "threatLevel": "Low",
+    "classification": "Eyes Only",
+    "quote": "The best archive in the room may look like an aide."
+  },
+  {
+    "id": "rukh",
+    "name": "Rukh",
+    "species": "Noghri",
+    "affiliation": "Noghri Clans",
+    "currentStatus": "Deceased; action confirmed",
+    "knownLocation": "Last confirmed aboard Chimaera",
+    "politicalAlignment": "Noghri loyalty realigned after Imperial deception exposure",
+    "occupation": "Bodyguard and close-action operative",
+    "knownAssociates": [
+      "grand-admiral-thrawn",
+      "leia-organa-solo",
+      "khabarakh"
+    ],
+    "knownAssets": [],
+    "strategicImportance": "The final proof that Imperial control of Noghri loyalty had become fatally brittle.",
+    "reliabilityRating": "Confirmed",
+    "lastConfirmedActivity": "09 ABY, Bilbringi command failure",
+    "psychologicalNotes": "Personal obedience gave way to collective truth. The shift was quiet until it was irreversible.",
+    "operationalSummary": "Rukh's action converted a diplomatic disclosure on Honoghr into a theater-scale military outcome.",
+    "recentIntelligence": [
+      "report-noghri-leverage-collapse",
+      "report-bilbringi-afteraction"
+    ],
+    "timelineEvents": [
+      "event-bilbringi",
+      "event-noghri-shift"
+    ],
+    "relatedOperations": [
+      "op-noghri-realignment",
+      "op-bilbringi-intervention"
+    ],
+    "relatedShips": [
+      "chimaera"
+    ],
+    "relatedOrganizations": [
+      "noghri-clans",
+      "imperial-remnant"
+    ],
+    "relatedWorlds": [
+      "honoghr",
+      "bilbringi"
+    ],
+    "threatLevel": "High",
+    "classification": "Restricted",
+    "quote": "A bodyguard becomes a strategic variable when loyalty changes owners."
+  },
+  {
+    "id": "khabarakh",
+    "name": "Khabarakh",
+    "species": "Noghri",
+    "affiliation": "Noghri Clans",
+    "currentStatus": "Active; exposure sensitive",
+    "knownLocation": "Honoghr contact chain",
+    "politicalAlignment": "Noghri clan obligation under reassessment",
+    "occupation": "Contact intermediary",
+    "knownAssociates": [
+      "leia-organa-solo",
+      "rukh",
+      "han-solo"
+    ],
+    "knownAssets": [
+      "noghri-insertion-shuttle"
+    ],
+    "strategicImportance": "Enabled the first durable breach in Imperial narrative control over Honoghr.",
+    "reliabilityRating": "Highly Reliable",
+    "lastConfirmedActivity": "09 ABY, clan-contact aftermath",
+    "psychologicalNotes": "Risk tolerance increased when personal observation contradicted inherited Imperial claims.",
+    "operationalSummary": "Khabarakh is less important as an individual source than as proof that the Noghri information boundary can be crossed.",
+    "recentIntelligence": [
+      "report-khabarakh-contact-chain"
+    ],
+    "timelineEvents": [
+      "event-khabarakh-contact",
+      "event-honoghr-disclosure"
+    ],
+    "relatedOperations": [
+      "op-noghri-contact-protection",
+      "op-honoghr-disclosure"
+    ],
+    "relatedShips": [
+      "noghri-insertion-shuttle"
+    ],
+    "relatedOrganizations": [
+      "noghri-clans"
+    ],
+    "relatedWorlds": [
+      "honoghr",
+      "kashyyyk"
+    ],
+    "threatLevel": "Moderate",
+    "classification": "Eyes Only",
+    "quote": "One uncertain contact can move an entire clan ledger."
+  }
+]

@@ -1,0 +1,482 @@
+[
+  {
+    "id": "op-smuggler-conference",
+    "name": "Smuggler Conference",
+    "classification": "Confidential",
+    "status": "Completed",
+    "participants": [
+      "talon-karrde",
+      "mara-jade"
+    ],
+    "objectives": [
+      "Assess Imperial coercion risk",
+      "Determine whether independent operators can coordinate without surrendering autonomy"
+    ],
+    "timeline": [
+      "event-karrde-shelters-skywalker",
+      "event-smugglers-at-bilbringi"
+    ],
+    "outcome": "Loose alignment formed under pressure. Trust remains narrow but real enough for future coordination.",
+    "sources": [
+      "Independent route observers",
+      "Karrde internal logs"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "New Republic access to fringe operators improved without formal alliance obligations.",
+    "militaryConsequences": "Distributed smuggler interference complicated Imperial shipyard assumptions.",
+    "referencedReports": [
+      "report-smuggler-alignment",
+      "report-source-discipline"
+    ]
+  },
+  {
+    "id": "op-bilbringi-intervention",
+    "name": "Bilbringi Intervention",
+    "classification": "Restricted",
+    "status": "Completed",
+    "participants": [
+      "talon-karrde",
+      "mara-jade",
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "objectives": [
+      "Disrupt Imperial shipyard advantage",
+      "Prevent Thrawn from converting repair capacity into campaign permanence"
+    ],
+    "timeline": [
+      "event-smugglers-at-bilbringi",
+      "event-bilbringi"
+    ],
+    "outcome": "Imperial command structure fractured following Thrawn's death. Shipyard advantage reduced.",
+    "sources": [
+      "Post-action traffic analysis",
+      "Surviving transponder echoes"
+    ],
+    "reliability": "Confirmed",
+    "politicalConsequences": "Independent operators acquired leverage with New Republic leadership.",
+    "militaryConsequences": "Imperial offensive tempo collapsed in the immediate term.",
+    "referencedReports": [
+      "report-bilbringi-afteraction",
+      "report-thrawn-patterns"
+    ]
+  },
+  {
+    "id": "op-mount-tantiss-recovery",
+    "name": "Mount Tantiss Recovery",
+    "classification": "Restricted",
+    "status": "Completed",
+    "participants": [
+      "mara-jade",
+      "luke-skywalker"
+    ],
+    "objectives": [
+      "Locate Imperial storehouse",
+      "Neutralize clone threat",
+      "Recover or destroy compromised strategic material"
+    ],
+    "timeline": [
+      "event-wayland-recovery"
+    ],
+    "outcome": "Storehouse access denied to Imperial command. Residual data contamination remains a live concern.",
+    "sources": [
+      "New Republic summaries",
+      "Karrde debrief fragments"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "New Republic legitimacy strengthened by exposure of Imperial contingency practices.",
+    "militaryConsequences": "Imperial cloning advantage disrupted.",
+    "referencedReports": [
+      "report-wayland-consequences",
+      "report-emperors-hand"
+    ]
+  },
+  {
+    "id": "op-katana-fleet-acquisition",
+    "name": "Katana Fleet Acquisition",
+    "classification": "Confidential",
+    "status": "Partially Complete",
+    "participants": [
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "objectives": [
+      "Recover lost Dreadnaughts",
+      "Deny New Republic force expansion",
+      "Rebuild Imperial operational depth"
+    ],
+    "timeline": [
+      "event-katana-discovery"
+    ],
+    "outcome": "Fleet divided by discovery, interdiction, and rushed acquisition. Strategic shock still achieved.",
+    "sources": [
+      "Market rumors",
+      "Naval registry anomalies",
+      "Imperial movement analysis"
+    ],
+    "reliability": "Probable",
+    "politicalConsequences": "Demonstrated that old secrets still carry present-tense power.",
+    "militaryConsequences": "Temporary Imperial fleet expansion changed New Republic deployment priorities.",
+    "referencedReports": [
+      "report-thrawn-patterns"
+    ]
+  },
+  {
+    "id": "op-noghri-realignment",
+    "name": "Noghri Realignment",
+    "classification": "Eyes Only",
+    "status": "Completed",
+    "participants": [
+      "leia-organa-solo"
+    ],
+    "objectives": [
+      "Expose Imperial deception",
+      "Shift Noghri loyalty away from Imperial command channels"
+    ],
+    "timeline": [
+      "event-noghri-shift"
+    ],
+    "outcome": "Imperial covert pressure reduced. Organa Solo's influence expanded beyond formal diplomacy.",
+    "sources": [
+      "Diplomatic fragments",
+      "Noghri movement pattern changes"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "New Republic moral authority strengthened in a strategically useful way.",
+    "militaryConsequences": "Imperial assassination and abduction channels degraded.",
+    "referencedReports": [
+      "report-political-drift"
+    ]
+  },
+  {
+    "id": "op-sluis-van-raid",
+    "name": "Sluis Van Raid Response",
+    "classification": "Restricted",
+    "status": "Completed",
+    "participants": [
+      "han-solo",
+      "lando-calrissian",
+      "grand-admiral-thrawn"
+    ],
+    "objectives": [
+      "Prevent Imperial capture of docked New Republic assets",
+      "Identify procedural weakness in shipyard defenses"
+    ],
+    "timeline": [
+      "event-sluis-van-raid"
+    ],
+    "outcome": "Raid failed to secure decisive fleet control, but exposed serious procedural vulnerabilities.",
+    "sources": [
+      "Shipyard logs",
+      "New Republic after-action fragments"
+    ],
+    "reliability": "Confirmed",
+    "politicalConsequences": "New Republic confidence in rear-area infrastructure temporarily weakened.",
+    "militaryConsequences": "Docking-control procedures revised across vulnerable staging facilities.",
+    "referencedReports": [
+      "report-sluis-van-vulnerability",
+      "report-thrawn-patterns"
+    ]
+  },
+  {
+    "id": "op-nkllon-convoy",
+    "name": "Nkllon Convoy Protection",
+    "classification": "Confidential",
+    "status": "Completed",
+    "participants": [
+      "han-solo",
+      "lando-calrissian"
+    ],
+    "objectives": [
+      "Preserve Calrissian industrial output",
+      "Deny Imperial leverage over predictable cargo movement"
+    ],
+    "timeline": [
+      "event-nkllon-convoy"
+    ],
+    "outcome": "Industrial continuity preserved with increased attention to convoy timing and route concealment.",
+    "sources": [
+      "Calrissian shipping summaries",
+      "Private route observers"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "Private industrial actors gained stronger arguments for New Republic protection.",
+    "militaryConsequences": "Convoy scheduling treated as classified logistics rather than commercial paperwork.",
+    "referencedReports": [
+      "report-nkllon-industrial-risk",
+      "report-fringe-diplomacy"
+    ]
+  },
+  {
+    "id": "op-honoghr-disclosure",
+    "name": "Honoghr Disclosure",
+    "classification": "Eyes Only",
+    "status": "Completed",
+    "participants": [
+      "leia-organa-solo",
+      "han-solo"
+    ],
+    "objectives": [
+      "Expose Imperial ecological deception",
+      "Break coercive loyalty structure",
+      "Protect Organa Solo contact channel"
+    ],
+    "timeline": [
+      "event-honoghr-disclosure",
+      "event-noghri-shift"
+    ],
+    "outcome": "Imperial leverage over Noghri loyalty degraded after proof of long-term deception.",
+    "sources": [
+      "Diplomatic fragments",
+      "Noghri movement pattern changes",
+      "Environmental evidence"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "Organa Solo gained a covert-aligned constituency outside formal New Republic structures.",
+    "militaryConsequences": "Imperial covert action capacity reduced and partially redirected.",
+    "referencedReports": [
+      "report-noghri-leverage-collapse"
+    ]
+  },
+  {
+    "id": "op-cbaoth-containment",
+    "name": "C'baoth Containment",
+    "classification": "Restricted",
+    "status": "Completed",
+    "participants": [
+      "luke-skywalker",
+      "mara-jade",
+      "joruus-cbaoth",
+      "grand-admiral-thrawn"
+    ],
+    "objectives": [
+      "Assess Jedi-related coercion risk",
+      "Prevent Force-user instability from controlling strategic assets"
+    ],
+    "timeline": [
+      "event-jomark-contact",
+      "event-wayland-recovery"
+    ],
+    "outcome": "C'baoth threat removed at Wayland, but the episode demonstrated the cost of pairing unstable Force actors with military command.",
+    "sources": [
+      "Wayland debrief fragments",
+      "Behavioral reconstruction"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "New Republic sensitivity to Jedi-related intelligence increased.",
+    "militaryConsequences": "Imperial command lost an unpredictable coercive tool before it could become a durable advantage.",
+    "referencedReports": [
+      "report-cbaoth-instability",
+      "report-wayland-consequences"
+    ]
+  },
+  {
+    "id": "op-obroa-skai-extraction",
+    "name": "Obroa-skai Archive Extraction",
+    "classification": "Confidential",
+    "status": "Open",
+    "participants": [
+      "ghent",
+      "talon-karrde"
+    ],
+    "objectives": [
+      "Authenticate archive-derived intelligence",
+      "Identify data theft patterns",
+      "Protect slicer access from political exploitation"
+    ],
+    "timeline": [
+      "event-obroa-skai-archive"
+    ],
+    "outcome": "Useful archive correlations obtained. Attribution remains sensitive.",
+    "sources": [
+      "Technical access logs",
+      "Karrde source validation"
+    ],
+    "reliability": "Probable",
+    "politicalConsequences": "New Republic dependence on private technical actors increased.",
+    "militaryConsequences": "Archive theft indicators added to fleet-warning criteria.",
+    "referencedReports": [
+      "report-slicer-exposure",
+      "report-source-discipline"
+    ]
+  },
+  {
+    "id": "op-ferrier-asset-denial",
+    "name": "Ferrier Asset Denial",
+    "classification": "Confidential",
+    "status": "Open",
+    "participants": [
+      "niles-ferrier",
+      "talon-karrde"
+    ],
+    "objectives": [
+      "Track stolen hull movement",
+      "Deny Imperial purchase channels",
+      "Separate genuine leads from Ferrier self-promotion"
+    ],
+    "timeline": [
+      "event-ferrier-interdictions"
+    ],
+    "outcome": "Theft routes mapped in part. Ferrier remains active and opportunistic.",
+    "sources": [
+      "Brokerage rumors",
+      "Hull registry anomalies",
+      "Karrde route comparisons"
+    ],
+    "reliability": "Probable",
+    "politicalConsequences": "Independent brokers remain exposed to guilt-by-association after Imperial procurement activity.",
+    "militaryConsequences": "Recovered hull sightings weighted more heavily after Katana Fleet shock.",
+    "referencedReports": [
+      "report-ferrier-theft-patterns"
+    ]
+  },
+  {
+    "id": "op-council-containment",
+    "name": "Council Friction Containment",
+    "classification": "Internal",
+    "status": "Open",
+    "participants": [
+      "leia-organa-solo",
+      "borsk-feylya"
+    ],
+    "objectives": [
+      "Limit factional delay during active threats",
+      "Preserve decision speed without bypassing legitimacy"
+    ],
+    "timeline": [
+      "event-coruscant-council-friction"
+    ],
+    "outcome": "Political drag remains present but trackable.",
+    "sources": [
+      "Scheduling anomalies",
+      "Council vote behavior",
+      "Diplomatic corridor reports"
+    ],
+    "reliability": "Probable",
+    "politicalConsequences": "Private intelligence increasingly values timing analysis inside New Republic process.",
+    "militaryConsequences": "Operational response can be slowed by chamber dynamics even when threat evidence is strong.",
+    "referencedReports": [
+      "report-council-friction",
+      "report-political-drift"
+    ]
+  },
+  {
+    "id": "op-ukio-pressure",
+    "name": "Ukio Pressure Operation",
+    "classification": "Confidential",
+    "status": "Completed",
+    "participants": [
+      "grand-admiral-thrawn",
+      "wedge-antilles"
+    ],
+    "objectives": [
+      "Test New Republic response to nonconventional orbital coercion",
+      "Convert agricultural dependency into political pressure"
+    ],
+    "timeline": [
+      "event-ukio-deception"
+    ],
+    "outcome": "Imperial deception briefly amplified perceived threat without requiring proportional visible force.",
+    "sources": [
+      "Orbital traffic review",
+      "Agricultural shipment delay reports"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "Civilian worlds demanded proof faster than New Republic procedure could provide it.",
+    "militaryConsequences": "Counter-deception protocols became part of planetary reassurance planning.",
+    "referencedReports": [
+      "report-cloaked-asteroid-deception",
+      "report-thrawn-patterns"
+    ]
+  },
+  {
+    "id": "op-kuat-procurement-watch",
+    "name": "Kuat Procurement Watch",
+    "classification": "Restricted",
+    "status": "Open",
+    "participants": [
+      "grand-admiral-thrawn",
+      "mon-mothma"
+    ],
+    "objectives": [
+      "Detect capital-ship demand before fleet movement",
+      "Separate commercial repair from factional rearmament"
+    ],
+    "timeline": [
+      "event-kuat-procurement-watch"
+    ],
+    "outcome": "Procurement anomalies flagged. Attribution remains commercially obscured.",
+    "sources": [
+      "Contract shadows",
+      "Drive-component request comparisons",
+      "Finance routing anomalies"
+    ],
+    "reliability": "Probable",
+    "politicalConsequences": "New Republic must monitor industrial neutrality without forcing shipyards toward Imperial customers.",
+    "militaryConsequences": "Early-warning criteria expanded to include capital-component demand.",
+    "referencedReports": [
+      "report-kuat-procurement-signal"
+    ]
+  },
+  {
+    "id": "op-bel-iblis-reintegration",
+    "name": "Bel Iblis Reintegration",
+    "classification": "Confidential",
+    "status": "Open",
+    "participants": [
+      "garm-bel-iblis",
+      "mon-mothma",
+      "wedge-antilles"
+    ],
+    "objectives": [
+      "Fold independent military capacity into legitimate command",
+      "Preserve rapid-response advantages without duplicating authority"
+    ],
+    "timeline": [
+      "event-bel-iblis-reemerges"
+    ],
+    "outcome": "Cooperation improved. Command politics remain sensitive.",
+    "sources": [
+      "Fleet movement comparisons",
+      "Private command-channel fragments"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "Reintegration reduces fragmentation but reopens old legitimacy disputes.",
+    "militaryConsequences": "New Republic gains flexible response capacity if autonomy terms remain workable.",
+    "referencedReports": [
+      "report-bel-iblis-reintegration",
+      "report-wedge-response-tempo"
+    ]
+  },
+  {
+    "id": "op-noghri-contact-protection",
+    "name": "Noghri Contact Protection",
+    "classification": "Eyes Only",
+    "status": "Open",
+    "participants": [
+      "khabarakh",
+      "leia-organa-solo",
+      "han-solo"
+    ],
+    "objectives": [
+      "Protect Noghri sources after deception exposure",
+      "Keep clan contact chains from becoming public leverage"
+    ],
+    "timeline": [
+      "event-khabarakh-contact",
+      "event-honoghr-disclosure"
+    ],
+    "outcome": "Contact chains remain viable but highly exposure-sensitive.",
+    "sources": [
+      "Clan contact fragments",
+      "Protected route review"
+    ],
+    "reliability": "Highly Reliable",
+    "politicalConsequences": "Organa Solo's influence extends through trust rather than treaty language.",
+    "militaryConsequences": "Imperial covert channels lose secrecy as former assets become witnesses.",
+    "referencedReports": [
+      "report-khabarakh-contact-chain",
+      "report-noghri-leverage-collapse"
+    ]
+  }
+]

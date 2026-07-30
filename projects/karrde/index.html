@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Karrde Intelligence Network</title>
+    <meta
+      name="description"
+      content="A private intelligence terminal for Talon Karrde's verified archive during the Thrawn campaign."
+    />
+    <link rel="icon" href="public/favicon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="side-rail" aria-label="Primary">
+        <div class="brand-lockup">
+          <div class="mark" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div>
+            <strong>KARRDE</strong>
+            <small>INTELLIGENCE NETWORK</small>
+          </div>
+        </div>
+        <nav class="nav-list" id="nav-list"></nav>
+        <section class="rail-panel">
+          <div class="eyebrow">Intelligence Alerts</div>
+          <div class="alert-line"><span>Recently Updated</span><strong>Wayland cache summary</strong></div>
+          <div class="alert-line"><span>Recently Confirmed</span><strong>Bilbringi outcome</strong></div>
+          <div class="alert-line"><span>Confidence Downgraded</span><strong>Katana distribution</strong></div>
+          <div class="alert-line"><span>New Report</span><strong>Source discipline audit</strong></div>
+        </section>
+      </aside>
+
+      <section class="main-column">
+        <header class="hero-band">
+          <div>
+            <div class="network-stamp">INDEPENDENT ARCHIVE / 09 ABY</div>
+            <h1>KARRDE INTELLIGENCE NETWORK</h1>
+            <p>Independent Information. Verified Intelligence. Strategic Insight.</p>
+          </div>
+          <div class="hero-instrument">
+            <div class="hero-sigil" aria-hidden="true">
+              <span></span><span></span><span></span><span></span>
+            </div>
+            <div class="hero-ledger" id="hero-ledger"></div>
+            <div class="access-card">
+              <span>ACCESS VALIDATED</span>
+              <strong>KARRDE INTERNAL EXCHANGE</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="search-strip" aria-label="Global search">
+          <div class="search-field">
+            <span aria-hidden="true">/</span>
+            <input id="global-search" aria-label="Global search" placeholder="Search archive" type="search" />
+          </div>
+          <div class="filter-row" id="filter-row" aria-label="Search filters"></div>
+        </section>
+
+        <div class="breadcrumbs" id="breadcrumbs" aria-label="Breadcrumbs"></div>
+        <section id="content" aria-live="polite"></section>
+      </section>
+
+      <aside class="context-column">
+        <section class="quick-facts" id="quick-facts"></section>
+        <section class="source-ledger" id="source-ledger"></section>
+        <section class="relationship-panel" id="relationship-panel"></section>
+        <section class="quote-panel">
+          <div class="eyebrow">Analyst Note</div>
+          <p id="analyst-note">Record confidence remains tied to independent source confirmation and motive review.</p>
+        </section>
+      </aside>
+    </main>
+    <script src="data-inline.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

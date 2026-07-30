@@ -1,0 +1,395 @@
+[
+  {
+    "id": "karrde-organization",
+    "name": "Karrde Organization",
+    "purpose": "Private information exchange, discreet cargo brokerage, source validation",
+    "leadership": [
+      "talon-karrde",
+      "mara-jade"
+    ],
+    "knownMembers": [
+      "talon-karrde",
+      "mara-jade",
+      "aves",
+      "ghent"
+    ],
+    "knownAssets": [
+      "wild-karrde"
+    ],
+    "politicalReach": "Independent channels across New Republic, Imperial, and fringe systems",
+    "militaryStrength": "Limited direct combat capacity; high evasion and warning capability",
+    "currentActivity": "Rebuilding source lanes after overt coordination with New Republic-aligned smugglers.",
+    "historicalNotes": "Rose by refusing the usual smuggler economy of rumor. Karrde sells information only after it survives pressure.",
+    "knownAllies": [
+      "smugglers-alliance",
+      "new-republic"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-smuggler-conference",
+      "op-bilbringi-intervention",
+      "op-obroa-skai-extraction",
+      "op-ferrier-asset-denial"
+    ],
+    "classification": "Eyes Only",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "imperial-remnant",
+    "name": "Imperial Remnant",
+    "purpose": "Restoration of Imperial order through military and political consolidation",
+    "leadership": [
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "knownMembers": [
+      "grand-admiral-thrawn",
+      "gilad-pellaeon",
+      "joruus-cbaoth",
+      "niles-ferrier"
+    ],
+    "knownAssets": [
+      "chimaera",
+      "katana-fleet"
+    ],
+    "politicalReach": "Fragmented but resilient; stronger in sectors with surviving fleet logistics",
+    "militaryStrength": "High when coordinated; uneven under rival warlord influence",
+    "currentActivity": "Post-Bilbringi command stabilization and asset concealment.",
+    "historicalNotes": "The Empire's collapse did not eliminate Imperial habits. It scattered them into smaller, harder-to-predict command structures.",
+    "knownAllies": [],
+    "knownRivals": [
+      "new-republic",
+      "karrde-organization"
+    ],
+    "relatedOperations": [
+      "op-katana-fleet-acquisition",
+      "op-mount-tantiss-recovery"
+    ],
+    "classification": "Restricted",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "galactic-empire",
+    "name": "Galactic Empire",
+    "purpose": "Former galactic state apparatus and origin point for surviving Imperial command doctrine",
+    "leadership": [
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "knownMembers": [
+      "mara-jade",
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "knownAssets": [
+      "chimaera",
+      "katana-fleet"
+    ],
+    "politicalReach": "Collapsed as central government; persistent through loyalist networks and inherited fear",
+    "militaryStrength": "Historically overwhelming; currently fragmented into remnant command structures",
+    "currentActivity": "Operational legacy persists through Remnant command, covert assets, and concealed stores.",
+    "historicalNotes": "The Empire's most durable weapon is not a fleet. It is the number of people trained to obey its assumptions after the chain of command breaks.",
+    "knownAllies": [
+      "imperial-remnant"
+    ],
+    "knownRivals": [
+      "new-republic",
+      "karrde-organization"
+    ],
+    "relatedOperations": [
+      "op-katana-fleet-acquisition",
+      "op-mount-tantiss-recovery"
+    ],
+    "classification": "Confidential",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "new-republic",
+    "name": "New Republic",
+    "purpose": "Post-Endor galactic governance and demilitarization of Imperial power",
+    "leadership": [
+      "leia-organa-solo"
+    ],
+    "knownMembers": [
+      "luke-skywalker",
+      "leia-organa-solo",
+      "han-solo",
+      "lando-calrissian",
+      "borsk-feylya"
+    ],
+    "knownAssets": [],
+    "politicalReach": "Expanding, strongest around Coruscant and aligned Core systems",
+    "militaryStrength": "Substantial but politically constrained",
+    "currentActivity": "Consolidating political legitimacy after Thrawn campaign disruptions.",
+    "historicalNotes": "Victory created legitimacy, not simplicity. Internal debate remains an exploitable surface.",
+    "knownAllies": [
+      "karrde-organization",
+      "smugglers-alliance"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-mount-tantiss-recovery",
+      "op-noghri-realignment",
+      "op-sluis-van-raid",
+      "op-nkllon-convoy",
+      "op-council-containment"
+    ],
+    "classification": "Internal",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "old-republic",
+    "name": "Old Republic",
+    "purpose": "Pre-Imperial galactic government and origin authority for several legacy military assets",
+    "leadership": [],
+    "knownMembers": [],
+    "knownAssets": [
+      "katana-fleet"
+    ],
+    "politicalReach": "Historical only",
+    "militaryStrength": "Historical only; surviving hardware remains strategically relevant",
+    "currentActivity": "None. Legacy records remain valuable where Imperial and New Republic archives diverge.",
+    "historicalNotes": "Old Republic procurement failures can become modern force multipliers when nobody audits the forgotten inventory.",
+    "knownAllies": [
+      "new-republic"
+    ],
+    "knownRivals": [
+      "galactic-empire"
+    ],
+    "relatedOperations": [
+      "op-katana-fleet-acquisition"
+    ],
+    "classification": "Public",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "smugglers-alliance",
+    "name": "Smugglers' Alliance",
+    "purpose": "Temporary coordination among independent operators against Imperial coercion",
+    "leadership": [
+      "talon-karrde"
+    ],
+    "knownMembers": [
+      "talon-karrde",
+      "mara-jade"
+    ],
+    "knownAssets": [
+      "wild-karrde"
+    ],
+    "politicalReach": "Irregular but broad across fringe lanes",
+    "militaryStrength": "Low in formation; high as distributed disruption",
+    "currentActivity": "Loosening after shared emergency. Residual trust remains exploitable.",
+    "historicalNotes": "Less an alliance than a temporary market correction against Imperial overreach.",
+    "knownAllies": [
+      "karrde-organization",
+      "new-republic"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-smuggler-conference",
+      "op-bilbringi-intervention"
+    ],
+    "classification": "Confidential",
+    "reliability": "Probable"
+  },
+  {
+    "id": "new-republic-intelligence",
+    "name": "New Republic Intelligence",
+    "purpose": "Collection, analysis, and liaison support for New Republic security decisions",
+    "leadership": [
+      "leia-organa-solo"
+    ],
+    "knownMembers": [
+      "ghent",
+      "borsk-feylya"
+    ],
+    "knownAssets": [],
+    "politicalReach": "High inside formal channels; constrained by council oversight and factional pressure",
+    "militaryStrength": "Indirect; strongest through warning, authentication, and special access",
+    "currentActivity": "Absorbing private-source material after Thrawn campaign disruptions.",
+    "historicalNotes": "The service has legitimacy Karrde lacks and blind spots Karrde profits from.",
+    "knownAllies": [
+      "new-republic",
+      "karrde-organization"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-obroa-skai-extraction",
+      "op-council-containment"
+    ],
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "noghri-clans",
+    "name": "Noghri Clans",
+    "purpose": "Clan-based social and military structure formerly exploited through Imperial deception",
+    "leadership": [
+      "leia-organa-solo"
+    ],
+    "knownMembers": [],
+    "knownAssets": [],
+    "politicalReach": "Localized but strategically significant through covert capability",
+    "militaryStrength": "High in infiltration, protection, and close-action assignments",
+    "currentActivity": "Realigning loyalty after exposure of Imperial contamination on Honoghr.",
+    "historicalNotes": "Their loyalty was never simple obedience. It was debt, obligation, and false accounting.",
+    "knownAllies": [
+      "new-republic"
+    ],
+    "knownRivals": [
+      "galactic-empire",
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-noghri-realignment",
+      "op-honoghr-disclosure"
+    ],
+    "classification": "Eyes Only",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "sluis-van-shipyards",
+    "name": "Sluis Van Shipyards",
+    "purpose": "New Republic-aligned repair and staging infrastructure",
+    "leadership": [],
+    "knownMembers": [],
+    "knownAssets": [
+      "sluis-van-defense-fleet"
+    ],
+    "politicalReach": "Sector-level industrial influence with strategic naval consequences",
+    "militaryStrength": "High defensive value; vulnerable to deception and boarding operations",
+    "currentActivity": "Repairing operational confidence after Imperial raid attempt.",
+    "historicalNotes": "A shipyard is a public asset until someone proves its docking clamps can become a weapon.",
+    "knownAllies": [
+      "new-republic"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-sluis-van-raid"
+    ],
+    "classification": "Restricted",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "ferrier-cell",
+    "name": "Ferrier Procurement Cell",
+    "purpose": "Ship theft, false transfer, and illicit acquisition support",
+    "leadership": [
+      "niles-ferrier"
+    ],
+    "knownMembers": [
+      "niles-ferrier"
+    ],
+    "knownAssets": [],
+    "politicalReach": "Low formal reach; useful access to black-market ship movement",
+    "militaryStrength": "Low direct combat strength; high nuisance value",
+    "currentActivity": "Post-Katana dispersion and selective concealment of theft channels.",
+    "historicalNotes": "Cells like Ferrier's thrive where navies treat paperwork as proof of custody.",
+    "knownAllies": [
+      "imperial-remnant"
+    ],
+    "knownRivals": [
+      "karrde-organization",
+      "new-republic"
+    ],
+    "relatedOperations": [
+      "op-ferrier-asset-denial",
+      "op-katana-fleet-acquisition"
+    ],
+    "classification": "Confidential",
+    "reliability": "Probable"
+  },
+  {
+    "id": "bothan-political-bloc",
+    "name": "Bothan Political Bloc",
+    "purpose": "Factional influence, intelligence reputation management, and council positioning",
+    "leadership": [
+      "borsk-feylya"
+    ],
+    "knownMembers": [
+      "borsk-feylya"
+    ],
+    "knownAssets": [],
+    "politicalReach": "High inside New Republic procedure; strongest where credit and timing intersect",
+    "militaryStrength": "Indirect through delay, disclosure pressure, and intelligence committees",
+    "currentActivity": "Protecting institutional standing after Thrawn campaign embarrassments.",
+    "historicalNotes": "Bothan sacrifice created a credit reserve. Fey'lya spends it aggressively.",
+    "knownAllies": [
+      "new-republic"
+    ],
+    "knownRivals": [
+      "karrde-organization"
+    ],
+    "relatedOperations": [
+      "op-council-containment"
+    ],
+    "classification": "Internal",
+    "reliability": "Probable"
+  },
+  {
+    "id": "bel-iblis-task-force",
+    "name": "Bel Iblis Task Force",
+    "purpose": "Independent New Republic-aligned military pressure and rapid response",
+    "leadership": [
+      "garm-bel-iblis"
+    ],
+    "knownMembers": [
+      "garm-bel-iblis",
+      "wedge-antilles"
+    ],
+    "knownAssets": [
+      "home-one"
+    ],
+    "politicalReach": "Narrow but growing after reintegration talks",
+    "militaryStrength": "High tactical value; command integration still under review",
+    "currentActivity": "Coordinating with New Republic command after independent operations.",
+    "historicalNotes": "The task force is proof that anti-Imperial legitimacy did not always flow through central New Republic structures.",
+    "knownAllies": [
+      "new-republic"
+    ],
+    "knownRivals": [
+      "imperial-remnant"
+    ],
+    "relatedOperations": [
+      "op-bel-iblis-reintegration"
+    ],
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "kuati-shipwrights",
+    "name": "Kuati Shipwrights",
+    "purpose": "Capital-ship design, procurement influence, and industrial continuity",
+    "leadership": [],
+    "knownMembers": [],
+    "knownAssets": [
+      "kuat-procurement-ledger"
+    ],
+    "politicalReach": "High through procurement dependency across successor states",
+    "militaryStrength": "Industrial rather than tactical; severe strategic leverage",
+    "currentActivity": "Watching post-Thrawn demand signals while avoiding overt factional exposure.",
+    "historicalNotes": "Regime change does not erase shipyard math. Whoever needs hulls eventually speaks to Kuat.",
+    "knownAllies": [
+      "galactic-empire",
+      "imperial-remnant"
+    ],
+    "knownRivals": [
+      "new-republic"
+    ],
+    "relatedOperations": [
+      "op-kuat-procurement-watch"
+    ],
+    "classification": "Restricted",
+    "reliability": "Probable"
+  }
+]

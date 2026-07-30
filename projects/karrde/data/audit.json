@@ -1,0 +1,222 @@
+[
+  {
+    "id": "audit-thrawn-confirmed",
+    "recordId": "grand-admiral-thrawn",
+    "date": "09 ABY",
+    "action": "Confidence Upgraded",
+    "from": "Highly Reliable",
+    "to": "Confirmed",
+    "source": "Bilbringi after-action traffic and Chimaera withdrawal pattern",
+    "analyst": "Karrde Analysis Cell",
+    "note": "Multiple independent streams support command disruption and death confirmation. Maintain narrow caveat for Imperial deception doctrine."
+  },
+  {
+    "id": "audit-karrde-source-discipline",
+    "recordId": "talon-karrde",
+    "date": "09 ABY",
+    "action": "Source Added",
+    "from": "Confirmed",
+    "to": "Confirmed",
+    "source": "Internal audit of source rejection patterns",
+    "analyst": "Exchange Control",
+    "note": "Subject's network rejects rumor more aggressively than competing brokers. Slower circulation is an asset, not a weakness."
+  },
+  {
+    "id": "audit-mara-integration",
+    "recordId": "mara-jade",
+    "date": "09 ABY",
+    "action": "Analyst Review",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Wayland debrief fragments and Karrde internal notes",
+    "analyst": "Private psychological estimate",
+    "note": "Former Imperial service remains operationally relevant but no longer predicts current allegiance with useful accuracy."
+  },
+  {
+    "id": "audit-wayland-contamination",
+    "recordId": "wayland",
+    "date": "09 ABY",
+    "action": "Contamination Flag",
+    "from": "Confirmed",
+    "to": "Highly Reliable",
+    "source": "New Republic liaison summaries",
+    "analyst": "Archive Integrity",
+    "note": "Facility outcome is well supported. Claims derived from recovered Wayland material require separate authentication."
+  },
+  {
+    "id": "audit-bilbringi-confirmed",
+    "recordId": "op-bilbringi-intervention",
+    "date": "09 ABY",
+    "action": "Confidence Upgraded",
+    "from": "Highly Reliable",
+    "to": "Confirmed",
+    "source": "Post-action traffic analysis and transponder echoes",
+    "analyst": "Shipyard Traffic Synthesis",
+    "note": "Independent operators materially affected the engagement. Imperial planning discounted private actors as strategic participants."
+  },
+  {
+    "id": "audit-katana-distribution",
+    "recordId": "katana-fleet",
+    "date": "09 ABY",
+    "action": "Confidence Downgraded",
+    "from": "Confirmed",
+    "to": "Highly Reliable",
+    "source": "Conflicting hull custody reports",
+    "analyst": "Fleet Registry Desk",
+    "note": "Fleet existence and recovery are accepted. Final distribution after rushed acquisition remains incomplete."
+  },
+  {
+    "id": "audit-noghri-realignment",
+    "recordId": "honoghr",
+    "date": "09 ABY",
+    "action": "Source Added",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Environmental evidence and Noghri movement pattern changes",
+    "analyst": "Diplomatic Channel Review",
+    "note": "Imperial leverage structure appears degraded after disclosure. Public signs lag behind operational behavior."
+  },
+  {
+    "id": "audit-sluis-van-procedure",
+    "recordId": "sluis-van",
+    "date": "09 ABY",
+    "action": "Analyst Review",
+    "from": "Highly Reliable",
+    "to": "Confirmed",
+    "source": "Docking-control review",
+    "analyst": "Shipyard Access Reconstruction",
+    "note": "Threat model updated: procedural trust is now treated as a naval vulnerability."
+  },
+  {
+    "id": "audit-ghent-protection",
+    "recordId": "ghent",
+    "date": "09 ABY",
+    "action": "Handling Restriction",
+    "from": "Highly Reliable",
+    "to": "Highly Reliable",
+    "source": "Authentication logs and handler notes",
+    "analyst": "Karrde Technical Source Protection",
+    "note": "Limit exposure. Technical value exceeds subject's ability to resist political or institutional demand."
+  },
+  {
+    "id": "audit-cbaoth-instability",
+    "recordId": "joruus-cbaoth",
+    "date": "09 ABY",
+    "action": "Threat Reclassified",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Jomark contact reconstruction and Wayland debrief fragments",
+    "analyst": "Behavioral Reconstruction",
+    "note": "Subject was an independent strategic threat, not merely an Imperial asset."
+  },
+  {
+    "id": "audit-ferrier-probable",
+    "recordId": "niles-ferrier",
+    "date": "09 ABY",
+    "action": "Confidence Held",
+    "from": "Probable",
+    "to": "Probable",
+    "source": "Hull registry anomalies and brokerage rumor comparison",
+    "analyst": "Private Hull Registry Audit",
+    "note": "Ferrier's involvement is strongly indicated but contaminated by self-promotion and false delivery claims."
+  },
+  {
+    "id": "audit-feylya-friction",
+    "recordId": "borsk-feylya",
+    "date": "09 ABY",
+    "action": "Analyst Review",
+    "from": "Unconfirmed",
+    "to": "Probable",
+    "source": "Council timing analysis",
+    "analyst": "Coruscant Political Desk",
+    "note": "Behavior creates measurable delay. Motive assessment remains probabilistic."
+  },
+  {
+    "id": "audit-report-source-discipline",
+    "recordId": "report-source-discipline",
+    "date": "09 ABY",
+    "action": "Source Added",
+    "from": "Confirmed",
+    "to": "Confirmed",
+    "source": "Brokerage failure analysis",
+    "analyst": "Exchange Control",
+    "note": "Negative evidence is valuable: rejected rumors correlate strongly with later disinformation attempts."
+  },
+  {
+    "id": "audit-sluis-report-confirmed",
+    "recordId": "report-sluis-van-vulnerability",
+    "date": "09 ABY",
+    "action": "Confidence Upgraded",
+    "from": "Highly Reliable",
+    "to": "Confirmed",
+    "source": "Shipyard logs and docking-control review",
+    "analyst": "Shipyard Access Reconstruction",
+    "note": "The vulnerability is procedural and reproducible. Distribute revised docking-control warning."
+  },
+  {
+    "id": "audit-ukio-deception",
+    "recordId": "report-cloaked-asteroid-deception",
+    "date": "09 ABY",
+    "action": "Model Added",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Sensor-gap review and shipment-delay comparison",
+    "analyst": "Orbital Traffic Reconstruction",
+    "note": "Deception effect is confirmed even where physical hazard remains difficult to prove after the fact."
+  },
+  {
+    "id": "audit-kuat-watch",
+    "recordId": "kuat-procurement-ledger",
+    "date": "09 ABY",
+    "action": "Source Opened",
+    "from": "Unconfirmed",
+    "to": "Probable",
+    "source": "Contract-shadow analysis",
+    "analyst": "Industrial Signals Desk",
+    "note": "Procurement patterns are suggestive but attribution remains commercially obscured."
+  },
+  {
+    "id": "audit-bel-iblis",
+    "recordId": "garm-bel-iblis",
+    "date": "09 ABY",
+    "action": "Confidence Upgraded",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Fleet movement comparisons",
+    "analyst": "Command Integration Desk",
+    "note": "Independent command posture is now well supported by multiple movement and channel indicators."
+  },
+  {
+    "id": "audit-khabarakh-chain",
+    "recordId": "khabarakh",
+    "date": "09 ABY",
+    "action": "Protection Flag Added",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Protected route review",
+    "analyst": "Honoghr Contact Cell",
+    "note": "Channel credibility improved, but exposure risk increased with every successful relay."
+  },
+  {
+    "id": "audit-winter-authentication",
+    "recordId": "winter-celchu",
+    "date": "09 ABY",
+    "action": "Source Added",
+    "from": "Probable",
+    "to": "Highly Reliable",
+    "source": "Coruscant archive correlation",
+    "analyst": "Principal Staff Review",
+    "note": "Human memory chain provides a useful cross-check against politicized records."
+  },
+  {
+    "id": "audit-rukh-confirmed",
+    "recordId": "rukh",
+    "date": "09 ABY",
+    "action": "Action Confirmed",
+    "from": "Highly Reliable",
+    "to": "Confirmed",
+    "source": "Bilbringi command-failure reconstruction",
+    "analyst": "After-Action Cell",
+    "note": "Rukh's role is accepted as a decisive consequence of Noghri realignment."
+  }
+]

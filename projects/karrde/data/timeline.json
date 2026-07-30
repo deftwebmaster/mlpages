@@ -1,0 +1,251 @@
+[
+  {
+    "id": "event-thrawn-emerges",
+    "title": "Coordinated Imperial Pressure Resumes",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Imperial activity shifts from opportunistic raids to disciplined theater planning.",
+    "links": [
+      "grand-admiral-thrawn",
+      "imperial-remnant",
+      "chimaera",
+      "coruscant"
+    ]
+  },
+  {
+    "id": "event-karrde-shelters-skywalker",
+    "title": "Skywalker Held Under Karrde Protection",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Myrkr incident entangles Karrde, Jade, Skywalker, and Imperial attention in a single risk field.",
+    "links": [
+      "talon-karrde",
+      "mara-jade",
+      "luke-skywalker",
+      "myrkr",
+      "wild-karrde"
+    ]
+  },
+  {
+    "id": "event-katana-discovery",
+    "title": "Katana Fleet Location Becomes Actionable",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Lost Dreadnaught force reenters strategic calculations after decades of archival failure.",
+    "links": [
+      "katana-fleet",
+      "grand-admiral-thrawn",
+      "op-katana-fleet-acquisition"
+    ]
+  },
+  {
+    "id": "event-noghri-shift",
+    "title": "Noghri Loyalty Realigns",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Imperial deception loses force after Organa Solo contact changes the Noghri decision environment.",
+    "links": [
+      "leia-organa-solo",
+      "new-republic",
+      "op-noghri-realignment"
+    ]
+  },
+  {
+    "id": "event-wayland-recovery",
+    "title": "Mount Tantiss Neutralized",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Imperial storehouse and cloning program disrupted on Wayland.",
+    "links": [
+      "wayland",
+      "mara-jade",
+      "luke-skywalker",
+      "op-mount-tantiss-recovery"
+    ]
+  },
+  {
+    "id": "event-smugglers-at-bilbringi",
+    "title": "Independent Operators Enter Shipyard Equation",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Smuggler coordination places private actors inside a major military outcome.",
+    "links": [
+      "talon-karrde",
+      "mara-jade",
+      "wild-karrde",
+      "op-bilbringi-intervention"
+    ]
+  },
+  {
+    "id": "event-bilbringi",
+    "title": "Bilbringi Command Failure",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Thrawn's death and shipyard disruption close the campaign's immediate offensive window.",
+    "links": [
+      "bilbringi",
+      "grand-admiral-thrawn",
+      "gilad-pellaeon",
+      "chimaera",
+      "op-bilbringi-intervention"
+    ]
+  },
+  {
+    "id": "event-sluis-van-raid",
+    "title": "Sluis Van Raid Attempt",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Imperial operation targets shipyard procedure and docked assets rather than seeking a conventional decisive engagement.",
+    "links": [
+      "sluis-van",
+      "sluis-van-shipyards",
+      "sluis-van-defense-fleet",
+      "op-sluis-van-raid",
+      "report-sluis-van-vulnerability"
+    ]
+  },
+  {
+    "id": "event-nkllon-convoy",
+    "title": "Nkllon Convoy Risk Window",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Calrissian industrial movement highlights the military value of commercial predictability.",
+    "links": [
+      "nkllon",
+      "lando-calrissian",
+      "han-solo",
+      "lady-luck",
+      "millennium-falcon",
+      "op-nkllon-convoy"
+    ]
+  },
+  {
+    "id": "event-honoghr-disclosure",
+    "title": "Honoghr Deception Exposed",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Organa Solo contact reframes Noghri obligation by exposing Imperial manipulation of ecological recovery.",
+    "links": [
+      "honoghr",
+      "leia-organa-solo",
+      "han-solo",
+      "noghri-clans",
+      "op-honoghr-disclosure",
+      "report-noghri-leverage-collapse"
+    ]
+  },
+  {
+    "id": "event-jomark-contact",
+    "title": "Jomark Contact With C'baoth",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Early contact with C'baoth reveals instability inconsistent with durable Imperial command use.",
+    "links": [
+      "jomark",
+      "joruus-cbaoth",
+      "luke-skywalker",
+      "op-cbaoth-containment",
+      "report-cbaoth-instability"
+    ]
+  },
+  {
+    "id": "event-obroa-skai-archive",
+    "title": "Obroa-skai Archive Access Flagged",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Archive-derived correlations elevate the importance of slicer protection and source authentication.",
+    "links": [
+      "obroa-skai",
+      "ghent",
+      "new-republic-intelligence",
+      "op-obroa-skai-extraction",
+      "report-slicer-exposure"
+    ]
+  },
+  {
+    "id": "event-ferrier-interdictions",
+    "title": "Ferrier Hull Movement Interdictions",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Suspicious hull movement after Katana Fleet activity points toward deniable procurement channels.",
+    "links": [
+      "niles-ferrier",
+      "ferrier-cell",
+      "katana-fleet",
+      "op-ferrier-asset-denial",
+      "report-ferrier-theft-patterns"
+    ]
+  },
+  {
+    "id": "event-coruscant-council-friction",
+    "title": "Coruscant Council Friction Logged",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Political delay becomes measurable enough to enter operational timing assessments.",
+    "links": [
+      "coruscant",
+      "borsk-feylya",
+      "leia-organa-solo",
+      "new-republic",
+      "op-council-containment",
+      "report-council-friction"
+    ]
+  },
+  {
+    "id": "event-ukio-deception",
+    "title": "Ukio Orbital Deception",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Cloaked-asteroid pressure transforms a food world into a psychological operations case study.",
+    "links": [
+      "ukio",
+      "grand-admiral-thrawn",
+      "wedge-antilles",
+      "op-ukio-pressure",
+      "report-cloaked-asteroid-deception"
+    ]
+  },
+  {
+    "id": "event-kuat-procurement-watch",
+    "title": "Kuat Procurement Watch Opened",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Industrial component demand becomes a standing early-warning input after fleet-recovery shocks.",
+    "links": [
+      "kuat",
+      "kuati-shipwrights",
+      "kuat-procurement-ledger",
+      "op-kuat-procurement-watch",
+      "report-kuat-procurement-signal"
+    ]
+  },
+  {
+    "id": "event-bel-iblis-reemerges",
+    "title": "Bel Iblis Command Reenters Calculus",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "Independent anti-Imperial military capacity becomes available to New Republic planners under delicate terms.",
+    "links": [
+      "garm-bel-iblis",
+      "bel-iblis-task-force",
+      "corellia",
+      "op-bel-iblis-reintegration",
+      "report-bel-iblis-reintegration"
+    ]
+  },
+  {
+    "id": "event-khabarakh-contact",
+    "title": "Khabarakh Contact Chain Protected",
+    "era": "Thrawn Campaign",
+    "date": "09 ABY",
+    "summary": "A fragile Noghri channel survives long enough to move evidence, trust, and risk across factional boundaries.",
+    "links": [
+      "khabarakh",
+      "kashyyyk",
+      "honoghr",
+      "noghri-insertion-shuttle",
+      "op-noghri-contact-protection",
+      "report-khabarakh-contact-chain"
+    ]
+  }
+]

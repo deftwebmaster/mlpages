@@ -1,0 +1,472 @@
+[
+  {
+    "id": "report-thrawn-patterns",
+    "title": "Strategic Pattern Recognition: Thrawn",
+    "category": "Military",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Karrde Analysis Cell",
+    "confidence": "Confirmed",
+    "summary": "Thrawn repeatedly extracts decisive advantage from neglected cultural and logistical signals.",
+    "analysis": "Conventional order-of-battle analysis understates the threat. Thrawn converts nonmilitary evidence into military timing. Denial protocols should include art-market movement, museum transfers, private collection purchases, academic traffic, and unusually clean freight irregularities.",
+    "relatedRecords": [
+      "grand-admiral-thrawn",
+      "chimaera",
+      "op-bilbringi-intervention",
+      "bilbringi"
+    ],
+    "sources": [
+      "Recovered engagement patterns",
+      "Independent sector observers"
+    ]
+  },
+  {
+    "id": "report-smuggler-alignment",
+    "title": "Independent Operators: Temporary Alignment",
+    "category": "Smuggling",
+    "classification": "Confidential",
+    "date": "09 ABY",
+    "origin": "Wild Karrde",
+    "confidence": "Highly Reliable",
+    "summary": "Imperial pressure created a rare incentive for unaffiliated operators to coordinate.",
+    "analysis": "The alignment should not be mistaken for ideological conversion. Independent captains acted because Imperial success threatened future autonomy. Karrde's credibility allowed coordination without the symbolic cost of joining New Republic command.",
+    "relatedRecords": [
+      "talon-karrde",
+      "mara-jade",
+      "karrde-organization",
+      "op-smuggler-conference"
+    ],
+    "sources": [
+      "Route meetings",
+      "Cargo brokerage records"
+    ]
+  },
+  {
+    "id": "report-source-discipline",
+    "title": "Source Discipline Inside the Karrde Network",
+    "category": "Unknown",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Internal audit",
+    "confidence": "Confirmed",
+    "summary": "Karrde's network trades slower than rivals because it rejects unpriced rumor.",
+    "analysis": "The archive's strength is not volume. It is refusal. Data enters circulation after triangulation, motive review, and contamination checks. This creates occasional delays and unusual trust premiums.",
+    "relatedRecords": [
+      "talon-karrde",
+      "karrde-organization",
+      "myrkr",
+      "wild-karrde"
+    ],
+    "sources": [
+      "Audit fragments",
+      "Brokerage failure analysis"
+    ]
+  },
+  {
+    "id": "report-bilbringi-afteraction",
+    "title": "Bilbringi After-Action Estimate",
+    "category": "Military",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Shipyard traffic synthesis",
+    "confidence": "Confirmed",
+    "summary": "The battle ended the immediate Imperial offensive window and elevated fringe actors as material campaign variables.",
+    "analysis": "The decisive fact is not simply Thrawn's death. It is the combined loss of timing, command unity, and shipyard tempo. Independent disruption worked because Imperial planning discounted non-state actors as strategic participants.",
+    "relatedRecords": [
+      "bilbringi",
+      "grand-admiral-thrawn",
+      "gilad-pellaeon",
+      "op-bilbringi-intervention"
+    ],
+    "sources": [
+      "Transponder echoes",
+      "Repair schedule anomalies"
+    ]
+  },
+  {
+    "id": "report-wayland-consequences",
+    "title": "Wayland: Residual Contamination Risk",
+    "category": "Political",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "New Republic liaison summaries",
+    "confidence": "Highly Reliable",
+    "summary": "Mount Tantiss was neutralized, but knowledge recovered from it may remain strategically active.",
+    "analysis": "Destroyed facilities do not destroy every consequence. Any person, faction, or buyer claiming access to Wayland-derived lists, cloning methods, or private Imperial stores should be treated as credible until disproved.",
+    "relatedRecords": [
+      "wayland",
+      "op-mount-tantiss-recovery",
+      "luke-skywalker",
+      "mara-jade"
+    ],
+    "sources": [
+      "Debrief fragments",
+      "Recovery rumor suppression"
+    ]
+  },
+  {
+    "id": "report-emperors-hand",
+    "title": "Former Emperor's Hand: Integration Risk",
+    "category": "Diplomatic",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Private psychological estimate",
+    "confidence": "Probable",
+    "summary": "Mara Jade's past remains operationally relevant but no longer predicts allegiance with sufficient confidence.",
+    "analysis": "Do not model Jade as a simple Imperial remnant actor. Her training shaped instincts, not permanent obedience. Current behavior indicates personal agency, selective trust, and a developing preference for truth over inherited command.",
+    "relatedRecords": [
+      "mara-jade",
+      "talon-karrde",
+      "luke-skywalker",
+      "op-mount-tantiss-recovery"
+    ],
+    "sources": [
+      "Field behavior",
+      "Karrde internal notes"
+    ]
+  },
+  {
+    "id": "report-political-drift",
+    "title": "New Republic Political Drift",
+    "category": "Political",
+    "classification": "Internal",
+    "date": "09 ABY",
+    "origin": "Coruscant diplomatic channel review",
+    "confidence": "Probable",
+    "summary": "The New Republic's legitimacy is strong, but procedural drag creates opportunity for disciplined opponents.",
+    "analysis": "The post-Thrawn moment favors consolidation, but visible victory may disguise bureaucratic fatigue. Organa Solo remains a stabilizing influence where formal structures lag behind events.",
+    "relatedRecords": [
+      "new-republic",
+      "leia-organa-solo",
+      "coruscant",
+      "op-noghri-realignment"
+    ],
+    "sources": [
+      "Council movement",
+      "Diplomatic scheduling irregularities"
+    ]
+  },
+  {
+    "id": "report-sluis-van-vulnerability",
+    "title": "Sluis Van: Docking Procedure Vulnerability",
+    "category": "Military",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Shipyard access reconstruction",
+    "confidence": "Confirmed",
+    "summary": "The Sluis Van raid demonstrated that shipyard procedure can be converted into a fleet-scale attack surface.",
+    "analysis": "The raid's value was not only the ships at risk. It proved that maintenance trust, docking controls, and repair queues can become enemy weapons if treated as administrative routine rather than command infrastructure.",
+    "relatedRecords": [
+      "sluis-van",
+      "sluis-van-shipyards",
+      "sluis-van-defense-fleet",
+      "op-sluis-van-raid",
+      "grand-admiral-thrawn"
+    ],
+    "sources": [
+      "Shipyard logs",
+      "Docking-control review"
+    ]
+  },
+  {
+    "id": "report-nkllon-industrial-risk",
+    "title": "Nkllon Industrial Risk Window",
+    "category": "Economic",
+    "classification": "Confidential",
+    "date": "09 ABY",
+    "origin": "Calrissian shipping synthesis",
+    "confidence": "Highly Reliable",
+    "summary": "Nkllon's value lies in predictable output and therefore predictable exposure.",
+    "analysis": "Industrial facilities with harsh operating environments often believe the environment itself provides security. Nkllon disproves that. The danger is not surprise access to the facility; it is reliable knowledge of when valuable cargo must move.",
+    "relatedRecords": [
+      "nkllon",
+      "lando-calrissian",
+      "han-solo",
+      "op-nkllon-convoy",
+      "lady-luck"
+    ],
+    "sources": [
+      "Shipping summaries",
+      "Convoy timing review"
+    ]
+  },
+  {
+    "id": "report-noghri-leverage-collapse",
+    "title": "Noghri Leverage Collapse",
+    "category": "Diplomatic",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Honoghr contact assessment",
+    "confidence": "Highly Reliable",
+    "summary": "Imperial control over Noghri service degraded once the underlying ecological deception became contestable.",
+    "analysis": "The Empire held the Noghri through managed obligation. Organa Solo's intervention changed the debt ledger. Expect loyalty to move slowly in public and quickly in operational channels.",
+    "relatedRecords": [
+      "honoghr",
+      "noghri-clans",
+      "leia-organa-solo",
+      "han-solo",
+      "op-honoghr-disclosure"
+    ],
+    "sources": [
+      "Clan contact fragments",
+      "Environmental evidence"
+    ]
+  },
+  {
+    "id": "report-cbaoth-instability",
+    "title": "C'baoth Instability Estimate",
+    "category": "Military",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Wayland behavioral reconstruction",
+    "confidence": "Highly Reliable",
+    "summary": "C'baoth was never a controllable Imperial asset in the long term.",
+    "analysis": "His cooperation with Thrawn should be read as convergent need, not command compliance. Any future Force-sensitive asset showing similar possessive control patterns should be treated as an independent strategic threat from first contact.",
+    "relatedRecords": [
+      "joruus-cbaoth",
+      "jomark",
+      "wayland",
+      "op-cbaoth-containment",
+      "grand-admiral-thrawn"
+    ],
+    "sources": [
+      "Jomark contact reconstruction",
+      "Wayland debrief fragments"
+    ]
+  },
+  {
+    "id": "report-ferrier-theft-patterns",
+    "title": "Ferrier Theft Pattern Review",
+    "category": "Smuggling",
+    "classification": "Confidential",
+    "date": "09 ABY",
+    "origin": "Private hull-registry audit",
+    "confidence": "Probable",
+    "summary": "Ferrier's value to major factions rises when ownership records lag behind physical custody.",
+    "analysis": "Ferrier should be treated as an indicator species for hidden procurement demand. His movements matter less as criminal behavior than as evidence of who needs deniable hardware quickly.",
+    "relatedRecords": [
+      "niles-ferrier",
+      "ferrier-cell",
+      "katana-fleet",
+      "op-ferrier-asset-denial"
+    ],
+    "sources": [
+      "Hull registry anomalies",
+      "Brokerage rumor comparison"
+    ]
+  },
+  {
+    "id": "report-slicer-exposure",
+    "title": "Slicer Exposure: Ghent",
+    "category": "Unknown",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Karrde technical source protection",
+    "confidence": "Probable",
+    "summary": "Ghent's technical value exceeds his ability to manage political demand for that value.",
+    "analysis": "Technical access creates a protection problem. Every faction that sees Ghent solve one impossible authentication problem will imagine three more uses for him. Control exposure, not merely location.",
+    "relatedRecords": [
+      "ghent",
+      "karrde-organization",
+      "new-republic-intelligence",
+      "obroa-skai",
+      "op-obroa-skai-extraction"
+    ],
+    "sources": [
+      "Authentication logs",
+      "Private handler notes"
+    ]
+  },
+  {
+    "id": "report-fringe-diplomacy",
+    "title": "Fringe Diplomacy: Solo-Calrissian Channel",
+    "category": "Diplomatic",
+    "classification": "Internal",
+    "date": "09 ABY",
+    "origin": "Route-behavior analysis",
+    "confidence": "Highly Reliable",
+    "summary": "Solo and Calrissian remain unusually useful where official legitimacy must approach unofficial power.",
+    "analysis": "The channel works because neither man reads as purely governmental. That ambiguity irritates formal actors and reassures private ones. Karrde should preserve access without allowing New Republic branding to consume it.",
+    "relatedRecords": [
+      "han-solo",
+      "lando-calrissian",
+      "millennium-falcon",
+      "lady-luck",
+      "op-nkllon-convoy"
+    ],
+    "sources": [
+      "Route behavior",
+      "Private meeting reports"
+    ]
+  },
+  {
+    "id": "report-council-friction",
+    "title": "Coruscant Council Friction",
+    "category": "Political",
+    "classification": "Internal",
+    "date": "09 ABY",
+    "origin": "Council timing analysis",
+    "confidence": "Probable",
+    "summary": "Borsk Fey'lya's maneuvering can delay response tempo even when threat evidence is sound.",
+    "analysis": "The issue is not dissent; dissent is expected. The issue is incentive. When public credit and intelligence timing collide, Fey'lya's behavior creates measurable drag on already narrow response windows.",
+    "relatedRecords": [
+      "borsk-feylya",
+      "leia-organa-solo",
+      "new-republic",
+      "new-republic-intelligence",
+      "op-council-containment"
+    ],
+    "sources": [
+      "Scheduling anomalies",
+      "Council corridor reporting"
+    ]
+  },
+  {
+    "id": "report-cloaked-asteroid-deception",
+    "title": "Cloaked Asteroid Deception Model",
+    "category": "Military",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Orbital traffic reconstruction",
+    "confidence": "Highly Reliable",
+    "summary": "Ukio proved that invisible threat perception can pressure a world faster than visible occupation.",
+    "analysis": "The danger is cognitive tempo. If a population believes orbital catastrophe is already in place, commanders must spend time proving safety before they can restore initiative. Deception can therefore buy strategic time at low material cost.",
+    "relatedRecords": [
+      "ukio",
+      "grand-admiral-thrawn",
+      "op-ukio-pressure",
+      "report-thrawn-patterns"
+    ],
+    "sources": [
+      "Sensor-gap review",
+      "Agricultural shipment delays"
+    ]
+  },
+  {
+    "id": "report-kuat-procurement-signal",
+    "title": "Kuat Procurement Signal Watch",
+    "category": "Economic",
+    "classification": "Restricted",
+    "date": "09 ABY",
+    "origin": "Contract-shadow analysis",
+    "confidence": "Probable",
+    "summary": "Capital-component demand may reveal rearmament before any faction admits to fleet reconstruction.",
+    "analysis": "Shipyards do not need to declare allegiance to provide warning. Sudden demand for drives, shield generators, docking windows, or financial intermediaries can expose the next fleet concentration while it still looks like commerce.",
+    "relatedRecords": [
+      "kuat",
+      "kuati-shipwrights",
+      "kuat-procurement-ledger",
+      "op-kuat-procurement-watch"
+    ],
+    "sources": [
+      "Drive-component requests",
+      "Finance routing anomalies"
+    ]
+  },
+  {
+    "id": "report-bel-iblis-reintegration",
+    "title": "Bel Iblis Reintegration Risk",
+    "category": "Political",
+    "classification": "Confidential",
+    "date": "09 ABY",
+    "origin": "Fleet-channel review",
+    "confidence": "Highly Reliable",
+    "summary": "Independent military competence is useful only if the political system can absorb it without reopening old fractures.",
+    "analysis": "Bel Iblis adds serious capacity, but capacity with a separate history creates command questions. The New Republic should offer operational room while making legitimacy visible enough to satisfy central leadership.",
+    "relatedRecords": [
+      "garm-bel-iblis",
+      "bel-iblis-task-force",
+      "corellia",
+      "op-bel-iblis-reintegration"
+    ],
+    "sources": [
+      "Fleet movement comparisons",
+      "Private command-channel fragments"
+    ]
+  },
+  {
+    "id": "report-wedge-response-tempo",
+    "title": "Antilles Response Tempo",
+    "category": "Military",
+    "classification": "Confidential",
+    "date": "09 ABY",
+    "origin": "Pilot debrief comparison",
+    "confidence": "Confirmed",
+    "summary": "Wedge Antilles repeatedly compresses uncertainty into usable tactical action.",
+    "analysis": "Antilles is not merely a starfighter asset. His estimates provide an early sanity check on plans that look clean in staff rooms. When his objections cluster around timing, treat the schedule as suspect.",
+    "relatedRecords": [
+      "wedge-antilles",
+      "home-one",
+      "op-bel-iblis-reintegration",
+      "op-sluis-van-raid"
+    ],
+    "sources": [
+      "Pilot debrief fragments",
+      "Fleet-response timing"
+    ]
+  },
+  {
+    "id": "report-khabarakh-contact-chain",
+    "title": "Khabarakh Contact Chain",
+    "category": "Diplomatic",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Protected clan-contact review",
+    "confidence": "Highly Reliable",
+    "summary": "The Khabarakh channel remains sensitive because it carries both evidence and symbolic betrayal.",
+    "analysis": "Protect the contact chain from publicity. Public proof may help policy but endanger sources whose authority rests on clan trust. Move slowly, authenticate locally, and keep New Republic branding minimal.",
+    "relatedRecords": [
+      "khabarakh",
+      "kashyyyk",
+      "honoghr",
+      "noghri-insertion-shuttle",
+      "op-noghri-contact-protection"
+    ],
+    "sources": [
+      "Clan contact fragments",
+      "Protected route review"
+    ]
+  },
+  {
+    "id": "report-bothan-credit-risk",
+    "title": "Bothan Credit Reserve Risk",
+    "category": "Political",
+    "classification": "Internal",
+    "date": "09 ABY",
+    "origin": "Council reputation analysis",
+    "confidence": "Probable",
+    "summary": "Bothan sacrifice remains politically powerful, but overuse as procedural leverage creates intelligence drag.",
+    "analysis": "Fey'lya's bloc benefits from a reputation no serious New Republic actor can dismiss openly. That makes its demands sticky even when the operational case is weak. Watch for credit language appearing near timing-sensitive decisions.",
+    "relatedRecords": [
+      "bothan-political-bloc",
+      "borsk-feylya",
+      "mon-mothma",
+      "op-council-containment"
+    ],
+    "sources": [
+      "Council corridor reporting",
+      "Vote-timing comparison"
+    ]
+  },
+  {
+    "id": "report-memory-chain-authentication",
+    "title": "Memory Chain Authentication",
+    "category": "Unknown",
+    "classification": "Eyes Only",
+    "date": "09 ABY",
+    "origin": "Coruscant archive correlation",
+    "confidence": "Highly Reliable",
+    "summary": "Winter Celchu provides a human authentication path when records are politically altered or incomplete.",
+    "analysis": "High-fidelity recall is not a replacement for archives, but it is a powerful check against revision. Use Winter to compare room movement, spoken commitments, and document timing when institutional records disagree.",
+    "relatedRecords": [
+      "winter-celchu",
+      "leia-organa-solo",
+      "new-republic-intelligence",
+      "op-obroa-skai-extraction"
+    ],
+    "sources": [
+      "Archive correlation",
+      "Principal-staff timing review"
+    ]
+  }
+]

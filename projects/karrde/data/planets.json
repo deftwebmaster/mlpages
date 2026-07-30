@@ -1,0 +1,503 @@
+[
+  {
+    "id": "myrkr",
+    "name": "Myrkr",
+    "sector": "Myrkr system",
+    "government": "Nominal local control; practical influence held by private operators",
+    "population": "Sparse settlement",
+    "politicalStability": "Stable if undisturbed",
+    "militaryPresence": "Low conventional presence; high biological disruption to Force-sensitive actors",
+    "tradeValue": "Moderate for discreet staging",
+    "primaryIndustries": [
+      "timber",
+      "private depots",
+      "unregistered exchange"
+    ],
+    "criminalActivity": "Organized but disciplined under Karrde influence",
+    "knownContacts": [
+      "talon-karrde",
+      "mara-jade"
+    ],
+    "strategicImportance": "Ideal concealment and meeting site; local ecology alters standard Jedi and Imperial risk assumptions.",
+    "nearbySystems": [
+      "wayland"
+    ],
+    "historicalEvents": [
+      "event-karrde-shelters-skywalker"
+    ],
+    "currentReports": [
+      "report-source-discipline"
+    ],
+    "knownOperations": [
+      "op-smuggler-conference"
+    ],
+    "riskAssessment": "High value, low tolerance for careless traffic",
+    "classification": "Eyes Only",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "wayland",
+    "name": "Wayland",
+    "sector": "Outer Rim Territories",
+    "government": "Imperial-contaminated local hierarchy",
+    "population": "Local sentient communities; details compartmentalized",
+    "politicalStability": "Volatile after Mount Tantiss exposure",
+    "militaryPresence": "Former Imperial storehouse defenses degraded",
+    "tradeValue": "Low legitimate value; extreme strategic archive value",
+    "primaryIndustries": [
+      "concealed storehouse",
+      "restricted technology"
+    ],
+    "criminalActivity": "Unknown opportunistic recovery attempts expected",
+    "knownContacts": [
+      "luke-skywalker",
+      "mara-jade"
+    ],
+    "strategicImportance": "Imperial strategic cache with consequences beyond local control.",
+    "nearbySystems": [
+      "myrkr"
+    ],
+    "historicalEvents": [
+      "event-wayland-recovery"
+    ],
+    "currentReports": [
+      "report-wayland-consequences"
+    ],
+    "knownOperations": [
+      "op-mount-tantiss-recovery"
+    ],
+    "riskAssessment": "Treat all recovered information as contaminated until independently verified",
+    "classification": "Restricted",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "bilbringi",
+    "name": "Bilbringi",
+    "sector": "Inner Rim shipyard zone",
+    "government": "Militarized shipyard administration",
+    "population": "Industrial and naval personnel",
+    "politicalStability": "Disrupted after campaign engagement",
+    "militaryPresence": "Heavy shipyard defenses; status reduced post-engagement",
+    "tradeValue": "Severe military-industrial value",
+    "primaryIndustries": [
+      "ship construction",
+      "fleet maintenance"
+    ],
+    "criminalActivity": "Low routine access; high wartime covert interest",
+    "knownContacts": [
+      "gilad-pellaeon"
+    ],
+    "strategicImportance": "Shipyard control determines Imperial repair tempo.",
+    "nearbySystems": [
+      "coruscant"
+    ],
+    "historicalEvents": [
+      "event-bilbringi"
+    ],
+    "currentReports": [
+      "report-bilbringi-afteraction"
+    ],
+    "knownOperations": [
+      "op-bilbringi-intervention"
+    ],
+    "riskAssessment": "Do not approach without verified transponder cover",
+    "classification": "Restricted",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "coruscant",
+    "name": "Coruscant",
+    "sector": "Core Worlds",
+    "government": "New Republic provisional capital authority",
+    "population": "Planetary city; effectively galactic-scale",
+    "politicalStability": "Publicly stable; internally contested",
+    "militaryPresence": "High defensive and intelligence density",
+    "tradeValue": "Extreme political and financial exchange value",
+    "primaryIndustries": [
+      "government",
+      "finance",
+      "diplomacy",
+      "intelligence"
+    ],
+    "criminalActivity": "Embedded, sophisticated, politically shielded",
+    "knownContacts": [
+      "leia-organa-solo"
+    ],
+    "strategicImportance": "Control of the narrative often precedes control of the chamber.",
+    "nearbySystems": [
+      "bilbringi"
+    ],
+    "historicalEvents": [
+      "event-thrawn-emerges"
+    ],
+    "currentReports": [
+      "report-political-drift"
+    ],
+    "knownOperations": [
+      "op-noghri-realignment"
+    ],
+    "riskAssessment": "Every meeting has at least two audiences",
+    "classification": "Confidential",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "honoghr",
+    "name": "Honoghr",
+    "sector": "Outer Rim Territories",
+    "government": "Clan leadership under post-Imperial reassessment",
+    "population": "Noghri clans",
+    "politicalStability": "Recovering; loyalty structures in transition",
+    "militaryPresence": "Low conventional presence; high covert capability density",
+    "tradeValue": "Low open trade value; high political leverage value",
+    "primaryIndustries": [
+      "subsistence recovery",
+      "clan service",
+      "covert recruitment"
+    ],
+    "criminalActivity": "Low independent crime; former Imperial exploitation channels under review",
+    "knownContacts": [
+      "leia-organa-solo",
+      "han-solo"
+    ],
+    "strategicImportance": "Exposure of environmental deception converted an Imperial covert asset into a New Republic-aligned liability for the Remnant.",
+    "nearbySystems": [
+      "coruscant"
+    ],
+    "historicalEvents": [
+      "event-honoghr-disclosure",
+      "event-noghri-shift"
+    ],
+    "currentReports": [
+      "report-noghri-leverage-collapse"
+    ],
+    "knownOperations": [
+      "op-honoghr-disclosure",
+      "op-noghri-realignment"
+    ],
+    "riskAssessment": "Treat all Imperial humanitarian claims as operational cover until independently tested",
+    "classification": "Eyes Only",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "sluis-van",
+    "name": "Sluis Van",
+    "sector": "Sluis sector",
+    "government": "New Republic-aligned shipyard authority",
+    "population": "Industrial, naval, and technical personnel",
+    "politicalStability": "Stable but exposed",
+    "militaryPresence": "High due to shipyard defenses and fleet staging",
+    "tradeValue": "Severe naval logistics value",
+    "primaryIndustries": [
+      "ship repair",
+      "fleet staging",
+      "industrial logistics"
+    ],
+    "criminalActivity": "Low routine activity; high wartime infiltration incentive",
+    "knownContacts": [
+      "lando-calrissian"
+    ],
+    "strategicImportance": "A successful raid would have changed New Republic operational tempo without requiring a decisive fleet battle.",
+    "nearbySystems": [
+      "nkllon",
+      "coruscant"
+    ],
+    "historicalEvents": [
+      "event-sluis-van-raid"
+    ],
+    "currentReports": [
+      "report-sluis-van-vulnerability"
+    ],
+    "knownOperations": [
+      "op-sluis-van-raid"
+    ],
+    "riskAssessment": "Primary exposure remains deception against maintenance and docking procedures",
+    "classification": "Restricted",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "nkllon",
+    "name": "Nkllon",
+    "sector": "Athega-adjacent industrial zone",
+    "government": "Private industrial administration under Calrissian control",
+    "population": "Rotating industrial workforce",
+    "politicalStability": "Stable under technical constraints",
+    "militaryPresence": "Low permanent presence; high vulnerability during convoy windows",
+    "tradeValue": "High metals and industrial production value",
+    "primaryIndustries": [
+      "mining",
+      "industrial processing",
+      "shipping"
+    ],
+    "criminalActivity": "Moderate due to cargo predictability and harsh operating conditions",
+    "knownContacts": [
+      "lando-calrissian",
+      "han-solo"
+    ],
+    "strategicImportance": "Industrial output and predictable traffic make Nkllon a useful pressure point against New Republic logistics.",
+    "nearbySystems": [
+      "sluis-van"
+    ],
+    "historicalEvents": [
+      "event-nkllon-convoy"
+    ],
+    "currentReports": [
+      "report-nkllon-industrial-risk"
+    ],
+    "knownOperations": [
+      "op-nkllon-convoy"
+    ],
+    "riskAssessment": "Convoy timing is more sensitive than site location",
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "jomark",
+    "name": "Jomark",
+    "sector": "Outer Rim Territories",
+    "government": "Local settlement structures under C'baoth influence during contact period",
+    "population": "Small local communities",
+    "politicalStability": "Unstable during C'baoth presence",
+    "militaryPresence": "Low conventional presence; severe Force-user risk",
+    "tradeValue": "Low",
+    "primaryIndustries": [
+      "subsistence settlement",
+      "concealed refuge"
+    ],
+    "criminalActivity": "Unknown",
+    "knownContacts": [
+      "joruus-cbaoth",
+      "luke-skywalker"
+    ],
+    "strategicImportance": "Served as an early indicator that Thrawn's Jedi asset was not command-stable.",
+    "nearbySystems": [
+      "wayland"
+    ],
+    "historicalEvents": [
+      "event-jomark-contact"
+    ],
+    "currentReports": [
+      "report-cbaoth-instability"
+    ],
+    "knownOperations": [
+      "op-cbaoth-containment"
+    ],
+    "riskAssessment": "Avoid direct contact protocols with unverified Force actors",
+    "classification": "Restricted",
+    "reliability": "Probable"
+  },
+  {
+    "id": "obroa-skai",
+    "name": "Obroa-skai",
+    "sector": "Obroa-skai system",
+    "government": "Academic and archival authority",
+    "population": "Scholarly, technical, and administrative population",
+    "politicalStability": "Stable; information value creates wartime exposure",
+    "militaryPresence": "Moderate defensive posture around knowledge infrastructure",
+    "tradeValue": "High informational value",
+    "primaryIndustries": [
+      "archives",
+      "research",
+      "data indexing"
+    ],
+    "criminalActivity": "Low conventional crime; high data theft risk",
+    "knownContacts": [
+      "ghent"
+    ],
+    "strategicImportance": "Archive-rich world where theft of context can be as damaging as theft of hardware.",
+    "nearbySystems": [
+      "coruscant"
+    ],
+    "historicalEvents": [
+      "event-obroa-skai-archive"
+    ],
+    "currentReports": [
+      "report-slicer-exposure"
+    ],
+    "knownOperations": [
+      "op-obroa-skai-extraction"
+    ],
+    "riskAssessment": "Data exfiltration may look like legitimate scholarly access",
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "ukio",
+    "name": "Ukio",
+    "sector": "Agricultural trade corridor",
+    "government": "Local planetary authority under wartime pressure",
+    "population": "Agricultural and trade settlements",
+    "politicalStability": "Shaken by deception operation",
+    "militaryPresence": "Low conventional strength; vulnerable to psychological attack",
+    "tradeValue": "High food and logistics value",
+    "primaryIndustries": [
+      "agriculture",
+      "bulk shipping",
+      "regional provisioning"
+    ],
+    "criminalActivity": "Low routine activity; high rumor exploitation risk",
+    "knownContacts": [
+      "wedge-antilles"
+    ],
+    "strategicImportance": "Demonstrated how orbital deception can convert a low-combat world into a political signal.",
+    "nearbySystems": [
+      "coruscant",
+      "sluis-van"
+    ],
+    "historicalEvents": [
+      "event-ukio-deception"
+    ],
+    "currentReports": [
+      "report-cloaked-asteroid-deception"
+    ],
+    "knownOperations": [
+      "op-ukio-pressure"
+    ],
+    "riskAssessment": "Panic contagion matters more than physical damage in early contact windows",
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "kuat",
+    "name": "Kuat",
+    "sector": "Core Worlds",
+    "government": "Industrial aristocracy and shipyard authority",
+    "population": "Dense industrial and administrative population",
+    "politicalStability": "Stable, guarded, and commercially pragmatic",
+    "militaryPresence": "Heavy defense around orbital shipyards",
+    "tradeValue": "Extreme capital-ship procurement value",
+    "primaryIndustries": [
+      "shipbuilding",
+      "weapons integration",
+      "procurement finance"
+    ],
+    "criminalActivity": "Low visible crime; high contract manipulation risk",
+    "knownContacts": [],
+    "strategicImportance": "Procurement behavior can reveal factional recovery before fleets move.",
+    "nearbySystems": [
+      "coruscant",
+      "corellia"
+    ],
+    "historicalEvents": [
+      "event-kuat-procurement-watch"
+    ],
+    "currentReports": [
+      "report-kuat-procurement-signal"
+    ],
+    "knownOperations": [
+      "op-kuat-procurement-watch"
+    ],
+    "riskAssessment": "Do not confuse commercial neutrality with strategic neutrality",
+    "classification": "Restricted",
+    "reliability": "Probable"
+  },
+  {
+    "id": "corellia",
+    "name": "Corellia",
+    "sector": "Core Worlds",
+    "government": "Corellian local authority with strong independent identity",
+    "population": "Dense industrial, mercantile, and shipwright population",
+    "politicalStability": "Stable but autonomy-sensitive",
+    "militaryPresence": "Moderate local defense and shipyard security",
+    "tradeValue": "High shipping, brokerage, and engineering value",
+    "primaryIndustries": [
+      "shipbuilding",
+      "freight",
+      "private brokerage"
+    ],
+    "criminalActivity": "Embedded in cargo culture; manageable with local contacts",
+    "knownContacts": [
+      "han-solo",
+      "garm-bel-iblis"
+    ],
+    "strategicImportance": "Corellian lanes carry both legitimate logistics and deniable access.",
+    "nearbySystems": [
+      "kuat",
+      "coruscant"
+    ],
+    "historicalEvents": [
+      "event-bel-iblis-reemerges"
+    ],
+    "currentReports": [
+      "report-bel-iblis-reintegration"
+    ],
+    "knownOperations": [
+      "op-bel-iblis-reintegration"
+    ],
+    "riskAssessment": "Local pride can disrupt otherwise clean central-command assumptions",
+    "classification": "Internal",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "kashyyyk",
+    "name": "Kashyyyk",
+    "sector": "Mytaranor sector",
+    "government": "Wookiee clan and planetary authority",
+    "population": "Wookiee clans and allied settlements",
+    "politicalStability": "Stable under trusted contact protocols",
+    "militaryPresence": "High defensive potential; low tolerance for coercive visitors",
+    "tradeValue": "Moderate legitimate trade, high refuge value",
+    "primaryIndustries": [
+      "forestry",
+      "craft production",
+      "secure refuge"
+    ],
+    "criminalActivity": "Low tolerated activity; high consequences for betrayal",
+    "knownContacts": [
+      "han-solo",
+      "khabarakh"
+    ],
+    "strategicImportance": "Useful protected contact ground when New Republic formal spaces are too visible.",
+    "nearbySystems": [
+      "honoghr",
+      "corellia"
+    ],
+    "historicalEvents": [
+      "event-khabarakh-contact"
+    ],
+    "currentReports": [
+      "report-khabarakh-contact-chain"
+    ],
+    "knownOperations": [
+      "op-noghri-contact-protection"
+    ],
+    "riskAssessment": "Respect local trust chains or lose the planet as a contact surface",
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "chandrila",
+    "name": "Chandrila",
+    "sector": "Core Worlds",
+    "government": "New Republic-aligned democratic authority",
+    "population": "Civilian political and agricultural population",
+    "politicalStability": "Stable",
+    "militaryPresence": "Low symbolic target profile; elevated protective intelligence",
+    "tradeValue": "Moderate economic value; high legitimacy value",
+    "primaryIndustries": [
+      "government heritage",
+      "agriculture",
+      "education"
+    ],
+    "criminalActivity": "Low routine activity",
+    "knownContacts": [
+      "mon-mothma"
+    ],
+    "strategicImportance": "Symbolic pressure point against New Republic continuity and Mothma's legitimacy.",
+    "nearbySystems": [
+      "coruscant",
+      "kuat"
+    ],
+    "historicalEvents": [
+      "event-coruscant-council-friction"
+    ],
+    "currentReports": [
+      "report-bothan-credit-risk"
+    ],
+    "knownOperations": [
+      "op-council-containment"
+    ],
+    "riskAssessment": "Threat value is symbolic more than military",
+    "classification": "Internal",
+    "reliability": "Confirmed"
+  }
+]

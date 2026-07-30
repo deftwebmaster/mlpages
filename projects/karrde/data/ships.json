@@ -1,0 +1,310 @@
+[
+  {
+    "id": "wild-karrde",
+    "name": "Wild Karrde",
+    "manufacturer": "Corellian Engineering Corporation",
+    "class": "Action VI transport",
+    "length": "125 meters",
+    "crew": "Variable private crew",
+    "knownOwner": "talon-karrde",
+    "currentStatus": "Active",
+    "previousOwners": [],
+    "operationalHistory": "Mobile headquarters, cargo platform, and controlled communications node for Karrde's network.",
+    "knownEngagements": [
+      "event-smugglers-at-bilbringi"
+    ],
+    "knownCargo": [
+      "source packets",
+      "restricted exchange goods",
+      "unregistered manifests"
+    ],
+    "associatedPersonnel": [
+      "talon-karrde",
+      "mara-jade"
+    ],
+    "associatedOperations": [
+      "op-smuggler-conference",
+      "op-bilbringi-intervention"
+    ],
+    "strategicAssessment": "More valuable as a routing brain than a transport. Track arrivals indirectly through broker behavior.",
+    "classification": "Eyes Only",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "chimaera",
+    "name": "Chimaera",
+    "manufacturer": "Kuat Drive Yards",
+    "class": "Imperial Star Destroyer",
+    "length": "1,600 meters",
+    "crew": "Imperial naval complement",
+    "knownOwner": "imperial-remnant",
+    "currentStatus": "Active under surviving Imperial command",
+    "previousOwners": [],
+    "operationalHistory": "Flagship platform during Thrawn campaign and primary signal of coordinated Imperial intent.",
+    "knownEngagements": [
+      "event-bilbringi"
+    ],
+    "knownCargo": [
+      "command staff",
+      "fleet intelligence",
+      "naval stores"
+    ],
+    "associatedPersonnel": [
+      "grand-admiral-thrawn",
+      "gilad-pellaeon"
+    ],
+    "associatedOperations": [
+      "op-bilbringi-intervention",
+      "op-katana-fleet-acquisition"
+    ],
+    "strategicAssessment": "The vessel matters less than what its movement proves: Imperial discipline still exists.",
+    "classification": "Restricted",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "katana-fleet",
+    "name": "Katana Fleet",
+    "manufacturer": "Rendili StarDrive",
+    "class": "Dreadnaught-class heavy cruisers",
+    "length": "600 meters per vessel",
+    "crew": "Reduced slave-rigged complements",
+    "knownOwner": "imperial-remnant",
+    "currentStatus": "Distributed after discovery",
+    "previousOwners": [
+      "old-republic"
+    ],
+    "operationalHistory": "Lost fleet recovered as a strategic accelerant during the Thrawn campaign.",
+    "knownEngagements": [
+      "event-katana-discovery"
+    ],
+    "knownCargo": [
+      "legacy naval hulls"
+    ],
+    "associatedPersonnel": [
+      "grand-admiral-thrawn"
+    ],
+    "associatedOperations": [
+      "op-katana-fleet-acquisition"
+    ],
+    "strategicAssessment": "A dormant asset became decisive because every major power forgot to keep asking where it was.",
+    "classification": "Confidential",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "millennium-falcon",
+    "name": "Millennium Falcon",
+    "manufacturer": "Corellian Engineering Corporation",
+    "class": "YT-1300 light freighter",
+    "length": "34.75 meters",
+    "crew": "Small independent crew",
+    "knownOwner": "han-solo",
+    "currentStatus": "Active",
+    "previousOwners": [],
+    "operationalHistory": "High-profile courier, insertion, and diplomatic transport platform with outsized symbolic value.",
+    "knownEngagements": [
+      "event-nkllon-convoy",
+      "event-honoghr-disclosure"
+    ],
+    "knownCargo": [
+      "New Republic principals",
+      "sensitive diplomatic contact material"
+    ],
+    "associatedPersonnel": [
+      "han-solo",
+      "leia-organa-solo",
+      "luke-skywalker"
+    ],
+    "associatedOperations": [
+      "op-nkllon-convoy",
+      "op-honoghr-disclosure"
+    ],
+    "strategicAssessment": "The Falcon's arrival often means formal channels have failed or are being bypassed deliberately.",
+    "classification": "Confidential",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "lady-luck",
+    "name": "Lady Luck",
+    "manufacturer": "SoroSuub Corporation",
+    "class": "Luxury yacht",
+    "length": "50 meters",
+    "crew": "Small private crew",
+    "knownOwner": "lando-calrissian",
+    "currentStatus": "Active",
+    "previousOwners": [],
+    "operationalHistory": "Private transport and negotiation platform suited to commercial cover and selective access.",
+    "knownEngagements": [
+      "event-nkllon-convoy"
+    ],
+    "knownCargo": [
+      "commercial records",
+      "private negotiator traffic"
+    ],
+    "associatedPersonnel": [
+      "lando-calrissian",
+      "han-solo"
+    ],
+    "associatedOperations": [
+      "op-nkllon-convoy"
+    ],
+    "strategicAssessment": "Less threatening than it is useful. Its value is invitation, not intimidation.",
+    "classification": "Internal",
+    "reliability": "Highly Reliable"
+  },
+  {
+    "id": "sluis-van-defense-fleet",
+    "name": "Sluis Van Defense Fleet",
+    "manufacturer": "Mixed New Republic and legacy manufacturers",
+    "class": "Local defense and repair-staged naval assets",
+    "length": "Mixed vessels",
+    "crew": "New Republic and shipyard personnel",
+    "knownOwner": "sluis-van-shipyards",
+    "currentStatus": "Operational after raid disruption",
+    "previousOwners": [
+      "new-republic"
+    ],
+    "operationalHistory": "Defensive fleet and docked repair assets targeted during Imperial shipyard operation.",
+    "knownEngagements": [
+      "event-sluis-van-raid"
+    ],
+    "knownCargo": [
+      "repair schedules",
+      "naval crews",
+      "maintenance systems"
+    ],
+    "associatedPersonnel": [
+      "lando-calrissian",
+      "han-solo"
+    ],
+    "associatedOperations": [
+      "op-sluis-van-raid"
+    ],
+    "strategicAssessment": "The fleet's vulnerability was procedural: access, timing, and trust were more dangerous than enemy fire.",
+    "classification": "Restricted",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "etherway",
+    "name": "Etherway",
+    "manufacturer": "Corellian Engineering Corporation",
+    "class": "Medium transport",
+    "length": "Unconfirmed",
+    "crew": "Karrde Organization crew",
+    "knownOwner": "karrde-organization",
+    "currentStatus": "Active in relay service",
+    "previousOwners": [],
+    "operationalHistory": "Secondary transport and relay asset used to distribute risk away from Wild Karrde.",
+    "knownEngagements": [
+      "event-smugglers-at-bilbringi"
+    ],
+    "knownCargo": [
+      "relay packets",
+      "cargo cover",
+      "source couriers"
+    ],
+    "associatedPersonnel": [
+      "aves",
+      "talon-karrde"
+    ],
+    "associatedOperations": [
+      "op-smuggler-conference",
+      "op-ferrier-asset-denial"
+    ],
+    "strategicAssessment": "Useful because it is less famous than the flagship. Track it for quiet routing shifts.",
+    "classification": "Confidential",
+    "reliability": "Probable"
+  },
+  {
+    "id": "home-one",
+    "name": "Home One",
+    "manufacturer": "Mon Calamari Shipyards",
+    "class": "MC80 command cruiser",
+    "length": "1,200 meters",
+    "crew": "New Republic naval complement",
+    "knownOwner": "new-republic",
+    "currentStatus": "Active command platform",
+    "previousOwners": [],
+    "operationalHistory": "Symbolic and practical New Republic command asset used in major fleet coordination.",
+    "knownEngagements": [
+      "event-sluis-van-raid"
+    ],
+    "knownCargo": [
+      "command staff",
+      "fleet coordination material"
+    ],
+    "associatedPersonnel": [
+      "mon-mothma",
+      "wedge-antilles",
+      "garm-bel-iblis"
+    ],
+    "associatedOperations": [
+      "op-sluis-van-raid",
+      "op-bel-iblis-reintegration"
+    ],
+    "strategicAssessment": "Its movement is a political message before it is a naval fact.",
+    "classification": "Confidential",
+    "reliability": "Confirmed"
+  },
+  {
+    "id": "noghri-insertion-shuttle",
+    "name": "Noghri Insertion Shuttle",
+    "manufacturer": "Imperial covert logistics pool",
+    "class": "Covert shuttle",
+    "length": "Unconfirmed",
+    "crew": "Small Noghri team",
+    "knownOwner": "noghri-clans",
+    "currentStatus": "Access disputed after realignment",
+    "previousOwners": [
+      "galactic-empire"
+    ],
+    "operationalHistory": "Low-signature movement platform associated with Noghri contact and extraction chains.",
+    "knownEngagements": [
+      "event-khabarakh-contact",
+      "event-honoghr-disclosure"
+    ],
+    "knownCargo": [
+      "contact teams",
+      "environmental evidence",
+      "clan messages"
+    ],
+    "associatedPersonnel": [
+      "khabarakh",
+      "rukh",
+      "leia-organa-solo"
+    ],
+    "associatedOperations": [
+      "op-noghri-contact-protection",
+      "op-honoghr-disclosure"
+    ],
+    "strategicAssessment": "A small shuttle can carry a strategic realignment if the evidence aboard is good enough.",
+    "classification": "Eyes Only",
+    "reliability": "Probable"
+  },
+  {
+    "id": "kuat-procurement-ledger",
+    "name": "Kuat Procurement Ledger",
+    "manufacturer": "Kuati Shipwrights",
+    "class": "Industrial signal record",
+    "length": "Not applicable",
+    "crew": "Not applicable",
+    "knownOwner": "kuati-shipwrights",
+    "currentStatus": "Fragmentary access only",
+    "previousOwners": [],
+    "operationalHistory": "Composite of bids, parts requests, and financing shadows used to infer factional capital-ship demand.",
+    "knownEngagements": [
+      "event-kuat-procurement-watch"
+    ],
+    "knownCargo": [
+      "contract shadows",
+      "drive-component requests",
+      "repair finance anomalies"
+    ],
+    "associatedPersonnel": [],
+    "associatedOperations": [
+      "op-kuat-procurement-watch"
+    ],
+    "strategicAssessment": "Procurement records can reveal the next fleet before the first ship leaves dock.",
+    "classification": "Restricted",
+    "reliability": "Probable"
+  }
+]
