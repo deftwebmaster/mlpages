@@ -1,0 +1,21 @@
+{
+  "name": "Mile Marker Coffee",
+  "short_name": "Mile Marker",
+  "description": "A fictional West Texas roadside coffee roaster and cafe.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4e4c1",
+  "theme_color": "#b8401e",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "Sterling Kane",
+  "short_name": "Sterling Kane",
+  "description": "Fictional Dallas business-litigation firm portfolio website.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#151716",
+  "theme_color": "#151716",
+  "icons": [
+    {
+      "src": "assets/images/sterling-kane-monogram.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "name": "Heritage Dental Studio",
+  "short_name": "Heritage Dental",
+  "description": "A fictional portfolio website for a modern Plano dental practice.",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "theme_color": "#21483f",
+  "background_color": "#f7f3ea",
+  "display": "standalone"
+}

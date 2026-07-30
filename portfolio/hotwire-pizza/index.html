@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script>document.documentElement.classList.add("js");</script>
+    <title>Hotwire Pizza | Slices After Dark</title>
+    <meta name="description" content="Late-night oversized New York-style slices, whole pies, wings, knots, and canned drinks in Deep Ellum, Dallas.">
+    <meta name="theme-color" content="#0b0b0d">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Hotwire Pizza Co. | Slices After Dark">
+    <meta property="og:description" content="Late-night oversized New York-style slices, whole pies, wings, knots, and canned drinks in Deep Ellum, Dallas.">
+    <meta property="og:image" content="public/og.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="public/og.png">
+
+    <link rel="icon" href="public/hotwire-pizza-logo.png">
+    <link rel="apple-touch-icon" href="public/hotwire-pizza-logo.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="announcement">
+      <span>Open late in Deep Ellum</span>
+      <span>Slices until 3 AM Friday + Saturday</span>
+      <span>2714 Commerce Street</span>
+    </div>
+
+    <header class="site-header">
+      <a class="brand-lockup" href="#top" aria-label="Hotwire Pizza home">
+        <img src="public/hotwire-pizza-logo.png" alt="Hotwire Pizza Co. Dallas, TX">
+      </a>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle-input">
+      <label for="nav-toggle" class="nav-toggle" aria-label="Toggle menu"><span></span></label>
+      <div class="nav-drawer">
+        <nav aria-label="Primary navigation">
+          <a href="#menu">Menu</a>
+          <a href="#order">Order</a>
+          <a href="#about">About</a>
+          <a href="#visit">Visit</a>
+          <a href="#catering">Catering</a>
+        </nav>
+        <a class="button order-button" href="#order">Start an order</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="top" class="hero">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="hero-copy">
+          <p class="eyebrow">Deep Ellum - Dallas, TX</p>
+          <h1>Slices After Dark.</h1>
+          <p>Oversized New York-style pizza, hot wings, loaded knots, and whole pies served late for the people still awake.</p>
+          <div class="actions">
+            <a class="button" href="#order">Start an order</a>
+            <a class="button button-ghost" href="#menu">View the menu</a>
+          </div>
+          <div class="status-grid">
+            <div><span>Tonight</span><strong>Open until 1 AM</strong></div>
+            <div><span>Friday + Saturday</span><strong>5 PM-3 AM</strong></div>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="public/og.png" alt="Cheese-pull pepperoni slice, Hotwire Pizza Co.">
+        </div>
+      </section>
+
+      <section class="ticker" aria-label="Hotwire highlights">
+        <div class="ticker-track">
+          <span>Whole pies</span><span>Loud slices</span><span>Hot honey knots</span><span>No curfew</span><span>Canned drinks</span><span>Late-night catering</span>
+          <span>Whole pies</span><span>Loud slices</span><span>Hot honey knots</span><span>No curfew</span><span>Canned drinks</span><span>Late-night catering</span>
+        </div>
+      </section>
+
+      <section id="menu" class="section menu-section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Menu board</p>
+          <h2>Big slices. Hot edges. Prices up front.</h2>
+          <p>Signature pies are available by the oversized slice or as 18-inch whole pies cut into eight foldable slices.</p>
+        </div>
+
+        <div class="filter-row" aria-label="Menu filters">
+          <button data-filter="all" class="active">All</button><button data-filter="spicy">Spicy</button><button data-filter="meat">Meat</button><button data-filter="vegetarian">Vegetarian</button><button data-filter="popular">Most Popular</button><button data-filter="slice">By the Slice</button>
+        </div>
+
+        <div class="signature-grid">
+          <article class="menu-card reveal" data-tags="spicy meat popular slice">
+            <div class="pizza-photo"><img src="public/menu-hotwire.jpg" alt="The Hotwire pepperoni and jalapeno pizza" loading="lazy"></div>
+            <span class="tag">Most Popular</span>
+            <h3>The Hotwire</h3>
+            <p>Cup-and-char pepperoni, mozzarella, chili honey, pickled jalapenos, red sauce.</p>
+            <div class="price-row"><span>Slice <b>$6.50</b></span><span>Pie <b>$29</b></span></div>
+          </article>
+          <article class="menu-card reveal" data-tags="meat popular slice">
+            <div class="pizza-photo photo-2"><img src="public/menu-blackout.jpg" alt="Blackout sausage and pepperoni pizza" loading="lazy"></div>
+            <span class="tag">Most Popular</span>
+            <h3>Blackout</h3>
+            <p>Italian sausage, pepperoni, bacon, caramelized onion, mozzarella, red sauce.</p>
+            <div class="price-row"><span>Slice <b>$7</b></span><span>Pie <b>$32</b></span></div>
+          </article>
+          <article class="menu-card reveal" data-tags="spicy meat slice">
+            <div class="pizza-photo photo-3"><img src="public/menu-redline.jpg" alt="Redline soppressata and Calabrian chili pizza" loading="lazy"></div>
+            <span class="tag tag-spicy">Spicy</span>
+            <h3>Redline</h3>
+            <p>Spicy soppressata, roasted red peppers, Calabrian chili, mozzarella, pecorino.</p>
+            <div class="price-row"><span>Slice <b>$7</b></span><span>Pie <b>$32</b></span></div>
+          </article>
+          <article class="menu-card reveal" data-tags="meat slice">
+            <div class="pizza-photo photo-4"><img src="public/menu-graveyard-shift.jpg" alt="Graveyard Shift pepperoni, mushroom, and olive pizza" loading="lazy"></div>
+            <h3>Graveyard Shift</h3>
+            <p>Pepperoni, mushroom, black olive, roasted garlic, mozzarella.</p>
+            <div class="price-row"><span>Slice <b>$6.50</b></span><span>Pie <b>$29</b></span></div>
+          </article>
+          <article class="menu-card reveal" data-tags="vegetarian slice">
+            <div class="pizza-photo photo-5"><img src="public/menu-neon-veggie.jpg" alt="Neon Veggie mushroom and spinach pizza" loading="lazy"></div>
+            <h3>Neon Veggie</h3>
+            <p>Mushroom, roasted peppers, red onion, spinach, banana peppers, mozzarella.</p>
+            <div class="price-row"><span>Slice <b>$6</b></span><span>Pie <b>$27</b></span></div>
+          </article>
+          <article class="menu-card reveal" data-tags="meat popular slice">
+            <div class="pizza-photo photo-6"><img src="public/menu-deep-ellum.jpg" alt="The Deep Ellum smoked brisket pizza" loading="lazy"></div>
+            <span class="tag">Most Popular</span>
+            <h3>The Deep Ellum</h3>
+            <p>Smoked brisket, pickled red onion, jalapeno, mozzarella, barbecue drizzle.</p>
+            <div class="price-row"><span>Slice <b>$7.50</b></span><span>Pie <b>$34</b></span></div>
+          </article>
+        </div>
+
+        <div class="menu-panels">
+          <section class="menu-panel">
+            <h3>Build Your Own</h3>
+            <p><span>Cheese pie</span><b>$22</b></p>
+            <p><span>Standard toppings</span><b>$2 each</b></p>
+            <p><span>Premium toppings</span><b>$3 each</b></p>
+          </section>
+          <section class="menu-panel">
+            <h3>Sides</h3>
+            <p><span>Live Wire Knots</span><b>$8</b></p>
+            <p><span>Burnout Wings</span><b>$14</b></p>
+            <p><span>Loaded Knots</span><b>$12</b></p>
+            <p><span>House Caesar</span><b>$9</b></p>
+          </section>
+          <section class="menu-panel">
+            <h3>Dips</h3>
+            <p><span>Ranch</span><b>$1</b></p>
+            <p><span>Hot Honey</span><b>$1</b></p>
+            <p><span>Garlic Butter</span><b>$1</b></p>
+            <p><span>Vodka Sauce</span><b>$2</b></p>
+          </section>
+          <section class="menu-panel">
+            <h3>Drinks</h3>
+            <p><span>Fountain Drink</span><b>$3</b></p>
+            <p><span>Mexican Coke</span><b>$4</b></p>
+            <p><span>Topo Chico</span><b>$4</b></p>
+            <p><span>Energy Drink</span><b>$5</b></p>
+          </section>
+        </div>
+      </section>
+
+      <section id="order" class="section order-section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Order demo</p>
+          <h2>The 1:17 AM combo is ready.</h2>
+          <p>Two slices, one order of knots, and two fountain drinks for $19.</p>
+        </div>
+        <div class="order-grid reveal">
+          <form class="order-form">
+            <fieldset>
+              <legend>Service</legend>
+              <label><input type="radio" name="service" checked> Pickup</label>
+              <label><input type="radio" name="service"> Delivery</label>
+            </fieldset>
+            <label>Pizza<select><option>The Hotwire slice</option><option>Redline slice</option><option>The Deep Ellum slice</option></select></label>
+            <label>Cheese<select><option>Regular</option><option>Light</option><option>Extra</option></select></label>
+            <label class="checkbox"><input type="checkbox"> Well-done bake</label>
+            <label class="checkbox"><input type="checkbox" checked> Add chili honey</label>
+            <button type="button" class="button">Add combo</button>
+          </form>
+          <aside class="cart-panel">
+            <p class="eyebrow">Demo checkout</p>
+            <h3>Your late-night order</h3>
+            <p><span>2 signature slices</span><b>$13</b></p>
+            <p><span>Live Wire Knots</span><b>$8</b></p>
+            <p><span>2 fountain drinks</span><b>$6</b></p>
+            <p><span>Combo savings</span><b>-$8</b></p>
+            <p class="total"><span>Total</span><b>$19</b></p>
+            <small>Demo ordering experience. No payment will be processed.</small>
+          </aside>
+        </div>
+      </section>
+
+      <section id="about" class="section split-section reveal">
+        <div>
+          <p class="eyebrow">Dallas runs late. So do we.</p>
+          <h2>Pizza for the people still awake.</h2>
+        </div>
+        <div>
+          <p>Hotwire was built for bartenders getting off shift, bands loading out, night owls, bad influences, and anyone refusing to settle for drive-through food after midnight.</p>
+          <p>No frozen crusts. No heat lamps. No tiny slices. Just big pies, loud flavors, and a kitchen that stays on when the rest of the city clocks out.</p>
+          <div class="values"><span>Made here</span><span>Open late</span><span>No small slices</span><span>Dallas built</span></div>
+        </div>
+      </section>
+
+      <section id="visit" class="section visit-section reveal">
+        <div>
+          <p class="eyebrow">Find the neon. Follow the smell.</p>
+          <h2>2714 Commerce Street, Dallas, TX 75226</h2>
+          <p>Hotwire Pizza sits in the heart of Deep Ellum, a few blocks from venues, bars, late shows, and the next questionable decision.</p>
+          <div class="actions">
+            <a class="button" href="tel:+12145550147">Call (214) 555-0147</a>
+            <a class="button button-ghost" href="https://maps.google.com/?q=2714+Commerce+Street+Dallas+TX+75226">Get directions</a>
+          </div>
+        </div>
+        <aside class="hours-board">
+          <h3>We're open</h3>
+          <p>Kitchen closes at 1:00 AM tonight.</p>
+          <p><span>Mon-Thu</span><b>5 PM-1 AM</b></p>
+          <p><span>Fri-Sat</span><b>5 PM-3 AM</b></p>
+          <p><span>Sun</span><b>5 PM-12 AM</b></p>
+        </aside>
+      </section>
+
+      <section id="catering" class="section catering-section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Late-night catering</p>
+          <h2>Big pies for big nights.</h2>
+          <p>Whole pies, wings, knots, and drinks for offices, parties, production crews, and events.</p>
+        </div>
+        <div class="catering-grid">
+          <article class="reveal"><h3>Crew Feed</h3><p>Four pizzas, two orders of knots, and drinks.</p><span>Serves 10-12</span><b>From $135</b></article>
+          <article class="reveal"><h3>Full House</h3><p>Eight pizzas, wings, knots, salad, and drinks.</p><span>Serves 20-25</span><b>From $295</b></article>
+          <article class="reveal"><h3>After Party</h3><p>Twelve pizzas, wings, drinks, plates, and serving supplies.</p><span>Serves 35-40</span><b>From $475</b></article>
+        </div>
+      </section>
+
+      <section class="section testimonial-section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Word on the street</p>
+          <h2>Dallas keeps coming back.</h2>
+        </div>
+        <div class="testimonial-grid">
+          <article class="testimonial-card reveal">
+            <span class="stars">★★★★★</span>
+            <p>"Ordered at 1 AM after a show at Deep Ellum Art Co. and the Blackout slice fixed everything. Bigger than my face."</p>
+            <cite>— Priya M., regular</cite>
+          </article>
+          <article class="testimonial-card reveal">
+            <span class="stars">★★★★★</span>
+            <p>"The chili honey on the Hotwire slice is criminal. I've driven across town for it more than once."</p>
+            <cite>— Dee R., bartender</cite>
+          </article>
+          <article class="testimonial-card reveal">
+            <span class="stars">★★★★★</span>
+            <p>"Catered our load-out crew with the Full House package. Twelve people, gone in fifteen minutes."</p>
+            <cite>— Marcus T., tour manager</cite>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <img src="public/hotwire-pizza-logo.png" alt="Hotwire Pizza Co.">
+      <p>Designed by Matt Livingston for demonstration purposes. Dallas, TX</p>
+      <a class="button" href="#order">Order pizza</a>
+    </footer>
+
+    <script>
+      (() => {
+        const revealEls = document.querySelectorAll(".reveal");
+        if ("IntersectionObserver" in window && revealEls.length) {
+          const observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("is-visible");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.15, rootMargin: "0px 0px -60px 0px" }
+          );
+          revealEls.forEach((el) => observer.observe(el));
+        } else {
+          revealEls.forEach((el) => el.classList.add("is-visible"));
+        }
+
+        const filterButtons = document.querySelectorAll(".filter-row button");
+        const menuCards = document.querySelectorAll(".menu-card");
+        filterButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            filterButtons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            const filter = btn.dataset.filter;
+            menuCards.forEach((card) => {
+              const tags = card.dataset.tags || "";
+              const show = filter === "all" || tags.split(" ").includes(filter);
+              card.style.display = show ? "" : "none";
+            });
+          });
+        });
+
+        const navToggle = document.getElementById("nav-toggle");
+        if (navToggle) {
+          document.querySelectorAll(".nav-drawer a").forEach((link) => {
+            link.addEventListener("click", () => {
+              navToggle.checked = false;
+            });
+          });
+        }
+      })();
+    </script>
+  </body>
+</html>
