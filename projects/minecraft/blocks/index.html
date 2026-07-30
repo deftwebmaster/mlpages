@@ -11,7 +11,7 @@
 <style>
   .shape-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
   .shape-tab {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0; text-transform: uppercase;
     background: var(--panel); color: var(--text-dim); border: var(--border-w) solid var(--panel-border);
     min-height: 44px; padding: 9px 14px; cursor: pointer;
   }
@@ -34,7 +34,7 @@
     color: var(--text-faint);
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    letter-spacing: .06em;
+    letter-spacing: 0;
     text-transform: uppercase;
   }
   .opening-mini input { width: 100%; min-width: 0; }
@@ -44,6 +44,9 @@
   }
   .opening-row .remove-opening:hover { color: var(--redstone); border-color: var(--redstone); }
   .opening-subtotal { font-size: 12px; color: var(--text-faint); margin: 6px 0 0; font-family: 'JetBrains Mono', monospace; }
+  .result-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+  .copy-note { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); opacity: 0; transition: opacity .16s ease; }
+  .copy-note.show { opacity: 1; }
   @media (max-width: 560px) {
     .shape-tab { flex: 1 1 100%; }
     .opening-row { grid-template-columns: 1fr; }
@@ -155,6 +158,10 @@
       <div class="output-slot"><div class="n" id="outStacks">—</div><div class="label">Stacks (64)</div></div>
       <div class="output-slot"><div class="n" id="outShulkers">—</div><div class="label">Shulkers (1728)</div></div>
     </div>
+    <div class="result-actions">
+      <button class="btn btn-ghost" id="copyMaterialsBtn" type="button">Copy Materials</button>
+      <span class="copy-note" id="copyMaterialsNote">Copied</span>
+    </div>
   </div>
 
   <footer class="tool-footer">
@@ -173,6 +180,7 @@
 
 <script>
 let currentShape = 'wall';
+let lastResult = { total: 0, stacks: '0', shulkers: '0' };
 const fieldSets = { wall: 'wallFields', floor: 'floorFields', solid: 'solidFields', hollow: 'hollowFields' };
 
 document.querySelectorAll('.shape-tab').forEach(tab => {
@@ -182,6 +190,7 @@ document.querySelectorAll('.shape-tab').forEach(tab => {
     currentShape = tab.dataset.shape;
     Object.values(fieldSets).forEach(id => document.getElementById(id).style.display = 'none');
     document.getElementById(fieldSets[currentShape]).style.display = 'block';
+    calculate();
   });
 });
 
@@ -268,15 +277,28 @@ function calculate() {
   const stackRemainder = total % 64;
   const shulkers = Math.floor(total / 1728);
   const shulkerRemainder = total % 1728;
-
-  document.getElementById('outTotal').textContent = total.toLocaleString();
-  document.getElementById('outStacks').textContent = stackRemainder > 0 ? `${stacks} + ${stackRemainder}` : `${stacks}`;
-  document.getElementById('outShulkers').textContent = shulkerRemainder > 0
+  const stacksText = stackRemainder > 0 ? `${stacks} + ${stackRemainder}` : `${stacks}`;
+  const shulkersText = shulkerRemainder > 0
     ? `${shulkers} + ${Math.floor(shulkerRemainder/64)}st`
     : `${shulkers}`;
+  lastResult = { total, stacks: stacksText, shulkers: shulkersText };
+
+  document.getElementById('outTotal').textContent = total.toLocaleString();
+  document.getElementById('outStacks').textContent = stacksText;
+  document.getElementById('outShulkers').textContent = shulkersText;
 }
 
 document.getElementById('calcBtn').addEventListener('click', calculate);
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
+document.getElementById('copyMaterialsBtn').addEventListener('click', () => {
+  const shapeName = document.querySelector('.shape-tab.active').textContent.trim();
+  const text = `${shapeName}: ${lastResult.total.toLocaleString()} blocks | ${lastResult.stacks} stacks | ${lastResult.shulkers} shulkers`;
+  navigator.clipboard.writeText(text).then(() => {
+    const note = document.getElementById('copyMaterialsNote');
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 1400);
+  });
+});
 renderOpenings();
 calculate();
 </script>

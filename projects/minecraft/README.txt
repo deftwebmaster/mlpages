@@ -3,9 +3,8 @@ mattlivingston.com/minecraft/
 
 Contents
 --------
-/index.html  Hub page. Hero banner (your webp upload, re-encoded at
-             quality 85 — 524KB down to ~314KB), then all tools
-             grouped into Build Planning / Survival Systems /
+/index.html  Hub page. Farm hero banner, session-first quick actions,
+             then all tools grouped into Build Planning / Survival Systems /
              World Navigation / Reference categories.
              Includes an Estate Plan section with farmstead-map.webp and
              district links into the most relevant tools.
@@ -27,7 +26,20 @@ Contents
 All active tool pages now share a compact top navigation, with the current tool
 highlighted and a Tool Bench footer with useful cross-links.
 
-/assets/hero.webp — your uploaded banner image, WebP q85, ~314KB.
+v0.7 usability and premium pass
+-------------------------------
+- Replaced the homepage hero with the attached Iona & Matt farm image.
+- Reworked the hub around common play-session actions: places, materials,
+  Nether routes, and villager trades.
+- Upgraded shared styling with softer panels, rounded controls, better focus
+  states, stable type sizing, and clearer mobile spacing.
+- Block calculator now updates live and can copy a compact materials summary.
+- Coordinate notebook now supports JSON backup/restore, clearing, copy status,
+  and Nether/Overworld coordinate copy helpers.
+- Highway planner now copies a full route summary.
+- Challenge generator now copies the actual build prompt as well as the link.
+
+/assets/hero.webp — Iona & Matt's Farm hero image, ~565KB.
 /assets/farmstead-map.webp — Iona's Farmstead master estate plan used on
              the hub as a world-first navigation section.
 /shared/     styles.css — token system, now includes a hub accent (gold,

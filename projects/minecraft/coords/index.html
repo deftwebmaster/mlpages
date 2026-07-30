@@ -10,16 +10,20 @@
 <link rel="stylesheet" href="../shared/styles.css">
 <style>
   .toolbar { display: grid; grid-template-columns: minmax(0, 1fr) 180px; gap: 10px; margin: 24px 0; }
+  .backup-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 0; }
+  .backup-row .btn { padding: 9px 12px; font-size: 11px; }
   .coord-card { margin-bottom: 12px; }
   .coord-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
   .coord-name { font-family: 'Big Shoulders Display', sans-serif; font-size: 24px; text-transform: uppercase; line-height: 1; }
   .coord-meta { margin-top: 8px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
-  .tag { display: inline-block; color: var(--accent); border: 1px solid var(--accent-dim); padding: 3px 7px; margin: 0 6px 6px 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .05em; text-transform: uppercase; }
+  .tag { display: inline-block; color: var(--accent); border: 1px solid var(--accent-dim); padding: 3px 7px; margin: 0 6px 6px 0; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0; text-transform: uppercase; }
   .coord-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
   .coord-actions .btn { padding: 8px 10px; font-size: 11px; }
   .empty { color: var(--text-faint); font-size: 14px; }
+  .status-line { color: var(--text-faint); font-size: 12px; margin: 8px 0 0; font-family: 'JetBrains Mono', monospace; min-height: 18px; }
   .icon-btn { background: none; border: var(--border-w) solid var(--panel-border); color: var(--text-faint); cursor: pointer; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; line-height: 1; }
   .icon-btn:hover { color: var(--redstone); border-color: var(--redstone); }
+  #importFile { display: none; }
   @media (max-width: 620px) {
     .toolbar { grid-template-columns: 1fr; }
   }
@@ -88,6 +92,13 @@
     </div>
     <div class="field"><label for="notes">Notes</label><input type="text" id="notes" placeholder="Entrance under the hill, bed and food inside"></div>
     <button class="btn" id="saveBtn">Save Coordinate</button>
+    <div class="backup-row" aria-label="Coordinate notebook backup actions">
+      <button class="btn btn-ghost" id="exportBtn" type="button">Export Backup</button>
+      <button class="btn btn-ghost" id="importBtn" type="button">Import Backup</button>
+      <button class="btn btn-ghost" id="clearBtn" type="button">Clear Notebook</button>
+      <input type="file" id="importFile" accept="application/json">
+    </div>
+    <div class="status-line" id="statusLine"></div>
   </div>
 
   <div class="toolbar">
@@ -135,7 +146,27 @@ function escapeHtml(str) {
 }
 
 function copyText(text) {
-  navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(text).then(() => {
+    const line = document.getElementById('statusLine');
+    line.textContent = 'Copied to clipboard';
+    setTimeout(() => { line.textContent = ''; }, 1400);
+  });
+}
+
+function relatedDimensionCopy(c) {
+  if (c.dimension === 'Overworld') {
+    return {
+      label: 'Copy Nether XZ',
+      text: `Nether link for ${c.name || c.kind}: ${Math.floor(c.x / 8)}, ${Math.floor(c.z / 8)}`
+    };
+  }
+  if (c.dimension === 'Nether') {
+    return {
+      label: 'Copy Overworld XZ',
+      text: `Overworld link for ${c.name || c.kind}: ${c.x * 8}, ${c.z * 8}`
+    };
+  }
+  return null;
 }
 
 function render() {
@@ -152,21 +183,23 @@ function render() {
   }
   list.innerHTML = filtered.map(c => {
     const tags = (c.tags || '').split(',').map(t => t.trim()).filter(Boolean);
+    const related = relatedDimensionCopy(c);
     return `
-      <div class="card coord-card" data-id="${c.id}">
+      <div class="card coord-card" data-id="${escapeHtml(c.id)}">
         <div class="coord-head">
           <div>
             <div class="coord-name">${escapeHtml(c.name || c.kind)}</div>
             <div class="coord-meta">${escapeHtml(c.dimension)} · X ${c.x}, Y ${c.y}, Z ${c.z}</div>
           </div>
-          <button class="icon-btn remove" data-id="${c.id}" title="Remove" type="button">✕</button>
+          <button class="icon-btn remove" data-id="${escapeHtml(c.id)}" title="Remove" type="button">✕</button>
         </div>
         <div class="coord-meta"><span class="tag">${escapeHtml(c.kind)}</span>${tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
         ${c.notes ? `<p class="coord-meta">${escapeHtml(c.notes)}</p>` : ''}
         <div class="coord-actions">
-          <button class="btn btn-ghost copy" data-copy="/tp ${c.x} ${c.y} ${c.z}" type="button">Copy /tp</button>
-          <button class="btn btn-ghost copy" data-copy="${c.x}, ${c.y}, ${c.z}" type="button">Copy XYZ</button>
-          <button class="btn btn-ghost copy" data-copy="${c.name || c.kind}: ${c.dimension} ${c.x}, ${c.y}, ${c.z}" type="button">Copy Note</button>
+          <button class="btn btn-ghost copy" data-copy="/tp ${escapeHtml(String(c.x))} ${escapeHtml(String(c.y))} ${escapeHtml(String(c.z))}" type="button">Copy /tp</button>
+          <button class="btn btn-ghost copy" data-copy="${escapeHtml(String(c.x))}, ${escapeHtml(String(c.y))}, ${escapeHtml(String(c.z))}" type="button">Copy XYZ</button>
+          ${related ? `<button class="btn btn-ghost copy" data-copy="${escapeHtml(related.text)}" type="button">${escapeHtml(related.label)}</button>` : ''}
+          <button class="btn btn-ghost copy" data-copy="${escapeHtml(`${c.name || c.kind}: ${c.dimension} ${c.x}, ${c.y}, ${c.z}`)}" type="button">Copy Note</button>
         </div>
       </div>
     `;
@@ -199,6 +232,56 @@ document.getElementById('saveBtn').addEventListener('click', () => {
 });
 
 ['search','filterKind'].forEach(id => document.getElementById(id).addEventListener('input', render));
+document.getElementById('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify(coords, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'minecraft-coordinates.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  document.getElementById('statusLine').textContent = `Exported ${coords.length} coordinate${coords.length === 1 ? '' : 's'}`;
+});
+document.getElementById('importBtn').addEventListener('click', () => {
+  document.getElementById('importFile').click();
+});
+document.getElementById('importFile').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const parsed = JSON.parse(reader.result);
+      if (!Array.isArray(parsed)) throw new Error('Expected an array');
+      coords = parsed.map(c => ({
+        id: c.id || uid(),
+        name: c.name || '',
+        kind: c.kind || 'Other',
+        x: parseInt(c.x, 10) || 0,
+        y: parseInt(c.y, 10) || 0,
+        z: parseInt(c.z, 10) || 0,
+        dimension: c.dimension || 'Overworld',
+        tags: c.tags || '',
+        notes: c.notes || '',
+      }));
+      save();
+      render();
+      document.getElementById('statusLine').textContent = `Imported ${coords.length} coordinate${coords.length === 1 ? '' : 's'}`;
+    } catch (err) {
+      document.getElementById('statusLine').textContent = 'That backup file is not valid coordinate JSON';
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+document.getElementById('clearBtn').addEventListener('click', () => {
+  if (confirm('Delete all saved coordinates? Export a backup first if you want to keep them.')) {
+    coords = [];
+    save();
+    render();
+    document.getElementById('statusLine').textContent = 'Coordinate notebook cleared';
+  }
+});
 load();
 render();
 </script>

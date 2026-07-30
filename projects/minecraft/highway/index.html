@@ -10,12 +10,15 @@
 <link rel="stylesheet" href="../shared/styles.css">
 <style>
   .coord-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
-  .subhead { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  .subhead { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
   .result-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
   .result-card { border: var(--border-w) solid var(--panel-border); background: var(--bg); padding: 16px; }
   .result-card .n { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 700; color: var(--accent); line-height: 1.1; }
-  .result-card .label { margin-top: 7px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-dim); }
+  .result-card .label { margin-top: 7px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0; text-transform: uppercase; color: var(--text-dim); }
   .route-note { color: var(--text-faint); font-size: 12px; line-height: 1.5; margin: 16px 0 0; }
+  .route-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .route-copy-note { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); opacity: 0; transition: opacity .16s ease; }
+  .route-copy-note.show { opacity: 1; }
   @media (max-width: 640px) {
     .coord-grid, .result-grid { grid-template-columns: 1fr; }
   }
@@ -113,6 +116,10 @@
     </div>
 
     <p class="route-note" id="routeNote"></p>
+    <div class="route-actions">
+      <button class="btn btn-ghost" id="copyRouteBtn" type="button">Copy Route</button>
+      <span class="route-copy-note" id="copyRouteNote">Copied</span>
+    </div>
   </div>
 
   <footer class="tool-footer">
@@ -131,6 +138,7 @@
 
 <script>
 const ids = ['startX','startZ','startY','endX','endZ','endY','roadType','width','height'];
+let lastRouteText = '';
 
 function val(id) {
   return parseFloat(document.getElementById(id).value) || 0;
@@ -169,11 +177,19 @@ function calculate() {
   document.getElementById('railBlocks').textContent = roadType === 'rail' ? `${fmt(normalRails)} / ${fmt(poweredRails)}` : '0 / 0';
   document.getElementById('owDistance').textContent = `${fmt(overworldStraight - straight)} blocks`;
   document.getElementById('floorLabel').textContent = roadType === 'ice' ? 'Ice blocks' : 'Road floor blocks';
+  lastRouteText = `Nether route: Overworld (${fmt(sx)}, ${fmt(sz)}) to (${fmt(ex)}, ${fmt(ez)}) | Nether (${nsx}, ${nsz}) to (${nex}, ${nez}) | tunnel ${fmt(dx)} X + ${fmt(dz)} Z = ${fmt(tunnel)} blocks | road ${fmt(floor)} | lining ${fmt(lining)}`;
   document.getElementById('routeNote').textContent =
     `Build from Nether (${nsx}, ${nsz}) to (${nex}, ${nez}). A practical right-angle tunnel is ${fmt(dx)} blocks along X and ${fmt(dz)} blocks along Z. Y does not scale, but portal linking still depends on the nearest valid portal position.`;
 }
 
 ids.forEach(id => document.getElementById(id).addEventListener('input', calculate));
+document.getElementById('copyRouteBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(lastRouteText).then(() => {
+    const note = document.getElementById('copyRouteNote');
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 1400);
+  });
+});
 calculate();
 </script>
 </body>

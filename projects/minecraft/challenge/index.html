@@ -13,7 +13,7 @@
     display: flex; flex-direction: column; justify-content: center; align-items: center;
     text-align: center; padding: 6px; gap: 4px;
   }
-  .recipe-cell .k { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.08em; text-transform:uppercase; color: var(--text-faint); }
+  .recipe-cell .k { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing: 0; text-transform:uppercase; color: var(--text-faint); }
   .recipe-cell .v { font-size: 12px; line-height: 1.2; color: var(--text); }
   .recipe-cell.filled { border-color: var(--accent); }
   .recipe-cell.empty { opacity: 0.35; }
@@ -23,7 +23,7 @@
   }
   .recipe-cell.filled .reroll:hover { color: var(--accent); }
   .cell { position: relative; }
-  #copyNote { font-size: 12px; color: var(--accent); font-family:'JetBrains Mono',monospace; opacity:0; transition: opacity .2s; }
+  #copyNote { font-size: 12px; color: var(--accent); font-family:'JetBrains Mono',monospace; opacity:0; transition: opacity .2s; align-self: center; }
   #copyNote.show { opacity: 1; }
 </style>
 </head>
@@ -72,6 +72,7 @@
 
   <div class="btn-row">
     <button class="btn" id="generateBtn">Generate Challenge</button>
+    <button class="btn btn-ghost" id="copyPromptBtn">Copy Prompt</button>
     <button class="btn btn-ghost" id="copyBtn">Copy Link</button>
     <span id="copyNote">Copied</span>
   </div>
@@ -155,6 +156,11 @@ function syncUrl() {
   history.replaceState(null, '', '?' + params.toString());
 }
 
+function challengeText() {
+  const values = Object.fromEntries(SLOT_DEFS.map(def => [def.key, def.data[state[def.key]]]));
+  return `Minecraft build challenge: ${values.scope} with a ${values.theme} theme. Restriction: ${values.material}. Twist: ${values.twist}.`;
+}
+
 function loadFromUrl() {
   const params = new URLSearchParams(window.location.search);
   let hasAll = SLOT_DEFS.every(def => params.has(def.key));
@@ -172,6 +178,13 @@ function loadFromUrl() {
 }
 
 document.getElementById('generateBtn').addEventListener('click', generateAll);
+document.getElementById('copyPromptBtn').addEventListener('click', () => {
+  navigator.clipboard.writeText(challengeText()).then(() => {
+    const note = document.getElementById('copyNote');
+    note.classList.add('show');
+    setTimeout(() => note.classList.remove('show'), 1500);
+  });
+});
 document.getElementById('copyBtn').addEventListener('click', () => {
   navigator.clipboard.writeText(window.location.href).then(() => {
     const note = document.getElementById('copyNote');

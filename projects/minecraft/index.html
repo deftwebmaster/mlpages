@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Minecraft Tools — mattlivingston.com</title>
+<title>Iona & Matt's Minecraft Tools</title>
 <meta name="description" content="A small suite of Minecraft companion tools: build planning and world navigation.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -11,20 +11,123 @@
 <style>
   body[data-tool="hub"] { --accent: var(--gold); --accent-dim: #7a6320; }
 
-  .hero-wrap { width: 100%; height: clamp(260px, 42vw, 520px); overflow: hidden; position: relative; border-bottom: 1px solid var(--panel-border); }
+  .hero-wrap {
+    width: 100%;
+    height: 540px;
+    min-height: 540px;
+    overflow: hidden;
+    position: relative;
+    border-bottom: 1px solid var(--panel-border);
+    isolation: isolate;
+  }
   .hero-img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: center 35%; }
-  .hero-fade { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 58%, var(--bg) 100%); }
+  .hero-fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(16,19,13,.84) 0%, rgba(16,19,13,.46) 42%, rgba(16,19,13,.08) 72%),
+      linear-gradient(to bottom, rgba(16,19,13,.16) 0%, rgba(16,19,13,.10) 54%, var(--bg) 100%);
+  }
+  .hero-content {
+    position: absolute;
+    inset: auto 0 58px;
+    z-index: 2;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  .hero-kicker {
+    margin: 0 0 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .hero-title {
+    margin: 0;
+    max-width: 540px;
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-size: 64px;
+    line-height: .92;
+    text-transform: uppercase;
+    color: var(--text);
+    text-shadow: 0 2px 18px rgba(0, 0, 0, .55);
+  }
+  .hero-subtitle {
+    max-width: 520px;
+    margin: 14px 0 0;
+    color: #eee3c8;
+    font-size: 16px;
+    line-height: 1.5;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, .65);
+  }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .hero-actions .btn { text-decoration: none; }
 
-  .hub-shell { max-width: 980px; padding-top: 36px; }
-  .hub-intro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(220px, .7fr); gap: 28px; align-items: end; }
+  .hub-shell { max-width: 980px; padding-top: 32px; }
+  .session-panel {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: 20px;
+    align-items: stretch;
+    margin-bottom: 34px;
+  }
+  .session-copy {
+    border: var(--border-w) solid var(--panel-border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    background: var(--panel);
+    padding: 22px;
+    box-shadow: var(--shadow-soft);
+  }
+  .session-copy h1 { font-size: 42px; }
+  .session-copy .subtitle { margin-bottom: 0; }
+  .play-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .play-action {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 128px;
+    text-decoration: none;
+    border: var(--border-w) solid var(--panel-border);
+    border-top: 4px solid var(--action-accent, var(--accent));
+    border-radius: var(--radius);
+    background: rgba(31, 36, 24, .84);
+    padding: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .16s ease, border-color .16s ease, background .16s ease;
+  }
+  .play-action:hover,
+  .play-action:focus-visible {
+    transform: translateY(-2px);
+    border-color: var(--action-accent, var(--accent));
+    background: rgba(38, 45, 29, .94);
+    outline: none;
+  }
+  .play-action b {
+    font-family: 'Big Shoulders Display', sans-serif;
+    font-size: 25px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+  .play-action span { margin-top: 10px; color: var(--text-dim); font-size: 13px; line-height: 1.4; }
+  .play-action small {
+    margin-top: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--action-accent, var(--accent));
+  }
   .suite-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 32px; }
-  .suite-stat { border: 1px solid var(--panel-border); background: var(--panel); padding: 12px; }
+  .suite-stat { border: 1px solid var(--panel-border); border-radius: var(--radius); background: var(--panel); padding: 12px; }
   .suite-stat b { display: block; font-family: 'Big Shoulders Display', sans-serif; font-size: 28px; line-height: 1; color: var(--accent); }
-  .suite-stat span { display: block; margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); }
+  .suite-stat span { display: block; margin-top: 4px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0; text-transform: uppercase; color: var(--text-faint); }
 
   .tool-section { margin-bottom: 36px; }
   .tool-section h2 {
-    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .1em;
+    font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0;
     text-transform: uppercase; color: var(--text-dim); margin: 0 0 14px;
     display: flex; align-items: center; gap: 10px;
   }
@@ -36,10 +139,12 @@
     display: block; text-decoration: none; background: var(--panel);
     border: var(--border-w) solid var(--panel-border);
     border-left: 4px solid var(--card-accent, var(--accent));
+    border-radius: var(--radius);
     padding: 18px 20px; transition: background 0.15s, border-color 0.15s;
+    box-shadow: var(--shadow-soft);
   }
   .tool-card:hover,
-  .tool-card:focus-visible { background: rgba(255,255,255,0.03); border-color: var(--card-accent, var(--accent)); outline: none; }
+  .tool-card:focus-visible { background: rgba(255,255,255,0.04); border-color: var(--card-accent, var(--accent)); outline: none; }
   .tool-card .name {
     font-family: 'Big Shoulders Display', sans-serif; text-transform: uppercase;
     font-size: 19px; color: var(--text); line-height: 1.05;
@@ -47,12 +152,15 @@
   .tool-card .desc { font-size: 13px; color: var(--text-dim); margin-top: 8px; line-height: 1.45; }
   .tool-card .go {
     font-family: 'JetBrains Mono', monospace; font-size: 11px; text-transform: uppercase;
-    letter-spacing: .06em; margin-top: 12px; color: var(--card-accent, var(--accent));
+    letter-spacing: 0; margin-top: 12px; color: var(--card-accent, var(--accent));
   }
   .map-feature {
     margin: 8px 0 40px;
     border: var(--border-w) solid var(--panel-border);
+    border-radius: var(--radius);
     background: var(--panel);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
   }
   .map-copy { padding: 22px 24px 18px; }
   .map-copy h2 {
@@ -83,6 +191,7 @@
     background: var(--bg);
     border: 1px solid var(--panel-border);
     border-left: 4px solid var(--district-accent, var(--accent));
+    border-radius: var(--radius);
     padding: 12px 14px;
   }
   .district-link:hover,
@@ -91,17 +200,26 @@
     display: block;
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
-    letter-spacing: .07em;
+    letter-spacing: 0;
     line-height: 1.2;
     text-transform: uppercase;
     color: var(--text);
   }
   .district-link span { display: block; margin-top: 6px; color: var(--text-faint); font-size: 12px; line-height: 1.35; }
 
+  @media (max-width: 760px) {
+    .hero-wrap { height: 430px; min-height: 430px; }
+    .hero-title { font-size: 52px; max-width: 460px; }
+    .session-panel { grid-template-columns: 1fr; }
+  }
   @media (max-width: 560px) {
-    .hero-wrap { height: 220px; }
+    .hero-wrap { height: 360px; min-height: 360px; }
     .hero-img { object-position: center 34%; }
-    .hub-intro { grid-template-columns: 1fr; gap: 0; }
+    .hero-content { inset: auto 0 34px; padding: 0 14px; }
+    .hero-title { font-size: 40px; max-width: 340px; }
+    .hero-subtitle { font-size: 14px; max-width: 330px; }
+    .hero-actions .btn { width: 100%; text-align: center; }
+    .play-actions { grid-template-columns: 1fr; }
     .suite-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .suite-stat { padding: 10px 8px; }
     .suite-stat b { font-size: 24px; }
@@ -149,20 +267,52 @@
 <div class="hero-wrap">
   <img class="hero-img" src="assets/hero.webp" alt="Iona's Farmstead — a Minecraft world banner">
   <div class="hero-fade"></div>
+  <div class="hero-content">
+    <p class="hero-kicker">Iona &amp; Matt's Farmstead</p>
+    <h1 class="hero-title">Build, Farm, Explore Together</h1>
+    <p class="hero-subtitle">A fast, private Minecraft companion for planning builds, saving places, checking routes, and keeping the good trades from disappearing into memory fog.</p>
+    <div class="hero-actions" aria-label="Primary Minecraft tools">
+      <a class="btn" href="coords/">Open Coordinates</a>
+      <a class="btn btn-ghost" href="challenge/">Roll a Build</a>
+    </div>
+  </div>
 </div>
 
 <div class="shell hub-shell">
-  <div class="hub-intro">
-    <div>
-      <p class="eyebrow">mattlivingston.com/minecraft</p>
-      <h1>Iona's Farmstead<br>Toolbox</h1>
-      <p class="subtitle">A small, growing set of Minecraft companion tools — no plugins, no server, just static pages that run in the browser.</p>
+  <section class="session-panel" aria-labelledby="sessionTitle">
+    <div class="session-copy">
+      <p class="eyebrow">Session Bench</p>
+      <h1 id="sessionTitle">What are we doing now?</h1>
+      <p class="subtitle">Jump straight to the jobs that come up while playing: where something is, how much to gather, whether the trip is worth a Nether route, and which villager had the magic trade.</p>
     </div>
-    <div class="suite-stats" aria-label="Tool suite stats">
-      <div class="suite-stat"><b>10</b><span>Tools</span></div>
-      <div class="suite-stat"><b>0</b><span>Logins</span></div>
-      <div class="suite-stat"><b>100%</b><span>Static</span></div>
+    <div class="play-actions" aria-label="Common play session actions">
+      <a class="play-action" style="--action-accent: var(--lapis)" href="coords/">
+        <b>Find a Place</b>
+        <span>Bases, farms, villages, portals, biomes, and notes saved on this device.</span>
+        <small>Coords</small>
+      </a>
+      <a class="play-action" style="--action-accent: var(--stone)" href="blocks/">
+        <b>Gather Blocks</b>
+        <span>Convert a build idea into blocks, stacks, shulkers, doors, and windows.</span>
+        <small>Materials</small>
+      </a>
+      <a class="play-action" style="--action-accent: var(--portal)" href="highway/">
+        <b>Plan the Trip</b>
+        <span>Nether portal math, tunnel distance, road materials, and route copy text.</span>
+        <small>Travel</small>
+      </a>
+      <a class="play-action" style="--action-accent: var(--emerald)" href="villagers/">
+        <b>Check Trades</b>
+        <span>Star the best deals and find the right villager before everyone wanders.</span>
+        <small>Village</small>
+      </a>
     </div>
+  </section>
+
+  <div class="suite-stats" aria-label="Tool suite stats">
+    <div class="suite-stat"><b>10</b><span>Tools</span></div>
+    <div class="suite-stat"><b>0</b><span>Logins</span></div>
+    <div class="suite-stat"><b>Fast</b><span>Offline-ready</span></div>
   </div>
 
   <div class="grid3 divider"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
