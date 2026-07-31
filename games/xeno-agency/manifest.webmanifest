@@ -1,0 +1,60 @@
+{
+  "name": "Xeno Agency",
+  "short_name": "Xeno Agency",
+  "description": "Raise one alien, rebuild an interstellar adoption office, and uncover a missing director's secrets.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0b1117",
+  "theme_color": "#0b1117",
+  "categories": ["games", "entertainment", "role-playing"],
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./xeno-main-dashboard-mockup.png",
+      "sizes": "1536x1024",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Agency dashboard"
+    },
+    {
+      "src": "./xeno-adoption-screen-concept.png",
+      "sizes": "1536x1024",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Adoption intake"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Open Save Tools",
+      "short_name": "Save",
+      "url": "./?view=settings"
+    },
+    {
+      "name": "Review Alien",
+      "short_name": "Alien",
+      "url": "./?view=alien"
+    }
+  ]
+}
