@@ -1,18 +1,20 @@
 // Bump this on every deploy that changes cached assets so old clients pick
 // up the new cache instead of serving stale files forever.
-const CACHE_VERSION = 'treasure-hunter-v1';
+const CACHE_VERSION = 'treasure-hunter-v2';
 
 const SHELL_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './css/variables.css',
-  './css/layout.css',
-  './css/components.css',
-  './css/screens.css',
-  './css/animations.css',
-  './js/app.js',
-  './assets/icons/icon.svg'
+  './assets/build/index-C-bI509e.js',
+  './assets/build/alerts-sheet-CzQQMov1.js',
+  './assets/build/index-DTgF-BPH.css',
+  './assets/icons/icon.svg',
+  './assets/icons/icon-192.png',
+  './assets/icons/icon-512.png',
+  './assets/icons/icon-maskable-192.png',
+  './assets/icons/icon-maskable-512.png',
+  './assets/icons/apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {

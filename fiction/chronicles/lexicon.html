@@ -3,20 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Complete glossary for Chronicles of Marrek Locke - comprehensive guide to the universe, factions, technology, and locations.">
-    <meta name="author" content="Matt Livingston">
-    <title>Lexicon | Chronicles of Marrek Locke</title>
-    
-    <!-- Google Fonts -->
+  <title>Lexicon | Chronicles of Marrek Locke</title>
+  <meta name="description" content="Complete glossary for Chronicles of Marrek Locke - comprehensive guide to the universe, factions, technology, and locations.">
+  <link rel="canonical" href="https://mattlivingston.com/fiction/chronicles/lexicon.html">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com/fiction/chronicles/lexicon.html">
+  <meta property="og:title" content="Lexicon | Chronicles of Marrek Locke">
+  <meta property="og:description" content="Complete glossary for Chronicles of Marrek Locke - comprehensive guide to the universe, factions, technology, and locations.">
+  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image:alt" content="Lexicon | Chronicles of Marrek Locke preview image">
+
+<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://mattlivingston.com/fiction/chronicles/lexicon.html">
+  <meta name="twitter:title" content="Lexicon | Chronicles of Marrek Locke">
+  <meta name="twitter:description" content="Complete glossary for Chronicles of Marrek Locke - comprehensive guide to the universe, factions, technology, and locations.">
+  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+<meta name="author" content="Matt Livingston">
+<!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <style>
         /* ========================================
            PATTERN BREACH - LEXICON PAGE
            ======================================== */
-        
+
         :root {
             --void-black: #0a0c10;
             --grid-blue: #1a8cff;
@@ -24,30 +36,30 @@
             --chaos-orange: #ff6b35;
             --chaos-amber: #ffb347;
             --collision-white: #e8f4ff;
-            
+
             --text-primary: #e0e8f0;
             --text-secondary: #8899aa;
             --text-muted: #556677;
-            
+
             --surface-dark: #0d1018;
             --surface-panel: #141820;
             --border-subtle: rgba(26, 140, 255, 0.15);
-            
+
             --font-display: 'Orbitron', sans-serif;
             --font-body: 'Outfit', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         html {
             scroll-behavior: smooth;
         }
-        
+
         body {
             font-family: var(--font-body);
             background-color: var(--void-black);
@@ -55,7 +67,7 @@
             line-height: 1.7;
             overflow-x: hidden;
         }
-        
+
         /* ==================== HERO SECTION ==================== */
         .hero {
             min-height: 50vh;
@@ -66,7 +78,7 @@
             padding: 100px 20px 60px;
             overflow: hidden;
         }
-        
+
         .hero::before {
             content: '';
             position: absolute;
@@ -74,13 +86,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: 
+            background:
                 linear-gradient(90deg, rgba(26, 140, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(rgba(26, 140, 255, 0.03) 1px, transparent 1px);
             background-size: 60px 60px;
             pointer-events: none;
         }
-        
+
         .hero::after {
             content: '';
             position: absolute;
@@ -89,19 +101,19 @@
             width: 150%;
             height: 150%;
             transform: translate(-50%, -50%);
-            background: 
+            background:
                 radial-gradient(ellipse at 30% 50%, rgba(26, 140, 255, 0.08) 0%, transparent 50%),
                 radial-gradient(ellipse at 70% 60%, rgba(255, 107, 53, 0.06) 0%, transparent 50%);
             pointer-events: none;
         }
-        
+
         .hero-content {
             position: relative;
             z-index: 1;
             text-align: center;
             max-width: 800px;
         }
-        
+
         .back-link {
             display: inline-flex;
             align-items: center;
@@ -117,24 +129,24 @@
             opacity: 0;
             animation: fadeIn 0.5s ease-out 0.2s forwards;
         }
-        
+
         .back-link:hover {
             color: var(--text-primary);
             transform: translateX(-5px);
         }
-        
+
         .back-link svg {
             transition: transform 0.3s ease;
         }
-        
+
         .back-link:hover svg {
             transform: translateX(-3px);
         }
-        
+
         @keyframes fadeIn {
             to { opacity: 1; }
         }
-        
+
         .hero-title {
             font-family: var(--font-display);
             font-size: 4rem;
@@ -148,12 +160,12 @@
             opacity: 0;
             animation: fadeSlideUp 0.8s ease-out 0.3s forwards;
         }
-        
+
         @keyframes fadeSlideUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         .hero-subtitle {
             font-size: 1.2rem;
             font-weight: 300;
@@ -161,7 +173,7 @@
             opacity: 0;
             animation: fadeSlideUp 0.8s ease-out 0.5s forwards;
         }
-        
+
         /* ==================== NAVIGATION ==================== */
         .lexicon-nav {
             background: var(--surface-dark);
@@ -171,7 +183,7 @@
             top: 0;
             z-index: 100;
         }
-        
+
         .nav-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -180,7 +192,7 @@
             flex-wrap: wrap;
             gap: 8px;
         }
-        
+
         .nav-link {
             font-family: var(--font-mono);
             font-size: 0.7rem;
@@ -193,30 +205,30 @@
             border-radius: 2px;
             transition: all 0.3s ease;
         }
-        
+
         .nav-link:hover {
             color: var(--grid-blue);
             border-color: var(--border-subtle);
         }
-        
+
         .nav-link.active {
             color: var(--grid-blue);
             border-color: var(--grid-blue);
             background: rgba(26, 140, 255, 0.1);
         }
-        
+
         /* ==================== MAIN CONTENT ==================== */
         .lexicon-content {
             max-width: 900px;
             margin: 0 auto;
             padding: 60px 20px 100px;
         }
-        
+
         /* ==================== CATEGORY SECTIONS ==================== */
         .category {
             margin-bottom: 80px;
         }
-        
+
         .category-header {
             display: flex;
             align-items: center;
@@ -225,7 +237,7 @@
             padding-bottom: 16px;
             border-bottom: 1px solid var(--border-subtle);
         }
-        
+
         .category-icon {
             width: 48px;
             height: 48px;
@@ -237,7 +249,7 @@
             border-radius: 4px;
             font-size: 1.5rem;
         }
-        
+
         .category-title {
             font-family: var(--font-display);
             font-size: 1.5rem;
@@ -245,7 +257,7 @@
             letter-spacing: 0.1em;
             color: var(--text-primary);
         }
-        
+
         /* ==================== ENTRY CARDS ==================== */
         .entry {
             background: var(--surface-panel);
@@ -255,11 +267,11 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
-        
+
         .entry:hover {
             border-color: rgba(26, 140, 255, 0.4);
         }
-        
+
         .entry-header {
             padding: 20px 24px;
             cursor: pointer;
@@ -268,11 +280,11 @@
             align-items: center;
             transition: background 0.3s ease;
         }
-        
+
         .entry-header:hover {
             background: rgba(26, 140, 255, 0.05);
         }
-        
+
         .entry-title {
             font-family: var(--font-display);
             font-size: 1rem;
@@ -280,7 +292,7 @@
             letter-spacing: 0.05em;
             color: var(--text-primary);
         }
-        
+
         .entry-subtitle {
             font-family: var(--font-mono);
             font-size: 0.7rem;
@@ -288,7 +300,7 @@
             color: var(--text-muted);
             margin-top: 4px;
         }
-        
+
         .entry-toggle {
             width: 24px;
             height: 24px;
@@ -298,41 +310,41 @@
             color: var(--grid-blue);
             transition: transform 0.3s ease;
         }
-        
+
         .entry.open .entry-toggle {
             transform: rotate(180deg);
         }
-        
+
         .entry-body {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease;
         }
-        
+
         .entry.open .entry-body {
             max-height: 2000px;
         }
-        
+
         .entry-content {
             padding: 0 24px 24px;
             border-top: 1px solid var(--border-subtle);
         }
-        
+
         .entry-content p {
             font-size: 0.95rem;
             line-height: 1.8;
             color: var(--text-secondary);
             margin-top: 20px;
         }
-        
+
         .entry-content p:first-child {
             margin-top: 20px;
         }
-        
+
         .entry-field {
             margin-top: 16px;
         }
-        
+
         .field-label {
             font-family: var(--font-mono);
             font-size: 0.7rem;
@@ -342,20 +354,20 @@
             color: var(--grid-blue);
             margin-bottom: 6px;
         }
-        
+
         .field-value {
             font-size: 0.95rem;
             line-height: 1.7;
             color: var(--text-secondary);
         }
-        
+
         /* ==================== MARREK'S CODE SPECIAL ==================== */
         .code-list {
             list-style: none;
             padding: 0;
             margin-top: 16px;
         }
-        
+
         .code-list li {
             display: flex;
             gap: 16px;
@@ -365,18 +377,18 @@
             line-height: 1.7;
             color: var(--text-secondary);
         }
-        
+
         .code-list li:last-child {
             border-bottom: none;
         }
-        
+
         .code-number {
             font-family: var(--font-display);
             font-weight: 700;
             color: var(--chaos-orange);
             min-width: 24px;
         }
-        
+
         /* ==================== FOOTER ==================== */
         footer {
             background: var(--void-black);
@@ -384,14 +396,14 @@
             padding: 40px 20px;
             text-align: center;
         }
-        
+
         .footer-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 16px;
         }
-        
+
         .footer-logo {
             font-family: var(--font-display);
             font-size: 0.9rem;
@@ -399,95 +411,95 @@
             letter-spacing: 0.15em;
             color: var(--text-muted);
         }
-        
+
         .footer-links {
             display: flex;
             gap: 24px;
         }
-        
+
         .footer-links a {
             font-size: 0.85rem;
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.3s ease;
         }
-        
+
         .footer-links a:hover {
             color: var(--grid-blue);
         }
-        
+
         .footer-copy {
             font-size: 0.8rem;
             color: var(--text-muted);
         }
-        
+
         .footer-copy a {
             color: var(--text-muted);
             text-decoration: none;
             transition: color 0.3s ease;
         }
-        
+
         .footer-copy a:hover {
             color: var(--grid-blue);
         }
-        
+
         /* ==================== RESPONSIVE ==================== */
         @media (max-width: 768px) {
             .hero {
                 padding: 80px 20px 40px;
                 min-height: 40vh;
             }
-            
+
             .hero-title {
                 font-size: 2.5rem;
             }
-            
+
             .lexicon-nav {
                 padding: 16px;
             }
-            
+
             .nav-link {
                 font-size: 0.65rem;
                 padding: 8px 12px;
             }
-            
+
             .lexicon-content {
                 padding: 40px 16px 80px;
             }
-            
+
             .category-header {
                 gap: 16px;
             }
-            
+
             .category-icon {
                 width: 40px;
                 height: 40px;
                 font-size: 1.2rem;
             }
-            
+
             .category-title {
                 font-size: 1.2rem;
             }
-            
+
             .entry-header {
                 padding: 16px 20px;
             }
-            
+
             .entry-content {
                 padding: 0 20px 20px;
             }
         }
-        
+
         @media (max-width: 480px) {
             .hero-title {
                 font-size: 2rem;
                 letter-spacing: 0.1em;
             }
-            
+
             .nav-container {
                 gap: 4px;
             }
-            
+
             .nav-link {
                 font-size: 0.6rem;
                 padding: 6px 10px;

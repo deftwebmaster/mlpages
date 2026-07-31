@@ -3,30 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hire Matt Livingston - Fast Website Fixes, Revamps & Design</title>
-  <meta name="description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile-friendly improvements, conversion cleanup, SEO basics, and graphic or logo design. Based in the DFW area." />
-  <meta name="author" content="Matt Livingston" />
-  <link rel="canonical" href="https://mattlivingston.com/hire-me/" />
+  <title>Hire Matt Livingston | Website Fixes, Revamps &amp; Design in DFW</title>
+  <meta name="description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile improvements, SEO cleanup, graphic design, logos, and practical static-site work.">
+  <link rel="canonical" href="https://mattlivingston.com/hire-me/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com/hire-me/">
+  <meta property="og:title" content="Hire Matt Livingston | Website Fixes, Revamps &amp; Design in DFW">
+  <meta property="og:description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile improvements, SEO cleanup, graphic design, logos, and practical static-site work.">
+  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image:alt" content="Hire Matt Livingston | Website Fixes, Revamps &amp; Design in DFW preview image">
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://mattlivingston.com/hire-me/">
+  <meta name="twitter:title" content="Hire Matt Livingston | Website Fixes, Revamps &amp; Design in DFW">
+  <meta name="twitter:description" content="Hire Matt Livingston for fast website fixes, modern revamps, mobile improvements, SEO cleanup, graphic design, logos, and practical static-site work.">
+  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png" />
   <link rel="manifest" href="/assets/favicon/site.webmanifest" />
 
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://mattlivingston.com/hire-me/" />
-  <meta property="og:title" content="Hire Matt Livingston - Fast Website Fixes, Revamps & Design" />
-  <meta property="og:description" content="Fast, practical website fixes and modern revamps from a DFW-based web developer with almost two decades of experience." />
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:url" content="https://mattlivingston.com/hire-me/" />
-  <meta name="twitter:title" content="Hire Matt Livingston - Fast Website Fixes, Revamps & Design" />
-  <meta name="twitter:description" content="Fast, practical website fixes and modern revamps from a DFW-based web developer with almost two decades of experience." />
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png" />
-  <meta name="theme-color" content="#080a10" />
+<meta name="theme-color" content="#080a10" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -52,7 +49,7 @@
       --rose: #fb7185;
       --text: #c8ccd8;
       --text-dim: #7a8093;
-      --text-muted: #767d99;
+      --text-muted: #4e5368;
       --white: #eef0f6;
     }
 
@@ -106,34 +103,6 @@
 
     a {
       color: inherit;
-    }
-
-    a:focus-visible,
-    .btn:focus-visible {
-      outline: 2px solid var(--cyan);
-      outline-offset: 3px;
-      border-radius: 2px;
-    }
-
-    .skip-link {
-      position: absolute;
-      top: -48px;
-      left: 8px;
-      z-index: 100;
-      padding: 10px 16px;
-      border-radius: 4px;
-      background: var(--cyan);
-      color: #04121a;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: top 0.2s ease;
-    }
-
-    .skip-link:focus {
-      top: 8px;
     }
 
     .stage {
@@ -571,6 +540,167 @@
       line-height: 1.7;
     }
 
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .work-card {
+      display: grid;
+      grid-template-rows: 190px minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      background: var(--panel-soft);
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .work-card:hover,
+    .work-card:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--work-accent, var(--cyan));
+      box-shadow: 0 0 26px var(--work-glow, var(--cyan-glow));
+      outline: none;
+    }
+
+    .work-card:nth-child(1) {
+      --work-accent: var(--violet);
+      --work-glow: var(--violet-glow);
+    }
+
+    .work-card:nth-child(2) {
+      --work-accent: var(--emerald);
+      --work-glow: var(--emerald-glow);
+    }
+
+    .work-card:nth-child(3) {
+      --work-accent: var(--rose);
+      --work-glow: var(--rose-glow);
+    }
+
+    .work-card:nth-child(4) {
+      --work-accent: var(--amber);
+      --work-glow: var(--amber-glow);
+    }
+
+    .work-card:nth-child(5) {
+      --work-accent: var(--cyan);
+      --work-glow: var(--cyan-glow);
+    }
+
+    .work-card:nth-child(6) {
+      --work-accent: var(--violet);
+      --work-glow: var(--violet-glow);
+    }
+
+    .work-shot {
+      position: relative;
+      overflow: hidden;
+      background: rgba(8, 10, 16, 0.74);
+    }
+
+    .work-shot img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      opacity: 0.84;
+      transform: scale(1.01);
+      transition: opacity 0.25s ease, transform 0.35s ease;
+    }
+
+    .work-card:hover .work-shot img,
+    .work-card:focus-visible .work-shot img {
+      opacity: 0.98;
+      transform: scale(1.04);
+    }
+
+    .work-shot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(8, 10, 16, 0.62), transparent 58%);
+    }
+
+    .work-body {
+      padding: 18px;
+    }
+
+    .work-type {
+      display: block;
+      margin-bottom: 12px;
+      color: var(--work-accent, var(--cyan));
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .work-body h3 {
+      font-size: 21px;
+    }
+
+    .work-body p {
+      margin-top: 12px;
+      color: var(--text-dim);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .proof-band {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+      gap: 26px;
+      align-items: start;
+      margin-top: 36px;
+      padding: 28px;
+      border: 1px solid rgba(167, 139, 250, 0.22);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(167, 139, 250, 0.075), rgba(34, 211, 238, 0.045)),
+        rgba(8, 10, 16, 0.62);
+    }
+
+    .proof-band p {
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .proof-band .cta-row {
+      opacity: 1;
+      animation: none;
+    }
+
+    .logo-cloud {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .logo-tile {
+      display: grid;
+      place-items: center;
+      min-height: 112px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.028);
+    }
+
+    .logo-tile img {
+      display: block;
+      max-width: 100%;
+      max-height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.28));
+    }
+
     .fit-band {
       display: grid;
       grid-template-columns: minmax(0, 0.88fr) minmax(280px, 1.12fr);
@@ -732,6 +862,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .work-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .proof-band {
+        grid-template-columns: 1fr;
+      }
+
       .process-grid {
         grid-template-columns: 1fr;
       }
@@ -799,8 +937,17 @@
       }
 
       .metric-strip,
-      .service-grid {
+      .service-grid,
+      .work-grid {
         grid-template-columns: 1fr;
+      }
+
+      .logo-cloud {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .proof-band {
+        padding: 20px;
       }
 
       .metric {
@@ -821,46 +968,20 @@
       }
     }
   </style>
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    "name": "Matt Livingston - Web Developer & Designer",
-    "url": "https://mattlivingston.com/hire-me/",
-    "image": "https://mattlivingston.com/assets/card.png",
-    "email": "hireme@mattlivingston.com",
-    "description": "Fast website fixes, modern revamps, mobile-friendly improvements, conversion cleanup, SEO basics, and graphic or logo design.",
-    "areaServed": {
-      "@type": "Place",
-      "name": "Dallas-Fort Worth, TX"
-    },
-    "founder": {
-      "@type": "Person",
-      "name": "Matt Livingston"
-    },
-    "makesOffer": [
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website fixes and cleanup" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website revamps and modernization" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "New website builds" } },
-      { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graphic and logo design" } }
-    ]
-  }
-  </script>
 </head>
 <body>
-  <a class="skip-link" href="#main-content">Skip to main content</a>
   <div class="stage">
     <header>
       <a class="wordmark" href="/">Matt<em>.</em>Livingston</a>
       <nav class="nav" aria-label="Page navigation">
         <a href="#services">Services</a>
+        <a href="#work">Work</a>
         <a href="#process">Process</a>
         <span class="online"><span class="pulse-dot" aria-hidden="true"></span>DFW / Remote</span>
       </nav>
     </header>
 
-    <main id="main-content">
+    <main>
       <section class="hero" aria-labelledby="hero-title">
         <div>
           <p class="eyebrow">Fast fixer - website revamps - design polish</p>
@@ -870,9 +991,9 @@
           </p>
           <div class="cta-row" aria-label="Contact options">
             <a class="btn" href="mailto:hireme@mattlivingston.com?subject=Website%20help%20request">Email hireme@mattlivingston.com</a>
-            <a class="btn btn-secondary" href="#services">See what I fix</a>
+            <a class="btn btn-secondary" href="#work">See example work</a>
           </div>
-          <p class="hero-note">Website issues - mobile cleanup - conversion flow - SEO basics - logo and graphic design</p>
+          <p class="hero-note">Website issues - mobile cleanup - conversion flow - SEO basics - logo and graphic design - portfolio examples</p>
         </div>
 
         <aside class="hero-panel" aria-label="Website revamp summary">
@@ -943,6 +1064,113 @@
             <h3>Graphic and logo polish</h3>
             <p>Logo cleanup, brand graphics, simple visual systems, social assets, and the design details that help a website feel intentional instead of assembled.</p>
           </article>
+        </div>
+      </section>
+
+      <section id="work" aria-labelledby="work-title">
+        <div class="section-head">
+          <div>
+            <p class="label">Selected Work</p>
+            <h2 id="work-title">Now there is a portfolio behind the pitch.</h2>
+          </div>
+          <p class="section-copy">
+            These are complete static website builds and brand pieces, not just loose mockups. The range matters: local service businesses, premium professional services, restaurants, product brands, logos, menus, flyers, and business cards.
+          </p>
+        </div>
+
+        <div class="work-grid">
+          <a class="work-card" href="/portfolio/sterling-kane/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/sterling-kane.png" alt="Sterling Kane Law Firm website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Law firm website</span>
+              <h3>Sterling Kane</h3>
+              <p>Premium litigation brand with practice pages, attorney profiles, insights, contact flow, and a full visual identity system.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="/portfolio/heritage-dental/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/heritage-dental.png" alt="Heritage Dental Studio website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Healthcare website</span>
+              <h3>Heritage Dental</h3>
+              <p>Warm local-service site with trust-building, service architecture, patient onboarding, responsive pages, and branded assets.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="/portfolio/hotwire-pizza/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/hotwire-pizza.png" alt="Hotwire Pizza website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Restaurant brand</span>
+              <h3>Hot Wire Pizza</h3>
+              <p>Neon-heavy pizza concept with bold menu visuals, brand graphics, product cards, and a conversion-minded landing page.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="/portfolio/mile-marker-coffee/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/mile-marker-coffee.png" alt="Mile Marker Coffee website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Cafe website</span>
+              <h3>Mile Marker Coffee</h3>
+              <p>Roadside cafe identity with menu pages, story, visit info, product filtering, and a polished responsive front end.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="/portfolio/northbeam/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/northbeam.png" alt="Northbeam website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Product website</span>
+              <h3>Northbeam</h3>
+              <p>Portable-lighting product site with custom imagery, product cards, comparison content, dialogs, and support sections.</p>
+            </div>
+          </a>
+
+          <a class="work-card" href="/portfolio/cornerstone-hvac/">
+            <div class="work-shot">
+              <img src="/portfolio/images/websites/cornerstone-hvac.png" alt="Cornerstone HVAC website preview" loading="lazy" />
+            </div>
+            <div class="work-body">
+              <span class="work-type">Home service website</span>
+              <h3>Cornerstone HVAC</h3>
+              <p>Conversion-focused service business site with service pages, ZIP checker, reviews, financing, forms, and local trust flow.</p>
+            </div>
+          </a>
+        </div>
+
+        <div class="proof-band">
+          <div>
+            <p class="label">Logo & Graphic Design</p>
+            <h2>More than code on a page.</h2>
+            <p>
+              I can carry a project from rough website problem to finished visual system: logos, color, menus, flyers, cards, page design, and front-end implementation. That is useful when you need one person who can fix the site and the stuff that makes the site look real.
+            </p>
+            <div class="cta-row" aria-label="Portfolio links">
+              <a class="btn" href="/portfolio/">View full portfolio</a>
+              <a class="btn btn-secondary" href="mailto:hireme@mattlivingston.com?subject=Website%20help%20request">Start a project</a>
+            </div>
+          </div>
+
+          <div class="logo-cloud" aria-label="Logo design examples">
+            <div class="logo-tile"><img src="/portfolio/images/logos/pet-supply-logo.webp" alt="Pet Supply logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/northline-coffee-logo.webp" alt="Northline Coffee logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/june-jack-market-logo.webp" alt="June and Jack's Market logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/room-tone-logo.webp" alt="Room Tone logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/sweet-haven-logo.webp" alt="Sweet Haven logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/spoke-logo.webp" alt="Spoke logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/spectaview-logo.webp" alt="Spectaview logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/prime-fitness-logo.webp" alt="Prime Fitness logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/mochi-plush-logo.webp" alt="Mochi Plush logo" loading="lazy" /></div>
+            <div class="logo-tile"><img src="/portfolio/images/logos/techfix-logo.webp" alt="TechFix logo" loading="lazy" /></div>
+          </div>
         </div>
       </section>
 
