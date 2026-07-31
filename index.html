@@ -343,8 +343,8 @@
 
     /* ─── BUTTONS ────────────────────────────────────────────── */
     .btn-group {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 8px;
       width: 100%;
       max-width: 308px;
@@ -354,10 +354,15 @@
 
     @media (min-width: 520px) {
       .btn-group {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        max-width: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 460px;
+      }
+    }
+
+    @media (min-width: 760px) {
+      .btn-group {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        max-width: 650px;
       }
     }
 
@@ -379,6 +384,10 @@
       overflow: hidden;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
       white-space: nowrap;
+    }
+
+    .btn-group .btn {
+      width: 100%;
     }
 
     .btn::after {
@@ -431,7 +440,7 @@
       box-shadow: 0 0 24px var(--amber-glow);
     }
 
-    /* Emerald — Sci-Fi Worldbuilder */
+    /* Emerald — Books & Guides */
     .btn-emerald {
       background: rgba(52,211,153,0.07);
       color: var(--emerald);
@@ -444,7 +453,7 @@
       box-shadow: 0 0 24px var(--emerald-glow);
     }
 
-    /* Rose — Gravity Falls Archive */
+    /* Rose — Projects */
     .btn-rose {
       background: rgba(251,113,133,0.075);
       color: var(--rose);
@@ -457,7 +466,7 @@
       box-shadow: 0 0 24px var(--rose-glow);
     }
 
-    /* Game — solid-fill violet so it pops */
+    /* Violet — Worldbuilder */
     .btn-game {
       background: rgba(109,40,217,0.25);
       color: #ddd6fe;
@@ -474,19 +483,6 @@
       width: 13px; height: 13px;
       flex-shrink: 0;
       opacity: 0.85;
-    }
-
-    .btn-detached {
-      width: 100%;
-      max-width: 308px;
-      margin-top: 18px;
-      opacity: 0;
-      animation: fadeUp 0.52s ease 0.78s forwards;
-    }
-
-    .btn-detached + .btn-detached {
-      margin-top: 8px;
-      animation-delay: 0.84s;
     }
 
     .portal-link {
@@ -556,7 +552,6 @@
       .tagline { line-height: 1.65; }
       .rule { margin: 16px auto; }
       .btn { padding: 9px 17px; }
-      .btn-detached { margin-top: 14px; }
       .portal-link {
         margin-top: 8px;
         padding: 9px 12px;
@@ -588,6 +583,17 @@
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(12px); }
       to   { opacity: 1; transform: translateY(0); }
+    }
+
+    header,
+    .logo-wrap,
+    .name,
+    .tagline,
+    .rule,
+    .btn-group,
+    footer {
+      opacity: 1;
+      animation: none;
     }
 
   </style>
@@ -644,6 +650,25 @@
           Tools
         </a>
 
+        <a href="/books/" class="btn btn-emerald">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="5" rx="1"/>
+            <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/>
+            <path d="M10 13h4"/>
+          </svg>
+          Books &amp; Guides
+        </a>
+
+        <a href="/projects/" class="btn btn-rose">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+          Projects
+        </a>
+
         <a href="/shed/" class="btn btn-amber">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <polyline points="16 18 22 12 16 6"/>
@@ -652,7 +677,16 @@
           PHP Scripts
         </a>
 
-        <!-- <a href="/gravity-falls/game/" class="btn btn-game">
+        <a href="/projects/worldbuilder/" class="btn btn-game">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M2 12h20"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          Worldbuilder
+        </a>
+
+        <!-- <a href="/projects/gravity-falls/game/" class="btn btn-game">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="2" y="6" width="20" height="12" rx="2"/>
             <path d="M12 12h.01M7 12h.01"/>
@@ -662,24 +696,6 @@
         </a> -->
 
       </nav>
-
-      <a href="/worldbuilder/" class="btn btn-emerald btn-detached">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M2 12h20"/>
-          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        Sci-Fi Worldbuilder
-      </a>
-
-      <a href="/gravity-falls/" class="btn btn-rose btn-detached">
-        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <rect x="3" y="4" width="18" height="5" rx="1"/>
-          <path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/>
-          <path d="M10 13h4"/>
-        </svg>
-        Gravity Falls Archive
-      </a>
 
       <!-- <a
         href="https://manicwebmaster.com"

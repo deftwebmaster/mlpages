@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects - Matt Livingston</title>
+  <meta name="description" content="Selected Matt Livingston projects, including Minecraft companion tools and the Karrde Intelligence Network." />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png" />
+  <link rel="manifest" href="/assets/favicon/site.webmanifest" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mattlivingston.com/projects/" />
+  <meta property="og:title" content="Projects - Matt Livingston" />
+  <meta property="og:description" content="A project shelf for interactive tools, experiments, and immersive web builds by Matt Livingston." />
+  <meta property="og:image" content="https://mattlivingston.com/assets/card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://mattlivingston.com/projects/" />
+  <meta name="twitter:title" content="Projects - Matt Livingston" />
+  <meta name="twitter:description" content="A project shelf for interactive tools, experiments, and immersive web builds by Matt Livingston." />
+  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png" />
+  <meta name="theme-color" content="#080a10" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #080a10;
+      --panel: rgba(13, 17, 29, 0.72);
+      --panel-strong: #0d111d;
+      --border: #181c2a;
+      --border-mid: #222740;
+      --cyan: #22d3ee;
+      --cyan-dim: #0e7490;
+      --cyan-glow: rgba(34, 211, 238, 0.22);
+      --violet: #a78bfa;
+      --violet-mid: #6d28d9;
+      --violet-glow: rgba(167, 139, 250, 0.2);
+      --amber: #fbbf24;
+      --amber-glow: rgba(251, 191, 36, 0.18);
+      --emerald: #34d399;
+      --emerald-glow: rgba(52, 211, 153, 0.18);
+      --rose: #fb7185;
+      --rose-glow: rgba(251, 113, 133, 0.18);
+      --text: #c8ccd8;
+      --text-dim: #7a8093;
+      --text-muted: #4e5368;
+      --white: #eef0f6;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100svh;
+      overflow-x: hidden;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.055), transparent 34%),
+        linear-gradient(225deg, rgba(167, 139, 250, 0.07), transparent 38%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 56px 56px;
+      opacity: 0.36;
+      mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.78) 52%, transparent 100%);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+      opacity: 0.022;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .stage {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 34px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .wordmark {
+      font-family: 'Outfit', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      line-height: 1.35;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .wordmark em {
+      color: var(--cyan);
+      font-style: normal;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .nav a {
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .nav a:hover,
+    .nav a:focus-visible {
+      color: var(--cyan);
+      outline: none;
+    }
+
+    .online {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.6);
+      animation: ripple 2.8s ease-in-out infinite;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+      gap: 34px;
+      align-items: end;
+      padding: 64px 0 52px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 18px;
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.17em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--cyan), transparent);
+    }
+
+    h1 {
+      max-width: 720px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 76px;
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 0.98;
+    }
+
+    .accent-cyan {
+      color: var(--cyan);
+    }
+
+    .accent-violet {
+      color: var(--violet);
+    }
+
+    .lead {
+      max-width: 650px;
+      margin-top: 22px;
+      color: var(--text);
+      font-size: 19px;
+      line-height: 1.72;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 12px 18px;
+      overflow: hidden;
+      border-radius: 3px;
+      border: 1px solid rgba(14, 116, 144, 0.72);
+      background: rgba(34, 211, 238, 0.08);
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      text-align: center;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent 38%, rgba(255, 255, 255, 0.055) 50%, transparent 62%);
+      transform: translateX(-120%);
+      transition: transform 0.55s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--cyan);
+      background: rgba(34, 211, 238, 0.13);
+      color: #67e8f9;
+      box-shadow: 0 0 26px var(--cyan-glow);
+      outline: none;
+    }
+
+    .btn:hover::after,
+    .btn:focus-visible::after {
+      transform: translateX(120%);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      transition-duration: 0.08s;
+    }
+
+    .btn-violet {
+      border-color: rgba(167, 139, 250, 0.48);
+      background: rgba(167, 139, 250, 0.07);
+      color: var(--violet);
+    }
+
+    .btn-violet:hover,
+    .btn-violet:focus-visible {
+      border-color: var(--violet);
+      background: rgba(167, 139, 250, 0.12);
+      color: #c4b5fd;
+      box-shadow: 0 0 24px var(--violet-glow);
+    }
+
+    .signal-panel {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid rgba(167, 139, 250, 0.18);
+      border-radius: 8px;
+      background: rgba(167, 139, 250, 0.18);
+    }
+
+    .signal {
+      min-height: 136px;
+      padding: 18px;
+      background: rgba(8, 10, 16, 0.76);
+    }
+
+    .signal strong {
+      display: block;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 34px;
+      font-weight: 850;
+      line-height: 1;
+    }
+
+    .signal span {
+      display: block;
+      margin-top: 10px;
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 650;
+      letter-spacing: 0.13em;
+      line-height: 1.55;
+      text-transform: uppercase;
+    }
+
+    section {
+      padding: 52px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(280px, 1fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .label {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: 0.17em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin-top: 10px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 48px;
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .section-copy {
+      color: var(--text-dim);
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-rows: 236px minmax(0, 1fr);
+      overflow: hidden;
+      border: 1px solid var(--border-mid);
+      border-radius: 8px;
+      background: var(--panel);
+      text-decoration: none;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover,
+    .project-card:focus-visible {
+      transform: translateY(-3px);
+      border-color: var(--card-accent, var(--cyan));
+      box-shadow: 0 0 30px var(--card-glow, var(--cyan-glow)), 0 24px 80px rgba(0, 0, 0, 0.26);
+      outline: none;
+    }
+
+    .project-card.minecraft {
+      --card-accent: var(--emerald);
+      --card-glow: var(--emerald-glow);
+    }
+
+    .project-card.karrde {
+      --card-accent: var(--violet);
+      --card-glow: var(--violet-glow);
+    }
+
+    .project-card.worldbuilder {
+      --card-accent: var(--cyan);
+      --card-glow: var(--cyan-glow);
+    }
+
+    .project-card.gravity {
+      --card-accent: var(--amber);
+      --card-glow: var(--amber-glow);
+    }
+
+    .project-media {
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(34, 211, 238, 0.12), rgba(167, 139, 250, 0.08)),
+        rgba(8, 10, 16, 0.8);
+    }
+
+    .project-media img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.86;
+      transform: scale(1.01);
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .project-card:hover .project-media img,
+    .project-card:focus-visible .project-media img {
+      opacity: 0.98;
+      transform: scale(1.04);
+    }
+
+    .project-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to top, rgba(8, 10, 16, 0.82), transparent 54%),
+        linear-gradient(135deg, rgba(8, 10, 16, 0.15), rgba(8, 10, 16, 0.42));
+    }
+
+    .project-badge {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 3px;
+      background: rgba(8, 10, 16, 0.72);
+      color: var(--card-accent, var(--cyan));
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      text-transform: uppercase;
+      backdrop-filter: blur(8px);
+    }
+
+    .terminal-media {
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .terminal-screen {
+      width: min(360px, 100%);
+      min-height: 160px;
+      border: 1px solid rgba(167, 139, 250, 0.36);
+      border-radius: 6px;
+      background:
+        linear-gradient(rgba(167, 139, 250, 0.04) 50%, rgba(8, 10, 16, 0.04) 50%),
+        linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(34, 211, 238, 0.06)),
+        #0a0d15;
+      background-size: 100% 6px, auto, auto;
+      box-shadow: inset 0 0 34px rgba(167, 139, 250, 0.08);
+      padding: 18px;
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(167, 139, 250, 0.2);
+    }
+
+    .terminal-top img {
+      width: 34px;
+      height: 34px;
+      opacity: 0.9;
+      object-fit: contain;
+    }
+
+    .terminal-top span {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    .terminal-lines {
+      display: grid;
+      gap: 9px;
+      margin-top: 16px;
+    }
+
+    .terminal-lines i {
+      display: block;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(167, 139, 250, 0.72), rgba(34, 211, 238, 0.16));
+    }
+
+    .terminal-lines i:nth-child(2) {
+      width: 74%;
+      background: linear-gradient(90deg, rgba(34, 211, 238, 0.54), rgba(251, 191, 36, 0.12));
+    }
+
+    .terminal-lines i:nth-child(3) {
+      width: 58%;
+      background: linear-gradient(90deg, rgba(251, 113, 133, 0.46), rgba(167, 139, 250, 0.12));
+    }
+
+    .worldbuilder-media {
+      display: grid;
+      place-items: center;
+      padding: 22px;
+    }
+
+    .worldbuilder-orbit {
+      position: relative;
+      width: min(320px, 82%);
+      aspect-ratio: 1;
+      border: 1px solid rgba(34, 211, 238, 0.28);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, rgba(34, 211, 238, 0.3) 0 4px, transparent 5px),
+        radial-gradient(circle at center, rgba(167, 139, 250, 0.1), transparent 54%),
+        rgba(8, 10, 16, 0.6);
+      box-shadow: inset 0 0 32px rgba(34, 211, 238, 0.09), 0 0 42px rgba(34, 211, 238, 0.08);
+    }
+
+    .worldbuilder-orbit span {
+      position: absolute;
+      inset: var(--ring);
+      border: 1px solid var(--ring-color);
+      border-radius: 50%;
+    }
+
+    .worldbuilder-orbit span:nth-child(1) {
+      --ring: 20%;
+      --ring-color: rgba(34, 211, 238, 0.32);
+    }
+
+    .worldbuilder-orbit span:nth-child(2) {
+      --ring: 34%;
+      --ring-color: rgba(167, 139, 250, 0.28);
+    }
+
+    .worldbuilder-orbit span:nth-child(3) {
+      --ring: 48%;
+      --ring-color: rgba(251, 191, 36, 0.24);
+    }
+
+    .worldbuilder-node {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 18px rgba(34, 211, 238, 0.8);
+    }
+
+    .worldbuilder-node.one {
+      top: 18%;
+      left: 66%;
+    }
+
+    .worldbuilder-node.two {
+      right: 18%;
+      bottom: 30%;
+      background: var(--violet);
+      box-shadow: 0 0 18px rgba(167, 139, 250, 0.8);
+    }
+
+    .worldbuilder-node.three {
+      left: 24%;
+      bottom: 22%;
+      background: var(--amber);
+      box-shadow: 0 0 18px rgba(251, 191, 36, 0.7);
+    }
+
+    .gravity .project-media img {
+      object-position: center;
+    }
+
+    .project-body {
+      display: flex;
+      flex-direction: column;
+      min-height: 330px;
+      padding: 22px;
+    }
+
+    .project-kicker {
+      color: var(--card-accent, var(--cyan));
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+
+    h3 {
+      margin-top: 10px;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 30px;
+      font-weight: 850;
+      letter-spacing: 0;
+      line-height: 1.02;
+    }
+
+    .project-body p {
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 7px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.025);
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .project-link {
+      display: inline-flex;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 24px;
+      color: var(--card-accent, var(--cyan));
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .tool-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .tool-link {
+      display: flex;
+      min-height: 86px;
+      align-items: flex-end;
+      padding: 13px;
+      border: 1px solid var(--border-mid);
+      border-left: 3px solid var(--tool-accent, var(--cyan));
+      border-radius: 6px;
+      background: rgba(13, 17, 29, 0.7);
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.05;
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .tool-link:hover,
+    .tool-link:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--tool-accent, var(--cyan));
+      background: rgba(13, 17, 29, 0.92);
+      outline: none;
+    }
+
+    .tool-link:nth-child(1) { --tool-accent: var(--emerald); }
+    .tool-link:nth-child(2) { --tool-accent: var(--amber); }
+    .tool-link:nth-child(3) { --tool-accent: var(--violet); }
+    .tool-link:nth-child(4) { --tool-accent: var(--cyan); }
+    .tool-link:nth-child(5) { --tool-accent: var(--rose); }
+    .tool-link:nth-child(6) { --tool-accent: #9a978c; }
+    .tool-link:nth-child(7) { --tool-accent: #d1844a; }
+    .tool-link:nth-child(8) { --tool-accent: #4c7bd9; }
+    .tool-link:nth-child(9) { --tool-accent: #55c7d9; }
+    .tool-link:nth-child(10) { --tool-accent: #c17cff; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover,
+    footer a:focus-visible {
+      color: var(--cyan);
+      outline: none;
+    }
+
+    @keyframes ripple {
+      0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.6); }
+      60% { box-shadow: 0 0 0 7px rgba(34, 211, 238, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+    }
+
+    @media (max-width: 980px) {
+      h1 {
+        font-size: 58px;
+      }
+
+      h2 {
+        font-size: 40px;
+      }
+
+      .hero,
+      .section-head,
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .signal-panel {
+        max-width: 680px;
+      }
+
+      .tool-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .stage {
+        width: min(100% - 28px, 1120px);
+        padding-top: 14px;
+      }
+
+      header {
+        align-items: flex-start;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 7px;
+      }
+
+      .hero {
+        padding: 38px 0 42px;
+      }
+
+      h1 {
+        font-size: 46px;
+      }
+
+      h2 {
+        font-size: 34px;
+      }
+
+      .lead {
+        font-size: 16px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .signal-panel,
+      .tool-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .signal {
+        min-height: auto;
+      }
+
+      section {
+        padding: 42px 0;
+      }
+
+      .project-card {
+        grid-template-rows: 200px minmax(0, 1fr);
+      }
+
+      .project-body {
+        min-height: auto;
+        padding: 20px;
+      }
+
+      footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <header>
+      <a class="wordmark" href="/">Matt<em>.</em>Livingston</a>
+      <nav class="nav" aria-label="Project navigation">
+        <a href="#featured">Featured</a>
+        <a href="#minecraft-tools">Tools</a>
+        <span class="online"><span class="pulse-dot" aria-hidden="true"></span>Projects</span>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow">Interactive builds - tools - weird little systems</p>
+          <h1 id="hero-title">Projects with a little <span class="accent-cyan">utility</span> and a little <span class="accent-violet">lore</span>.</h1>
+          <p class="lead">
+            A living shelf of things I have built for play, planning, reference, and small-batch obsession. Some are practical tools. Some are immersive archives. All of them were made to feel like their own place.
+          </p>
+          <div class="hero-actions" aria-label="Featured project links">
+            <a class="btn" href="/projects/worldbuilder/">Open Worldbuilder</a>
+            <a class="btn btn-violet" href="/projects/karrde/">Open Karrde Network</a>
+            <a class="btn btn-violet" href="/projects/gravity-falls/">Open Gravity Falls</a>
+            <a class="btn" href="/projects/minecraft/">Open Minecraft Tools</a>
+          </div>
+        </div>
+
+        <aside class="signal-panel" aria-label="Project stats">
+          <div class="signal">
+            <strong>4</strong>
+            <span>Featured project suites</span>
+          </div>
+          <div class="signal">
+            <strong>12</strong>
+            <span>Worldbuilder modules</span>
+          </div>
+          <div class="signal">
+            <strong>40</strong>
+            <span>Gravity Falls episodes</span>
+          </div>
+        </aside>
+      </section>
+
+      <section id="featured" aria-labelledby="featured-title">
+        <div class="section-head">
+          <div>
+            <p class="label">Featured Builds</p>
+            <h2 id="featured-title">Four project worlds, each with its own strange little engine.</h2>
+          </div>
+          <p class="section-copy">
+            The shelf now spans practical play tools, a sci-fi worldbuilding system, an intelligence archive, and a Gravity Falls companion with ciphers, case files, and a text adventure tucked inside.
+          </p>
+        </div>
+
+        <div class="project-grid">
+          <a class="project-card worldbuilder" href="/projects/worldbuilder/">
+            <div class="project-media worldbuilder-media">
+              <div class="worldbuilder-orbit" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <i class="worldbuilder-node one"></i>
+                <i class="worldbuilder-node two"></i>
+                <i class="worldbuilder-node three"></i>
+              </div>
+              <span class="project-badge">Generator Suite</span>
+            </div>
+            <div class="project-body">
+              <span class="project-kicker">Systems / factions / timelines / atlas</span>
+              <h3>Sci-Fi Worldbuilder</h3>
+              <p>
+                A local-first procedural worldbuilding suite for star systems, settlements, organizations, characters, conflicts, documents, timelines, factions, relationships, premises, atlas entries, and technology registries.
+              </p>
+              <div class="meta-row">
+                <span class="meta-pill">12 modules</span>
+                <span class="meta-pill">Local saves</span>
+                <span class="meta-pill">Exports</span>
+              </div>
+              <span class="project-link">Open the archive</span>
+            </div>
+          </a>
+
+          <a class="project-card karrde" href="/projects/karrde/">
+            <div class="project-media terminal-media">
+              <div class="terminal-screen" aria-hidden="true">
+                <div class="terminal-top">
+                  <img src="/projects/karrde/public/favicon.svg" alt="" />
+                  <span>Karrde internal exchange</span>
+                </div>
+                <div class="terminal-lines">
+                  <i></i>
+                  <i></i>
+                  <i></i>
+                </div>
+              </div>
+              <span class="project-badge">Archive App</span>
+            </div>
+            <div class="project-body">
+              <span class="project-kicker">Search / dossiers / relationship graph</span>
+              <h3>Karrde Intelligence Network</h3>
+              <p>
+                A premium static intelligence terminal for Talon Karrde's private archive during the Thrawn campaign, built as a searchable web app with confidence records and dossier exports.
+              </p>
+              <div class="meta-row">
+                <span class="meta-pill">112 records</span>
+                <span class="meta-pill">Vanilla JS</span>
+                <span class="meta-pill">Static app</span>
+              </div>
+              <span class="project-link">Enter the network</span>
+            </div>
+          </a>
+
+          <a class="project-card gravity" href="/projects/gravity-falls/">
+            <div class="project-media">
+              <img src="/projects/gravity-falls/social-card.png" alt="Gravity Falls: Unlocked Archives preview" />
+              <span class="project-badge">Fan Archive</span>
+            </div>
+            <div class="project-body">
+              <span class="project-kicker">Ciphers / episodes / journals / text adventure</span>
+              <h3>Gravity Falls: Unlocked Archives</h3>
+              <p>
+                An unofficial companion for decoding ciphers, tracking easter eggs, browsing episodes, reading journal notes, exploring mysteries, and jumping into the Scattered Pages text adventure.
+              </p>
+              <div class="meta-row">
+                <span class="meta-pill">40 episodes</span>
+                <span class="meta-pill">59 easter eggs</span>
+                <span class="meta-pill">Game included</span>
+              </div>
+              <span class="project-link">Enter the archives</span>
+            </div>
+          </a>
+
+          <a class="project-card minecraft" href="/projects/minecraft/">
+            <div class="project-media">
+              <img src="/projects/minecraft/assets/hero.webp" alt="Iona and Matt's Minecraft farmstead" />
+              <span class="project-badge">Tool Suite</span>
+            </div>
+            <div class="project-body">
+              <span class="project-kicker">Build planning / world navigation</span>
+              <h3>Iona &amp; Matt's Minecraft Tools</h3>
+              <p>
+                A compact companion suite for Minecraft sessions: block math, palette planning, villager trades, coordinates, Nether routes, farms, potions, enchants, controls, and build challenges.
+              </p>
+              <div class="meta-row">
+                <span class="meta-pill">10 tools</span>
+                <span class="meta-pill">Local saves</span>
+                <span class="meta-pill">Mobile friendly</span>
+              </div>
+              <span class="project-link">Open the toolbox</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section id="minecraft-tools" aria-labelledby="tools-title">
+        <div class="section-head">
+          <div>
+            <p class="label">Minecraft Deep Links</p>
+            <h2 id="tools-title">Jump straight to the thing you need.</h2>
+          </div>
+          <p class="section-copy">
+            The Minecraft project is a whole little toolbox. These links skip the hub and go directly to the calculators, planners, notebooks, and references inside it.
+          </p>
+        </div>
+
+        <div class="tool-strip">
+          <a class="tool-link" href="/projects/minecraft/challenge/">Challenge Generator</a>
+          <a class="tool-link" href="/projects/minecraft/blocks/">Block Calculator</a>
+          <a class="tool-link" href="/projects/minecraft/palette/">Palette Builder</a>
+          <a class="tool-link" href="/projects/minecraft/villagers/">Villager Tracker</a>
+          <a class="tool-link" href="/projects/minecraft/enchant/">Enchant Optimizer</a>
+          <a class="tool-link" href="/projects/minecraft/potion/">Potion Sheet</a>
+          <a class="tool-link" href="/projects/minecraft/highway/">Nether Highway</a>
+          <a class="tool-link" href="/projects/minecraft/coords/">Coordinate Notebook</a>
+          <a class="tool-link" href="/projects/minecraft/farm/">Farm Calculator</a>
+          <a class="tool-link" href="/projects/minecraft/controls/">Controls Guide</a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; 2026 Matt Livingston</span>
+      <a href="/">Back to MattLivingston.com</a>
+    </footer>
+  </div>
+</body>
+</html>
