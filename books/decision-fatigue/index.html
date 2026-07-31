@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decision Fatigue Is a Design Problem</title>
+  <meta name="description" content="Stop paying cognitive rent on decisions that shouldn't exist. A short, direct guide to eliminating recurring decisions from your life. Free PDF download.">
+  <meta property="og:title" content="Decision Fatigue Is a Design Problem">
+  <meta property="og:description" content="Stop paying cognitive rent on decisions that shouldn't exist.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-bg: #0d0d0d;
+      --color-surface: #161616;
+      --color-text: #e8e8e8;
+      --color-text-muted: #888;
+      --color-accent: #c9ff57;
+      --color-accent-dim: #a8d648;
+      --color-border: #2a2a2a;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 18px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-serif);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Subtle grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.03;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 4rem 0 3rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--color-border), transparent);
+    }
+
+    /* Cover Image */
+    .cover-wrapper {
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.8s ease-out;
+    }
+
+    .cover-image {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 500;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.8s ease-out 0.1s both;
+    }
+
+    .hero .tagline {
+      font-size: 1.15rem;
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      animation: fadeUp 0.8s ease-out 0.2s both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Main Content */
+    .content {
+      padding: 5rem 0;
+    }
+
+    .section {
+      margin-bottom: 4rem;
+      animation: fadeUp 0.6s ease-out both;
+    }
+
+    .section:nth-child(1) { animation-delay: 0.2s; }
+    .section:nth-child(2) { animation-delay: 0.3s; }
+    .section:nth-child(3) { animation-delay: 0.4s; }
+    .section:nth-child(4) { animation-delay: 0.5s; }
+    .section:nth-child(5) { animation-delay: 0.6s; }
+    .section:nth-child(6) { animation-delay: 0.7s; }
+
+    .content p {
+      margin-bottom: 1.4rem;
+      font-size: 1.05rem;
+    }
+
+    .content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Lead paragraph style */
+    .lead {
+      font-size: 1.25rem;
+      color: var(--color-text);
+      line-height: 1.65;
+    }
+
+    .muted {
+      color: var(--color-text-muted);
+    }
+
+    /* Emphasis */
+    .content strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    .highlight {
+      color: var(--color-accent);
+      font-weight: 500;
+    }
+
+    /* Divider */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background-color: var(--color-border);
+      margin: 3rem 0;
+    }
+
+    /* Section heading */
+    .section-heading {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* Blockquote / Callout */
+    .callout {
+      border-left: 2px solid var(--color-accent);
+      padding-left: 1.5rem;
+      margin: 2.5rem 0;
+      font-style: italic;
+      color: var(--color-text);
+      font-size: 1.15rem;
+    }
+
+    /* What you'll learn list */
+    .learn-list {
+      list-style: none;
+      margin: 1.5rem 0;
+    }
+
+    .learn-list li {
+      position: relative;
+      padding-left: 1.5rem;
+      margin-bottom: 0.9rem;
+      font-size: 1rem;
+    }
+
+    .learn-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+    }
+
+    /* This is / This is not */
+    .contrast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 540px) {
+      .contrast-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    .contrast-box h3 {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+      color: var(--color-text-muted);
+    }
+
+    .contrast-box.negative h3 {
+      color: var(--color-text-muted);
+    }
+
+    .contrast-box.positive h3 {
+      color: var(--color-accent-dim);
+    }
+
+    .contrast-box ul {
+      list-style: none;
+    }
+
+    .contrast-box li {
+      font-size: 0.95rem;
+      margin-bottom: 0.6rem;
+      color: var(--color-text-muted);
+    }
+
+    .contrast-box.positive li {
+      color: var(--color-text);
+    }
+
+    /* CTA Section */
+    .cta {
+      text-align: center;
+      padding: 4rem 0 6rem;
+      border-top: 1px solid var(--color-border);
+    }
+
+    .price {
+      font-family: var(--font-mono);
+      font-size: 3rem;
+      font-weight: 500;
+      color: var(--color-text);
+      margin-bottom: 2rem;
+    }
+
+    .price span {
+      font-size: 1.5rem;
+      color: var(--color-text-muted);
+      vertical-align: top;
+      margin-right: 0.1rem;
+    }
+
+    .buy-button {
+      display: inline-block;
+      padding: 1rem 3rem;
+      background-color: var(--color-accent);
+      color: var(--color-bg);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .buy-button:hover {
+      background-color: #dfff7f;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(201, 255, 87, 0.25);
+    }
+
+    .buy-button:active {
+      transform: translateY(0);
+    }
+
+    .guarantee {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 0 3rem;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      font-family: var(--font-mono);
+    }
+
+    footer a {
+      color: var(--color-text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--color-border);
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--color-text);
+    }
+
+    footer .contact {
+      margin-top: 0.75rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      html {
+        font-size: 16px;
+      }
+
+      .hero {
+        padding: 3rem 0 2.5rem;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .cover-image {
+        max-width: 220px;
+      }
+
+      .content {
+        padding: 3rem 0;
+      }
+
+      .section {
+        margin-bottom: 3rem;
+      }
+
+      .price {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="container">
+      <div class="cover-wrapper">
+        <img src="decision-fatigue-cover.png" alt="Decision Fatigue Is a Design Problem - Book Cover" class="cover-image">
+      </div>
+      <h1>Decision Fatigue Is a Design Problem</h1>
+      <p class="tagline">Stop paying cognitive rent on decisions that shouldn't exist.</p>
+    </div>
+  </header>
+
+  <main class="content">
+    <div class="container">
+
+      <section class="section">
+        <p class="lead">It's 4pm. You've been productive all day. Real work got done.</p>
+        <p>And now you're standing in front of the refrigerator, unable to decide what to eat.</p>
+        <p>Or someone asks a simple question — what do you want for dinner, which movie, should we go out or stay in — and you feel something that isn't quite exhaustion but isn't quite irritation either.</p>
+        <p class="muted">It's both. You just don't want to decide anything else.</p>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <p class="section-heading">The standard explanation is wrong</p>
+        <p>You've heard it: willpower is a finite resource, decisions drain it, conserve it for what matters.</p>
+        <p>That's not wrong, exactly. It's just useless.</p>
+        <p>It treats decision fatigue as an inevitability to be managed. A tax you pay for being alive. The best you can do is shuffle when you pay it.</p>
+        <p>This book offers a different frame:</p>
+        <p class="callout">Every recurring decision is a design failure.</p>
+        <p>If you're making the same choice over and over — what to eat, what to wear, when to start, which task first — something upstream is broken. The decision keeps appearing because it was never actually resolved.</p>
+        <p><strong class="highlight">You're not bad at deciding. You're paying rent on decisions that shouldn't exist.</strong></p>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <p class="section-heading">Closing tabs, not managing them</p>
+        <p>Most advice on decision fatigue tells you to make decisions faster, earlier, or with less friction. Lay out your clothes. Meal prep. Use a to-do list.</p>
+        <p>That's optimization. It reduces friction but keeps the decision open.</p>
+        <p>This book is about <strong>elimination</strong>. Deleting the decisions that don't need to exist so you stop paying for them every day.</p>
+        <p>You'll learn:</p>
+        <ul class="learn-list">
+          <li>Where your decision load actually comes from (it's not the big choices — it's the invisible recurring ones)</li>
+          <li>How to audit your life for high-cost decisions you're making on repeat</li>
+          <li>Three strategies for eliminating decisions entirely: Lock, Automate, Default</li>
+          <li>A lightweight maintenance system that prevents decision debt from creeping back in</li>
+        </ul>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <div class="contrast-grid">
+          <div class="contrast-box negative">
+            <h3>This is not</h3>
+            <ul>
+              <li>A productivity system</li>
+              <li>A book about making better decisions</li>
+              <li>Anything involving discipline, willpower, or waking up earlier</li>
+            </ul>
+          </div>
+          <div class="contrast-box positive">
+            <h3>This is</h3>
+            <ul>
+              <li>A way to stop bleeding cognitive capacity on choices that never needed to be made</li>
+              <li>Short, direct, no filler</li>
+              <li>Something you can read in an hour and implement the same day</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="section">
+        <p class="section-heading">The real payoff isn't productivity</p>
+        <p>It's <strong>capacity</strong>.</p>
+        <p>When you stop leaking resources on decisions that shouldn't exist, you have more available for the things that actually matter:</p>
+        <ul class="learn-list">
+          <li>The decisions that require real thought</li>
+          <li>The work that demands creativity</li>
+          <li>The people who deserve your full attention</li>
+          <li>The bad days when everything is harder</li>
+        </ul>
+        <p>Decision fatigue isn't a symptom of a busy life. It's a symptom of a life that hasn't been designed.</p>
+        <p><strong>This book shows you how to fix that.</strong></p>
+      </section>
+
+    </div>
+  </main>
+
+  <section class="cta">
+    <div class="container">
+      <div class="price">Free</div>
+      <a href="decision-fatigue.pdf" class="buy-button" download>Download Free PDF</a>
+      <p class="guarantee">No signup · Instant PDF · Read in under an hour</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Matt Livingston · <a href="../">More free books</a></p>
+      <p class="contact"><a href="../">MattLivingston.com/books</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

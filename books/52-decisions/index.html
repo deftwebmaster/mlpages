@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>52 Decisions You Never Have to Make Again | Matt Livingston</title>
+  <meta name="description" content="52 recurring decisions, each with one concrete way to lock it, default it, or automate it out of your life. Free PDF download, no signup required.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --dark: #141414;
+      --gray-dark: #1a1a1a;
+      --gray-mid: #2a2a2a;
+      --gray-light: #888;
+      --white: #f0f0f0;
+      --white-dim: #aaa;
+      --acid: #b4ff39;
+      --acid-dim: rgba(180, 255, 57, 0.15);
+      --font-mono: 'Space Mono', monospace;
+      --font-sans: 'IBM Plex Sans', -apple-system, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--black);
+      color: var(--white);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Subtle noise texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Header */
+    header {
+      padding: 24px 0;
+      border-bottom: 1px solid var(--gray-mid);
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--gray-light);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.2s ease;
+    }
+
+    .logo:hover {
+      color: var(--acid);
+    }
+
+    /* Hero */
+    .hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .cover-wrapper {
+      margin-bottom: 48px;
+      position: relative;
+    }
+
+    .cover-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 40px;
+      background: var(--acid);
+      filter: blur(60px);
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    .cover {
+      max-width: 280px;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.4),
+        0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .headline {
+      font-family: var(--font-mono);
+      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+
+    .subhead {
+      font-size: 1.125rem;
+      color: var(--white-dim);
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Body copy */
+    .body-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--gray-mid);
+    }
+
+    .body-section p {
+      margin-bottom: 1.5rem;
+      color: var(--white-dim);
+      font-size: 1.0625rem;
+      line-height: 1.75;
+    }
+
+    .body-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .body-section strong {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .standout {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      color: var(--acid);
+      margin: 2rem 0;
+      padding-left: 1.5rem;
+      border-left: 2px solid var(--acid);
+    }
+
+    /* What's inside */
+    .features-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--gray-mid);
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--gray-light);
+      margin-bottom: 32px;
+    }
+
+    .features {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .feature-marker {
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      background: var(--acid);
+      border-radius: 50%;
+      margin-top: 8px;
+      box-shadow: 0 0 12px var(--acid);
+    }
+
+    .feature-text {
+      color: var(--white-dim);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    /* This is for you */
+    .audience-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--gray-mid);
+    }
+
+    .audience-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .audience-item {
+      background: var(--gray-dark);
+      border: 1px solid var(--gray-mid);
+      border-radius: 6px;
+      padding: 20px 24px;
+      color: var(--white-dim);
+      font-size: 1rem;
+      line-height: 1.5;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .audience-item:hover {
+      border-color: var(--acid);
+      background: var(--acid-dim);
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--gray-mid);
+      text-align: center;
+    }
+
+    .price {
+      font-family: var(--font-mono);
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .price-note {
+      font-size: 1rem;
+      color: var(--gray-light);
+      margin-bottom: 32px;
+    }
+
+    .buy-button {
+      display: inline-block;
+      background: var(--acid);
+      color: var(--black);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 18px 48px;
+      border-radius: 6px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 0 30px rgba(180, 255, 57, 0.3);
+    }
+
+    .buy-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 50px rgba(180, 255, 57, 0.5);
+    }
+
+    .buy-button:active {
+      transform: translateY(0);
+    }
+
+    .guarantee {
+      margin-top: 24px;
+      font-size: 0.875rem;
+      color: var(--gray-light);
+    }
+
+    /* About */
+    .about-section {
+      padding: 60px 0;
+      border-top: 1px solid var(--gray-mid);
+    }
+
+    .about-text {
+      color: var(--gray-light);
+      font-size: 0.9375rem;
+      line-height: 1.7;
+    }
+
+    .about-text a {
+      color: var(--acid);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .about-text a:hover {
+      border-bottom-color: var(--acid);
+    }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--gray-mid);
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 0.8125rem;
+      color: var(--gray-light);
+    }
+
+    .footer-text a {
+      color: var(--gray-light);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-text a:hover {
+      color: var(--acid);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero {
+        padding: 60px 0 48px;
+      }
+
+      .cover {
+        max-width: 220px;
+      }
+
+      .cover-wrapper {
+        margin-bottom: 36px;
+      }
+
+      .body-section,
+      .features-section,
+      .audience-section,
+      .about-section {
+        padding: 48px 0;
+      }
+
+      .cta-section {
+        padding: 60px 0;
+      }
+
+      .price {
+        font-size: 2.75rem;
+      }
+
+      .buy-button {
+        padding: 16px 40px;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <a href="../" class="logo">Matt Livingston Books</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="cover-wrapper">
+          <img src="52-decisions-cover.png" alt="52 Decisions You Never Have to Make Again book cover" class="cover">
+        </div>
+        <h1 class="headline">Stop deciding. Start doing.</h1>
+        <p class="subhead">52 recurring decisions, each with one concrete way to lock it, default it, or automate it out of your life for good.</p>
+      </div>
+    </section>
+
+    <section class="body-section">
+      <div class="container">
+        <p>You're not lazy. You're not undisciplined. You're just tired of making the same decisions over and over.</p>
+        <p>What to eat. When to exercise. Whether to check email. How to respond to that invite. Whether to buy the thing. What to work on first.</p>
+        <p>None of these are hard decisions. But they add up. By noon, you've burned through dozens of small choices - and you're wondering why you can't focus on what actually matters.</p>
+        <p class="standout">This book is a cheat sheet.</p>
+        <p>52 decisions most people make repeatedly. Each entry gives you the choice, the hidden cost, and one concrete way to stop making it.</p>
+        <p><strong>No productivity philosophy. No willpower science. No framework to memorize.</strong> Just answers you can implement today.</p>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <div class="container">
+        <h2 class="section-title">What's inside</h2>
+        <div class="features">
+          <div class="feature">
+            <div class="feature-marker"></div>
+            <p class="feature-text">52 entries across 8 domains: morning, food, work, communication, money, health, evening, and commitments</p>
+          </div>
+          <div class="feature">
+            <div class="feature-marker"></div>
+            <p class="feature-text">Each entry is a few sentences—read it, act on it, move on</p>
+          </div>
+          <div class="feature">
+            <div class="feature-marker"></div>
+            <p class="feature-text">Lock / default / automate framework explained in under 500 words</p>
+          </div>
+          <div class="feature">
+            <div class="feature-marker"></div>
+            <p class="feature-text">Designed to skim, not study</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="audience-section">
+      <div class="container">
+        <h2 class="section-title">This is for you if</h2>
+        <div class="audience-list">
+          <div class="audience-item">You waste more time deciding what to do than actually doing it</div>
+          <div class="audience-item">You've read the productivity books but still feel scattered</div>
+          <div class="audience-item">You want answers, not arguments</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-section">
+      <div class="container">
+        <div class="price">Free</div>
+        <p class="price-note">Instant PDF download. No email required.</p>
+        <a href="52-decisions.pdf" class="buy-button" download>Download Free PDF</a>
+        <p class="guarantee">Yours to keep, reuse, and share.</p>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <div class="container">
+        <h2 class="section-title">About the author</h2>
+        <p class="about-text">Matt Livingston writes practical guides for people tired of advice that doesn't survive contact with reality. More free books at <a href="../">MattLivingston.com/books</a>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p class="footer-text">© 2026 <a href="../">Matt Livingston Books</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>

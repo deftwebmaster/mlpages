@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Make the Damn Page | Matt Livingston</title>
+  <meta name="description" content="Download Make the Damn Page, a free short ebook by Matt Livingston for creators and business owners who keep avoiding their website, sales page, portfolio, or offer page.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Make the Damn Page">
+  <meta property="og:description" content="Ship a website, sales page, portfolio, or offer page that earns its keep. Free PDF by Matt Livingston.">
+  <meta property="og:image" content="https://mattlivingston.com/books/make-the-damn-page/make-the-damn-page-cover.webp">
+  <meta property="og:url" content="https://mattlivingston.com/books/make-the-damn-page/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Make the Damn Page">
+  <meta name="twitter:description" content="Stop avoiding the page that would make your work easier to understand.">
+  <meta name="twitter:image" content="https://mattlivingston.com/books/make-the-damn-page/make-the-damn-page-cover.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050d0f;
+      --bg-soft: #081315;
+      --panel: rgba(8, 19, 21, 0.86);
+      --paper: #f4ead8;
+      --muted: #9a9f9a;
+      --dim: #58605c;
+      --line: rgba(244, 234, 216, 0.12);
+      --red: #ef2b12;
+      --red-soft: rgba(239, 43, 18, 0.15);
+      --font-head: 'Archivo', Impact, sans-serif;
+      --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(239, 43, 18, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(244, 234, 216, 0.05) 1px, transparent 1px),
+        radial-gradient(circle at 18% 16%, rgba(239, 43, 18, 0.13), transparent 28%),
+        var(--bg);
+      background-size: 48px 48px, 48px 48px, auto, auto;
+      color: var(--paper);
+      font-family: var(--font-body);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    nav a {
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    nav a:hover {
+      color: var(--red);
+      border-bottom-color: var(--red);
+    }
+
+    .hero {
+      min-height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: minmax(260px, 0.86fr) minmax(0, 1.14fr);
+      gap: clamp(34px, 6vw, 78px);
+      align-items: center;
+      padding: 40px 0 76px;
+    }
+
+    .cover {
+      width: min(410px, 100%);
+      display: block;
+      margin: 0 auto;
+      border: 1px solid rgba(239, 43, 18, 0.52);
+      border-radius: 8px;
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.68),
+        0 0 40px rgba(239, 43, 18, 0.18);
+    }
+
+    .eyebrow {
+      color: var(--red);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2 {
+      font-family: var(--font-head);
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 730px;
+      font-size: clamp(2.7rem, 5.2vw, 5.25rem);
+      line-height: 0.88;
+      margin-bottom: 24px;
+    }
+
+    .subhead {
+      max-width: 710px;
+      color: var(--muted);
+      font-size: clamp(1.04rem, 1.7vw, 1.18rem);
+      margin-bottom: 18px;
+    }
+
+    .subhead strong {
+      color: var(--paper);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 30px 0 14px;
+    }
+
+    .button {
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--red);
+      border-radius: 6px;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 900;
+      padding: 13px 20px;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .button:hover {
+      background: var(--paper);
+      border-color: var(--paper);
+      color: var(--bg);
+      transform: translateY(-1px);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--paper);
+      border-color: rgba(244, 234, 216, 0.32);
+    }
+
+    .button.secondary:hover {
+      background: rgba(244, 234, 216, 0.1);
+      color: var(--paper);
+    }
+
+    .note {
+      color: var(--dim);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .band {
+      border-top: 1px solid var(--line);
+      padding: 74px 0;
+    }
+
+    .copy {
+      max-width: 780px;
+    }
+
+    .copy h2 {
+      font-size: clamp(1.9rem, 4.2vw, 3.3rem);
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+
+    p {
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .card,
+    .list li,
+    .sequence li {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18);
+    }
+
+    .card {
+      min-height: 100%;
+      padding: 24px;
+    }
+
+    .card b {
+      display: block;
+      color: var(--paper);
+      font-family: var(--font-head);
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      list-style: none;
+    }
+
+    .list li {
+      border-left: 3px solid var(--red);
+      color: var(--muted);
+      font-size: 0.96rem;
+      padding: 14px 15px;
+    }
+
+    .sequence {
+      counter-reset: page-step;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      list-style: none;
+      margin-top: 24px;
+    }
+
+    .sequence li {
+      min-height: 122px;
+      color: var(--paper);
+      font-weight: 800;
+      padding: 14px;
+    }
+
+    .sequence li::before {
+      counter-increment: page-step;
+      content: '0' counter(page-step);
+      display: block;
+      color: var(--red);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      margin-bottom: 18px;
+    }
+
+    .for-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(290px, 0.72fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .callout {
+      background:
+        linear-gradient(135deg, rgba(239, 43, 18, 0.18), transparent 42%),
+        #0b1719;
+      border: 1px solid rgba(239, 43, 18, 0.45);
+      border-radius: 8px;
+      padding: 28px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .callout h2,
+    .callout p {
+      color: var(--paper);
+    }
+
+    .callout p {
+      opacity: 0.78;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 30px 0 48px;
+    }
+
+    footer a {
+      color: var(--paper);
+      font-weight: 700;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(244, 234, 216, 0.32);
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .grid,
+      .for-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: 0;
+      }
+
+      .cover {
+        width: min(320px, 84%);
+      }
+
+      .sequence {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .callout {
+        position: static;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .wrap {
+        width: min(100% - 28px, 1160px);
+      }
+
+      nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      h1 {
+        font-size: clamp(2.45rem, 10vw, 3.6rem);
+      }
+
+      .actions,
+      .list {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .sequence {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="wrap">
+    <a href="../">Matt Livingston Books</a>
+    <span>Free PDF / Available now</span>
+  </nav>
+
+  <main>
+    <section class="wrap hero">
+      <img class="cover" src="make-the-damn-page-cover.webp" alt="Make the Damn Page book cover">
+      <div>
+        <p class="eyebrow">For postponed websites, offers, portfolios, and sales pages</p>
+        <h1>Stop avoiding the page that would make your work easier to understand.</h1>
+        <p class="subhead"><strong>Make the Damn Page</strong> is a free short book for creators and business owners who keep postponing the website, sales page, portfolio, or offer page they actually need.</p>
+        <p class="subhead">Part web strategy, part writing guide, and part refusal to let branding, tools, and endless revision become respectable procrastination.</p>
+        <div class="actions">
+          <a class="button" href="make-the-damn-page.pdf" download>Download Free PDF</a>
+          <a class="button secondary" href="../">Back to Bookshelf</a>
+        </div>
+        <p class="note">Free digital edition by Matt Livingston. A practical guide you can read in an evening and apply to one real page.</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap copy">
+        <h2>You probably do not need a bigger website plan.</h2>
+        <p>You need one useful page that explains what you do, gives the right person a reason to care, and makes the next step obvious.</p>
+        <p>Most unfinished pages are not blocked by design or technology. They are blocked by unresolved decisions, fear of being judged, and an oversized idea of what the page has to accomplish.</p>
+        <p>This book helps you make those decisions, write the plain version first, and publish something that can finally do its job.</p>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <div class="copy">
+          <h2>What the book helps you do</h2>
+        </div>
+        <ul class="list">
+          <li>Choose the one page worth finishing now</li>
+          <li>Give that page one primary job</li>
+          <li>Define the audience, offer, outcome, proof, and next step</li>
+          <li>Write clear copy before trying to sound impressive</li>
+          <li>Build the minimum useful page without making it skeletal</li>
+          <li>Add enough proof to support the claims</li>
+          <li>Remove practical reasons a qualified visitor might hesitate</li>
+          <li>Publish before confidence arrives</li>
+          <li>Improve the page from evidence instead of mood</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap">
+        <div class="copy">
+          <h2>Inside the guide</h2>
+          <p>The book includes seven short chapters, a Page Brief worksheet, and a Minimum Useful Page Checklist.</p>
+        </div>
+        <ol class="sequence">
+          <li>Choose the page</li>
+          <li>Define its job</li>
+          <li>Settle the offer</li>
+          <li>Write the ugly truth</li>
+          <li>Build the minimum useful structure</li>
+          <li>Add proof and remove hesitation</li>
+          <li>Publish, circulate, and revise from evidence</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="wrap for-grid">
+        <div>
+          <div class="copy">
+            <h2>Who it is for</h2>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <b>Freelancers</b>
+              <p>For portfolios that keep getting rebuilt instead of published.</p>
+            </article>
+            <article class="card">
+              <b>Creators</b>
+              <p>For offers trapped in notes, drafts, private docs, or vague someday plans.</p>
+            </article>
+            <article class="card">
+              <b>Small businesses</b>
+              <p>For websites that exist but still do not clearly explain the business.</p>
+            </article>
+            <article class="card">
+              <b>Consultants</b>
+              <p>For service providers who keep rewriting instead of making the next step obvious.</p>
+            </article>
+            <article class="card">
+              <b>Builders</b>
+              <p>For anyone hiding behind branding, platforms, research, tools, or one more revision.</p>
+            </article>
+            <article class="card">
+              <b>Not this</b>
+              <p>Not a complete web-design course, an SEO manual, or a promise that one page can rescue an offer nobody wants.</p>
+            </article>
+          </div>
+        </div>
+        <aside class="callout">
+          <h2>Make the page real.</h2>
+          <p>You do not need the permanent version. You need a complete version that the right person can understand and use.</p>
+          <div class="actions">
+            <a class="button" href="make-the-damn-page.pdf" download>Download Free PDF</a>
+          </div>
+          <p class="note">Free PDF. Written by Matt Livingston.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Matt Livingston designs and builds websites, tools, and practical systems. More at <a href="https://mattlivingston.com">MattLivingston.com</a>.</div>
+  </footer>
+</body>
+</html>

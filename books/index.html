@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Books by Matt Livingston</title>
+  <meta name="description" content="Browse books by Matt Livingston, including paid guides and free downloads on systems, attention, sobriety, decision fatigue, recovery, and getting through bad days.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Books by Matt Livingston">
+  <meta property="og:description" content="A practical bookshelf for people who want better systems, clearer attention, and advice that survives real life.">
+  <meta property="og:url" content="https://mattlivingston.com/books/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #171512;
+      --muted: #696157;
+      --paper: #fbfaf7;
+      --line: #ded7ca;
+      --wash: #f0ede6;
+      --green: #476b45;
+      --amber: #bf7b30;
+      --blue: #245f7a;
+      --red: #9d3730;
+      --font-body: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Newsreader', Georgia, serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    header {
+      padding: 56px 0 36px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .kicker {
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 5.4rem);
+      font-weight: 700;
+      line-height: 0.95;
+      margin-bottom: 24px;
+    }
+
+    .lede {
+      max-width: 690px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.25rem);
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 24px;
+      padding: 40px 0 18px;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1;
+    }
+
+    .section-head p {
+      max-width: 430px;
+      color: var(--muted);
+      font-size: 0.98rem;
+    }
+
+    .shelf {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+      padding: 0 0 56px;
+    }
+
+    .paid-shelf {
+      padding-bottom: 34px;
+    }
+
+    .book {
+      grid-column: span 4;
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: #fffdf9;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(23, 21, 18, 0.08);
+    }
+
+    .book.paid {
+      grid-column: span 6;
+      background: #fffaf0;
+    }
+
+    .cover-link {
+      display: block;
+      background: var(--wash);
+      border-bottom: 1px solid var(--line);
+      padding: 22px;
+      text-align: center;
+    }
+
+    .cover-link img {
+      width: min(190px, 74%);
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 3px;
+      box-shadow: 0 18px 34px rgba(23, 21, 18, 0.24);
+    }
+
+    .book-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 22px;
+    }
+
+    .book h2 {
+      font-size: 1.28rem;
+      line-height: 1.2;
+    }
+
+    .book.paid h2 {
+      font-size: 1.48rem;
+    }
+
+    .book p {
+      color: var(--muted);
+      font-size: 0.97rem;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 9px;
+    }
+
+    .price {
+      width: fit-content;
+      border: 1px solid rgba(191, 123, 48, 0.34);
+      border-radius: 999px;
+      background: rgba(191, 123, 48, 0.1);
+      color: #7b471a;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 5px 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ink);
+      border-radius: 6px;
+      background: var(--ink);
+      color: var(--paper);
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 10px 13px;
+      text-decoration: none;
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .button:hover {
+      background: var(--green);
+      border-color: var(--green);
+      color: #fff;
+    }
+
+    .button.buy {
+      border-color: var(--amber);
+      background: var(--amber);
+      color: #fff;
+    }
+
+    .button.buy:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 28px 0 48px;
+    }
+
+    @media (max-width: 920px) {
+      .book {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .wrap {
+        width: min(100% - 28px, 1120px);
+      }
+
+      header {
+        padding-top: 38px;
+      }
+
+      .shelf {
+        gap: 14px;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+        padding-top: 32px;
+      }
+
+      .book {
+        grid-column: 1 / -1;
+      }
+
+      .book.paid {
+        grid-column: 1 / -1;
+      }
+
+      .cover-link img {
+        width: min(170px, 68%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="kicker">Matt Livingston Books</p>
+      <h1>Practical books for real-life systems.</h1>
+      <p class="lede">A shelf of paid guides and free downloads for web strategy, attention, recovery, decision fatigue, and building a life that works under real conditions.</p>
+    </div>
+  </header>
+
+  <main class="wrap" aria-label="Books">
+    <section class="section-head">
+      <div>
+        <p class="kicker">Featured Books</p>
+        <h2>Available now</h2>
+      </div>
+      <p>These live on their own project sites and link straight to their checkout pages.</p>
+    </section>
+
+    <section class="shelf paid-shelf" aria-label="Paid books">
+      <article class="book paid">
+        <a class="cover-link" href="https://forgetfloaters.com/">
+          <img src="forget-floaters-cover.png" alt="Forget Floaters book cover">
+        </a>
+        <div class="book-body">
+          <h2>Forget Floaters</h2>
+          <p>A practical guide to retraining your brain to stop checking for eye floaters and let them fade into the background again.</p>
+          <div class="tags"><span class="tag">Eye floaters</span><span class="tag">Attention retraining</span><span class="tag">Bonus tools</span></div>
+          <div class="price">$9</div>
+          <div class="actions">
+            <a class="button buy" href="https://forgetfloaters.com/buy/">Buy Now - $9</a>
+            <a class="button secondary" href="https://forgetfloaters.com/">Book Page</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="book paid">
+        <a class="cover-link" href="https://endscreenaddiction.com/">
+          <img src="unplug-cover.png" alt="Unplug Your Brain book cover">
+        </a>
+        <div class="book-body">
+          <h2>Unplug Your Brain</h2>
+          <p>A short, systems-driven guide to breaking screen addiction loops without quitting technology or relying on raw willpower.</p>
+          <div class="tags"><span class="tag">Screen addiction</span><span class="tag">Digital habits</span><span class="tag">PDF + EPUB + Kindle</span></div>
+          <div class="price">$9</div>
+          <div class="actions">
+            <a class="button buy" href="https://buy.endscreenaddiction.com/">Buy Now - $9</a>
+            <a class="button secondary" href="https://endscreenaddiction.com/">Book Page</a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="section-head">
+      <div>
+        <p class="kicker">Free Downloads</p>
+        <h2>Read without checkout</h2>
+      </div>
+      <p>Download the format you want and start reading. No checkout, no account, no signup wall.</p>
+    </section>
+
+    <section class="shelf" aria-label="Free books">
+    <article class="book">
+      <a class="cover-link" href="stop-fixing-the-same-problem/">
+        <img src="stop-fixing-the-same-problem/stop-fixing-the-same-problem-cover.webp" alt="Stop Fixing the Same Problem book cover">
+      </a>
+      <div class="book-body">
+        <h2>Stop Fixing the Same Problem</h2>
+        <p>A practical guide to finding the real failure point, changing the system, and making better outcomes easier.</p>
+        <div class="tags"><span class="tag">Systems</span><span class="tag">Friction audit</span><span class="tag">Free PDF</span></div>
+        <div class="actions">
+          <a class="button" href="stop-fixing-the-same-problem/stop-fixing-the-same-problem.pdf" download>Free PDF</a>
+          <a class="button secondary" href="stop-fixing-the-same-problem/">Book Page</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="make-the-damn-page/">
+        <img src="make-the-damn-page/make-the-damn-page-cover.webp" alt="Make the Damn Page book cover">
+      </a>
+      <div class="book-body">
+        <h2>Make the Damn Page</h2>
+        <p>A free short book for creators and business owners who keep postponing the website, sales page, portfolio, or offer page they actually need.</p>
+        <div class="tags"><span class="tag">Web strategy</span><span class="tag">Copywriting</span><span class="tag">Free PDF</span></div>
+        <div class="actions">
+          <a class="button" href="make-the-damn-page/make-the-damn-page.pdf" download>Free PDF</a>
+          <a class="button secondary" href="make-the-damn-page/">Book Page</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="personal-systems/">
+        <img src="personal-systems/personal-systems-cover.png" alt="Personal Systems That Survive Bad Days book cover">
+      </a>
+      <div class="book-body">
+        <h2>Personal Systems That Survive Bad Days</h2>
+        <p>Build systems that assume exhaustion, stress, and low capacity instead of pretending every day starts clean.</p>
+        <div class="tags"><span class="tag">Systems</span><span class="tag">Burnout</span><span class="tag">Bad days</span></div>
+        <div class="actions">
+          <a class="button" href="personal-systems/Personal-Systems-That-Survive-Bad-Days.pdf" download>Free PDF</a>
+          <a class="button secondary" href="personal-systems/Personal-Systems-That-Survive-Bad-Days.epub" download>EPUB</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="dark-recovery/">
+        <img src="dark-recovery/dark-recovery-cover.png" alt="Dark Recovery book cover">
+      </a>
+      <div class="book-body">
+        <h2>Dark Recovery</h2>
+        <p>An operational guide to sobriety without surrender: containment, stabilization, exposure, integration, and loosening.</p>
+        <div class="tags"><span class="tag">Recovery</span><span class="tag">Operations</span><span class="tag">21 pages</span></div>
+        <div class="actions">
+          <a class="button" href="dark-recovery/Dark-Recovery.pdf" download>Free PDF</a>
+          <a class="button secondary" href="dark-recovery/Dark-Recovery.epub" download>EPUB</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="decision-fatigue/">
+        <img src="decision-fatigue/decision-fatigue-cover.png" alt="Decision Fatigue Is a Design Problem book cover">
+      </a>
+      <div class="book-body">
+        <h2>Decision Fatigue Is a Design Problem</h2>
+        <p>Stop paying cognitive rent on choices that should have been locked, automated, or defaulted already.</p>
+        <div class="tags"><span class="tag">Decision fatigue</span><span class="tag">Design</span><span class="tag">Short guide</span></div>
+        <div class="actions">
+          <a class="button" href="decision-fatigue/decision-fatigue.pdf" download>Free PDF</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="52-decisions/">
+        <img src="52-decisions/52-decisions-cover.png" alt="52 Decisions You Never Have to Make Again book cover">
+      </a>
+      <div class="book-body">
+        <h2>52 Decisions You Never Have to Make Again</h2>
+        <p>A fast cheat sheet for removing recurring decisions from mornings, food, work, money, health, and commitments.</p>
+        <div class="tags"><span class="tag">Defaults</span><span class="tag">Automation</span><span class="tag">52 entries</span></div>
+        <div class="actions">
+          <a class="button" href="52-decisions/52-decisions.pdf" download>Free PDF</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="sober-by-design/">
+        <img src="sober-by-design/cover.png" alt="Sober by Design book cover">
+      </a>
+      <div class="book-body">
+        <h2>Sober by Design</h2>
+        <p>A systems approach to sobriety: reduce reliance on willpower and build architecture that makes relapse less available.</p>
+        <div class="tags"><span class="tag">Sobriety</span><span class="tag">Systems</span><span class="tag">7 systems</span></div>
+        <div class="actions">
+          <a class="button" href="sober-by-design/sober-by-design.pdf" download>Free PDF</a>
+        </div>
+      </div>
+    </article>
+
+    <article class="book">
+      <a class="cover-link" href="high-maintenance/">
+        <img src="high-maintenance/high-maintenance-cover.png" alt="High Maintenance book cover">
+      </a>
+      <div class="book-body">
+        <h2>High Maintenance</h2>
+        <p>A practical guide to understanding THC tolerance, cutting back, or resetting without lectures or moral theater.</p>
+        <div class="tags"><span class="tag">THC</span><span class="tag">Tolerance</span><span class="tag">20 min read</span></div>
+        <div class="actions">
+          <a class="button" href="high-maintenance/high-maintenance.pdf" download>Free PDF</a>
+          <a class="button secondary" href="high-maintenance/high-maintenance.epub" download>EPUB</a>
+        </div>
+      </div>
+    </article>
+
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Books by Matt Livingston. Free downloads are yours to keep and share with anyone who would benefit from them.</div>
+  </footer>
+</body>
+</html>
