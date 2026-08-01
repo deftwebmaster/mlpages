@@ -380,23 +380,6 @@
       box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent), 0 0 30px color-mix(in srgb, var(--accent) 27%, transparent);
     }
 
-    .game-number {
-      position: absolute;
-      top: 16px;
-      left: 17px;
-      z-index: 3;
-      padding: 6px 8px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 999px;
-      color: rgba(247, 248, 251, 0.76);
-      background: rgba(8, 10, 15, 0.58);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.14em;
-    }
 
     .game-card:hover::after,
     .game-card:focus-visible::after {
@@ -664,7 +647,6 @@
         >
           <div class="game-visual">
             <img class="game-art" src="img/xeno-agency.webp" alt="" width="1672" height="941" fetchpriority="high" aria-hidden="true">
-            <span class="game-number">GAME 11</span>
             <span class="game-status">Featured</span>
           </div>
           <div class="game-body">
@@ -686,16 +668,45 @@
           </div>
         </a>
 
+        <a class="game-card card-featured" href="./salvage-zero/" style="--accent: #00e5ff; --accent-secondary: #ff8a3d;" aria-label="Play Salvage Zero">
+          <div class="game-visual">
+            <img class="game-art" src="img/salvage-zero.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true">
+            <span class="game-status">Featured</span>
+          </div>
+          <div class="game-body">
+            <div class="game-type">Physics Arcade</div>
+            <h3 class="game-title">Salvage Zero</h3>
+            <p class="game-description">Break apart a collapsing orbital wreck field, recover valuable cargo with your tractor beam, and reach extraction before your own debris becomes the thing that kills you.</p>
+            <div class="game-footer">
+              <div class="game-tags" aria-hidden="true"><span class="game-tag">Momentum</span><span class="game-tag">Physics</span><span class="game-tag">Salvage</span></div>
+              <span class="play-label">Begin salvage <span class="play-arrow" aria-hidden="true">→</span></span>
+            </div>
+          </div>
+        </a>
+
+        <div class="collection-group-label">More games</div>
+
+        <a class="game-card" href="./treasure-hunter/" style="--accent: #d6a85f; --accent-secondary: #38e8a1;" aria-label="Play Treasure Hunter">
+          <div class="game-visual"><img class="game-art" src="img/treasure-hunter.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
+          <div class="game-body">
+            <div class="game-type">Expedition Management</div>
+            <h3 class="game-title">Treasure Hunter</h3>
+            <p class="game-description">Build a treasure-hunting organization from a battered truck into a global expedition empire. Research rumors, decode clues, hire specialists, recover legendary artifacts, and decide how every discovery shapes your organization.</p>
+            <div class="game-footer">
+              <div class="game-tags" aria-hidden="true"><span class="game-tag">Expeditions</span><span class="game-tag">Artifacts</span><span class="game-tag">Empire Building</span></div>
+              <span class="play-label">Start expedition <span class="play-arrow" aria-hidden="true">→</span></span>
+            </div>
+          </div>
+        </a>
+
         <a
-          class="game-card card-featured"
+          class="game-card"
           href="./paper-pilot/"
           style="--accent: #7bc8e8; --accent-secondary: #ffd166;"
           aria-label="Play Paper Pilot"
         >
           <div class="game-visual">
             <img class="game-art" src="img/paper-pilot.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true">
-            <span class="game-number">GAME 12</span>
-            <span class="game-status">Featured</span>
           </div>
           <div class="game-body">
             <div class="game-type">Drawing Physics Challenge</div>
@@ -715,36 +726,8 @@
           </div>
         </a>
 
-        <div class="collection-group-label">More games</div>
-
-        <a class="game-card" href="./salvage-zero/" style="--accent: #00e5ff; --accent-secondary: #ff8a3d;" aria-label="Play Salvage Zero">
-          <div class="game-visual"><img class="game-art" src="img/salvage-zero.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 06</span></div>
-          <div class="game-body">
-            <div class="game-type">Physics Arcade</div>
-            <h3 class="game-title">Salvage Zero</h3>
-            <p class="game-description">Break apart a collapsing orbital wreck field, recover valuable cargo with your tractor beam, and reach extraction before your own debris becomes the thing that kills you.</p>
-            <div class="game-footer">
-              <div class="game-tags" aria-hidden="true"><span class="game-tag">Momentum</span><span class="game-tag">Physics</span><span class="game-tag">Salvage</span></div>
-              <span class="play-label">Begin salvage <span class="play-arrow" aria-hidden="true">→</span></span>
-            </div>
-          </div>
-        </a>
-
-        <a class="game-card" href="./treasure-hunter/" style="--accent: #d6a85f; --accent-secondary: #38e8a1;" aria-label="Play Treasure Hunter">
-          <div class="game-visual"><img class="game-art" src="img/treasure-hunter.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 09</span></div>
-          <div class="game-body">
-            <div class="game-type">Expedition Management</div>
-            <h3 class="game-title">Treasure Hunter</h3>
-            <p class="game-description">Build a treasure-hunting organization from a battered truck into a global expedition empire. Research rumors, decode clues, hire specialists, recover legendary artifacts, and decide how every discovery shapes your organization.</p>
-            <div class="game-footer">
-              <div class="game-tags" aria-hidden="true"><span class="game-tag">Expeditions</span><span class="game-tag">Artifacts</span><span class="game-tag">Empire Building</span></div>
-              <span class="play-label">Start expedition <span class="play-arrow" aria-hidden="true">→</span></span>
-            </div>
-          </div>
-        </a>
-
         <a class="game-card" href="./lemonade/" style="--accent: #ffd84d; --accent-secondary: #38e8a1;" aria-label="Play Lemonade Empire">
-          <div class="game-visual"><img class="game-art" src="img/lemonade-empire.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 08</span></div>
+          <div class="game-visual"><img class="game-art" src="img/lemonade-empire.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
           <div class="game-body">
             <div class="game-type">Business Simulation</div>
             <h3 class="game-title">Lemonade Empire</h3>
@@ -756,34 +739,8 @@
           </div>
         </a>
 
-        <a class="game-card" href="./circuit-breaker/" style="--accent: #8b5cf6; --accent-secondary: #00e5ff;" aria-label="Play Circuit Breaker">
-          <div class="game-visual"><img class="game-art" src="img/circuit-breaker.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 01</span></div>
-          <div class="game-body">
-            <div class="game-type">Match-Three Puzzle</div>
-            <h3 class="game-title">Circuit Breaker</h3>
-            <p class="game-description">Match volatile circuit nodes, trigger cascading reactions, and keep the board alive as the system pushes toward overload.</p>
-            <div class="game-footer">
-              <div class="game-tags"><span class="game-tag">Combos</span><span class="game-tag">Cascades</span><span class="game-tag">Strategy</span></div>
-              <span class="play-label">Restore power <span class="play-arrow">→</span></span>
-            </div>
-          </div>
-        </a>
-
-        <a class="game-card" href="./signal-runner/" style="--accent: #00e5ff; --accent-secondary: #8b5cf6;" aria-label="Play Signal Runner">
-          <div class="game-visual"><img class="game-art" src="img/signal-runner.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 04</span></div>
-          <div class="game-body">
-            <div class="game-type">Lane-Crossing Arcade</div>
-            <h3 class="game-title">Signal Runner</h3>
-            <p class="game-description">Cross a hostile digital network, ride moving data streams, and switch signal polarity to pass through frequency-dependent platforms, gates, and hazards.</p>
-            <div class="game-footer">
-              <div class="game-tags"><span class="game-tag">Timing</span><span class="game-tag">Polarity</span><span class="game-tag">Movement</span></div>
-              <span class="play-label">Enter network <span class="play-arrow">→</span></span>
-            </div>
-          </div>
-        </a>
-
         <a class="game-card" href="./blackbox-courier/" style="--accent: #ff4d67; --accent-secondary: #8b5cf6;" aria-label="Play Blackbox Courier">
-          <div class="game-visual"><img class="game-art" src="img/blackbox-courier.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 03</span></div>
+          <div class="game-visual"><img class="game-art" src="img/blackbox-courier.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
           <div class="game-body">
             <div class="game-type">Endless Arcade Runner</div>
             <h3 class="game-title">Blackbox Courier</h3>
@@ -795,21 +752,21 @@
           </div>
         </a>
 
-        <a class="game-card" href="./dead-drop/" style="--accent: #38e8a1; --accent-secondary: #00e5ff;" aria-label="Play Dead Drop">
-          <div class="game-visual"><img class="game-art" src="img/dead-drop.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 02</span></div>
+        <a class="game-card" href="./circuit-breaker/" style="--accent: #8b5cf6; --accent-secondary: #00e5ff;" aria-label="Play Circuit Breaker">
+          <div class="game-visual"><img class="game-art" src="img/circuit-breaker.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
           <div class="game-body">
-            <div class="game-type">Turn-Based Stealth</div>
-            <h3 class="game-title">Dead Drop</h3>
-            <p class="game-description">Read patrol routes, plan every move, and complete covert objectives inside deterministic security systems where one bad step can compromise the entire operation.</p>
+            <div class="game-type">Match-Three Puzzle</div>
+            <h3 class="game-title">Circuit Breaker</h3>
+            <p class="game-description">Match volatile circuit nodes, trigger cascading reactions, and keep the board alive as the system pushes toward overload.</p>
             <div class="game-footer">
-              <div class="game-tags"><span class="game-tag">Stealth</span><span class="game-tag">Planning</span><span class="game-tag">AI</span></div>
-              <span class="play-label">Accept mission <span class="play-arrow">→</span></span>
+              <div class="game-tags"><span class="game-tag">Combos</span><span class="game-tag">Cascades</span><span class="game-tag">Strategy</span></div>
+              <span class="play-label">Restore power <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
 
         <a class="game-card" href="./reactor-breach/" style="--accent: #ff8a3d; --accent-secondary: #8b5cf6;" aria-label="Play Reactor Breach">
-          <div class="game-visual"><img class="game-art" src="img/reactor-breach.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 07</span></div>
+          <div class="game-visual"><img class="game-art" src="img/reactor-breach.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
           <div class="game-body">
             <div class="game-type">Ricochet Arcade</div>
             <h3 class="game-title">Reactor Breach</h3>
@@ -822,7 +779,7 @@
         </a>
 
         <a class="game-card" href="./gridlock/" style="--accent: #ffd166; --accent-secondary: #ff4d67;" aria-label="Play Gridlock">
-          <div class="game-visual"><img class="game-art" src="img/gridlock.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"><span class="game-number">GAME 05</span></div>
+          <div class="game-visual"><img class="game-art" src="img/gridlock.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
           <div class="game-body">
             <div class="game-type">Maze-Chase Arcade</div>
             <h3 class="game-title">Gridlock</h3>
@@ -830,6 +787,32 @@
             <div class="game-footer">
               <div class="game-tags"><span class="game-tag">Pathfinding</span><span class="game-tag">Chase AI</span><span class="game-tag">Maze Shift</span></div>
               <span class="play-label">Enter grid <span class="play-arrow">→</span></span>
+            </div>
+          </div>
+        </a>
+
+        <a class="game-card" href="./signal-runner/" style="--accent: #00e5ff; --accent-secondary: #8b5cf6;" aria-label="Play Signal Runner">
+          <div class="game-visual"><img class="game-art" src="img/signal-runner.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
+          <div class="game-body">
+            <div class="game-type">Lane-Crossing Arcade</div>
+            <h3 class="game-title">Signal Runner</h3>
+            <p class="game-description">Cross a hostile digital network, ride moving data streams, and switch signal polarity to pass through frequency-dependent platforms, gates, and hazards.</p>
+            <div class="game-footer">
+              <div class="game-tags"><span class="game-tag">Timing</span><span class="game-tag">Polarity</span><span class="game-tag">Movement</span></div>
+              <span class="play-label">Enter network <span class="play-arrow">→</span></span>
+            </div>
+          </div>
+        </a>
+
+        <a class="game-card" href="./dead-drop/" style="--accent: #38e8a1; --accent-secondary: #00e5ff;" aria-label="Play Dead Drop">
+          <div class="game-visual"><img class="game-art" src="img/dead-drop.webp" alt="" width="1672" height="941" loading="lazy" aria-hidden="true"></div>
+          <div class="game-body">
+            <div class="game-type">Turn-Based Stealth</div>
+            <h3 class="game-title">Dead Drop</h3>
+            <p class="game-description">Read patrol routes, plan every move, and complete covert objectives inside deterministic security systems where one bad step can compromise the entire operation.</p>
+            <div class="game-footer">
+              <div class="game-tags"><span class="game-tag">Stealth</span><span class="game-tag">Planning</span><span class="game-tag">AI</span></div>
+              <span class="play-label">Accept mission <span class="play-arrow">→</span></span>
             </div>
           </div>
         </a>
@@ -842,7 +825,6 @@
         >
           <div class="game-visual">
             <img class="game-art" src="img/machine-works.webp" alt="" width="1672" height="940" loading="lazy" aria-hidden="true">
-            <span class="game-number">GAME 10</span>
           </div>
           <div class="game-body">
             <div class="game-type">Industrial Optimization</div>
@@ -862,6 +844,7 @@
             </div>
           </div>
         </a>
+
       </div>
     </section>
 
