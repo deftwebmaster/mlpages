@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cycle Count Variance Tool | Inventory Accuracy & Recount Analyzer</title>
+  <meta name="description" content="Analyze cycle count variance from CSV exports. Calculate inventory accuracy, value impact, match rate, recount priority, and warehouse-ready variance tables locally.">
+  <link rel="canonical" href="https://mattlivingston.com/tools/cycle-count-variance/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#090b10">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com/tools/cycle-count-variance/">
+  <meta property="og:title" content="Cycle Count Variance Tool | Inventory Accuracy & Recount Analyzer">
+  <meta property="og:description" content="Analyze cycle count variance from CSV exports. Calculate inventory accuracy, value impact, match rate, recount priority, and warehouse-ready variance tables locally.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Cycle Count Variance Tool preview image">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://mattlivingston.com/tools/cycle-count-variance/">
+  <meta name="twitter:title" content="Cycle Count Variance Tool | Inventory Accuracy & Recount Analyzer">
+  <meta name="twitter:description" content="Analyze cycle count variance from CSV exports. Calculate inventory accuracy, value impact, match rate, recount priority, and warehouse-ready variance tables locally.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="Cycle Count Variance Tool preview image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Cycle Count Variance Tool",
+    "url": "https://mattlivingston.com/tools/cycle-count-variance/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "A local browser-based cycle count variance analyzer for inventory accuracy, recount prioritization, match rate, unit variance, and value impact.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --bg: #090b10;
+      --panel: rgba(17, 23, 34, 0.9);
+      --panel-strong: rgba(23, 32, 48, 0.94);
+      --input: rgba(5, 8, 12, 0.88);
+      --line: rgba(148, 163, 184, 0.24);
+      --line-strong: rgba(45, 248, 230, 0.42);
+      --text: #f7fafc;
+      --muted: #a8b3c5;
+      --faint: #718096;
+      --teal: #2df8e6;
+      --green: #70ff9c;
+      --purple: #b88cff;
+      --amber: #ffcc66;
+      --red: #ff6b7a;
+      --blue: #6aa8ff;
+      --ink: #061014;
+      --radius: 8px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #090b10 0%, #0d1118 52%, #080d0d 100%);
+      background-size: 44px 44px, 44px 44px, auto;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.11), transparent 34%),
+        linear-gradient(225deg, rgba(184, 140, 255, 0.13), transparent 38%);
+    }
+
+    button, input, textarea, select {
+      max-width: 100%;
+      min-width: 0;
+      font: inherit;
+    }
+    [hidden] { display: none !important; }
+    button { border: 0; }
+    a { color: inherit; }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 54px;
+    }
+
+    .topbar, .hero-top, .actions, .filter-bar, .link-grid, .panel-head, .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar {
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .back-link, .site-link, .mini-link {
+      color: var(--muted);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .back-link { color: var(--teal); }
+    .site-link:hover, .back-link:hover, .mini-link:hover { color: var(--text); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.04fr) minmax(280px, 0.96fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .hero-card, .panel, .kpi, .empty-state {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 22px 70px rgba(0, 0, 0, 0.24);
+    }
+
+    .hero-card {
+      padding: 24px;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.14), rgba(184, 140, 255, 0.11)),
+        var(--panel);
+    }
+
+    .logo-mark {
+      display: inline-grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 1px solid rgba(45, 248, 230, 0.42);
+      border-radius: var(--radius);
+      color: var(--teal);
+      font-family: var(--mono);
+      font-weight: 900;
+      background: rgba(45, 248, 230, 0.09);
+      box-shadow: 0 14px 34px rgba(45, 248, 230, 0.12);
+    }
+
+    .hero-top { align-items: flex-start; margin-bottom: 18px; }
+    .hero-copy { min-width: 0; }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      color: var(--text);
+      font-size: clamp(2.2rem, 7vw, 5.7rem);
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 0.92;
+    }
+
+    .subtitle {
+      max-width: 780px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.7;
+    }
+
+    .trust-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .pill, .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 6px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.73rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .pill.hot { color: var(--teal); border-color: rgba(45, 248, 230, 0.34); background: rgba(45, 248, 230, 0.08); }
+
+    .hero-side {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(180deg, rgba(184, 140, 255, 0.12), transparent),
+        rgba(9, 13, 21, 0.72);
+    }
+
+    .side-title {
+      margin-bottom: 12px;
+      color: var(--text);
+      font-weight: 900;
+    }
+
+    .side-list {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .side-list span {
+      display: block;
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(330px, 0.78fr) minmax(0, 1.22fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .workspace > * { min-width: 0; }
+
+    .panel {
+      overflow: hidden;
+    }
+
+    .panel-head {
+      justify-content: space-between;
+      min-height: 58px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(5, 8, 12, 0.42);
+    }
+
+    .panel-title {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .panel-kicker {
+      margin-bottom: 2px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .panel-body { padding: 16px; }
+    .stack { display: grid; gap: 14px; }
+
+    .upload-drop {
+      position: relative;
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      padding: 16px;
+      border: 1px dashed rgba(45, 248, 230, 0.42);
+      border-radius: var(--radius);
+      background: rgba(45, 248, 230, 0.06);
+    }
+
+    .upload-drop strong { color: var(--text); }
+    .upload-drop span {
+      display: block;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      overflow-wrap: anywhere;
+    }
+
+    input[type="file"] {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .file-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-height: 34px;
+      max-width: 100%;
+      padding: 7px 10px;
+      border: 1px solid rgba(45, 248, 230, 0.46);
+      border-radius: var(--radius);
+      color: var(--teal);
+      background: rgba(5, 8, 12, 0.64);
+      font-size: 0.78rem;
+      font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    textarea, select, input[type="number"], input[type="search"] {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--input);
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 210px;
+      padding: 12px;
+      resize: vertical;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    select, input[type="number"] {
+      padding: 0 11px;
+    }
+
+    textarea:focus, select:focus, input[type="number"]:focus, input[type="search"]:focus {
+      border-color: var(--line-strong);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(45, 248, 230, 0.08);
+    }
+
+    .section-divider {
+      display: grid;
+      gap: 4px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .section-divider strong {
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+
+    .section-divider span {
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
+    .mapping-grid, .threshold-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .required::after {
+      content: " required";
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 13px;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: var(--radius);
+      background: rgba(23, 32, 48, 0.92);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 900;
+      text-decoration: none;
+      transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); border-color: var(--line-strong); }
+    .btn.primary { background: linear-gradient(135deg, var(--teal), var(--green)); color: var(--ink); border-color: rgba(45, 248, 230, 0.7); }
+    .btn.ghost { color: var(--muted); background: rgba(5, 8, 12, 0.52); }
+    .btn.slim { min-height: 34px; padding: 7px 10px; font-size: 0.78rem; }
+
+    .table-tools {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .export-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .action-note {
+      min-height: 18px;
+      margin: -4px 0 10px;
+      color: var(--teal);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .action-note:empty {
+      display: none;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .kpi {
+      min-height: 116px;
+      padding: 14px;
+    }
+
+    .kpi span {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .kpi strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.75rem;
+      font-weight: 900;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .kpi small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .filter-bar {
+      margin-bottom: 12px;
+    }
+
+    .filter-btn {
+      min-height: 34px;
+      padding: 7px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5, 8, 12, 0.42);
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .filter-btn.active {
+      border-color: rgba(45, 248, 230, 0.58);
+      background: rgba(45, 248, 230, 0.12);
+      color: var(--teal);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 12, 0.46);
+    }
+
+    table {
+      width: 100%;
+      min-width: 1020px;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    th, td {
+      padding: 10px 11px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.13);
+      text-align: left;
+      vertical-align: top;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #111827;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.66rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    td.mono { font-family: var(--mono); }
+    td.wrap { white-space: normal; min-width: 170px; }
+    .num { text-align: right; font-family: var(--mono); }
+
+    .status {
+      justify-content: center;
+      min-width: 92px;
+      border-radius: var(--radius);
+      font-size: 0.68rem;
+    }
+
+    .status.match { color: var(--green); border-color: rgba(112, 255, 156, 0.34); background: rgba(112, 255, 156, 0.08); }
+    .status.review { color: var(--amber); border-color: rgba(255, 204, 102, 0.34); background: rgba(255, 204, 102, 0.08); }
+    .status.recount { color: var(--red); border-color: rgba(255, 107, 122, 0.38); background: rgba(255, 107, 122, 0.09); }
+
+    .pos { color: var(--green); }
+    .neg { color: var(--red); }
+    .muted { color: var(--muted); }
+
+    .empty-state {
+      padding: 28px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .empty-state strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    .driver-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .driver-card {
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 12, 0.42);
+    }
+
+    .driver-card strong {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text);
+      font-size: 0.88rem;
+    }
+
+    .driver-card ol {
+      display: grid;
+      gap: 6px;
+      list-style: none;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .driver-card li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: baseline;
+    }
+
+    .driver-card b {
+      min-width: 0;
+      overflow: hidden;
+      color: var(--text);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .link-grid {
+      margin-top: 16px;
+      align-items: stretch;
+    }
+
+    .mini-link {
+      flex: 1 1 180px;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 12, 0.42);
+    }
+
+    .mini-link strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    .mini-link span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .footer {
+      margin-top: 20px;
+      color: var(--faint);
+      text-align: center;
+      font-size: 0.82rem;
+    }
+
+    .footer a { color: var(--teal); text-decoration: none; font-weight: 900; }
+
+    @media (max-width: 980px) {
+      .hero, .workspace { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 620px) {
+      .page { width: min(100% - 20px, 1320px); padding-top: 14px; }
+      .topbar { align-items: flex-start; }
+      .hero-card, .hero-side, .panel-body { padding: 14px; }
+      .panel-head { align-items: flex-start; }
+      .hero-top { display: grid; }
+      .mapping-grid, .threshold-grid, .kpi-grid, .driver-grid, .table-tools { grid-template-columns: 1fr; }
+      .actions .btn { flex: 1 1 100%; }
+      .export-actions { justify-content: stretch; }
+      .export-actions .btn { flex: 1 1 calc(50% - 4px); }
+      .filter-bar { width: 100%; }
+      .filter-btn { flex: 1 1 calc(50% - 5px); }
+      h1 { font-size: clamp(2.05rem, 13vw, 3.7rem); }
+      .subtitle { font-size: 0.96rem; }
+      table { min-width: 760px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="back-link" href="/tools/">Tools</a>
+      <a class="site-link" href="https://mattlivingston.com/">MattLivingston.com</a>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-card">
+        <div class="hero-top">
+          <div class="logo-mark" aria-hidden="true">CV</div>
+          <div class="hero-copy">
+            <span class="eyebrow">Warehouse count review</span>
+            <h1 id="page-title">Cycle Count Variance Tool</h1>
+          </div>
+        </div>
+        <p class="subtitle">Paste or upload a cycle count export, map the quantity columns, and instantly see inventory variances, match rate, value impact, and the SKUs that deserve a recount.</p>
+        <div class="trust-row" aria-label="Tool notes">
+          <span class="pill hot">Runs locally</span>
+          <span class="pill">CSV or paste</span>
+          <span class="pill">Recount flags</span>
+          <span class="pill">No uploads</span>
+        </div>
+      </div>
+
+      <aside class="hero-side" aria-label="Count review capabilities">
+        <div class="side-title">Count review workflow</div>
+        <div class="side-list">
+          <p><span>1. Load</span>Paste a table, upload CSV, or start with sample count data.</p>
+          <p><span>2. Map</span>Auto-detect SKU, location, system quantity, counted quantity, and unit cost.</p>
+          <p><span>3. Review</span>Filter matches, variances, and recount candidates before the next count pass.</p>
+        </div>
+      </aside>
+    </section>
+
+    <main class="workspace">
+      <section class="panel" aria-labelledby="input-title">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Count input</p>
+            <h2 class="panel-title" id="input-title">Load Count Data</h2>
+          </div>
+          <button class="btn ghost" type="button" id="sampleBtn">Sample Data</button>
+        </div>
+        <div class="panel-body stack">
+          <div class="upload-drop">
+            <strong>Upload CSV</strong>
+            <span>Use an export with SKU, system quantity, counted quantity, and optional cost/location columns.</span>
+            <span class="file-cta" id="fileCta">Choose CSV file</span>
+            <input id="fileInput" type="file" accept=".csv,text/csv,text/plain" aria-label="Upload cycle count CSV">
+          </div>
+
+          <label for="rawInput">
+            Paste CSV, TSV, or copied spreadsheet rows
+            <textarea id="rawInput" spellcheck="false" placeholder="SKU,Location,System Qty,Counted Qty,Unit Cost&#10;A100,PICK-01,42,40,3.25"></textarea>
+          </label>
+
+          <div class="mapping-grid" id="mappingGrid">
+            <label class="required">SKU / Item<select id="skuCol"></select></label>
+            <label>Location<select id="locationCol"></select></label>
+            <label>Description<select id="descCol"></select></label>
+            <label class="required">System Qty<select id="systemCol"></select></label>
+            <label class="required">Counted Qty<select id="countedCol"></select></label>
+            <label>Unit Cost<select id="costCol"></select></label>
+          </div>
+
+          <div class="section-divider">
+            <strong>Recount thresholds</strong>
+            <span>Flag a row when any threshold is met. Leave value impact at 0 if you do not have unit cost in the file.</span>
+          </div>
+
+          <div class="threshold-grid">
+            <label>Units off<input id="unitThreshold" type="number" min="0" step="1" value="5"></label>
+            <label>Percent off<input id="percentThreshold" type="number" min="0" step="0.5" value="10"></label>
+            <label>Value impact<input id="valueThreshold" type="number" min="0" step="1" value="100"></label>
+            <label>Zero expected<select id="zeroExpectedMode">
+              <option value="recount">Flag as recount</option>
+              <option value="review">Flag as review</option>
+              <option value="ignore">Use thresholds only</option>
+            </select></label>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" type="button" id="analyzeBtn">Analyze Variance</button>
+            <button class="btn ghost" type="button" id="clearBtn">Reset</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="results-area" aria-label="Variance analysis">
+        <div class="kpi-grid" aria-label="Cycle count summary">
+          <article class="kpi">
+            <span>Rows counted</span>
+            <strong id="kpiRows">0</strong>
+            <small id="kpiRowsNote">Load data to begin.</small>
+          </article>
+          <article class="kpi">
+            <span>Match rate</span>
+            <strong id="kpiMatch">--</strong>
+            <small id="kpiMatchNote">Exact system/count matches.</small>
+          </article>
+          <article class="kpi">
+            <span>Net variance</span>
+            <strong id="kpiNet">0</strong>
+            <small id="kpiNetNote">Counted minus system units.</small>
+          </article>
+          <article class="kpi">
+            <span>Recount flags</span>
+            <strong id="kpiRecount">0</strong>
+            <small id="kpiRecountNote">Based on default variance thresholds.</small>
+          </article>
+        </div>
+
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Variance table</p>
+              <h2 class="panel-title">Count Review</h2>
+            </div>
+            <div class="filter-bar" role="group" aria-label="Variance filters">
+              <button class="filter-btn active" type="button" data-filter="all" aria-pressed="true">All</button>
+              <button class="filter-btn" type="button" data-filter="variance" aria-pressed="false">Variances</button>
+              <button class="filter-btn" type="button" data-filter="recount" aria-pressed="false">Recounts</button>
+              <button class="filter-btn" type="button" data-filter="match" aria-pressed="false">Matches</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div id="emptyState" class="empty-state">
+              <strong>No count data loaded yet.</strong>
+              Paste a cycle count export or use the sample data to see the variance workflow.
+            </div>
+            <div class="driver-grid" id="driverGrid" hidden>
+              <article class="driver-card">
+                <strong>Largest unit swings</strong>
+                <ol id="unitDrivers"></ol>
+              </article>
+              <article class="driver-card">
+                <strong>Largest value swings</strong>
+                <ol id="valueDrivers"></ol>
+              </article>
+            </div>
+            <div class="table-tools" id="tableTools" hidden>
+              <label for="searchInput">
+                Search rows
+                <input id="searchInput" type="search" placeholder="SKU, location, description...">
+              </label>
+              <div class="export-actions" aria-label="Export actions">
+                <button class="btn ghost slim" type="button" id="copyTsvBtn">Copy TSV</button>
+                <button class="btn ghost slim" type="button" id="downloadCsvBtn">Download CSV</button>
+              </div>
+            </div>
+            <p class="action-note" id="actionNote" aria-live="polite"></p>
+            <div class="table-wrap" id="tableWrap" hidden>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Priority</th>
+                    <th>SKU</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th class="num">System</th>
+                    <th class="num">Counted</th>
+                    <th class="num">Variance</th>
+                    <th class="num">Variance %</th>
+                    <th class="num">Value</th>
+                    <th>Reason</th>
+                  </tr>
+                </thead>
+                <tbody id="resultRows"></tbody>
+              </table>
+            </div>
+
+            <div class="link-grid" aria-label="Related ops tools">
+              <a class="mini-link" href="/tools/ops-data-toolkit/">
+                <strong>Clean source data</strong>
+                <span>Use the Ops Data Toolkit for duplicates, lookups, validation, and cleanup.</span>
+              </a>
+              <a class="mini-link" href="/tools/csv-schema-guard/">
+                <strong>Guard recurring exports</strong>
+                <span>Check your count export shape before variance review.</span>
+              </a>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Built by <a href="https://mattlivingston.com/">Matt Livingston</a>. Count data stays in your browser.
+    </footer>
+  </div>
+
+  <script>
+    const SAMPLE_DATA = `SKU,Description,Location,System Qty,Counted Qty,Unit Cost
+A100,Black nitrile gloves,PICK-01,42,40,3.25
+A101,Corrugated mailer 9x6,PICK-02,118,118,0.42
+A102,Tape roll clear,PICK-03,64,70,1.18
+A103,Poly bag small,PICK-04,0,18,0.06
+B200,Blue widget case,BULK-11,14,9,22.4
+B201,Replacement cap,PICK-05,210,208,0.33
+B202,Label roll 4x6,REC-02,32,,6.15
+C300,Sampler kit,QA-01,7,7,18.75
+C301,Return carton,LPN-77,26,21,4.8
+D400,Battery pack locked,CAGE-01,11,15,34.9
+D401,Instruction insert,PICK-08,600,600,0.02
+E500,Seasonal display,BULK-20,3,1,115`;
+
+    const state = {
+      headers: [],
+      rows: [],
+      results: [],
+      activeFilter: 'all',
+      query: ''
+    };
+
+    const fields = {
+      sku: document.getElementById('skuCol'),
+      location: document.getElementById('locationCol'),
+      desc: document.getElementById('descCol'),
+      system: document.getElementById('systemCol'),
+      counted: document.getElementById('countedCol'),
+      cost: document.getElementById('costCol')
+    };
+
+    const rawInput = document.getElementById('rawInput');
+    const fileInput = document.getElementById('fileInput');
+    const fileCta = document.getElementById('fileCta');
+    const searchInput = document.getElementById('searchInput');
+    const resultRows = document.getElementById('resultRows');
+    const tableWrap = document.getElementById('tableWrap');
+    const tableTools = document.getElementById('tableTools');
+    const emptyState = document.getElementById('emptyState');
+    const driverGrid = document.getElementById('driverGrid');
+    const unitDrivers = document.getElementById('unitDrivers');
+    const valueDrivers = document.getElementById('valueDrivers');
+    const actionNote = document.getElementById('actionNote');
+    const thresholdFields = {
+      units: document.getElementById('unitThreshold'),
+      percent: document.getElementById('percentThreshold'),
+      value: document.getElementById('valueThreshold'),
+      zeroExpected: document.getElementById('zeroExpectedMode')
+    };
+
+    function parseDelimited(text) {
+      const normalized = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+      if (!normalized) return { headers: [], rows: [] };
+
+      const delimiter = normalized.includes('\t') ? '\t' : ',';
+      const records = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < normalized.length; i++) {
+        const char = normalized[i];
+        const next = normalized[i + 1];
+
+        if (char === '"' && inQuotes && next === '"') {
+          cell += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === delimiter && !inQuotes) {
+          row.push(cell.trim());
+          cell = '';
+        } else if (char === '\n' && !inQuotes) {
+          row.push(cell.trim());
+          records.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += char;
+        }
+      }
+      row.push(cell.trim());
+      records.push(row);
+
+      const headers = (records.shift() || []).map((header, index) => header || `Column ${index + 1}`);
+      const rows = records
+        .filter(record => record.some(value => value !== ''))
+        .map(record => {
+          const item = {};
+          headers.forEach((header, index) => {
+            item[header] = record[index] || '';
+          });
+          return item;
+        });
+
+      return { headers, rows };
+    }
+
+    function normalizeHeader(value) {
+      return value.toLowerCase().replace(/[^a-z0-9]+/g, '');
+    }
+
+    function detectColumn(headers, patterns) {
+      const normalized = headers.map(header => ({ header, key: normalizeHeader(header) }));
+      for (const pattern of patterns) {
+        const found = normalized.find(item => item.key.includes(pattern));
+        if (found) return found.header;
+      }
+      return '';
+    }
+
+    function populateMappings(headers) {
+      const options = ['<option value="">- None -</option>']
+        .concat(headers.map(header => `<option value="${escapeAttr(header)}">${escapeHtml(header)}</option>`))
+        .join('');
+
+      Object.values(fields).forEach(select => {
+        select.innerHTML = options;
+      });
+
+      fields.sku.value = detectColumn(headers, ['sku', 'itemnumber', 'item', 'partnumber', 'part', 'product']);
+      fields.location.value = detectColumn(headers, ['location', 'loc', 'bin', 'slot']);
+      fields.desc.value = detectColumn(headers, ['description', 'desc', 'itemdescription']);
+      fields.system.value = detectColumn(headers, ['systemqty', 'bookqty', 'wmsqty', 'expectedqty', 'onhand', 'ohqty']);
+      fields.counted.value = detectColumn(headers, ['countedqty', 'countqty', 'physicalqty', 'actualqty', 'counted', 'count']);
+      fields.cost.value = detectColumn(headers, ['unitcost', 'cost', 'value', 'unitvalue']);
+    }
+
+    function loadText(text) {
+      const parsed = parseDelimited(text);
+      state.headers = parsed.headers;
+      state.rows = parsed.rows;
+      populateMappings(parsed.headers);
+      analyze();
+    }
+
+    function asNumber(value) {
+      const cleaned = String(value ?? '').replace(/[$,%\s,]/g, '');
+      if (cleaned === '') return NaN;
+      const parsed = Number(cleaned);
+      return Number.isFinite(parsed) ? parsed : NaN;
+    }
+
+    function getThresholds() {
+      return {
+        units: Math.max(0, asNumber(thresholdFields.units.value) || 0),
+        percent: Math.max(0, asNumber(thresholdFields.percent.value) || 0),
+        value: Math.max(0, asNumber(thresholdFields.value.value) || 0),
+        zeroExpected: thresholdFields.zeroExpected.value
+      };
+    }
+
+    function analyze() {
+      if (!state.rows.length) {
+        renderResults([]);
+        return;
+      }
+
+      const skuCol = fields.sku.value;
+      const systemCol = fields.system.value;
+      const countedCol = fields.counted.value;
+      if (!skuCol || !systemCol || !countedCol) {
+        renderResults([]);
+        return;
+      }
+
+      const locationCol = fields.location.value;
+      const descCol = fields.desc.value;
+      const costCol = fields.cost.value;
+      const thresholds = getThresholds();
+
+      const results = state.rows.map((row, index) => {
+        const systemQty = asNumber(row[systemCol]);
+        const countedQty = asNumber(row[countedCol]);
+        const unitCost = costCol ? asNumber(row[costCol]) : NaN;
+        const varianceQty = (Number.isFinite(countedQty) ? countedQty : 0) - (Number.isFinite(systemQty) ? systemQty : 0);
+        const absVariance = Math.abs(varianceQty);
+        const variancePct = Number.isFinite(systemQty) && systemQty !== 0
+          ? (varianceQty / Math.abs(systemQty)) * 100
+          : (absVariance > 0 ? 100 : 0);
+        const varianceValue = Number.isFinite(unitCost) ? varianceQty * unitCost : 0;
+        const absValue = Math.abs(varianceValue);
+        const missingCount = !Number.isFinite(countedQty);
+        const unexpectedInventory = Number.isFinite(systemQty) && systemQty === 0 && Number.isFinite(countedQty) && countedQty > 0;
+        const valueThresholdMet = thresholds.value > 0 && Number.isFinite(unitCost) && absValue >= thresholds.value;
+        const unitThresholdMet = thresholds.units > 0 && absVariance >= thresholds.units;
+        const percentThresholdMet = thresholds.percent > 0 && Math.abs(variancePct) >= thresholds.percent;
+
+        let status = 'match';
+        let label = 'Match';
+        let reason = absVariance ? 'Below recount threshold' : 'Exact match';
+        if (missingCount) {
+          status = 'recount';
+          label = 'Recount';
+          reason = 'Missing count';
+        } else if (unexpectedInventory && thresholds.zeroExpected === 'recount') {
+          status = 'recount';
+          label = 'Recount';
+          reason = 'Zero expected, inventory found';
+        } else if (unexpectedInventory && thresholds.zeroExpected === 'review') {
+          status = 'review';
+          label = 'Review';
+          reason = 'Zero expected, inventory found';
+        } else if (unitThresholdMet || percentThresholdMet || valueThresholdMet) {
+          status = 'recount';
+          label = 'Recount';
+          reason = [
+            unitThresholdMet ? 'unit threshold' : '',
+            percentThresholdMet ? 'percent threshold' : '',
+            valueThresholdMet ? 'value threshold' : ''
+          ].filter(Boolean).join(', ');
+        } else if (absVariance > 0) {
+          status = 'review';
+          label = 'Review';
+        }
+
+        return {
+          index,
+          sku: row[skuCol] || `Row ${index + 1}`,
+          description: descCol ? row[descCol] : '',
+          location: locationCol ? row[locationCol] : '',
+          systemQty,
+          countedQty,
+          varianceQty,
+          variancePct,
+          varianceValue,
+          status,
+          label,
+          reason,
+          missingCount
+        };
+      });
+
+      state.results = results;
+      renderResults(results);
+    }
+
+    function summarize(results) {
+      const rows = results.length;
+      const matches = results.filter(row => row.status === 'match').length;
+      const recounts = results.filter(row => row.status === 'recount').length;
+      const net = results.reduce((sum, row) => sum + row.varianceQty, 0);
+      const absUnits = results.reduce((sum, row) => sum + Math.abs(row.varianceQty), 0);
+      const netValue = results.reduce((sum, row) => sum + row.varianceValue, 0);
+      return { rows, matches, recounts, net, absUnits, netValue, matchRate: rows ? matches / rows : 0 };
+    }
+
+    function renderResults(results) {
+      const summary = summarize(results);
+      document.getElementById('kpiRows').textContent = summary.rows.toLocaleString();
+      document.getElementById('kpiRowsNote').textContent = summary.rows ? `${summary.absUnits.toLocaleString()} absolute variance units.` : 'Load data to begin.';
+      document.getElementById('kpiMatch').textContent = summary.rows ? `${Math.round(summary.matchRate * 100)}%` : '--';
+      document.getElementById('kpiMatchNote').textContent = summary.rows ? `${summary.matches.toLocaleString()} exact matches.` : 'Exact system/count matches.';
+      document.getElementById('kpiNet').textContent = formatSigned(summary.net);
+      document.getElementById('kpiNetNote').textContent = summary.rows ? `${formatCurrency(summary.netValue)} net value impact.` : 'Counted minus system units.';
+      document.getElementById('kpiRecount').textContent = summary.recounts.toLocaleString();
+      document.getElementById('kpiRecountNote').textContent = summary.rows ? `${results.filter(row => row.status === 'review').length} more rows need review.` : 'Based on default variance thresholds.';
+
+      const visible = filterResults(results, state.activeFilter);
+      resultRows.innerHTML = visible.map(renderRow).join('');
+      const hasRows = results.length > 0;
+      tableWrap.hidden = !hasRows;
+      tableTools.hidden = !hasRows;
+      emptyState.hidden = hasRows;
+      driverGrid.hidden = !hasRows;
+      renderDrivers(results);
+      if (hasRows && !visible.length) {
+        resultRows.innerHTML = '<tr><td colspan="10" class="muted">No rows match the current filter.</td></tr>';
+      }
+    }
+
+    function filterResults(results, filter) {
+      let filtered = results;
+      if (filter === 'variance') filtered = results.filter(row => row.status !== 'match');
+      if (filter === 'recount') filtered = results.filter(row => row.status === 'recount');
+      if (filter === 'match') filtered = results.filter(row => row.status === 'match');
+
+      const query = state.query.trim().toLowerCase();
+      if (!query) return filtered;
+      return filtered.filter(row => [
+        row.sku,
+        row.description,
+        row.location,
+        row.label,
+        row.reason
+      ].join(' ').toLowerCase().includes(query));
+    }
+
+    function renderDrivers(results) {
+      const varianceRows = results.filter(row => Math.abs(row.varianceQty) > 0);
+      const unitRows = varianceRows
+        .slice()
+        .sort((a, b) => Math.abs(b.varianceQty) - Math.abs(a.varianceQty))
+        .slice(0, 5);
+      const valueRows = varianceRows
+        .filter(row => Math.abs(row.varianceValue) > 0)
+        .slice()
+        .sort((a, b) => Math.abs(b.varianceValue) - Math.abs(a.varianceValue))
+        .slice(0, 5);
+
+      unitDrivers.innerHTML = renderDriverList(unitRows, row => formatSigned(row.varianceQty));
+      valueDrivers.innerHTML = renderDriverList(valueRows, row => formatCurrency(row.varianceValue));
+    }
+
+    function renderDriverList(rows, formatter) {
+      if (!rows.length) return '<li><b>No variance yet</b><span class="muted">--</span></li>';
+      return rows.map(row => `
+        <li>
+          <b title="${escapeAttr(row.sku)}">${escapeHtml(row.sku)}</b>
+          <span class="${row.varianceQty > 0 ? 'pos' : 'neg'}">${formatter(row)}</span>
+        </li>
+      `).join('');
+    }
+
+    function renderRow(row) {
+      const varianceClass = row.varianceQty > 0 ? 'pos' : row.varianceQty < 0 ? 'neg' : '';
+      return `
+        <tr>
+          <td><span class="status ${row.status}">${row.label}</span></td>
+          <td class="mono">${escapeHtml(row.sku)}</td>
+          <td class="wrap">${escapeHtml(row.description || '-')}</td>
+          <td class="mono">${escapeHtml(row.location || '-')}</td>
+          <td class="num">${formatQty(row.systemQty)}</td>
+          <td class="num">${row.missingCount ? '<span class="neg">Missing</span>' : formatQty(row.countedQty)}</td>
+          <td class="num ${varianceClass}">${formatSigned(row.varianceQty)}</td>
+          <td class="num ${varianceClass}">${formatPercent(row.variancePct)}</td>
+          <td class="num ${varianceClass}">${formatCurrency(row.varianceValue)}</td>
+          <td class="wrap">${escapeHtml(row.reason)}</td>
+        </tr>
+      `;
+    }
+
+    function getVisibleResults() {
+      return filterResults(state.results, state.activeFilter);
+    }
+
+    function toExportRows(rows) {
+      const headers = ['Priority', 'SKU', 'Description', 'Location', 'System Qty', 'Counted Qty', 'Variance Qty', 'Variance %', 'Value Impact', 'Reason'];
+      const body = rows.map(row => [
+        row.label,
+        row.sku,
+        row.description || '',
+        row.location || '',
+        Number.isFinite(row.systemQty) ? row.systemQty : '',
+        row.missingCount ? 'Missing' : Number.isFinite(row.countedQty) ? row.countedQty : '',
+        Number.isFinite(row.varianceQty) ? row.varianceQty : '',
+        Number.isFinite(row.variancePct) ? row.variancePct.toFixed(1) : '',
+        Number.isFinite(row.varianceValue) ? row.varianceValue.toFixed(2) : '',
+        row.reason
+      ]);
+      return { headers, body };
+    }
+
+    function serializeTsv(rows) {
+      const exportRows = toExportRows(rows);
+      return [exportRows.headers].concat(exportRows.body)
+        .map(row => row.map(value => String(value ?? '').replace(/\t/g, ' ').replace(/\n/g, ' ')).join('\t'))
+        .join('\n');
+    }
+
+    function serializeCsv(rows) {
+      const exportRows = toExportRows(rows);
+      return [exportRows.headers].concat(exportRows.body)
+        .map(row => row.map(csvCell).join(','))
+        .join('\n');
+    }
+
+    function csvCell(value) {
+      const text = String(value ?? '');
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    async function copyVisibleTsv() {
+      const rows = getVisibleResults();
+      if (!rows.length) {
+        setActionNote('No visible rows to copy.');
+        return;
+      }
+      const tsv = serializeTsv(rows);
+      try {
+        await navigator.clipboard.writeText(tsv);
+        setActionNote(`Copied ${rows.length.toLocaleString()} visible rows as TSV.`);
+      } catch {
+        const scratch = document.createElement('textarea');
+        scratch.value = tsv;
+        scratch.setAttribute('readonly', '');
+        scratch.style.position = 'fixed';
+        scratch.style.left = '-9999px';
+        document.body.appendChild(scratch);
+        scratch.select();
+        document.execCommand('copy');
+        scratch.remove();
+        setActionNote(`Copied ${rows.length.toLocaleString()} visible rows as TSV.`);
+      }
+    }
+
+    function downloadVisibleCsv() {
+      const rows = getVisibleResults();
+      if (!rows.length) {
+        setActionNote('No visible rows to download.');
+        return;
+      }
+      const blob = new Blob([serializeCsv(rows)], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'cycle-count-variance-review.csv';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      setActionNote(`Downloaded ${rows.length.toLocaleString()} visible rows.`);
+    }
+
+    function setActionNote(message) {
+      actionNote.textContent = message;
+      window.clearTimeout(setActionNote.timer);
+      setActionNote.timer = window.setTimeout(() => {
+        actionNote.textContent = '';
+      }, 2800);
+    }
+
+    function formatQty(value) {
+      return Number.isFinite(value) ? value.toLocaleString(undefined, { maximumFractionDigits: 2 }) : '-';
+    }
+
+    function formatSigned(value) {
+      if (!Number.isFinite(value)) return '-';
+      if (value > 0) return `+${formatQty(value)}`;
+      return formatQty(value);
+    }
+
+    function formatPercent(value) {
+      if (!Number.isFinite(value)) return '-';
+      const prefix = value > 0 ? '+' : '';
+      return `${prefix}${value.toFixed(1)}%`;
+    }
+
+    function formatCurrency(value) {
+      const sign = value < 0 ? '-' : '';
+      const abs = Math.abs(value);
+      return `${sign}$${abs.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      })[char]);
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value);
+    }
+
+    document.getElementById('sampleBtn').addEventListener('click', () => {
+      rawInput.value = SAMPLE_DATA;
+      fileInput.value = '';
+      fileCta.textContent = 'Choose CSV file';
+      loadText(SAMPLE_DATA);
+    });
+
+    document.getElementById('analyzeBtn').addEventListener('click', () => {
+      loadText(rawInput.value);
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      rawInput.value = '';
+      fileInput.value = '';
+      fileCta.textContent = 'Choose CSV file';
+      searchInput.value = '';
+      state.query = '';
+      state.headers = [];
+      state.rows = [];
+      state.results = [];
+      thresholdFields.units.value = 5;
+      thresholdFields.percent.value = 10;
+      thresholdFields.value.value = 100;
+      thresholdFields.zeroExpected.value = 'recount';
+      populateMappings([]);
+      renderResults([]);
+    });
+
+    fileInput.addEventListener('change', event => {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+      fileCta.textContent = file.name;
+      const reader = new FileReader();
+      reader.onload = () => {
+        rawInput.value = String(reader.result || '');
+        loadText(rawInput.value);
+      };
+      reader.readAsText(file);
+    });
+
+    Object.values(fields).forEach(select => {
+      select.addEventListener('change', analyze);
+    });
+
+    Object.values(thresholdFields).forEach(field => {
+      field.addEventListener('input', analyze);
+      field.addEventListener('change', analyze);
+    });
+
+    searchInput.addEventListener('input', () => {
+      state.query = searchInput.value;
+      renderResults(state.results);
+    });
+
+    document.getElementById('copyTsvBtn').addEventListener('click', copyVisibleTsv);
+    document.getElementById('downloadCsvBtn').addEventListener('click', downloadVisibleCsv);
+
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        state.activeFilter = button.dataset.filter;
+        document.querySelectorAll('.filter-btn').forEach(item => {
+          const active = item === button;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-pressed', String(active));
+        });
+        renderResults(state.results);
+      });
+    });
+
+    populateMappings([]);
+    rawInput.value = SAMPLE_DATA;
+    loadText(SAMPLE_DATA);
+  </script>
+</body>
+</html>
