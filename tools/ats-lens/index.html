@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ATS Lens | Local Resume Parser and Job Match Tool</title>
-  <meta name="description" content="Use ATS Lens to inspect resume text extraction, find parsing risks, compare against a job description, and improve applicant-tracking readability locally.">
+  <title>ATS Lens | Resume Parser & Job Match Scanner</title>
+  <meta name="description" content="Analyze a resume locally for ATS parsing issues, extracted text quality, keyword coverage, job-description match, and applicant-tracking readability.">
   <link rel="canonical" href="https://mattlivingston.com/tools/ats-lens/">
+  <meta name="robots" content="index,follow">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/ats-lens/">
-  <meta property="og:title" content="ATS Lens | Local Resume Parser and Job Match Tool">
-  <meta property="og:description" content="Use ATS Lens to inspect resume text extraction, find parsing risks, compare against a job description, and improve applicant-tracking readability locally.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="ATS Lens | Local Resume Parser and Job Match Tool preview image">
+  <meta property="og:title" content="ATS Lens | Resume Parser & Job Match Scanner">
+  <meta property="og:description" content="Analyze a resume locally for ATS parsing issues, extracted text quality, keyword coverage, job-description match, and applicant-tracking readability.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/ats-lens-resume-scanner-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="ATS Lens | Resume Parser & Job Match Scanner preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/ats-lens/">
-  <meta name="twitter:title" content="ATS Lens | Local Resume Parser and Job Match Tool">
-  <meta name="twitter:description" content="Use ATS Lens to inspect resume text extraction, find parsing risks, compare against a job description, and improve applicant-tracking readability locally.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="ATS Lens | Resume Parser & Job Match Scanner">
+  <meta name="twitter:description" content="Analyze a resume locally for ATS parsing issues, extracted text quality, keyword coverage, job-description match, and applicant-tracking readability.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/ats-lens-resume-scanner-og-card.jpg">
+  <meta name="twitter:image:alt" content="ATS Lens | Resume Parser & Job Match Scanner preview image">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; worker-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
   <meta name="theme-color" content="#0b1117">
 <link rel="manifest" href="manifest.webmanifest">
@@ -38,10 +42,9 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#how-it-works">How It Works</a>
+        <span class="nav-separator" aria-hidden="true">|</span>
         <a href="#privacy">Privacy</a>
-        <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-          <span aria-hidden="true">◐</span>
-        </button>
+        <a class="tools-hub-pill" href="../">Tools Hub</a>
       </nav>
     </header>
 

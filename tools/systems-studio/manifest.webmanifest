@@ -1,0 +1,22 @@
+{
+  "name": "Systems Studio - Systems Thinking Workspace",
+  "short_name": "Systems Studio",
+  "description": "Private systems thinking workspace for system mapping, decision matrices, constraint analysis, risk registers, strategy canvases, dashboards, meetings, and reviews.",
+  "start_url": "/tools/systems-studio/",
+  "scope": "/tools/systems-studio/",
+  "display": "standalone",
+  "background_color": "#070a0f",
+  "theme_color": "#070a0f",
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/tools/systems-studio/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

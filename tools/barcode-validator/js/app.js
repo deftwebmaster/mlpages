@@ -36,7 +36,7 @@ const AppState = {
  * Initialize application
  */
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🔍 Barcode Validator initialized');
+  console.log('Barcode Validator initialized');
   
   // Setup event listeners
   setupInputHandlers();
@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Load welcome message
   showWelcomeMessage();
+  updateStatusStrip();
 });
 
 /**
@@ -73,7 +74,12 @@ function setupInputHandlers() {
   clearBtn.addEventListener('click', () => {
     inputArea.value = '';
     clearResults();
+    updateStatusStrip();
     showToast('Input cleared', 'info');
+  });
+
+  inputArea.addEventListener('input', () => {
+    updateStatusStrip();
   });
 
   // Allow Enter key to validate (with Ctrl/Cmd)
@@ -190,10 +196,11 @@ function setupScenarioButtons() {
 function loadScenario(id, scenario) {
   const inputArea = document.getElementById('barcode-input');
   inputArea.value = scenario.sampleData;
+  updateStatusStrip();
   
   AppState.selectedScenario = scenario;
   
-  showToast(`Loaded scenario: ${scenario.name}`, 'info');
+  showToast(`Loaded scenario: ${stripScenarioIcon(scenario.name)}`, 'info');
   
   // Auto-validate after short delay
   setTimeout(() => {
@@ -250,7 +257,7 @@ function showScannerInfo(profile) {
   
   infoDiv.innerHTML = `
     <div class="scanner-info-content">
-      <h4>📱 ${profile.name}</h4>
+      <h4>${profile.name}</h4>
       <div class="scanner-issues">
         <strong>Common Issues:</strong>
         <ul>
@@ -429,6 +436,7 @@ async function processInput(input) {
     AppState.currentResults = results;
     AppState.currentHealthScore = healthScore;
     AppState.currentMetadata = getBatchMetadata(results, summary);
+    updateStatusStrip(results, healthScore);
 
     // Render results
     renderResults(results, healthScore, summary);
@@ -504,6 +512,7 @@ function renderResults(results, healthScore, summary) {
 
   // Show results section
   document.getElementById('results-section').style.display = 'block';
+  updateStatusStrip(results, healthScore);
 
   // Scroll to results
   setTimeout(() => {
@@ -522,6 +531,7 @@ function clearResults() {
   AppState.currentHealthScore = null;
   AppState.currentMetadata = null;
   AppState.selectedScenario = null;
+  updateStatusStrip();
 
   document.getElementById('results-section').style.display = 'none';
   document.getElementById('health-score-card').innerHTML = '';
@@ -570,18 +580,53 @@ function showWelcomeMessage() {
   
   welcomeDiv.innerHTML = `
     <div class="welcome-content">
-      <h2>🔍 Barcode Validator</h2>
-      <p>Professional barcode validation tool for warehouse operations</p>
+      <p class="section-kicker">Warehouse scan preflight</p>
+      <h2>Catch bad barcodes before they hit the floor.</h2>
+      <p>Validate UPC, EAN, Code 128, duplicate risk, scanner readiness, and WMS upload quality in one local browser workflow.</p>
       <ul>
-        <li>✓ Supports UPC, EAN, and Code 128</li>
-        <li>✓ Bulk validation (1-10,000+ codes)</li>
-        <li>✓ WMS integration readiness scoring</li>
-        <li>✓ Duplicate detection</li>
-        <li>✓ 100% client-side (no data uploaded)</li>
+        <li><span class="trust-chip"><strong>UPC/EAN</strong> check digits</span></li>
+        <li><span class="trust-chip"><strong>Code 128</strong> structure checks</span></li>
+        <li><span class="trust-chip"><strong>Bulk</strong> CSV-ready validation</span></li>
+        <li><span class="trust-chip"><strong>WMS</strong> readiness scoring</span></li>
+        <li><span class="trust-chip"><strong>Local</strong> no uploads</span></li>
       </ul>
-      <p class="welcome-cta">👇 Paste barcodes below or try a scenario to get started</p>
+      <p class="welcome-cta">Paste barcodes below or load a scenario to start the preflight.</p>
     </div>
   `;
+}
+
+function updateStatusStrip(results = AppState.currentResults, healthScore = AppState.currentHealthScore) {
+  const inputStat = document.getElementById('input-count-stat');
+  const validStat = document.getElementById('valid-count-stat');
+  const issueStat = document.getElementById('issue-count-stat');
+  const readinessStat = document.getElementById('readiness-stat');
+
+  if (!inputStat || !validStat || !issueStat || !readinessStat) return;
+
+  const inputArea = document.getElementById('barcode-input');
+  const inputCodes = inputArea
+    ? parseInput(inputArea.value, { removeDuplicates: false, removeEmpty: true })
+    : [];
+
+  inputStat.textContent = String(inputCodes.length);
+
+  if (!results || !healthScore) {
+    validStat.textContent = '0';
+    issueStat.textContent = '0';
+    readinessStat.textContent = 'Not run';
+    return;
+  }
+
+  const validCount = results.filter(result => result.valid).length;
+  const issueCount = (healthScore.issues?.length || 0) + (healthScore.warnings?.length || 0);
+
+  validStat.textContent = String(validCount);
+  issueStat.textContent = String(issueCount);
+  readinessStat.textContent = healthScore.readiness?.label || `${healthScore.score}/100`;
+}
+
+function stripScenarioIcon(name) {
+  return name.replace(/^[^\w]+/, '').trim();
 }
 
 // Make app state accessible for debugging

@@ -3,53 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ops Data Toolkit | Warehouse Data Analysis</title>
-  <meta name="description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser. Private and secure.">
+  <title>Ops Data Toolkit | Warehouse CSV Reconciliation & QA Tool</title>
+  <meta name="description" content="Reconcile cycle counts, find duplicate SKUs, validate imports, clean messy warehouse CSVs, run lookup checks, and produce operator-ready reports locally.">
+  <meta name="keywords" content="warehouse data toolkit, inventory reconciliation, CSV reconciliation, cycle count reconciliation, duplicate SKU finder, WMS data validation, ops data analysis">
   <link rel="canonical" href="https://mattlivingston.com/tools/ops-data-toolkit/">
+  <meta name="robots" content="index,follow">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/ops-data-toolkit/">
-  <meta property="og:title" content="Ops Data Toolkit | Warehouse Data Analysis">
-  <meta property="og:description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser. Private and secure.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="Ops Data Toolkit | Warehouse Data Analysis preview image">
+  <meta property="og:title" content="Ops Data Toolkit | Warehouse CSV Reconciliation & QA Tool">
+  <meta property="og:description" content="Reconcile cycle counts, find duplicate SKUs, validate imports, clean messy warehouse CSVs, run lookup checks, and produce operator-ready reports locally.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/ops-data-toolkit-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Ops Data Toolkit | Warehouse CSV Reconciliation & QA Tool preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/ops-data-toolkit/">
-  <meta name="twitter:title" content="Ops Data Toolkit | Warehouse Data Analysis">
-  <meta name="twitter:description" content="Web-based data analysis for warehouse operations. Clean, validate, and reconcile inventory data in your browser. Private and secure.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="Ops Data Toolkit | Warehouse CSV Reconciliation & QA Tool">
+  <meta name="twitter:description" content="Reconcile cycle counts, find duplicate SKUs, validate imports, clean messy warehouse CSVs, run lookup checks, and produce operator-ready reports locally.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/ops-data-toolkit-og-card.jpg">
+  <meta name="twitter:image:alt" content="Ops Data Toolkit | Warehouse CSV Reconciliation & QA Tool preview image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/grid.css">
-    <link rel="stylesheet" href="css/modules.css">
+    <link rel="stylesheet" href="css/main.css?v=20260801d">
+    <link rel="stylesheet" href="css/grid.css?v=20260801d">
+    <link rel="stylesheet" href="css/modules.css?v=20260801d">
   <link rel="stylesheet" href="../tool-modern.css">
   <script defer src="../tool-credit.js"></script>
 </head>
 <body>
     <header class="app-header">
         <div class="header-left">
-            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">☰</button>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">Menu</button>
             <div class="header-brand">
+                <span class="app-kicker">Private warehouse workbench</span>
                 <div class="header-title-row">
-                    <img src="img/logo.png" alt="" class="header-logo">
+                    <span class="header-mark" aria-hidden="true">OD</span>
                     <h1>Ops Data Toolkit</h1>
                 </div>
                 <span class="header-tagline">Reconcile messy ops data without Excel gymnastics</span>
             </div>
-            <span class="privacy-badge" title="All processing happens locally in your browser">🔒 Nothing leaves your browser</span>
+            <span class="privacy-badge" title="All processing happens locally in your browser">Runs locally</span>
+            <div class="chrome-stats" aria-label="Current workbook status">
+                <span><strong id="totalRowsStat">0</strong> rows loaded</span>
+                <span><strong id="activeModuleStat">Reconcile</strong> module</span>
+            </div>
         </div>
         <div class="header-actions">
             <div class="sample-dropdown" id="sampleDropdown">
-                <button id="loadSample" class="btn-secondary">📋 Try Sample Data ▾</button>
+                <button id="loadSample" class="btn-secondary">Sample Data</button>
                 <div class="sample-menu" id="sampleMenu">
                     <div class="sample-menu-header">Load sample data to explore:</div>
-                    <button data-sample="cycle-count">🔄 Cycle Count Reconciliation</button>
-                    <button data-sample="receiving">📦 Receiving Discrepancies</button>
-                    <button data-sample="duplicates">👯 Duplicate SKUs</button>
-                    <button data-sample="validation">⚠️ Data Quality Issues</button>
-                    <button data-sample="lookup">🔍 Price Lookup</button>
+                    <button data-sample="cycle-count">Cycle Count Reconciliation</button>
+                    <button data-sample="receiving">Receiving Discrepancies</button>
+                    <button data-sample="duplicates">Duplicate SKUs</button>
+                    <button data-sample="validation">Data Quality Issues</button>
+                    <button data-sample="lookup">Price Lookup</button>
                 </div>
             </div>
             <button id="importCSV" class="btn-primary">Import CSV</button>
@@ -62,12 +72,24 @@
     <div class="module-rail-overlay" id="moduleOverlay"></div>
     <div class="app-container">
         <aside class="module-rail">
-            <h2>Modules</h2>
+            <div class="rail-head">
+                <span>Analysis Modules</span>
+                <strong>6</strong>
+            </div>
             <nav id="moduleNav" class="module-nav">
                 <!-- Populated by app.js -->
             </nav>
+            <div class="rail-card">
+                <span class="rail-card-label">Local-first</span>
+                <strong>No uploads. No account. No spreadsheet lock-in.</strong>
+                <p>Use samples for a quick demo or bring your own CSV, TSV, or pasted Excel table.</p>
+                <a class="rail-tool-link" href="/tools/pallet-calculator/">Plan pallet loads</a>
+                <a class="rail-tool-link" href="/tools/pick-path-slotting/">Plan SKU slotting</a>
+                <a class="rail-tool-link" href="/tools/csv-schema-guard/">Guard CSV schemas</a>
+                <a class="rail-tool-link" href="/tools/barcode-validator/">Validate barcodes</a>
+            </div>
             <div class="sidebar-footer">
-                <span>Built with 🍜 + ☕ by</span>
+                <span>Built for operators by</span>
                 <a href="https://mattlivingston.com/" target="_blank" rel="noopener">Matt Livingston</a>
             </div>
         </aside>
@@ -92,13 +114,13 @@
                                 <option value="">- None -</option>
                             </select>
                         </label>
-                        <input type="search" id="dataSearch" class="search-input" placeholder="Search data...">
+                        <input type="search" id="dataSearch" class="search-input" placeholder="Search rows...">
                     </div>
                 </div>
                 <!-- Filter explanation banner -->
                 <div id="filterBanner" class="filter-banner hidden">
                     <div class="filter-banner-content">
-                        <span class="filter-banner-icon">⚠️</span>
+                        <span class="filter-banner-icon">!</span>
                         <div class="filter-banner-text">
                             <strong id="filterBannerTitle">Issue</strong>
                             <span id="filterBannerDesc">Description</span>
@@ -108,21 +130,50 @@
                 </div>
                 <div id="dataGrid" class="data-grid">
                     <div class="empty-state">
-                        <div class="empty-icon">📊</div>
-                        <h3>No Data Loaded</h3>
-                        <p>Import a CSV file or try a sample scenario</p>
+                        <div class="empty-hero">
+                            <span class="empty-kicker">Start with a warehouse problem</span>
+                            <h2>Drop in a CSV and get an operator-ready answer.</h2>
+                            <p class="empty-subtitle">Reconcile counts, catch duplicate SKUs, validate import files, or use a sample run to see the workflow.</p>
+                        </div>
+                        <div class="task-cards">
+                            <button class="task-card task-card-featured" data-sample="cycle-count">
+                                <div class="task-card-icon">RC</div>
+                                <div class="task-card-content">
+                                    <h3>Reconcile Cycle Count</h3>
+                                    <p>Compare WMS inventory against physical counts and quantify variance impact.</p>
+                                </div>
+                                <span class="task-card-badge">Most Popular</span>
+                            </button>
+                            <button class="task-card" data-sample="duplicates">
+                                <div class="task-card-icon">DU</div>
+                                <div class="task-card-content">
+                                    <h3>Find Duplicates</h3>
+                                    <p>Group duplicate records before they leak into receiving, pick, or item-master work.</p>
+                                </div>
+                            </button>
+                            <button class="task-card" data-sample="validation">
+                                <div class="task-card-icon">QA</div>
+                                <div class="task-card-content">
+                                    <h3>Validate Data</h3>
+                                    <p>Check required fields, numeric values, and file quality before downstream import.</p>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="empty-divider">
+                            <span>or bring your own worksheet</span>
+                        </div>
                         <div class="empty-actions">
                             <button id="importPrompt" class="btn-primary">Import CSV</button>
                             <span class="empty-or">or</span>
                             <div class="sample-dropdown inline-dropdown" id="inlineSampleDropdown">
-                                <button id="inlineSampleBtn" class="btn-secondary">📋 Try Sample Data ▾</button>
+                                <button id="inlineSampleBtn" class="btn-secondary">Try Sample Data</button>
                                 <div class="sample-menu" id="inlineSampleMenu">
                                     <div class="sample-menu-header">Load sample data to explore:</div>
-                                    <button data-sample="cycle-count">🔄 Cycle Count Reconciliation</button>
-                                    <button data-sample="receiving">📦 Receiving Discrepancies</button>
-                                    <button data-sample="duplicates">👯 Duplicate SKUs</button>
-                                    <button data-sample="validation">⚠️ Data Quality Issues</button>
-                                    <button data-sample="lookup">🔍 Price Lookup</button>
+                                    <button data-sample="cycle-count">Cycle Count Reconciliation</button>
+                                    <button data-sample="receiving">Receiving Discrepancies</button>
+                                    <button data-sample="duplicates">Duplicate SKUs</button>
+                                    <button data-sample="validation">Data Quality Issues</button>
+                                    <button data-sample="lookup">Price Lookup</button>
                                 </div>
                             </div>
                         </div>
@@ -134,7 +185,7 @@
                 <div class="panel-header">
                     <h2>Results</h2>
                     <div class="results-actions">
-                        <button id="viewReport" class="btn-primary" disabled>📊 View Report</button>
+                        <button id="viewReport" class="btn-primary" disabled>View Report</button>
                         <button id="copyTSV" class="btn-secondary" disabled>Copy as TSV</button>
                         <button id="showLogic" class="btn-secondary" disabled>Show Logic</button>
                     </div>
@@ -144,7 +195,7 @@
                 </div>
                 <div id="resultsGrid" class="results-grid">
                     <div class="empty-state">
-                        <div class="empty-icon">⚙️</div>
+                        <div class="empty-icon">RUN</div>
                         <h3>No Analysis Run</h3>
                         <p>Select a module and run analysis to see results</p>
                     </div>
@@ -175,15 +226,15 @@
         <div class="modal-overlay"></div>
         <div class="modal-content modal-large">
             <div class="modal-header">
-                <h3>📊 Reconciliation Report</h3>
+                <h3>Reconciliation Report</h3>
                 <button class="modal-close" aria-label="Close modal">&times;</button>
             </div>
             <div class="modal-body" id="reportContent">
                 <!-- Populated by generateReport -->
             </div>
             <div class="modal-footer">
-                <button id="exportPDF" class="btn-primary">📄 Export PDF</button>
-                <button id="copyReport" class="btn-secondary">📋 Copy Report</button>
+                <button id="exportPDF" class="btn-primary">Export PDF</button>
+                <button id="copyReport" class="btn-secondary">Copy Report</button>
                 <button class="btn-secondary modal-close">Close</button>
             </div>
         </div>
@@ -198,6 +249,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.1/jspdf.plugin.autotable.min.js"></script>
     
     <!-- App modules -->
-    <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/app.js?v=20260801"></script>
 </body>
 </html>

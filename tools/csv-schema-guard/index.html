@@ -3,21 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSV Schema Guard | Data Quality Drift Checker</title>
-  <meta name="description" content="Compare a trusted CSV against a new CSV to catch schema changes, type drift, missing columns, null spikes, duplicate keys, and risky data shifts locally.">
+  <title>CSV Schema Guard | CSV Drift & Data Quality Checker</title>
+  <meta name="description" content="Compare trusted and incoming CSV files locally to catch schema drift, missing columns, type changes, null spikes, duplicate keys, and risky import changes.">
   <link rel="canonical" href="https://mattlivingston.com/tools/csv-schema-guard/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#090b10">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/csv-schema-guard/">
-  <meta property="og:title" content="CSV Schema Guard | Data Quality Drift Checker">
-  <meta property="og:description" content="Compare a trusted CSV against a new CSV to catch schema changes, type drift, missing columns, null spikes, duplicate keys, and risky data shifts locally.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="CSV Schema Guard | Data Quality Drift Checker preview image">
+  <meta property="og:title" content="CSV Schema Guard | CSV Drift & Data Quality Checker">
+  <meta property="og:description" content="Compare trusted and incoming CSV files locally to catch schema drift, missing columns, type changes, null spikes, duplicate keys, and risky import changes.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="CSV Schema Guard | CSV Drift & Data Quality Checker preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/csv-schema-guard/">
-  <meta name="twitter:title" content="CSV Schema Guard | Data Quality Drift Checker">
-  <meta name="twitter:description" content="Compare a trusted CSV against a new CSV to catch schema changes, type drift, missing columns, null spikes, duplicate keys, and risky data shifts locally.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="CSV Schema Guard | CSV Drift & Data Quality Checker">
+  <meta name="twitter:description" content="Compare trusted and incoming CSV files locally to catch schema drift, missing columns, type changes, null spikes, duplicate keys, and risky import changes.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="CSV Schema Guard | CSV Drift & Data Quality Checker preview image">
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CSV Schema Guard",
+    "url": "https://mattlivingston.com/tools/csv-schema-guard/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "A local browser-based CSV schema drift checker for warehouse imports, recurring reports, vendor feeds, and data quality preflight checks.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -650,6 +671,470 @@
         flex-direction: column;
       }
     }
+
+    /* Premium ops refresh */
+    :root {
+      color-scheme: dark;
+      --bg: #090b10;
+      --panel: rgba(17, 23, 34, 0.9);
+      --panel-2: rgba(21, 30, 45, 0.86);
+      --panel-3: rgba(9, 11, 16, 0.56);
+      --input: rgba(5, 8, 12, 0.86);
+      --border: rgba(148, 163, 184, 0.24);
+      --border-strong: rgba(148, 163, 184, 0.34);
+      --text: #f7fafc;
+      --text-soft: #a8b3c5;
+      --text-muted: #718096;
+      --accent: #2df8e6;
+      --accent-strong: #70ff9c;
+      --good: #70ff9c;
+      --warn: #ffcc66;
+      --bad: #ff6b7a;
+      --info: #b88cff;
+      --shadow: rgba(0, 0, 0, 0.24);
+    }
+
+    body {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #090b10 0%, #0d1118 48%, #090b10 100%);
+      background-size: 44px 44px, 44px 44px, auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.1), transparent 36%),
+        linear-gradient(225deg, rgba(184, 140, 255, 0.12), transparent 38%);
+    }
+
+    .page {
+      position: relative;
+      max-width: 1220px;
+      padding-top: 20px;
+      z-index: 1;
+    }
+
+    .topbar {
+      align-items: center;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.5);
+      backdrop-filter: blur(14px);
+    }
+
+    .back-link {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.5);
+      color: var(--text-soft);
+      font-weight: 750;
+    }
+
+    .back-link:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+      text-decoration: none;
+    }
+
+    .pill {
+      border-radius: var(--radius);
+      border-color: rgba(45, 248, 230, 0.32);
+      color: var(--accent);
+      background: rgba(45, 248, 230, 0.08);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel {
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: stretch;
+      gap: 1rem;
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.08), rgba(184, 140, 255, 0.08)),
+        rgba(17, 23, 34, 0.92);
+      box-shadow: 0 18px 56px rgba(0, 0, 0, 0.26);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero-copy {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-content: start;
+    }
+
+    .logo-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(45, 248, 230, 0.42);
+      border-radius: var(--radius);
+      color: var(--accent);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.18), rgba(184, 140, 255, 0.16)),
+        rgba(9, 11, 16, 0.72);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 28px rgba(45, 248, 230, 0.2);
+    }
+
+    .eyebrow,
+    .section-kicker {
+      display: block;
+      margin: 0 0 4px;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.9rem);
+      line-height: 1.02;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--text-soft);
+      font-size: 1rem;
+    }
+
+    .hero-actions,
+    .kpi-strip,
+    .related-ops-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .hero-actions {
+      justify-content: flex-end;
+      align-content: start;
+      min-width: 360px;
+    }
+
+    .hero-actions a,
+    .kpi-strip span {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-soft);
+      background: rgba(9, 11, 16, 0.48);
+      font-size: 0.82rem;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .hero-actions a:hover {
+      color: var(--accent);
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .kpi-strip {
+      grid-column: 1 / -1;
+      margin-top: 6px;
+    }
+
+    .kpi-strip strong {
+      color: var(--accent);
+      font-family: var(--mono);
+    }
+
+    .callout {
+      grid-column: 1 / -1;
+      padding: 14px 16px;
+      border-color: rgba(255, 204, 102, 0.34);
+      color: var(--text-soft);
+      background: rgba(255, 204, 102, 0.08);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--text);
+    }
+
+    .panel,
+    .control-panel,
+    .related-ops-panel,
+    .decision-card {
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.045), rgba(184, 140, 255, 0.04)),
+        rgba(17, 23, 34, 0.9);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.2);
+    }
+
+    .toolbar {
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: stretch;
+    }
+
+    .control-panel {
+      background: rgba(17, 23, 34, 0.9);
+    }
+
+    .field {
+      font-weight: 700;
+    }
+
+    select,
+    input[type="number"] {
+      background: var(--input);
+      border-color: var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .btn {
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #061014;
+    }
+
+    .btn.secondary {
+      background: rgba(9, 11, 16, 0.52);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn.secondary:hover,
+    .btn:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+      color: var(--accent);
+    }
+
+    .btn:disabled,
+    .btn:disabled:hover {
+      border-color: var(--border);
+      background: rgba(9, 11, 16, 0.42);
+      color: var(--text-muted);
+      opacity: 1;
+    }
+
+    .upload-card {
+      min-height: 235px;
+    }
+
+    .drop-zone {
+      border-color: var(--border-strong);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.07), rgba(112, 255, 156, 0.035)),
+        var(--input);
+    }
+
+    .drop-zone:hover,
+    .drop-zone.dragover {
+      border-color: rgba(45, 248, 230, 0.58);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.13), rgba(112, 255, 156, 0.07)),
+        var(--input);
+    }
+
+    .file-summary {
+      background: rgba(9, 11, 16, 0.48);
+    }
+
+    .score-ring::before {
+      background: #111722;
+    }
+
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .decision-card {
+      min-height: 116px;
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      padding: 14px;
+      border-radius: var(--radius);
+    }
+
+    .decision-card strong {
+      color: var(--text);
+      line-height: 1.42;
+    }
+
+    .status-chip,
+    .severity {
+      border-radius: var(--radius);
+    }
+
+    th {
+      background: #111722;
+    }
+
+    .schema-table-wrap,
+    .preview-scroll {
+      scrollbar-color: rgba(45, 248, 230, 0.35) rgba(9, 11, 16, 0.5);
+    }
+
+    .related-ops-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+
+    .related-ops-panel h2 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.18;
+    }
+
+    .related-ops-links {
+      align-items: stretch;
+    }
+
+    .related-ops-links a {
+      flex: 1 1 0;
+      min-height: 94px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      background: rgba(9, 11, 16, 0.48);
+      text-decoration: none;
+    }
+
+    .related-ops-links a:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .related-ops-links span {
+      color: var(--text-soft);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 980px) {
+      .hero-panel,
+      .related-ops-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-actions {
+        justify-content: flex-start;
+        min-width: 0;
+      }
+
+      .decision-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        padding: 12px 8px 32px;
+      }
+
+      .topbar,
+      .hero-panel,
+      .panel,
+      .control-panel,
+      .related-ops-panel,
+      .decision-card {
+        border-radius: var(--radius);
+      }
+
+      .hero-copy {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-mark {
+        width: 40px;
+        height: 40px;
+      }
+
+      h1 {
+        font-size: clamp(2rem, 10vw, 2.45rem);
+      }
+
+      .hero-actions a,
+      .back-link {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .kpi-strip span {
+        justify-content: center;
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .control-panel,
+      .field {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      input[type="number"] {
+        width: 100%;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .toolbar .control-panel {
+        grid-column: 1 / -1;
+      }
+
+      .upload-card,
+      .panel-header {
+        padding: 14px;
+      }
+
+      .related-ops-links {
+        flex-direction: column;
+      }
+    }
   </style>
   <link rel="stylesheet" href="../tool-modern.css">
   <script defer src="../tool-credit.js"></script>
@@ -657,20 +1142,36 @@
 <body>
   <div class="page">
     <div class="topbar">
-      <a href="/tools/" class="back-link">Tools</a>
+      <a href="/tools/" class="back-link">Tools Hub</a>
       <div class="trust-row" aria-label="Privacy and workflow notes">
-        <span class="pill">Local-only</span>
+        <span class="pill">Runs locally</span>
         <span class="pill">No upload</span>
         <span class="pill">Exportable report</span>
       </div>
     </div>
 
-    <header>
-      <div>
-        <h1>CSV Schema Guard</h1>
-        <p class="subtitle">Compare a trusted CSV against a new file before it enters a workflow. Catch missing columns, type drift, null spikes, duplicate keys, row-count swings, and suspicious value shifts.</p>
+    <header class="hero-panel">
+      <div class="hero-copy">
+        <div class="logo-mark" aria-hidden="true">CSV</div>
+        <div>
+          <span class="eyebrow">Warehouse data preflight</span>
+          <h1>CSV Schema Guard</h1>
+          <p class="subtitle">Compare a trusted CSV against a new file before it enters a workflow. Catch missing columns, type drift, null spikes, duplicate keys, row-count swings, and suspicious value shifts.</p>
+        </div>
+      </div>
+      <nav class="hero-actions" aria-label="Related tools">
+        <a href="../ops-data-toolkit/">Ops Data Toolkit</a>
+        <a href="../barcode-validator/">Barcode Validator</a>
+        <a href="../pick-path-slotting/">Slotting Planner</a>
+      </nav>
+      <div class="kpi-strip" aria-label="Current schema guard metrics">
+        <span><strong id="heroScore">--</strong> guard score</span>
+        <span><strong id="heroHigh">0</strong> high risk</span>
+        <span><strong id="heroMedium">0</strong> medium risk</span>
+        <span><strong id="heroRows">0</strong> rows compared</span>
       </div>
       <div class="callout">
+        <strong>Local data quality gate</strong>
         Use this as a preflight check for recurring exports, vendor feeds, analytics drops, ops reports, or any CSV that can quietly change shape.
       </div>
     </header>
@@ -765,6 +1266,21 @@
         </article>
       </section>
 
+      <section class="decision-grid" aria-label="Decision readout">
+        <article class="decision-card">
+          <span class="section-kicker">Gate decision</span>
+          <strong id="gateReadout">Load two files to see whether this CSV is ready for the workflow.</strong>
+        </article>
+        <article class="decision-card">
+          <span class="section-kicker">Contract risk</span>
+          <strong id="contractReadout">Schema drift, null spikes, duplicate keys, and row swings will appear here.</strong>
+        </article>
+        <article class="decision-card">
+          <span class="section-kicker">Next move</span>
+          <strong id="nextReadout">Start with a sample run or compare a trusted baseline against today&apos;s export.</strong>
+        </article>
+      </section>
+
       <section class="content-grid">
         <article class="panel results-panel">
           <div class="panel-header">
@@ -828,6 +1344,31 @@
           </div>
         </article>
       </section>
+
+      <section class="related-ops-panel" aria-labelledby="relatedOpsTitle">
+        <div>
+          <span class="section-kicker">Connected ops workflow</span>
+          <h2 id="relatedOpsTitle">Turn clean CSVs into cleaner warehouse decisions.</h2>
+        </div>
+        <div class="related-ops-links">
+          <a href="../ops-data-toolkit/">
+            <strong>Reconcile the file</strong>
+            <span>Move from schema preflight into duplicate checks, cleanup, lookups, and cycle count reports.</span>
+          </a>
+          <a href="../barcode-validator/">
+            <strong>Validate identifiers</strong>
+            <span>Check UPC, EAN, and Code 128 values before label or WMS import issues spread.</span>
+          </a>
+          <a href="../pick-path-slotting/">
+            <strong>Feed a slotting plan</strong>
+            <span>Use stable SKU, velocity, cube, and location fields before building pick-path moves.</span>
+          </a>
+          <a href="../pallet-calculator/">
+            <strong>Check load assumptions</strong>
+            <span>Use cleaned carton and quantity data to sanity-check pallet plans.</span>
+          </a>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -859,6 +1400,13 @@
       mediumCount: document.getElementById('mediumCount'),
       columnCount: document.getElementById('columnCount'),
       rowCount: document.getElementById('rowCount'),
+      heroScore: document.getElementById('heroScore'),
+      heroHigh: document.getElementById('heroHigh'),
+      heroMedium: document.getElementById('heroMedium'),
+      heroRows: document.getElementById('heroRows'),
+      gateReadout: document.getElementById('gateReadout'),
+      contractReadout: document.getElementById('contractReadout'),
+      nextReadout: document.getElementById('nextReadout'),
       findingsSummary: document.getElementById('findingsSummary'),
       issueList: document.getElementById('issueList'),
       schemaBody: document.getElementById('schemaBody'),
@@ -1241,19 +1789,69 @@
       els.mediumCount.textContent = medium;
       els.columnCount.textContent = columns;
       els.rowCount.textContent = rows;
+      els.heroHigh.textContent = high;
+      els.heroMedium.textContent = medium;
+      els.heroRows.textContent = rows;
       if (state.score === null) {
         els.scoreValue.textContent = '--';
         els.scoreLabel.textContent = 'Load two files';
+        els.heroScore.textContent = '--';
         els.scoreRing.style.setProperty('--score-angle', '0deg');
         els.scoreRing.style.background = 'conic-gradient(var(--good) 0deg, rgba(148, 163, 184, 0.16) 0), var(--input)';
+        renderDecisionReadout(high, medium);
         return;
       }
       const angle = state.score * 3.6;
       const color = state.score < 50 ? 'var(--bad)' : state.score < 80 ? 'var(--warn)' : 'var(--good)';
       els.scoreValue.textContent = state.score;
+      els.heroScore.textContent = state.score;
       els.scoreLabel.textContent = state.score >= 90 ? 'Ready to trust' : state.score >= 70 ? 'Review warnings' : 'Block and fix';
       els.scoreRing.style.setProperty('--score-angle', `${angle}deg`);
       els.scoreRing.style.background = `conic-gradient(${color} ${angle}deg, rgba(148, 163, 184, 0.16) 0), var(--input)`;
+      renderDecisionReadout(high, medium);
+    }
+
+    function renderDecisionReadout(high, medium) {
+      if (!state.baseline || !state.candidate) {
+        els.gateReadout.textContent = 'Load two files to see whether this CSV is ready for the workflow.';
+        els.contractReadout.textContent = 'Schema drift, null spikes, duplicate keys, and row swings will appear here.';
+        els.nextReadout.textContent = 'Start with a sample run or compare a trusted baseline against today\'s export.';
+        return;
+      }
+
+      const low = state.issues.filter(issue => issue.severity === 'low').length;
+      const missingColumns = state.issues.filter(issue => issue.title === 'Missing required column').length;
+      const typeDrift = state.issues.filter(issue => issue.title === 'Type drift').length;
+      const duplicateKeys = state.issues.filter(issue => issue.title === 'Duplicate key values').length;
+
+      if (high > 0) {
+        els.gateReadout.textContent = `Block this import until ${high} high-risk finding${high === 1 ? '' : 's'} are resolved.`;
+      } else if (medium > 0) {
+        els.gateReadout.textContent = `Usable with review: ${medium} medium-risk warning${medium === 1 ? '' : 's'} should be checked before release.`;
+      } else {
+        els.gateReadout.textContent = 'Ready to trust: no high or medium schema risks were detected.';
+      }
+
+      if (missingColumns || typeDrift || duplicateKeys) {
+        const pieces = [];
+        if (missingColumns) pieces.push(`${missingColumns} missing column${missingColumns === 1 ? '' : 's'}`);
+        if (typeDrift) pieces.push(`${typeDrift} type drift issue${typeDrift === 1 ? '' : 's'}`);
+        if (duplicateKeys) pieces.push(`${duplicateKeys} duplicate-key issue${duplicateKeys === 1 ? '' : 's'}`);
+        els.contractReadout.textContent = `Contract risk: ${pieces.join(', ')}. Start there first.`;
+      } else if (low > 0) {
+        els.contractReadout.textContent = `${low} low-risk drift signal${low === 1 ? '' : 's'} found, mostly around new columns or value changes.`;
+      } else {
+        els.contractReadout.textContent = 'The incoming schema matches the baseline contract closely.';
+      }
+
+      const keyColumn = els.keyColumnSelect.value || guessKeyColumn();
+      if (high > 0 || medium > 0) {
+        els.nextReadout.textContent = keyColumn
+          ? `Keep ${keyColumn} selected as the key column, export the report, then repair the source feed.`
+          : 'Choose a key column, export the report, then repair the source feed before using this CSV.';
+      } else {
+        els.nextReadout.textContent = 'Move this file into reconciliation, barcode checks, or the next warehouse planning step.';
+      }
     }
 
     function renderIssues() {

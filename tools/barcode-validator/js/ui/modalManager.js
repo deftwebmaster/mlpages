@@ -118,7 +118,7 @@ export function openLearningMode(result) {
 
       ${result.warnings && result.warnings.length > 0 ? `
         <div class="learning-section warnings">
-          <h3>⚠️ Warnings</h3>
+          <h3>Warnings</h3>
           <ul>
             ${result.warnings.map(w => `<li>${w}</li>`).join('')}
           </ul>

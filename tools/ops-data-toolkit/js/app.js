@@ -4,7 +4,7 @@
  */
 
 import State from './state.js';
-import { DataGrid, ResultsGrid } from './grid.js';
+import { DataGrid, ResultsGrid } from './grid.js?v=20260801';
 import { parseCSV, parseClipboard, validateData, cleanData, generateSample, generateCountSample, getSampleScenario, SAMPLE_SCENARIOS } from './parser.js';
 import { loadProject, saveProject, autoSave } from './storage.js';
 import { exportData, exportToClipboard, showToast } from './export.js';
@@ -45,8 +45,6 @@ const modules = {
  * Initialize application
  */
 function init() {
-    console.log('Initializing Ops Data Toolkit...');
-    
     // Initialize grids
     dataGrid = new DataGrid(document.getElementById('dataGrid'));
     resultsGrid = new ResultsGrid(document.getElementById('resultsGrid'));
@@ -72,7 +70,6 @@ function init() {
     const saved = loadProject();
     if (saved) {
         State.importProject(saved);
-        console.log('Loaded saved project');
     }
     
     // Initialize module navigation
@@ -82,8 +79,6 @@ function init() {
     setTimeout(() => {
         switchModule('reconcile');
     }, 100);
-    
-    console.log('App initialized');
 }
 
 /**
@@ -124,11 +119,8 @@ function setupEventListeners() {
     
     const importPromptBtn = document.getElementById('importPrompt');
     
-    console.log('setupEventListeners - importPrompt:', importPromptBtn);
-    
     if (importPromptBtn) {
         importPromptBtn.addEventListener('click', () => {
-            console.log('importPrompt clicked from setupEventListeners');
             document.getElementById('fileInput').click();
         });
     }
@@ -259,6 +251,13 @@ function setupEventListeners() {
     // Listen for loadSample events from dynamically rendered grid empty state
     window.addEventListener('loadSample', (e) => {
         handleLoadSample(e.detail);
+    });
+
+    // Initial empty-state task cards rendered in HTML before DataGrid takes over
+    document.querySelectorAll('.task-card[data-sample]').forEach(card => {
+        card.addEventListener('click', () => {
+            handleLoadSample(card.dataset.sample);
+        });
     });
 }
 
@@ -476,6 +475,8 @@ function handleReset() {
  * State change handler - update UI
  */
 function onStateChange(project, change) {
+    updateChromeSummary(project);
+    
     // Update data grid
     const sheet = State.getActiveSheet();
     if (sheet && sheet.data) {
@@ -586,19 +587,23 @@ function renderModuleNav() {
     
     // Module list
     const moduleList = [
-        { id: 'cleaning', module: modules.cleaning, icon: '🧹' },
-        { id: 'validation', module: modules.validation, icon: '✓' },
-        { id: 'duplicates', module: modules.duplicates, icon: '👯' },
-        { id: 'sumif', module: modules.sumif, icon: '∑' },
-        { id: 'reconcile', module: modules.reconcile, icon: '⚖️' },
-        { id: 'lookup', module: modules.lookup, icon: '🔍' }
+        { id: 'reconcile', module: modules.reconcile, icon: 'RC', label: 'Cycle counts', featured: true },
+        { id: 'validation', module: modules.validation, icon: 'QA', label: 'Pre-import checks' },
+        { id: 'duplicates', module: modules.duplicates, icon: 'DU', label: 'SKU hygiene' },
+        { id: 'lookup', module: modules.lookup, icon: 'LU', label: 'Cross-sheet lookup' },
+        { id: 'cleaning', module: modules.cleaning, icon: 'CL', label: 'Normalize fields' },
+        { id: 'sumif', module: modules.sumif, icon: 'AG', label: 'Conditional totals' }
     ];
     
     nav.innerHTML = moduleList.map(mod => `
         <button 
-            class="module-btn" 
+            class="module-btn ${mod.featured ? 'module-btn-featured' : ''}" 
             data-module="${mod.id}">
-            ${mod.icon} ${mod.module.name}
+            <span class="module-token">${mod.icon}</span>
+            <span class="module-copy">
+                <strong>${mod.module.name}</strong>
+                <small>${mod.label}</small>
+            </span>
         </button>
     `).join('');
     
@@ -634,6 +639,7 @@ function switchModule(moduleId) {
     });
     
     State.setActiveModule(moduleId);
+    updateChromeSummary(State.project);
     
     // Clear previous results
     resultsGrid.renderEmpty();
@@ -661,6 +667,26 @@ function switchModule(moduleId) {
     
     // Render module UI
     module.renderControls(controlsWrapper);
+}
+
+/**
+ * Update header summary chips
+ */
+function updateChromeSummary(project = State.project) {
+    const sheetA = project?.sheets?.A;
+    const sheetB = project?.sheets?.B;
+    const totalRows = (sheetA?.data?.length || 0) + (sheetB?.data?.length || 0);
+    const rowStat = document.getElementById('totalRowsStat');
+    const moduleStat = document.getElementById('activeModuleStat');
+    
+    if (rowStat) {
+        rowStat.textContent = totalRows.toLocaleString();
+    }
+    
+    if (moduleStat) {
+        const activeModule = modules[project?.activeModule];
+        moduleStat.textContent = activeModule ? activeModule.name : 'Reconcile';
+    }
 }
 
 /**
@@ -925,7 +951,7 @@ function getStatusExplanation(statusValue, items, reconciliation) {
         case 'Missing in System':
             const missingAKeys = items.map(i => i.key).join(', ');
             return {
-                icon: '🔍',
+                icon: 'SYS',
                 title: `${count} item${count > 1 ? 's' : ''} found in physical count but missing from WMS`,
                 description: `${missingAKeys} ${count > 1 ? 'were' : 'was'} counted in the warehouse but ${count > 1 ? "don't" : "doesn't"} exist in your system inventory. This could mean unreceived goods, a receiving error, or items that were never scanned in.`,
                 type: 'error'
@@ -934,7 +960,7 @@ function getStatusExplanation(statusValue, items, reconciliation) {
         case 'Missing in Physical':
             const missingBKeys = items.map(i => i.key).join(', ');
             return {
-                icon: '👻',
+                icon: 'WMS',
                 title: `${count} item${count > 1 ? 's' : ''} in WMS but not found during physical count`,
                 description: `${missingBKeys} ${count > 1 ? 'show' : 'shows'} inventory in the system but ${count > 1 ? 'were' : 'was'}n't found during the count. This could indicate shrinkage, theft, damage, or the item was missed during counting.`,
                 type: 'error'
@@ -945,7 +971,7 @@ function getStatusExplanation(statusValue, items, reconciliation) {
             const overages = items.filter(i => (i.variance || 0) > 0).length;
             const shortages = items.filter(i => (i.variance || 0) < 0).length;
             return {
-                icon: '⚖️',
+                icon: 'VAR',
                 title: `${count} item${count > 1 ? 's' : ''} with quantity differences between system and count`,
                 description: `Found ${shortages} shortage${shortages !== 1 ? 's' : ''} (system shows more than counted) and ${overages} overage${overages !== 1 ? 's' : ''} (counted more than system shows). Total variance: ${totalVariance} units.`,
                 type: 'warning'
@@ -953,7 +979,7 @@ function getStatusExplanation(statusValue, items, reconciliation) {
         
         case 'Match':
             return {
-                icon: '✅',
+                icon: 'OK',
                 title: `${count} item${count > 1 ? 's' : ''} match perfectly`,
                 description: `These items have identical quantities in both the system and physical count. No action needed.`,
                 type: 'info'
@@ -961,7 +987,7 @@ function getStatusExplanation(statusValue, items, reconciliation) {
         
         default:
             return {
-                icon: '📋',
+                icon: 'SEL',
                 title: `${count} item${count > 1 ? 's' : ''} selected`,
                 description: `Showing filtered results.`,
                 type: 'info'
@@ -1126,7 +1152,7 @@ function showDuplicateBanner(statusValue, duplicateData) {
     const topDupes = groups.slice(0, 3).map(g => g.key).join(', ');
     const moreCount = groups.length > 3 ? ` and ${groups.length - 3} more` : '';
     
-    icon.textContent = '👯';
+    icon.textContent = 'DU';
     title.textContent = `${stats.duplicate_rows} rows are duplicates across ${stats.duplicate_keys} keys`;
     desc.textContent = `Keys with duplicates: ${topDupes}${moreCount}. These rows share the same key value and may cause conflicts during import or processing.`;
     
@@ -1174,7 +1200,7 @@ function showValidationBanner(statusValue, validationData) {
     const columnList = errorColumns.slice(0, 3).join(', ');
     const moreColumns = errorColumns.length > 3 ? ` and ${errorColumns.length - 3} more` : '';
     
-    icon.textContent = '⚠️';
+    icon.textContent = 'QA';
     title.textContent = `${stats.rows_with_errors} rows have validation errors`;
     desc.textContent = `${stats.total_errors} total errors found in columns: ${columnList}${moreColumns}. These rows fail one or more validation rules and should be corrected before import.`;
     
@@ -1300,7 +1326,7 @@ function generateReconciliationReport(recon, metrics) {
     let html = `
         <!-- Executive Summary -->
         <div class="report-section">
-            <h4>📋 Executive Summary</h4>
+            <h4>Executive Summary</h4>
             <div class="report-narrative">
                 ${narrative}
             </div>
@@ -1308,7 +1334,7 @@ function generateReconciliationReport(recon, metrics) {
         
         <!-- Key Metrics -->
         <div class="report-section">
-            <h4>📊 Key Metrics</h4>
+            <h4>Key Metrics</h4>
             <div class="report-summary">
                 <div class="report-stat">
                     <div class="report-stat-value">${matched.length}</div>
@@ -1337,7 +1363,7 @@ function generateReconciliationReport(recon, metrics) {
         
         <!-- Dollar Impact Breakdown -->
         <div class="report-section">
-            <h4>💰 Dollar Impact Breakdown</h4>
+            <h4>Dollar Impact Breakdown</h4>
             <table class="report-table">
                 <thead>
                     <tr>
@@ -1375,7 +1401,7 @@ function generateReconciliationReport(recon, metrics) {
     if (missingInB.length > 0 || missingInA.length > 0) {
         html += `
             <div class="report-section">
-                <h4>⚠️ Items Requiring Investigation</h4>
+                <h4>Items Requiring Investigation</h4>
         `;
         
         if (missingInB.length > 0) {
@@ -1529,12 +1555,12 @@ function generateNarrative(recon, totalImpact, breakdown) {
     
     // Ghost inventory callout
     if (missingInB > 0) {
-        narrative += `<br><br>⚠️ <strong>${missingInB} item${missingInB > 1 ? 's' : ''}</strong> appear${missingInB === 1 ? 's' : ''} in the WMS but ${missingInB === 1 ? 'was' : 'were'}n't found during the physical count. These "ghost inventory" items need immediate investigation.`;
+        narrative += `<br><br><strong>${missingInB} item${missingInB > 1 ? 's' : ''}</strong> appear${missingInB === 1 ? 's' : ''} in the WMS but ${missingInB === 1 ? 'was' : 'were'}n't found during the physical count. These "ghost inventory" items need immediate investigation.`;
     }
     
     // Found inventory callout
     if (missingInA > 0) {
-        narrative += `<br><br>📦 <strong>${missingInA} item${missingInA > 1 ? 's' : ''}</strong> ${missingInA === 1 ? 'was' : 'were'} found on the floor but ${missingInA === 1 ? "doesn't" : "don't"} exist in the WMS. These may be unreceived goods or receiving errors.`;
+        narrative += `<br><br><strong>${missingInA} item${missingInA > 1 ? 's' : ''}</strong> ${missingInA === 1 ? 'was' : 'were'} found on the floor but ${missingInA === 1 ? "doesn't" : "don't"} exist in the WMS. These may be unreceived goods or receiving errors.`;
     }
     
     return narrative;

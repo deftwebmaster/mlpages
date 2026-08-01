@@ -126,7 +126,7 @@ function getReadinessLevel(score, issues) {
   if (hasCritical) {
     return {
       level: 'not-ready',
-      label: '🚨 Not Ready',
+      label: 'Not Ready',
       message: 'Critical issues must be resolved before WMS upload'
     };
   }
@@ -134,7 +134,7 @@ function getReadinessLevel(score, issues) {
   if (hasHigh || score < 70) {
     return {
       level: 'needs-review',
-      label: '⚠️ Needs Review',
+      label: 'Needs Review',
       message: 'Review and fix issues before proceeding'
     };
   }
@@ -142,14 +142,14 @@ function getReadinessLevel(score, issues) {
   if (score >= 95) {
     return {
       level: 'ready',
-      label: '✅ Ready',
+      label: 'Ready',
       message: 'Batch meets WMS integration standards'
     };
   }
 
   return {
     level: 'acceptable',
-    label: '✓ Acceptable',
+    label: 'Acceptable',
     message: 'Minor issues present but acceptable for WMS upload'
   };
 }

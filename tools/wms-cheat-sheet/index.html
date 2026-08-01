@@ -3,22 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WMS Cheat Sheet | Matt Livingston</title>
-  <meta name="description" content="Quick reference and decoder for Oracle WMS Cloud transaction codes. Look up IHT codes, reason codes, and warehouse terminology instantly.">
+  <title>WMS Cheat Sheet | Oracle, Manhattan, RF & LPN Terms</title>
+  <meta name="description" content="Search Oracle WMS IHT codes, Manhattan Active WM terms, RF shorthand, LPN vocabulary, inventory movement terms, and warehouse operations acronyms.">
   <link rel="canonical" href="https://mattlivingston.com/tools/wms-cheat-sheet/">
+  <meta name="theme-color" content="#090b10">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/wms-cheat-sheet/">
-  <meta property="og:title" content="WMS Cheat Sheet | Matt Livingston">
-  <meta property="og:description" content="Quick reference and decoder for Oracle WMS Cloud transaction codes. Look up IHT codes, reason codes, and warehouse terminology instantly.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="WMS Cheat Sheet | Matt Livingston preview image">
+  <meta property="og:title" content="WMS Cheat Sheet | Oracle, Manhattan, RF & LPN Terms">
+  <meta property="og:description" content="Search Oracle WMS IHT codes, Manhattan Active WM terms, RF shorthand, LPN vocabulary, inventory movement terms, and warehouse operations acronyms.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="WMS Cheat Sheet | Oracle, Manhattan, RF & LPN Terms preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/wms-cheat-sheet/">
-  <meta name="twitter:title" content="WMS Cheat Sheet | Matt Livingston">
-  <meta name="twitter:description" content="Quick reference and decoder for Oracle WMS Cloud transaction codes. Look up IHT codes, reason codes, and warehouse terminology instantly.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="WMS Cheat Sheet | Oracle, Manhattan, RF & LPN Terms">
+  <meta name="twitter:description" content="Search Oracle WMS IHT codes, Manhattan Active WM terms, RF shorthand, LPN vocabulary, inventory movement terms, and warehouse operations acronyms.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="WMS Cheat Sheet | Oracle, Manhattan, RF & LPN Terms preview image">
 <meta name="robots" content="index,follow">
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "WMS Cheat Sheet",
+    "url": "https://mattlivingston.com/tools/wms-cheat-sheet/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "A browser-based warehouse management reference for Oracle WMS Cloud IHT codes, Manhattan Active WM terms, RF shorthand, and warehouse operations vocabulary.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 <!-- Open Graph -->
 
 <style>
@@ -578,6 +598,458 @@
         width: 100%;
       }
     }
+
+    /* Premium ops refresh */
+    :root {
+      color-scheme: dark;
+      --text: #f7fafc;
+      --text-light: #a8b3c5;
+      --text-lighter: #718096;
+      --bg: #090b10;
+      --card-bg: rgba(17, 23, 34, 0.9);
+      --border: rgba(148, 163, 184, 0.24);
+      --border-light: rgba(148, 163, 184, 0.38);
+      --accent: #2df8e6;
+      --accent-hover: #70ff9c;
+      --success: #70ff9c;
+      --success-bg: rgba(112, 255, 156, 0.12);
+      --oracle: #ff6b7a;
+      --oracle-bg: rgba(255, 107, 122, 0.12);
+      --term: #b88cff;
+      --term-bg: rgba(184, 140, 255, 0.12);
+      --manhattan: #ffcc66;
+      --manhattan-bg: rgba(255, 204, 102, 0.12);
+      --radius: 8px;
+      --shadow: 0 18px 54px rgba(0, 0, 0, 0.22);
+      --shadow-lg: 0 18px 56px rgba(0, 0, 0, 0.28);
+    }
+
+    body {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #090b10 0%, #0d1118 48%, #090b10 100%);
+      background-size: 44px 44px, 44px 44px, auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.1), transparent 36%),
+        linear-gradient(225deg, rgba(184, 140, 255, 0.12), transparent 38%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      padding: 20px 18px 54px;
+    }
+
+    .page-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.08), rgba(184, 140, 255, 0.08)),
+        rgba(17, 23, 34, 0.92);
+      box-shadow: var(--shadow-lg);
+      backdrop-filter: blur(16px);
+    }
+
+    .header-copy {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .logo-mark {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(45, 248, 230, 0.42);
+      border-radius: var(--radius);
+      color: var(--accent);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.18), rgba(184, 140, 255, 0.16)),
+        rgba(9, 11, 16, 0.72);
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 0.76rem;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 28px rgba(45, 248, 230, 0.2);
+    }
+
+    .eyebrow,
+    .section-kicker {
+      display: block;
+      margin: 0 0 4px;
+      color: var(--accent);
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .page-header h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.65rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .page-header .tagline {
+      max-width: 760px;
+      margin-top: 10px;
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .header-actions,
+    .trust-row,
+    .stats-bar,
+    .related-ops-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .header-actions {
+      justify-content: flex-end;
+      min-width: 360px;
+    }
+
+    .back-link,
+    .header-actions a,
+    .stat,
+    .pill {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-light);
+      background: rgba(9, 11, 16, 0.48);
+      font-size: 0.82rem;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .back-link {
+      margin: 0;
+    }
+
+    .back-link:hover,
+    .header-actions a:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      color: var(--accent);
+      background: rgba(45, 248, 230, 0.1);
+      text-decoration: none;
+    }
+
+    .trust-row {
+      grid-column: 1 / -1;
+      justify-content: flex-start;
+      margin-top: 6px;
+    }
+
+    .pill {
+      color: var(--accent);
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .stats-bar {
+      margin-bottom: 16px;
+      padding: 12px;
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.045), rgba(184, 140, 255, 0.04)),
+        rgba(17, 23, 34, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .stat-count {
+      color: var(--accent);
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-weight: 900;
+    }
+
+    .decoder-section,
+    .code-card,
+    .controls,
+    .related-ops-panel,
+    .contribute-section {
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.045), rgba(184, 140, 255, 0.04)),
+        rgba(17, 23, 34, 0.9);
+      box-shadow: var(--shadow);
+    }
+
+    .decoder-section {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .decoder-section h2 {
+      font-size: 1.12rem;
+    }
+
+    .decoder-input,
+    .search-box input {
+      background: rgba(5, 8, 12, 0.86);
+      border-color: var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .decoder-input:focus,
+    .search-box input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45, 248, 230, 0.18);
+    }
+
+    .decoder-btn,
+    .contribute-btn,
+    .filter-btn.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      border-color: transparent;
+      color: #061014;
+      font-weight: 850;
+    }
+
+    .decoder-btn:hover,
+    .contribute-btn:hover {
+      background: rgba(45, 248, 230, 0.12);
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .controls {
+      margin-bottom: 12px;
+      padding: 12px;
+      border-radius: var(--radius);
+    }
+
+    .search-box::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      box-shadow: 8px 8px 0 -5px var(--accent);
+    }
+
+    .filter-btn {
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.48);
+      color: var(--text-light);
+      font-weight: 750;
+    }
+
+    .filter-btn:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      color: var(--accent);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .results-info {
+      color: var(--text-light);
+    }
+
+    .code-list {
+      gap: 10px;
+    }
+
+    .code-card {
+      padding: 15px;
+    }
+
+    .code-card:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      box-shadow: var(--shadow);
+    }
+
+    .code-id,
+    .decoder-result-code {
+      color: var(--accent);
+      font-weight: 850;
+    }
+
+    .code-name,
+    .decoder-result-name {
+      font-weight: 750;
+    }
+
+    .code-tip {
+      border-left-color: var(--accent);
+      background: rgba(45, 248, 230, 0.08);
+      color: var(--text-light);
+    }
+
+    .platform-tag {
+      border-radius: var(--radius);
+      border: 1px solid currentColor;
+    }
+
+    .platform-tag.manhattan {
+      background: var(--manhattan-bg);
+      color: var(--manhattan);
+    }
+
+    .copy-btn {
+      border-radius: var(--radius);
+    }
+
+    .section-header {
+      border-bottom-color: var(--border);
+    }
+
+    .section-header h2 {
+      color: var(--text);
+    }
+
+    .related-ops-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-radius: var(--radius);
+      margin-top: 18px;
+    }
+
+    .related-ops-panel h2 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.18;
+    }
+
+    .related-ops-links {
+      align-items: stretch;
+    }
+
+    .related-ops-links a {
+      flex: 1 1 0;
+      min-height: 94px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      background: rgba(9, 11, 16, 0.48);
+      text-decoration: none;
+    }
+
+    .related-ops-links a:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .related-ops-links span {
+      color: var(--text-light);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    .contribute-section {
+      margin-top: 18px;
+      text-align: left;
+    }
+
+    .contribute-section p {
+      max-width: 720px;
+    }
+
+    .footer {
+      display: none;
+    }
+
+    @media (max-width: 860px) {
+      .page-header,
+      .related-ops-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .header-actions {
+        justify-content: flex-start;
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 12px 8px 34px;
+      }
+
+      .page-header,
+      .decoder-section,
+      .controls,
+      .code-card,
+      .related-ops-panel,
+      .contribute-section {
+        padding: 14px;
+      }
+
+      .header-copy {
+        grid-template-columns: 1fr;
+      }
+
+      .logo-mark {
+        width: 40px;
+        height: 40px;
+      }
+
+      .page-header h1 {
+        font-size: clamp(2rem, 10vw, 2.45rem);
+      }
+
+      .header-actions a,
+      .back-link {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .stats-bar {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .stat {
+        justify-content: center;
+        min-width: 0;
+      }
+
+      .filter-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        overflow: visible;
+      }
+
+      .filter-btn {
+        white-space: normal;
+      }
+
+      .related-ops-links {
+        flex-direction: column;
+      }
+    }
   </style>
   <link rel="stylesheet" href="../tool-modern.css">
   <script defer src="../tool-credit.js"></script>
@@ -585,17 +1057,33 @@
 <body>
   <div class="container">
     <header class="page-header">
-      <a href="/tools/" class="back-link">← Back to Tools</a>
-      <h1>WMS Cheat Sheet</h1>
-      <p class="tagline">Decode transaction codes and look up warehouse terminology</p>
+      <div class="header-copy">
+        <div class="logo-mark" aria-hidden="true">WMS</div>
+        <div>
+          <span class="eyebrow">Warehouse systems reference</span>
+          <h1>WMS Cheat Sheet</h1>
+          <p class="tagline">Decode Oracle WMS Cloud IHT codes, Manhattan Active WM terminology, RF shorthand, LPN vocabulary, and the warehouse words people throw around like everybody was born knowing them.</p>
+        </div>
+      </div>
+      <nav class="header-actions" aria-label="Related tools">
+        <a href="/tools/">Tools Hub</a>
+        <a href="../ops-data-toolkit/">Ops Data Toolkit</a>
+        <a href="../edi-viewer/">EDI Viewer</a>
+      </nav>
+      <div class="trust-row" aria-label="Reference notes">
+        <span class="pill">Runs locally</span>
+        <span class="pill">Oracle IHT</span>
+        <span class="pill">Manhattan terms</span>
+        <span class="pill">Copyable codes</span>
+      </div>
     </header>
 
     <!-- Decoder Tool -->
     <section class="decoder-section">
-      <h2>🔍 Code Decoder</h2>
+      <h2>Code Decoder</h2>
       <p>Paste one or more codes (comma or space separated) to instantly look them up.</p>
       <div class="decoder-input-row">
-        <input type="text" class="decoder-input" id="decoderInput" placeholder="e.g. IHT-51, IHT-1, LPN" autocomplete="off">
+        <input type="text" class="decoder-input" id="decoderInput" placeholder="e.g. IHT-51, IHT-85, LPN, AWPF" autocomplete="off">
         <button class="decoder-btn" id="decoderBtn">Decode</button>
       </div>
       <div class="decoder-results" id="decoderResults"></div>
@@ -611,6 +1099,10 @@
         <span class="stat-label">Oracle WMS</span>
       </div>
       <div class="stat">
+        <span class="stat-count" id="manhattanCount">0</span>
+        <span class="stat-label">Manhattan</span>
+      </div>
+      <div class="stat">
         <span class="stat-count" id="termCount">0</span>
         <span class="stat-label">Terminology</span>
       </div>
@@ -623,6 +1115,7 @@
       <div class="filter-row">
         <button class="filter-btn active" data-filter="all">All</button>
         <button class="filter-btn" data-filter="oracle">Oracle WMS</button>
+        <button class="filter-btn" data-filter="manhattan">Manhattan</button>
         <button class="filter-btn" data-filter="terminology">Terminology</button>
       </div>
     </div>
@@ -636,19 +1129,37 @@
       <p>Try a different search term or filter.</p>
     </div>
 
-    <section class="contribute-section">
-      <h3>Know a code that's missing?</h3>
-      <p>This cheat sheet grows with community input. If you've encountered a transaction code or term that should be here, let me know.</p>
-      <a href="mailto:matt@mattlivingston.com?subject=WMS%20Cheat%20Sheet%20Suggestion&body=Code%3A%20%0APlatform%3A%20Oracle%20%2F%20General%0ADescription%3A%20%0ACategory%3A%20%0ATips%20(optional)%3A%20" class="contribute-btn">Suggest an Addition</a>
+    <section class="related-ops-panel" aria-labelledby="relatedOpsTitle">
+      <div>
+        <span class="section-kicker">Connected ops workflow</span>
+        <h2 id="relatedOpsTitle">Use the reference, then verify the data behind it.</h2>
+      </div>
+      <div class="related-ops-links">
+        <a href="../ops-data-toolkit/">
+          <strong>Reconcile WMS exports</strong>
+          <span>Clean CSVs, find duplicates, validate imports, and compare cycle count output.</span>
+        </a>
+        <a href="../csv-schema-guard/">
+          <strong>Guard recurring feeds</strong>
+          <span>Catch schema drift before a WMS, ERP, or vendor file breaks downstream work.</span>
+        </a>
+        <a href="../barcode-validator/">
+          <strong>Validate scan values</strong>
+          <span>Check UPC, EAN, and Code 128 values before labels or imports hit the floor.</span>
+        </a>
+        <a href="../edi-viewer/">
+          <strong>Read EDI documents</strong>
+          <span>Parse 850, 856, 810, 820, and 997 documents when transaction codes turn into trading-partner files.</span>
+        </a>
+      </div>
     </section>
 
-    <footer class="footer">
-      <div class="footer-content">
-        <span>© 2025 Matt Livingston</span>
-        <span> · </span>
-        <a href="/hire-me/">Work with me</a>
-      </div>
-    </footer>
+    <section class="contribute-section">
+      <span class="section-kicker">Reference notes</span>
+      <h3>Know a code that's missing?</h3>
+      <p>This cheat sheet grows with field experience. If you have a transaction code, RF shortcut, or system term that should be here, send it over with the platform and a plain-English description.</p>
+      <a href="mailto:matt@mattlivingston.com?subject=WMS%20Cheat%20Sheet%20Suggestion&body=Code%3A%20%0APlatform%3A%20Oracle%20%2F%20Manhattan%20%2F%20General%0ADescription%3A%20%0ACategory%3A%20%0ATips%20(optional)%3A%20" class="contribute-btn">Suggest an Addition</a>
+    </section>
   </div>
 
   <script>
@@ -674,6 +1185,14 @@
         category: "Inventory",
         description: "Records when an LPN is consumed, typically for transfers to external systems like manufacturing. Requires a valid reason code.",
         tip: "Use RF Consume LPN transaction. Only works on LPNs in 'Located' status."
+      },
+      {
+        code: "IHT-3",
+        name: "Container Shipped",
+        platform: "oracle",
+        category: "Shipping",
+        description: "Written for each container on a load when the load is shipped.",
+        tip: "Oracle's Ship Load API notes this is generated alongside load-level shipped output."
       },
       {
         code: "IHT-4",
@@ -728,6 +1247,65 @@
         description: "Adjustment made after cycle count or audit verification. Includes reason code capture.",
         tip: "Enable 'prompt-reason-code' parameter on RF screens to capture reason codes."
       },
+      {
+        code: "IHT-19",
+        name: "Inventory Adjustment",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Inventory adjustment activity referenced in Oracle cycle-count flows.",
+        tip: "Oracle cycle-count docs group this with cycle count type tracking through REF CODE 15."
+      },
+      {
+        code: "IHT-20",
+        name: "Order Status Change",
+        platform: "oracle",
+        category: "Orders",
+        description: "Order-level status or deallocation change captured in Inventory History.",
+        tip: "Reason codes can be populated during shorting, wave deallocation, and cancel flows."
+      },
+      {
+        code: "IHT-22",
+        name: "Lock Container Before ASN Verification",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Container lock event written before ASN verification in manufacturing/inventory integration flows."
+      },
+      {
+        code: "IHT-23",
+        name: "Lock Container After ASN Verification",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Container lock event written after ASN verification. Also appears in cycle count scenarios when counted LPNs inherit a location lock code."
+      },
+      {
+        code: "IHT-24",
+        name: "Unlock Container Before ASN Verification",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Container unlock event written before ASN verification in manufacturing/inventory integration flows."
+      },
+      {
+        code: "IHT-25",
+        name: "Unlock Container After ASN Verification",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Container unlock event written after ASN verification in manufacturing/inventory integration flows."
+      },
+      {
+        code: "IHT-27",
+        name: "Order Cancellation",
+        platform: "oracle",
+        category: "Orders",
+        description: "Written when an order is cancelled through wave deallocation or related order cancellation flows.",
+        tip: "Oracle reason-code updates list IHT-27 alongside IHT-12, IHT-20, and IHT-85 for cancellation/shorting scenarios."
+      },
+      {
+        code: "IHT-29",
+        name: "Create Allocatable Container",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Inventory history event for creation of an allocatable container, including manufacturing transaction integration scenarios."
+      },
       
       // Container Status
       {
@@ -738,6 +1316,28 @@
         description: "Triggered when an outbound LPN is modified, such as renaming or linking to an asset."
       },
       {
+        code: "IHT-37",
+        name: "Active Location Cycle Count Complete",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Cycle count completion event for active locations.",
+        tip: "Oracle cycle-count docs list it as one of the IHTs that can carry REF CODE 15 for cycle count type."
+      },
+      {
+        code: "IHT-38",
+        name: "Reserve Location Cycle Count Complete",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Cycle count completion event for reserve locations."
+      },
+      {
+        code: "IHT-39",
+        name: "Cycle Count - Lost IBLPN Counted",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Cycle count event written when a lost inbound LPN is counted."
+      },
+      {
         code: "IHT-40",
         name: "IBLPN Lost",
         platform: "oracle",
@@ -745,11 +1345,39 @@
         description: "Recorded when an inbound LPN is marked as lost in the system."
       },
       {
+        code: "IHT-41",
+        name: "Cycle Count - IBLPN Counted",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Cycle count event written when an inbound LPN is counted."
+      },
+      {
+        code: "IHT-42",
+        name: "Cycle Count",
+        platform: "oracle",
+        category: "Inventory",
+        description: "General cycle count inventory history transaction."
+      },
+      {
         code: "IHT-48",
         name: "Shipment Status Change",
         platform: "oracle",
         category: "Receiving",
         description: "Tracks status changes on inbound shipments through the receiving process."
+      },
+      {
+        code: "IHT-49",
+        name: "Lock Active",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Active-location inventory lock event used in inventory and manufacturing integration flows."
+      },
+      {
+        code: "IHT-50",
+        name: "Unlock Active",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Active-location inventory unlock event used in inventory and manufacturing integration flows."
       },
       {
         code: "IHT-51",
@@ -766,6 +1394,13 @@
         category: "Packing",
         description: "Alternate packing transaction code. Used in different packing scenarios than IHT-10.",
         tip: "IHT-10 and IHT-54 don't overlap on the same OBLPN — they cover different packing flows."
+      },
+      {
+        code: "IHT-53",
+        name: "Cycle Count - Reserve SKU Counted",
+        platform: "oracle",
+        category: "Inventory",
+        description: "Cycle count event written when reserve SKU inventory is counted."
       },
       
       // Assets & Kitting
@@ -838,6 +1473,14 @@
         description: "Updates OBLPN to DELIVERED status. Can be triggered via API when external systems confirm delivery."
       },
       {
+        code: "IHT-82",
+        name: "Work Order Cancellation",
+        platform: "oracle",
+        category: "Manufacturing",
+        description: "Written when work orders or kits are cancelled through work order, input interface, or mobile work order processing flows.",
+        tip: "Oracle notes this is generated at the individual kit level."
+      },
+      {
         code: "IHT-83",
         name: "Container Unloaded",
         platform: "oracle",
@@ -861,11 +1504,128 @@
         tip: "Useful for ERP integration to track order fulfillment status."
       },
       {
+        code: "IHT-88",
+        name: "Movement Request Status Change",
+        platform: "oracle",
+        category: "Movement Requests",
+        description: "Header-level movement request status change written for external systems, ERP, or slotting integrations."
+      },
+      {
+        code: "IHT-89",
+        name: "Movement Request Detail Status Change",
+        platform: "oracle",
+        category: "Movement Requests",
+        description: "Detail-level movement request status change written when movement request lines progress or change state."
+      },
+      {
         code: "IHT-90",
         name: "Movement Request Detail Shorted",
         platform: "oracle",
-        category: "Inventory",
+        category: "Movement Requests",
         description: "Recorded when a movement request is cancelled or shorted. Includes Movement Request Line ID in ref_value_6."
+      },
+      {
+        code: "IHT-91",
+        name: "Movement Request Auto Consume",
+        platform: "oracle",
+        category: "Movement Requests",
+        description: "Inventory history transaction created when movement request fulfillment uses Pick and Issue / auto-consume flow.",
+        tip: "Use this to distinguish material relocation from inventory reduction for internal demand."
+      },
+
+      // ============================================
+      // MANHATTAN ACTIVE WM / PLATFORM TERMS
+      // ============================================
+      {
+        code: "MAWM",
+        name: "Manhattan Active Warehouse Management",
+        platform: "manhattan",
+        category: "Platform",
+        description: "Manhattan's cloud-native warehouse management product family for execution, fulfillment, and distribution workflows."
+      },
+      {
+        code: "SCE",
+        name: "Supply Chain Execution",
+        platform: "manhattan",
+        category: "Platform",
+        description: "Manhattan platform area covering warehouse and distribution, transportation, labor management, yard management, and slotting optimization."
+      },
+      {
+        code: "ActivePlatform",
+        name: "ActivePlatform",
+        platform: "manhattan",
+        category: "Platform",
+        description: "The Manhattan cloud runtime that houses application components, environments, services, APIs, and extensions."
+      },
+      {
+        code: "WES",
+        name: "Warehouse Execution System",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Execution layer used to coordinate automation, robotics, people, and material handling work inside the distribution center."
+      },
+      {
+        code: "MAN",
+        name: "Manhattan Automation Network",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Manhattan ecosystem for integrating automation and robotics providers with Warehouse Management workflows."
+      },
+      {
+        code: "Pick Expectation",
+        name: "Pick Expectation Message",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Outbound pick instruction message sent from Warehouse Management to an automation provider with picking details."
+      },
+      {
+        code: "Pick Transactional Notification",
+        name: "Pick Transactional Notification",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Automation-provider response used to confirm individual picks within a task."
+      },
+      {
+        code: "Pick Cancel",
+        name: "Pick Cancel Message",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Message sent from Warehouse Management to automation when a pick allocation is cancelled."
+      },
+      {
+        code: "Put Expectation",
+        name: "Put Expectation Message",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Putaway allocation details sent from Warehouse Management to an automation provider."
+      },
+      {
+        code: "Put Complete",
+        name: "Put Complete Message",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Automation-provider confirmation that a putaway movement was completed."
+      },
+      {
+        code: "Inventory Sync",
+        name: "Inventory Sync Message",
+        platform: "manhattan",
+        category: "Automation",
+        description: "Automation inventory message used to synchronize inventory levels from automation-managed locations back to Warehouse Management."
+      },
+      {
+        code: "AWPF",
+        name: "Asynchronous Workload Processing Framework",
+        platform: "manhattan",
+        category: "Platform",
+        description: "Manhattan framework for processing asynchronous message workloads across microservices."
+      },
+      {
+        code: "TranLog",
+        name: "Message Persistence / TranLog",
+        platform: "manhattan",
+        category: "Platform",
+        description: "Manhattan message persistence concept used for storing messages for later reference and reconciliation."
       },
 
       // ============================================
@@ -1117,10 +1877,7 @@
         const match = glossaryData.find(item => {
           const itemCode = item.code.toUpperCase().replace(/[\s\-\/]+/g, '');
           const searchCode = normalized.replace(/[\s\-\/]+/g, '');
-          return itemCode === searchCode || 
-                 itemCode.includes(searchCode) || 
-                 searchCode.includes(itemCode) ||
-                 item.code.toUpperCase() === normalized;
+          return itemCode === searchCode || item.code.toUpperCase() === normalized;
         });
 
         if (match) {
@@ -1131,16 +1888,16 @@
                   <div class="decoder-result-code">${match.code}</div>
                   <div class="decoder-result-name">${match.name}</div>
                 </div>
-                <span class="platform-tag ${match.platform}">${match.platform === 'oracle' ? 'Oracle WMS' : 'Term'}</span>
+                <span class="platform-tag ${match.platform}">${getPlatformLabel(match.platform)}</span>
               </div>
               <p class="decoder-result-desc">${match.description}</p>
-              ${match.tip ? `<div class="code-tip">💡 ${match.tip}</div>` : ''}
+              ${match.tip ? `<div class="code-tip"><strong>Tip:</strong> ${match.tip}</div>` : ''}
             </div>
           `;
         } else {
           html += `
             <div class="decoder-result-card not-found">
-              <div class="decoder-result-code">${code}</div>
+              <div class="decoder-result-code">${escapeHtml(code)}</div>
               <p class="decoder-result-desc">Code not found. <a href="mailto:matt@mattlivingston.com?subject=WMS%20Code%20Request%3A%20${encodeURIComponent(code)}&body=I%20looked%20up%20${encodeURIComponent(code)}%20but%20it%20wasn't%20in%20the%20cheat%20sheet.">Suggest adding it?</a></p>
             </div>
           `;
@@ -1155,6 +1912,7 @@
     function updateStats() {
       document.getElementById('totalCount').textContent = glossaryData.length;
       document.getElementById('oracleCount').textContent = glossaryData.filter(d => d.platform === 'oracle').length;
+      document.getElementById('manhattanCount').textContent = glossaryData.filter(d => d.platform === 'manhattan').length;
       document.getElementById('termCount').textContent = glossaryData.filter(d => d.platform === 'terminology').length;
     }
 
@@ -1192,6 +1950,7 @@
     function getPlatformLabel(platform) {
       switch(platform) {
         case 'oracle': return 'Oracle WMS';
+        case 'manhattan': return 'Manhattan';
         case 'terminology': return 'Term';
         default: return platform;
       }
@@ -1207,6 +1966,15 @@
           btn.classList.remove('copied');
         }, 1500);
       });
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
     }
 
     // Render codes
@@ -1229,7 +1997,8 @@
       // Category order
       const categoryOrder = [
         'Receiving', 'Putaway', 'Inventory', 'Picking', 'Packing', 
-        'Shipping', 'Quality', 'Orders', 'Manufacturing', 'Terminology'
+        'Shipping', 'Quality', 'Orders', 'Movement Requests', 'Manufacturing',
+        'Automation', 'Platform', 'Terminology'
       ];
       
       // Sort categories
@@ -1272,7 +2041,7 @@
                 </div>
               </div>
               <p class="code-description">${item.description}</p>
-              ${item.tip ? `<div class="code-tip">💡 ${item.tip}</div>` : ''}
+              ${item.tip ? `<div class="code-tip"><strong>Tip:</strong> ${item.tip}</div>` : ''}
             </article>
           `;
         });

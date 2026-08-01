@@ -53,39 +53,40 @@ export class DataGrid {
         this.container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-hero">
-                    <h2>What do you need to do?</h2>
-                    <p class="empty-subtitle">Pick a task to get started, or import your own data</p>
+                    <span class="empty-kicker">Start with a warehouse problem</span>
+                    <h2>Drop in a CSV and get an operator-ready answer.</h2>
+                    <p class="empty-subtitle">Reconcile counts, catch duplicate SKUs, validate import files, or use a sample run to see the workflow.</p>
                 </div>
                 
                 <div class="task-cards">
                     <button class="task-card task-card-featured" data-task="reconcile">
-                        <div class="task-card-icon">⚖️</div>
+                        <div class="task-card-icon">RC</div>
                         <div class="task-card-content">
                             <h3>Reconcile Cycle Count</h3>
-                            <p>Match physical vs system inventory</p>
+                            <p>Compare WMS inventory against physical counts and quantify variance impact.</p>
                         </div>
                         <span class="task-card-badge">Most Popular</span>
                     </button>
                     
                     <button class="task-card" data-task="duplicates">
-                        <div class="task-card-icon">👯</div>
+                        <div class="task-card-icon">DU</div>
                         <div class="task-card-content">
                             <h3>Find Duplicates</h3>
-                            <p>Detect duplicate SKUs in your data</p>
+                            <p>Group duplicate records before they leak into receiving, pick, or item-master work.</p>
                         </div>
                     </button>
                     
                     <button class="task-card" data-task="validation">
-                        <div class="task-card-icon">✓</div>
+                        <div class="task-card-icon">QA</div>
                         <div class="task-card-content">
                             <h3>Validate Data</h3>
-                            <p>Check required fields before import</p>
+                            <p>Check required fields, numeric values, and file quality before downstream import.</p>
                         </div>
                     </button>
                 </div>
                 
                 <div class="empty-divider">
-                    <span>or start with your own data</span>
+                    <span>or bring your own worksheet</span>
                 </div>
                 
                 <div class="empty-actions">
@@ -439,7 +440,7 @@ export class ResultsGrid {
     renderEmpty() {
         this.container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">⚙️</div>
+                <div class="empty-icon">RUN</div>
                 <h3>No Analysis Run</h3>
                 <p>Select a module and run analysis to see results</p>
             </div>
@@ -452,7 +453,7 @@ export class ResultsGrid {
     renderFilteredEmpty() {
         this.container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-icon">🔍</div>
+                <div class="empty-icon">FIND</div>
                 <h3>No Items Match This Filter</h3>
                 <p>Click the metric again to clear the filter and see all results</p>
             </div>

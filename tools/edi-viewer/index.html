@@ -3,21 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EDI Document Viewer | Parse &amp; Understand X12 850, 856, 810</title>
-  <meta name="description" content="Parse raw X12 EDI locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 payments, and 997 acknowledgments into readable segments.">
+  <title>EDI Document Viewer | X12 850, 856, 810, 820 & 997 Parser</title>
+  <meta name="description" content="Parse X12 EDI documents locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 remittances, and 997 acknowledgments into readable warehouse documents.">
   <link rel="canonical" href="https://mattlivingston.com/tools/edi-viewer/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#090b10">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/edi-viewer/">
-  <meta property="og:title" content="EDI Document Viewer | Parse &amp; Understand X12 850, 856, 810">
-  <meta property="og:description" content="Parse raw X12 EDI locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 payments, and 997 acknowledgments into readable segments.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="EDI Document Viewer | Parse &amp; Understand X12 850, 856, 810 preview image">
+  <meta property="og:title" content="EDI Document Viewer | X12 850, 856, 810, 820 & 997 Parser">
+  <meta property="og:description" content="Parse X12 EDI documents locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 remittances, and 997 acknowledgments into readable warehouse documents.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="EDI Document Viewer | X12 850, 856, 810, 820 & 997 Parser preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/edi-viewer/">
-  <meta name="twitter:title" content="EDI Document Viewer | Parse &amp; Understand X12 850, 856, 810">
-  <meta name="twitter:description" content="Parse raw X12 EDI locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 payments, and 997 acknowledgments into readable segments.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="EDI Document Viewer | X12 850, 856, 810, 820 & 997 Parser">
+  <meta name="twitter:description" content="Parse X12 EDI documents locally and translate 850 purchase orders, 856 ASNs, 810 invoices, 820 remittances, and 997 acknowledgments into readable warehouse documents.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="EDI Document Viewer | X12 850, 856, 810, 820 & 997 Parser preview image">
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "EDI Document Viewer",
+    "url": "https://mattlivingston.com/tools/edi-viewer/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "A local browser-based X12 EDI viewer for purchase orders, ASNs, invoices, payment remittances, and functional acknowledgments.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -681,6 +702,491 @@
         padding: 0.5rem;
       }
     }
+
+    /* Premium ops refresh */
+    :root {
+      color-scheme: dark;
+      --bg-primary: #090b10;
+      --bg-secondary: rgba(17, 23, 34, 0.9);
+      --bg-tertiary: rgba(9, 11, 16, 0.56);
+      --bg-input: rgba(5, 8, 12, 0.86);
+      --accent: #2df8e6;
+      --accent-hover: #70ff9c;
+      --accent-glow: rgba(45, 248, 230, 0.18);
+      --success: #70ff9c;
+      --warning: #ffcc66;
+      --danger: #ff6b7a;
+      --purple: #b88cff;
+      --text-primary: #f7fafc;
+      --text-secondary: #a8b3c5;
+      --text-muted: #718096;
+      --border: rgba(148, 163, 184, 0.24);
+      --radius: 8px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #090b10 0%, #0d1118 48%, #090b10 100%);
+      background-size: 44px 44px, 44px 44px, auto;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.1), transparent 36%),
+        linear-gradient(225deg, rgba(184, 140, 255, 0.12), transparent 38%);
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      padding-top: 20px;
+    }
+
+    header {
+      text-align: left;
+      margin-bottom: 16px;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.08), rgba(184, 140, 255, 0.08)),
+        rgba(17, 23, 34, 0.92);
+      box-shadow: 0 18px 56px rgba(0, 0, 0, 0.26);
+      backdrop-filter: blur(16px);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      min-width: 0;
+      align-items: flex-start;
+      gap: 14px;
+      margin: 0;
+    }
+
+    .logo-icon {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 46px;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.18), rgba(184, 140, 255, 0.16)),
+        rgba(9, 11, 16, 0.72);
+      border: 1px solid rgba(45, 248, 230, 0.42);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 900;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04), 0 0 28px rgba(45, 248, 230, 0.2);
+    }
+
+    .eyebrow,
+    .section-kicker {
+      display: block;
+      margin: 0 0 4px;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.55rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .tagline {
+      max-width: 760px;
+      margin-top: 10px;
+      color: var(--text-secondary);
+      font-size: 1rem;
+    }
+
+    .header-links,
+    .kpi-strip,
+    .related-ops-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .header-links {
+      justify-content: flex-end;
+      min-width: 360px;
+    }
+
+    .header-links a,
+    .kpi-strip span {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-secondary);
+      background: rgba(9, 11, 16, 0.48);
+      font-size: 0.82rem;
+      font-weight: 750;
+      text-decoration: none;
+    }
+
+    .header-links a:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      color: var(--accent);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .kpi-strip {
+      margin-top: 16px;
+    }
+
+    .kpi-strip strong {
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .input-section,
+    .doc-header,
+    .segment-group,
+    .related-ops-panel {
+      border: 1px solid var(--border);
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.045), rgba(184, 140, 255, 0.04)),
+        rgba(17, 23, 34, 0.9);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.2);
+    }
+
+    .input-section {
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .input-header h2,
+    .doc-type h2,
+    .line-items-section h3 {
+      font-weight: 750;
+      letter-spacing: 0;
+    }
+
+    .sample-btn,
+    .btn,
+    .view-tab {
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.5);
+      border-color: var(--border);
+      color: var(--text-primary);
+      font-weight: 750;
+    }
+
+    .sample-btn:hover,
+    .btn:hover,
+    .view-tab:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      color: var(--accent);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .btn-primary,
+    .view-tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      border-color: transparent;
+      color: #061014;
+      font-weight: 850;
+    }
+
+    .btn-primary:hover,
+    .view-tab.active:hover {
+      color: #061014;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    }
+
+    .sample-menu {
+      background: #111722;
+      border-color: var(--border);
+      border-radius: var(--radius);
+    }
+
+    .sample-menu button:hover {
+      background: rgba(45, 248, 230, 0.1);
+      color: var(--accent);
+    }
+
+    textarea,
+    .json-view,
+    .raw-view,
+    .segment-card {
+      background: var(--bg-input);
+      border-color: var(--border);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .doc-header {
+      border-left: 0;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .doc-type-badge,
+    .segment-code {
+      border: 1px solid rgba(45, 248, 230, 0.42);
+      border-radius: var(--radius);
+      background: rgba(45, 248, 230, 0.1);
+      color: var(--accent);
+    }
+
+    .doc-meta-item {
+      min-height: 76px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.42);
+    }
+
+    .doc-meta-item span {
+      overflow-wrap: anywhere;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .view-tabs {
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .segment-group-header {
+      background: rgba(9, 11, 16, 0.52);
+    }
+
+    .segment-card {
+      border-left-color: var(--accent);
+    }
+
+    .field-name {
+      color: var(--text-muted);
+    }
+
+    .field-value {
+      overflow-wrap: anywhere;
+    }
+
+    .field-value.decoded,
+    .decoded {
+      color: var(--success);
+    }
+
+    .line-items-section {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.04), rgba(184, 140, 255, 0.03)),
+        rgba(17, 23, 34, 0.86);
+    }
+
+    .line-items-table {
+      min-width: 760px;
+    }
+
+    .line-items-table th {
+      background: rgba(9, 11, 16, 0.7);
+    }
+
+    .line-items-table tr:hover td,
+    .raw-segment:hover {
+      background: rgba(45, 248, 230, 0.07);
+    }
+
+    .raw-view,
+    .json-view {
+      border: 1px solid var(--border);
+      max-width: 100%;
+    }
+
+    .raw-segment {
+      overflow-wrap: anywhere;
+    }
+
+    .validation-msg {
+      border-radius: var(--radius);
+    }
+
+    .validation-msg .icon {
+      display: none;
+    }
+
+    .export-actions {
+      flex-wrap: wrap;
+    }
+
+    .related-ops-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.65fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+
+    .related-ops-panel h2 {
+      margin: 0;
+      font-size: clamp(1.25rem, 2vw, 1.7rem);
+      line-height: 1.18;
+    }
+
+    .related-ops-links {
+      align-items: stretch;
+    }
+
+    .related-ops-links a {
+      flex: 1 1 0;
+      min-height: 94px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 13px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      background: rgba(9, 11, 16, 0.48);
+      text-decoration: none;
+    }
+
+    .related-ops-links a:hover {
+      border-color: rgba(45, 248, 230, 0.42);
+      background: rgba(45, 248, 230, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .related-ops-links span {
+      color: var(--text-secondary);
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+
+    footer {
+      display: none;
+    }
+
+    .toast {
+      color: #061014;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    }
+
+    @media (max-width: 860px) {
+      .topbar,
+      .related-ops-panel {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-links {
+        justify-content: flex-start;
+        min-width: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 12px 8px 34px;
+      }
+
+      header,
+      .input-section,
+      .doc-header,
+      .related-ops-panel,
+      .line-items-section {
+        padding: 14px;
+      }
+
+      .logo {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: clamp(2rem, 10vw, 2.45rem);
+      }
+
+      .header-links a {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .kpi-strip {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .kpi-strip span {
+        justify-content: center;
+        min-width: 0;
+        padding-inline: 8px;
+      }
+
+      .input-header,
+      .input-actions,
+      .export-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .sample-dropdown,
+      .sample-btn,
+      .btn {
+        width: 100%;
+      }
+
+      .sample-btn,
+      .btn {
+        justify-content: center;
+      }
+
+      .sample-menu {
+        left: 0;
+        right: 0;
+      }
+
+      textarea {
+        min-height: 260px;
+      }
+
+      .segment-field {
+        display: grid;
+        gap: 2px;
+      }
+
+      .field-name {
+        min-width: 0;
+      }
+
+      .related-ops-links {
+        flex-direction: column;
+      }
+    }
   </style>
   <link rel="stylesheet" href="../tool-modern.css">
   <script defer src="../tool-credit.js"></script>
@@ -688,20 +1194,39 @@
 <body>
   <div class="container">
     <header>
-      <div class="logo">
-        <div class="logo-icon">📄</div>
-        <h1>EDI Document Viewer</h1>
+      <div class="topbar">
+        <div class="logo">
+          <div class="logo-icon">EDI</div>
+          <div>
+            <span class="eyebrow">Warehouse document control</span>
+            <h1>EDI Document Viewer</h1>
+            <p class="tagline">Parse X12 purchase orders, ASNs, invoices, remittances, and acknowledgments into readable warehouse documents.</p>
+          </div>
+        </div>
+        <nav class="header-links" aria-label="Related tools">
+          <a href="../">Tools Hub</a>
+          <a href="../wms-cheat-sheet/">WMS Cheat Sheet</a>
+          <a href="../csv-schema-guard/">CSV Schema Guard</a>
+        </nav>
       </div>
-      <p class="tagline">Parse and understand X12 EDI documents instantly</p>
+      <div class="kpi-strip" aria-label="Current EDI document metrics">
+        <span><strong id="heroDocType">--</strong> document</span>
+        <span><strong id="heroSegments">0</strong> segments</span>
+        <span><strong id="heroLines">0</strong> line items</span>
+        <span><strong id="heroStatus">Ready</strong> status</span>
+      </div>
     </header>
 
     <!-- Input Section -->
     <section class="input-section">
       <div class="input-header">
-        <h2>Paste EDI Document</h2>
+        <div>
+          <span class="section-kicker">Raw X12 input</span>
+          <h2>Paste EDI Document</h2>
+        </div>
         <div class="sample-dropdown">
           <button class="sample-btn" onclick="toggleSampleMenu()">
-            📋 Load Sample <span>▾</span>
+            Load Sample <span>▾</span>
           </button>
           <div class="sample-menu" id="sampleMenu">
             <button onclick="loadSample('850')">850 - Purchase Order <span>Most common</span></button>
@@ -721,7 +1246,7 @@ ST*850*0001~
 ..."></textarea>
       <div class="input-actions">
         <button class="btn" onclick="clearInput()">Clear</button>
-        <button class="btn btn-primary" onclick="parseDocument()">🔍 Parse Document</button>
+        <button class="btn btn-primary" onclick="parseDocument()">Parse Document</button>
       </div>
     </section>
 
@@ -767,15 +1292,32 @@ ST*850*0001~
 
       <!-- Export Actions -->
       <div class="export-actions">
-        <button class="btn" onclick="copySummary()">📋 Copy Summary</button>
-        <button class="btn" onclick="exportJson()">💾 Export JSON</button>
-        <button class="btn" onclick="window.print()">🖨️ Print</button>
+        <button class="btn" onclick="copySummary()">Copy Summary</button>
+        <button class="btn" onclick="exportJson()">Export JSON</button>
+        <button class="btn" onclick="window.print()">Print</button>
       </div>
     </section>
 
-    <footer>
-      <p>EDI Document Viewer — All processing happens locally in your browser</p>
-    </footer>
+    <section class="related-ops-panel" aria-labelledby="relatedOpsTitle">
+      <div>
+        <span class="section-kicker">Connected ops workflow</span>
+        <h2 id="relatedOpsTitle">Turn raw EDI into warehouse-ready checks.</h2>
+      </div>
+      <div class="related-ops-links">
+        <a href="../wms-cheat-sheet/">
+          <strong>Decode WMS context</strong>
+          <span>Reference Oracle, Manhattan, RF, LPN, and warehouse terms around the document.</span>
+        </a>
+        <a href="../csv-schema-guard/">
+          <strong>Guard exported CSVs</strong>
+          <span>Validate recurring WMS or ERP extracts before they flow downstream.</span>
+        </a>
+        <a href="../ops-data-toolkit/">
+          <strong>Reconcile the results</strong>
+          <span>Clean, compare, and analyze warehouse CSVs after an EDI handoff.</span>
+        </a>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -1454,6 +1996,40 @@ IEA*1*000000005~`
     // ============================================
     // Rendering
     // ============================================
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[char]));
+    }
+
+    function updateHeroMetrics(data = null) {
+      const docTypeEl = document.getElementById('heroDocType');
+      const segmentsEl = document.getElementById('heroSegments');
+      const linesEl = document.getElementById('heroLines');
+      const statusEl = document.getElementById('heroStatus');
+      if (!docTypeEl || !segmentsEl || !linesEl || !statusEl) return;
+
+      if (!data) {
+        docTypeEl.textContent = '--';
+        segmentsEl.textContent = '0';
+        linesEl.textContent = '0';
+        statusEl.textContent = 'Ready';
+        return;
+      }
+
+      const errorCount = validationMessages.filter(msg => msg.type === 'error').length;
+      const warningCount = validationMessages.filter(msg => msg.type === 'warning').length;
+
+      docTypeEl.textContent = data.docType || 'Unknown';
+      segmentsEl.textContent = data.segments.length.toLocaleString('en-US');
+      linesEl.textContent = data.lineItems.length.toLocaleString('en-US');
+      statusEl.textContent = errorCount ? 'Errors' : warningCount ? 'Review' : 'Valid';
+    }
     
     function renderResults(data) {
       renderDocHeader(data);
@@ -1461,14 +2037,18 @@ IEA*1*000000005~`
       renderRawView(data);
       renderJsonView(data);
       renderValidation();
+      updateHeroMetrics(data);
     }
 
     function renderDocHeader(data) {
       const docType = data.docType || '???';
-      const typeInfo = DOC_TYPES[docType] || { name: 'Unknown Document', icon: '📄', color: '#64748b' };
+      const typeInfo = DOC_TYPES[docType] || { name: 'Unknown Document', icon: 'DOC', color: '#64748b' };
 
-      document.getElementById('docTypeBadge').textContent = docType;
-      document.getElementById('docTypeBadge').style.background = typeInfo.color;
+      const docTypeBadge = document.getElementById('docTypeBadge');
+      docTypeBadge.textContent = docType;
+      docTypeBadge.style.background = '';
+      docTypeBadge.style.borderColor = '';
+      docTypeBadge.style.color = '';
       document.getElementById('docTypeName').textContent = typeInfo.name;
 
       // Build meta info
@@ -1476,26 +2056,26 @@ IEA*1*000000005~`
 
       // Common fields
       if (data.header.poNumber) {
-        metaHtml += `<div class="doc-meta-item"><label>PO Number</label><span>${data.header.poNumber}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>PO Number</label><span>${escapeHtml(data.header.poNumber)}</span></div>`;
       }
       if (data.header.invoiceNumber) {
-        metaHtml += `<div class="doc-meta-item"><label>Invoice Number</label><span>${data.header.invoiceNumber}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Invoice Number</label><span>${escapeHtml(data.header.invoiceNumber)}</span></div>`;
       }
       if (data.header.shipmentId) {
-        metaHtml += `<div class="doc-meta-item"><label>Shipment ID</label><span>${data.header.shipmentId}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Shipment ID</label><span>${escapeHtml(data.header.shipmentId)}</span></div>`;
       }
       if (data.header.poDate) {
-        metaHtml += `<div class="doc-meta-item"><label>PO Date</label><span>${data.header.poDate}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>PO Date</label><span>${escapeHtml(data.header.poDate)}</span></div>`;
       }
       if (data.header.invoiceDate) {
-        metaHtml += `<div class="doc-meta-item"><label>Invoice Date</label><span>${data.header.invoiceDate}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Invoice Date</label><span>${escapeHtml(data.header.invoiceDate)}</span></div>`;
       }
       if (data.header.date) {
-        metaHtml += `<div class="doc-meta-item"><label>Date</label><span>${data.header.date}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Date</label><span>${escapeHtml(data.header.date)}</span></div>`;
       }
       if (data.envelope.isa) {
-        metaHtml += `<div class="doc-meta-item"><label>Sender</label><span>${data.envelope.isa.senderId}</span></div>`;
-        metaHtml += `<div class="doc-meta-item"><label>Receiver</label><span>${data.envelope.isa.receiverId}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Sender</label><span>${escapeHtml(data.envelope.isa.senderId)}</span></div>`;
+        metaHtml += `<div class="doc-meta-item"><label>Receiver</label><span>${escapeHtml(data.envelope.isa.receiverId)}</span></div>`;
       }
       if (data.header.amount) {
         metaHtml += `<div class="doc-meta-item"><label>Amount</label><span>$${data.header.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span></div>`;
@@ -1512,15 +2092,15 @@ IEA*1*000000005~`
 
       // Group segments
       const groups = {
-        envelope: { name: 'Envelope', icon: '📨', segments: [] },
-        header: { name: 'Header', icon: '📋', segments: [] },
-        party: { name: 'Parties & Addresses', icon: '👥', segments: [] },
-        detail: { name: 'Details', icon: '📝', segments: [] },
-        lineitem: { name: 'Line Items', icon: '📦', segments: [] },
-        hierarchy: { name: 'Hierarchy', icon: '🔗', segments: [] },
-        shipment: { name: 'Shipment Details', icon: '🚚', segments: [] },
-        summary: { name: 'Summary & Totals', icon: '📊', segments: [] },
-        other: { name: 'Other Segments', icon: '📄', segments: [] }
+        envelope: { name: 'Envelope', segments: [] },
+        header: { name: 'Header', segments: [] },
+        party: { name: 'Parties & Addresses', segments: [] },
+        detail: { name: 'Details', segments: [] },
+        lineitem: { name: 'Line Items', segments: [] },
+        hierarchy: { name: 'Hierarchy', segments: [] },
+        shipment: { name: 'Shipment Details', segments: [] },
+        summary: { name: 'Summary & Totals', segments: [] },
+        other: { name: 'Other Segments', segments: [] }
       };
 
       data.segments.forEach(segment => {
@@ -1540,7 +2120,7 @@ IEA*1*000000005~`
         html += `
           <div class="segment-group" id="group-${key}">
             <div class="segment-group-header" onclick="toggleGroup('${key}')">
-              <h3>${group.icon} ${group.name} <span style="color: var(--text-muted); font-weight: normal;">(${group.segments.length})</span></h3>
+              <h3>${escapeHtml(group.name)} <span style="color: var(--text-muted); font-weight: normal;">(${group.segments.length})</span></h3>
               <span class="toggle">▼</span>
             </div>
             <div class="segment-group-content">
@@ -1576,8 +2156,8 @@ IEA*1*000000005~`
 
         fieldsHtml += `
           <div class="segment-field">
-            <span class="field-name">${fieldName}:</span>
-            <span class="field-value">${displayValue}${decoded ? ` <span class="decoded">(${decoded})</span>` : ''}</span>
+            <span class="field-name">${escapeHtml(fieldName)}:</span>
+            <span class="field-value">${escapeHtml(displayValue)}${decoded ? ` <span class="decoded">(${escapeHtml(decoded)})</span>` : ''}</span>
           </div>
         `;
       });
@@ -1585,8 +2165,8 @@ IEA*1*000000005~`
       return `
         <div class="segment-card">
           <div class="segment-header">
-            <span class="segment-code">${segment.id}</span>
-            <span class="segment-name">${name}</span>
+            <span class="segment-code">${escapeHtml(segment.id)}</span>
+            <span class="segment-name">${escapeHtml(name)}</span>
           </div>
           <div class="segment-fields">
             ${fieldsHtml || '<span style="color: var(--text-muted);">No data elements</span>'}
@@ -1642,7 +2222,7 @@ IEA*1*000000005~`
       
       let html = `
         <div class="line-items-section">
-          <h3>📦 Line Items (${data.lineItems.length})</h3>
+          <h3>Line Items (${data.lineItems.length})</h3>
           <div style="overflow-x: auto;">
             <table class="line-items-table">
               <thead>
@@ -1663,13 +2243,13 @@ IEA*1*000000005~`
         const extPrice = (item.quantity * item.unitPrice).toFixed(2);
         html += `
           <tr>
-            <td>${item.lineNumber || '-'}</td>
-            <td>${item.quantity || '-'}</td>
-            <td>${item.uom || '-'}</td>
-            <td>$${item.unitPrice?.toFixed(2) || '-'}</td>
+            <td>${escapeHtml(item.lineNumber || '-')}</td>
+            <td>${escapeHtml(item.quantity || '-')}</td>
+            <td>${escapeHtml(item.uom || '-')}</td>
+            <td>${item.unitPrice || item.unitPrice === 0 ? `$${item.unitPrice.toFixed(2)}` : '-'}</td>
             <td>$${extPrice}</td>
-            <td>${item.productIds?.VP || item.productIds?.BP || '-'}</td>
-            <td>${item.productIds?.UP || item.productIds?.EN || '-'}</td>
+            <td>${escapeHtml(item.productIds?.VP || item.productIds?.BP || '-')}</td>
+            <td>${escapeHtml(item.productIds?.UP || item.productIds?.EN || '-')}</td>
           </tr>
         `;
       });
@@ -1688,29 +2268,21 @@ IEA*1*000000005~`
       let html = '';
       data.segments.forEach(segment => {
         const def = SEGMENT_DEFS[segment.id];
-        html += `<span class="raw-segment"><span class="raw-segment-code">${segment.id}</span>${segment.raw.substring(segment.id.length)}</span>\n`;
+        html += `<span class="raw-segment"><span class="raw-segment-code">${escapeHtml(segment.id)}</span>${escapeHtml(segment.raw.substring(segment.id.length))}</span>\n`;
       });
       document.getElementById('rawView').innerHTML = html;
     }
 
     function renderJsonView(data) {
-      const json = JSON.stringify(data, null, 2);
-      // Syntax highlight
-      const highlighted = json
-        .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
-        .replace(/: "([^"]*)"/g, ': <span class="json-string">"$1"</span>')
-        .replace(/: (\d+\.?\d*)/g, ': <span class="json-number">$1</span>');
-      document.getElementById('jsonView').innerHTML = highlighted;
+      document.getElementById('jsonView').textContent = JSON.stringify(data, null, 2);
     }
 
     function renderValidation() {
       let html = '';
       validationMessages.forEach(msg => {
-        const icons = { error: '❌', warning: '⚠️', success: '✅' };
         html += `
           <div class="validation-msg ${msg.type}">
-            <span class="icon">${icons[msg.type]}</span>
-            <span>${msg.message}</span>
+            <span>${escapeHtml(msg.message)}</span>
           </div>
         `;
       });
@@ -1751,6 +2323,7 @@ IEA*1*000000005~`
       parsedData = null;
       rawSegments = [];
       validationMessages = [];
+      updateHeroMetrics(null);
     }
 
     function copySummary() {

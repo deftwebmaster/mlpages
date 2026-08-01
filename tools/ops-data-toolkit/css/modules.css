@@ -575,3 +575,153 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* ============================================
+   Premium Module Refresh
+   ============================================ */
+.module-controls-wrapper {
+    border-bottom-color: var(--color-border);
+    background: rgba(17, 23, 34, 0.88);
+}
+
+.module-controls {
+    padding: 16px 18px;
+    background: rgba(17, 23, 34, 0.88);
+    border-bottom-color: var(--color-border);
+}
+
+.module-controls h3 {
+    margin-bottom: 6px;
+    font-size: 0.98rem;
+    font-weight: 800;
+}
+
+.module-controls p {
+    max-width: 760px;
+    margin-bottom: 14px;
+    color: var(--color-text-muted);
+}
+
+.control-row {
+    gap: 12px;
+}
+
+.control-field label,
+.control-group label {
+    color: var(--color-text-muted);
+    font-weight: 800;
+}
+
+.control-group label {
+    border: 1px solid transparent;
+}
+
+.control-group label:hover {
+    background: rgba(32, 43, 61, 0.72);
+    border-color: var(--color-border);
+}
+
+.control-group input[type="checkbox"] {
+    accent-color: var(--color-primary);
+}
+
+.control-group input[type="text"],
+.control-group input[type="number"],
+.rule-item select,
+.rule-item input,
+.conversion-table input {
+    background: rgba(9, 11, 16, 0.64);
+    color: var(--color-text);
+}
+
+.rule-builder,
+.summary-card,
+.diff-row,
+.logic-code,
+.logic-equivalent-value {
+    border-color: var(--color-border);
+    background: rgba(9, 11, 16, 0.48);
+}
+
+.rule-builder-header h4,
+.logic-section h4 {
+    font-weight: 800;
+}
+
+.rule-item,
+.duplicate-group-header {
+    background: rgba(17, 23, 34, 0.74);
+    border-color: var(--color-border);
+}
+
+.rule-add {
+    border-color: rgba(45, 248, 230, 0.28);
+    color: var(--color-primary);
+    background: rgba(45, 248, 230, 0.06);
+}
+
+.rule-add:hover {
+    border-color: rgba(45, 248, 230, 0.6);
+    background: rgba(45, 248, 230, 0.10);
+}
+
+.conversion-table th {
+    background: rgba(32, 43, 61, 0.78);
+    border-color: var(--color-border);
+}
+
+.conversion-table td {
+    background: rgba(9, 11, 16, 0.56);
+    border-color: var(--color-border-light);
+}
+
+.summary-cards {
+    gap: 12px;
+}
+
+.summary-card {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.summary-card-label,
+.diff-label {
+    font-weight: 800;
+}
+
+.summary-card-value,
+.duplicate-group-key,
+.logic-equivalent-value {
+    color: var(--color-primary);
+}
+
+.validation-error {
+    background-color: rgba(255, 107, 122, 0.10);
+    border-left-color: var(--color-danger);
+}
+
+.validation-warning {
+    background-color: rgba(255, 204, 102, 0.10);
+    border-left-color: var(--color-warning);
+}
+
+.validation-success {
+    background-color: rgba(112, 255, 156, 0.10);
+    border-left-color: var(--color-success);
+}
+
+.info-badge {
+    background-color: rgba(32, 43, 61, 0.72);
+    border: 1px solid var(--color-border);
+}
+
+.info-badge.success {
+    background-color: rgba(112, 255, 156, 0.11);
+}
+
+.info-badge.warning {
+    background-color: rgba(255, 204, 102, 0.11);
+}
+
+.info-badge.danger {
+    background-color: rgba(255, 107, 122, 0.11);
+}

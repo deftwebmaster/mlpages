@@ -3,21 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Browser Fingerprint Viewer | Privacy Exposure Lab</title>
+  <title>Browser Fingerprint Viewer | Canvas, WebGL & Privacy Scan</title>
   <meta name="description" content="See what your browser reveals through canvas, WebGL, audio, fonts, storage, permissions, screen, timezone, network, and other fingerprinting signals.">
   <link rel="canonical" href="https://mattlivingston.com/tools/fingerprint/">
+  <meta name="robots" content="index,follow">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/fingerprint/">
-  <meta property="og:title" content="Browser Fingerprint Viewer | Privacy Exposure Lab">
+  <meta property="og:title" content="Browser Fingerprint Viewer | Canvas, WebGL & Privacy Scan">
   <meta property="og:description" content="See what your browser reveals through canvas, WebGL, audio, fonts, storage, permissions, screen, timezone, network, and other fingerprinting signals.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="Browser Fingerprint Viewer | Privacy Exposure Lab preview image">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Browser Fingerprint Viewer | Canvas, WebGL & Privacy Scan preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/fingerprint/">
-  <meta name="twitter:title" content="Browser Fingerprint Viewer | Privacy Exposure Lab">
+  <meta name="twitter:title" content="Browser Fingerprint Viewer | Canvas, WebGL & Privacy Scan">
   <meta name="twitter:description" content="See what your browser reveals through canvas, WebGL, audio, fonts, storage, permissions, screen, timezone, network, and other fingerprinting signals.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="Browser Fingerprint Viewer | Canvas, WebGL & Privacy Scan preview image">
 <style>
     * {
       margin: 0;
@@ -92,7 +96,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 18px;
-      margin-bottom: 46px;
+      margin-bottom: 28px;
     }
 
     .back-link,
@@ -121,22 +125,22 @@
     }
 
     header {
-      margin-bottom: 28px;
+      margin-bottom: 18px;
     }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.74fr);
-      gap: 28px;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 0.64fr);
+      gap: 22px;
       align-items: stretch;
     }
 
     h1 {
-      max-width: 9.5ch;
+      max-width: 14ch;
       margin: 0;
-      font-size: clamp(4rem, 9.4vw, 8rem);
+      font-size: clamp(3.2rem, 6.9vw, 5.75rem);
       font-weight: 900;
-      line-height: 0.88;
+      line-height: 0.92;
       letter-spacing: 0;
     }
 
@@ -156,23 +160,23 @@
 
     .subtitle {
       max-width: 780px;
-      margin: 26px 0 0;
+      margin: 16px 0 0;
       color: #d8e1ef;
-      font-size: clamp(1.08rem, 2vw, 1.38rem);
-      line-height: 1.58;
+      font-size: clamp(1rem, 1.5vw, 1.16rem);
+      line-height: 1.5;
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
-      margin-top: 24px;
+      margin-top: 18px;
     }
 
     .hero-panel {
       position: relative;
-      min-height: 390px;
-      padding: 18px;
+      min-height: 290px;
+      padding: 15px;
       border: 1px solid var(--line);
       border-radius: var(--radius);
       background:
@@ -196,7 +200,7 @@
     .signal-stack {
       position: relative;
       display: grid;
-      gap: 12px;
+      gap: 9px;
     }
 
     .signal-row {
@@ -204,7 +208,7 @@
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      padding: 12px;
+      padding: 10px;
       border: 1px solid rgba(248, 251, 255, 0.1);
       border-radius: var(--radius);
       background: rgba(5, 8, 18, 0.56);
@@ -226,8 +230,8 @@
 
     .hero-note {
       position: relative;
-      margin-top: 18px;
-      padding: 14px;
+      margin-top: 12px;
+      padding: 12px;
       border: 1px solid rgba(118, 255, 191, 0.2);
       border-radius: var(--radius);
       background: rgba(5, 8, 18, 0.72);
@@ -254,7 +258,7 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
-      margin: 26px 0;
+      margin: 16px 0;
     }
 
     .warning-banner,
@@ -433,7 +437,11 @@
 
     .scanning-progress {
       display: none;
-      margin: 18px 0;
+      margin: 14px 0 0;
+      padding: 12px;
+      border: 1px solid rgba(116, 223, 255, 0.22);
+      border-radius: var(--radius);
+      background: rgba(5, 8, 18, 0.62);
     }
 
     .scanning-progress.active {
@@ -687,11 +695,38 @@
       }
 
       .topbar {
-        margin-bottom: 34px;
+        margin-bottom: 22px;
       }
 
       h1 {
-        font-size: clamp(3.25rem, 15.2vw, 5.2rem);
+        font-size: clamp(2.55rem, 11.8vw, 3.4rem);
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+        font-size: 0.68rem;
+      }
+
+      .subtitle {
+        margin-top: 12px;
+        font-size: 0.95rem;
+        line-height: 1.45;
+      }
+
+      .hero-actions {
+        margin-top: 14px;
+      }
+
+      .hero-panel {
+        padding: 12px;
+      }
+
+      .signal-row {
+        padding: 9px;
+      }
+
+      .hero-note {
+        font-size: 0.88rem;
       }
 
       .hero-actions,
@@ -753,6 +788,15 @@
             <button id="scan-btn" class="scan-btn" type="button">Scan My Browser</button>
             <a class="btn" href="#tips-section">Reduce My Fingerprint</a>
           </div>
+          <div id="scanning-progress" class="scanning-progress">
+            <div class="progress-bar">
+              <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div class="current-scan">
+              <div class="scan-spinner"></div>
+              <span id="current-scan-text">Initializing scan...</span>
+            </div>
+          </div>
         </div>
 
         <aside class="hero-panel" aria-label="Fingerprint signal preview">
@@ -794,16 +838,6 @@
           <p class="eyebrow">Live report</p>
           <h2 class="status-title">Your browser exposure summary</h2>
           <p class="status-subtitle">Run the scan to generate a local fingerprint hash, risk score, tracker-facing insights, and exportable evidence.</p>
-        </div>
-      </div>
-
-      <div id="scanning-progress" class="scanning-progress">
-        <div class="progress-bar">
-          <div id="progress-fill" class="progress-fill"></div>
-        </div>
-        <div class="current-scan">
-          <div class="scan-spinner"></div>
-          <span id="current-scan-text">Initializing scan...</span>
         </div>
       </div>
 

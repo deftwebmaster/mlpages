@@ -170,7 +170,7 @@ export function renderIssuesWarnings(healthScore, container) {
     issuesSection.className = 'issues-section';
 
     const issuesTitle = document.createElement('h3');
-    issuesTitle.textContent = '🚨 Issues';
+    issuesTitle.textContent = 'Issues';
     issuesSection.appendChild(issuesTitle);
 
     const issuesList = document.createElement('ul');
@@ -199,7 +199,7 @@ export function renderIssuesWarnings(healthScore, container) {
     warningsSection.className = 'warnings-section';
 
     const warningsTitle = document.createElement('h3');
-    warningsTitle.textContent = '⚠️ Warnings';
+    warningsTitle.textContent = 'Warnings';
     warningsSection.appendChild(warningsTitle);
 
     const warningsList = document.createElement('ul');
@@ -224,7 +224,7 @@ export function renderIssuesWarnings(healthScore, container) {
       (!healthScore.warnings || healthScore.warnings.length === 0)) {
     const noIssues = document.createElement('div');
     noIssues.className = 'no-issues';
-    noIssues.innerHTML = '<p>✅ No issues or warnings detected</p>';
+    noIssues.innerHTML = '<p>No issues or warnings detected</p>';
     issuesContainer.appendChild(noIssues);
   }
 

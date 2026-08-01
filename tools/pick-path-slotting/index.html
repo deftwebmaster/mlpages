@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pick Path Slotting Planner | Warehouse SKU Slotting Tool</title>
+  <meta name="description" content="Analyze SKU velocity, cube, weight, replenishments, pick density, and current locations to find pick-face moves, slow movers, and slotting opportunities.">
+  <link rel="canonical" href="https://mattlivingston.com/tools/pick-path-slotting/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#090b10">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com/tools/pick-path-slotting/">
+  <meta property="og:title" content="Pick Path Slotting Planner | Warehouse SKU Slotting Tool">
+  <meta property="og:description" content="Analyze SKU velocity, cube, weight, replenishments, pick density, and current locations to find pick-face moves, slow movers, and slotting opportunities.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="Pick Path Slotting Planner | Warehouse SKU Slotting Tool preview image">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://mattlivingston.com/tools/pick-path-slotting/">
+  <meta name="twitter:title" content="Pick Path Slotting Planner | Warehouse SKU Slotting Tool">
+  <meta name="twitter:description" content="Analyze SKU velocity, cube, weight, replenishments, pick density, and current locations to find pick-face moves, slow movers, and slotting opportunities.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="Pick Path Slotting Planner | Warehouse SKU Slotting Tool preview image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Pick Path Slotting Planner",
+    "url": "https://mattlivingston.com/tools/pick-path-slotting/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "description": "A local browser-based warehouse slotting planner for SKU velocity, cube, weight, replenishment pressure, and pick-face move recommendations.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      color-scheme: dark;
+      --bg: #090b10;
+      --panel: rgba(17, 23, 34, 0.9);
+      --panel-strong: rgba(23, 32, 48, 0.94);
+      --input: rgba(5, 8, 12, 0.88);
+      --line: rgba(148, 163, 184, 0.24);
+      --line-strong: rgba(45, 248, 230, 0.42);
+      --text: #f7fafc;
+      --muted: #a8b3c5;
+      --faint: #718096;
+      --teal: #2df8e6;
+      --green: #70ff9c;
+      --purple: #b88cff;
+      --amber: #ffcc66;
+      --red: #ff6b7a;
+      --ink: #061014;
+      --radius: 8px;
+      --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(180deg, #090b10 0%, #0d1118 52%, #080d0d 100%);
+      background-size: 44px 44px, 44px 44px, auto;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.11), transparent 34%),
+        linear-gradient(225deg, rgba(184, 140, 255, 0.13), transparent 38%);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; }
+    a { color: inherit; }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1320px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 22px 0 54px;
+    }
+
+    .topbar, .hero-top, .panel-head, .actions, .filter-bar, .link-grid {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar {
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .back-link, .site-link, .mini-link {
+      color: var(--muted);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .back-link { color: var(--teal); }
+    .back-link:hover, .site-link:hover, .mini-link:hover { color: var(--text); }
+
+    header {
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(45, 248, 230, 0.08), rgba(184, 140, 255, 0.08)),
+        var(--panel);
+      box-shadow: 0 18px 56px rgba(0, 0, 0, 0.26);
+    }
+
+    .hero-top {
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .brand-block {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--teal);
+      background: rgba(9, 11, 16, 0.68);
+      font-family: var(--mono);
+      font-weight: 900;
+      box-shadow: 0 0 28px rgba(45, 248, 230, 0.2);
+    }
+
+    .eyebrow {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      font-size: clamp(2.2rem, 5vw, 4.6rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 780px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      min-width: 320px;
+    }
+
+    .hero-links a, .kpi {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      background: rgba(9, 11, 16, 0.48);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .hero-links a:hover {
+      border-color: var(--line-strong);
+      color: var(--teal);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .kpi {
+      min-height: 64px;
+      display: grid;
+      align-content: center;
+      gap: 2px;
+    }
+
+    .kpi strong {
+      color: var(--teal);
+      font-family: var(--mono);
+      font-size: 1.2rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(300px, 0.34fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(45, 248, 230, 0.045), rgba(184, 140, 255, 0.04)),
+        var(--panel);
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 11, 16, 0.42);
+    }
+
+    .panel-title {
+      font-size: 1.02rem;
+      font-weight: 850;
+    }
+
+    .panel-body { padding: 16px; }
+
+    .btn {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--text);
+      background: rgba(9, 11, 16, 0.52);
+      font-weight: 850;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--line-strong);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .btn.primary {
+      color: var(--ink);
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--teal), var(--green));
+    }
+
+    .btn.ghost { color: var(--muted); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    textarea, input[type="file"], input[type="number"], input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      color: var(--text);
+      background: var(--input);
+      outline: none;
+    }
+
+    textarea {
+      min-height: 330px;
+      padding: 12px;
+      resize: vertical;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      line-height: 1.45;
+    }
+
+    textarea:focus, input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(45, 248, 230, 0.16);
+    }
+
+    input[type="file"] { padding: 10px; }
+    input[type="number"], input[type="text"] { min-height: 38px; padding: 8px 10px; }
+
+    .settings {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    label span {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .actions { margin-top: 12px; }
+
+    .detected {
+      display: grid;
+      gap: 7px;
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid rgba(45, 248, 230, 0.22);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.44);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .detected code {
+      color: var(--green);
+      font-family: var(--mono);
+      overflow-wrap: anywhere;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .summary-card, .queue-card, .method-card, .related-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.44);
+    }
+
+    .summary-card {
+      min-height: 92px;
+      padding: 13px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 6px;
+      color: var(--text);
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .summary-card em {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-style: normal;
+      font-size: 0.82rem;
+    }
+
+    .filter-bar {
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.36);
+    }
+
+    .filter {
+      min-height: 34px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.04);
+      font-size: 0.82rem;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .filter.active, .filter:hover {
+      color: var(--ink);
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--teal), var(--green));
+    }
+
+    .queue {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .queue-card {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+    }
+
+    .priority {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      color: var(--teal);
+      background: rgba(45, 248, 230, 0.1);
+      font-family: var(--mono);
+      font-weight: 900;
+    }
+
+    .queue-card h3 {
+      margin-bottom: 2px;
+      font-size: 1rem;
+    }
+
+    .queue-card p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.high { color: #ffd7df; background: rgba(255, 107, 122, 0.15); border: 1px solid rgba(255, 107, 122, 0.42); }
+    .badge.medium { color: #ffe7ae; background: rgba(255, 204, 102, 0.13); border: 1px solid rgba(255, 204, 102, 0.35); }
+    .badge.low { color: #caffde; background: rgba(112, 255, 156, 0.11); border: 1px solid rgba(112, 255, 156, 0.32); }
+    .badge.review { color: #e4d7ff; background: rgba(184, 140, 255, 0.14); border: 1px solid rgba(184, 140, 255, 0.38); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      background: rgba(9, 11, 16, 0.44);
+    }
+
+    th, td {
+      padding: 9px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.84rem;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--faint);
+      background: #101722;
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    tbody tr:hover { background: rgba(45, 248, 230, 0.055); }
+    td strong { color: var(--text); }
+    td code { color: var(--green); font-family: var(--mono); }
+
+    .reason {
+      max-width: 260px;
+      color: var(--muted);
+    }
+
+    .flag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      max-width: 220px;
+    }
+
+    .flag {
+      padding: 3px 6px;
+      border: 1px solid rgba(45, 248, 230, 0.24);
+      border-radius: 999px;
+      color: var(--teal);
+      background: rgba(45, 248, 230, 0.08);
+      font-size: 0.7rem;
+      font-weight: 850;
+    }
+
+    .empty {
+      padding: 28px;
+      border: 1px dashed var(--line);
+      border-radius: var(--radius);
+      color: var(--muted);
+      text-align: center;
+      background: rgba(9, 11, 16, 0.34);
+    }
+
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(300px, 0.58fr);
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .method-card, .related-card {
+      padding: 14px;
+    }
+
+    .method-card h3, .related-card h3 {
+      margin-bottom: 8px;
+      font-size: 1.05rem;
+    }
+
+    .method-card ul {
+      display: grid;
+      gap: 8px;
+      margin-left: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .link-grid {
+      align-items: stretch;
+    }
+
+    .link-grid a {
+      flex: 1 1 180px;
+      min-height: 78px;
+      display: grid;
+      align-content: center;
+      gap: 4px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(9, 11, 16, 0.46);
+      text-decoration: none;
+    }
+
+    .link-grid a:hover {
+      border-color: var(--line-strong);
+      background: rgba(45, 248, 230, 0.1);
+    }
+
+    .link-grid strong { color: var(--text); }
+    .link-grid span { color: var(--muted); font-size: 0.82rem; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      z-index: 20;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: linear-gradient(135deg, var(--teal), var(--green));
+      font-weight: 900;
+      box-shadow: 0 18px 54px rgba(0, 0, 0, 0.28);
+    }
+
+    @media (max-width: 940px) {
+      .hero-top, .layout, .lower-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-links {
+        justify-content: flex-start;
+        min-width: 0;
+      }
+
+      .kpi-row, .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page { width: min(100% - 20px, 1320px); padding-top: 14px; }
+      .topbar { align-items: flex-start; }
+      header, .panel-body { padding: 14px; }
+      .brand-block { grid-template-columns: 1fr; }
+      h1 { font-size: clamp(2.2rem, 11vw, 3.35rem); }
+      .subtitle { font-size: 0.95rem; }
+      .hero-links a, .btn { width: 100%; }
+      .kpi-row, .summary-grid, .settings { grid-template-columns: 1fr; }
+      textarea { min-height: 280px; }
+      .queue-card { grid-template-columns: 1fr; }
+      .queue-card .badge { width: fit-content; }
+    }
+  </style>
+  <link rel="stylesheet" href="../tool-modern.css">
+  <script defer src="../tool-credit.js"></script>
+</head>
+<body>
+  <div class="page">
+    <nav class="topbar" aria-label="Page navigation">
+      <a class="back-link" href="../">&larr; Tools</a>
+      <a class="site-link" href="https://mattlivingston.com">Matt Livingston</a>
+    </nav>
+
+    <header>
+      <div class="hero-top">
+        <div class="brand-block">
+          <div class="logo">SLT</div>
+          <div>
+            <span class="eyebrow">Warehouse slotting planner</span>
+            <h1>Pick Path Slotting Planner</h1>
+            <p class="subtitle">Rank SKUs by pick velocity, cube, replenishment pressure, handling constraints, and current location to build a cleaner warehouse pick path.</p>
+          </div>
+        </div>
+        <nav class="hero-links" aria-label="Related warehouse tools">
+          <a href="../ops-data-toolkit/">Ops Data Toolkit</a>
+          <a href="../pallet-calculator/">Pallet Load Calculator</a>
+          <a href="../barcode-validator/">Barcode Validator</a>
+          <a href="../labor-cost/">Labor Cost</a>
+        </nav>
+      </div>
+      <div class="kpi-row" aria-label="Slotting summary">
+        <div class="kpi"><strong id="kpiSkus">0</strong><span>SKUs analyzed</span></div>
+        <div class="kpi"><strong id="kpiMoves">0</strong><span>action candidates</span></div>
+        <div class="kpi"><strong id="kpiPrime">0</strong><span>prime candidates</span></div>
+        <div class="kpi"><strong id="kpiReplen">0</strong><span>replenishment risks</span></div>
+        <div class="kpi"><strong id="kpiLocal">Local</strong><span>browser only</span></div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="inputTitle">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">CSV input</span>
+            <h2 class="panel-title" id="inputTitle">Paste or import SKU activity</h2>
+          </div>
+          <button class="btn ghost" id="sampleBtn" type="button">Sample Data</button>
+        </div>
+        <div class="panel-body">
+          <label>
+            <span>Upload CSV</span>
+            <input id="fileInput" type="file" accept=".csv,text/csv">
+          </label>
+          <div class="settings">
+            <label><span>Heavy case lb</span><input id="heavyLimit" type="number" min="1" step="1" value="35"></label>
+            <label><span>Bulky cube ft</span><input id="bulkyLimit" type="number" min="0.1" step="0.1" value="1.5"></label>
+            <label><span>High replen / 30d</span><input id="replenLimit" type="number" min="1" step="1" value="8"></label>
+            <label><span>Prime zone words</span><input id="primeWords" type="text" value="golden,prime,pick,forward"></label>
+          </div>
+          <label>
+            <span>CSV table</span>
+            <textarea id="csvInput" spellcheck="false" placeholder="sku,description,units_picked_30d,orders_30d,cases_on_hand,units_per_case,case_length,case_width,case_height,case_weight,current_location,zone,location_type,replenishments_30d"></textarea>
+          </label>
+          <div class="actions">
+            <button class="btn primary" id="analyzeBtn" type="button">Analyze Slotting</button>
+            <button class="btn" id="clearBtn" type="button">Clear</button>
+          </div>
+          <div class="detected" id="detectedBox">
+            <strong>Detected columns will appear here.</strong>
+            <code>Load sample data or paste a CSV to begin.</code>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="resultsTitle">
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">Slotting output</span>
+            <h2 class="panel-title" id="resultsTitle">Action queue and recommendations</h2>
+          </div>
+          <div class="actions">
+            <button class="btn" id="copyBtn" type="button" disabled>Copy Summary</button>
+            <button class="btn" id="exportBtn" type="button" disabled>Export CSV</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="summary-grid">
+            <div class="summary-card"><span>High priority</span><strong id="sumHigh">0</strong><em>needs action</em></div>
+            <div class="summary-card"><span>Move to pick face</span><strong id="sumPickFace">0</strong><em>velocity wins</em></div>
+            <div class="summary-card"><span>Slow in prime</span><strong id="sumDemote">0</strong><em>space recovery</em></div>
+            <div class="summary-card"><span>Data issues</span><strong id="sumIssues">0</strong><em>review first</em></div>
+          </div>
+
+          <div class="filter-bar" aria-label="Recommendation filters">
+            <button class="filter active" type="button" data-filter="all">All</button>
+            <button class="filter" type="button" data-filter="high">High Priority</button>
+            <button class="filter" type="button" data-filter="pick-face">Move to Pick Face</button>
+            <button class="filter" type="button" data-filter="reserve">Move to Reserve</button>
+            <button class="filter" type="button" data-filter="handling">Heavy / Bulky</button>
+            <button class="filter" type="button" data-filter="issues">Data Issues</button>
+            <button class="filter" type="button" data-filter="keep">Keep As-Is</button>
+          </div>
+
+          <div class="queue" id="actionQueue">
+            <div class="empty">Run the sample data or paste a SKU activity CSV to generate the slotting action queue.</div>
+          </div>
+
+          <div class="table-wrap" id="tableWrap" hidden>
+            <table>
+              <thead>
+                <tr>
+                  <th>SKU</th>
+                  <th>Current</th>
+                  <th>Recommendation</th>
+                  <th>Priority</th>
+                  <th>Velocity</th>
+                  <th>Cube</th>
+                  <th>Days Supply</th>
+                  <th>Replen</th>
+                  <th>Flags</th>
+                  <th>Reason</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="lower-grid" aria-label="Method and related tools">
+      <div class="method-card">
+        <span class="eyebrow">How v1 scores slotting</span>
+        <h3>Transparent rules before black-box precision.</h3>
+        <ul>
+          <li>Velocity blends order-line rank and unit-pick rank, with order lines weighted higher because touches drive travel.</li>
+          <li>Priority is score-based: 82+ is high, 58-81 is medium, and lower scores are monitoring items.</li>
+          <li>Slow movers in prime pick-face space are checked before handling overrides so obvious space recovery does not get buried.</li>
+          <li>Replenishment pressure is only urgent when paired with high velocity, low days of supply, or a poor current location.</li>
+          <li>Heavy, bulky, fragile, hazmat, and temperature-control signals can override pure velocity when handling risk matters.</li>
+          <li>Rows missing SKU, pick activity, or basic dimensions are held for review instead of pretending the answer is precise.</li>
+        </ul>
+      </div>
+      <div class="related-card">
+        <span class="eyebrow">Connected ops workflow</span>
+        <h3>Use this with the rest of the warehouse suite.</h3>
+        <div class="link-grid">
+          <a href="../ops-data-toolkit/"><strong>Clean the export</strong><span>Fix messy SKU/location CSVs before slotting.</span></a>
+          <a href="../pallet-calculator/"><strong>Check cube</strong><span>Validate pallet and case dimensions for reserve moves.</span></a>
+          <a href="../labor-cost/"><strong>Estimate impact</strong><span>Model labor savings from fewer touches and replenishments.</span></a>
+          <a href="../wms-cheat-sheet/"><strong>Decode terms</strong><span>Reference WMS location, pick, LPN, and replenishment language.</span></a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const SAMPLE_CSV = `sku,description,units_picked_30d,orders_30d,cases_on_hand,units_per_case,case_length,case_width,case_height,case_weight,current_location,zone,location_type,replenishments_30d,hazmat,temp_control,fragile,stackable
+AX-1042,Phone charger cable 6ft,1840,910,38,24,12,8,6,18,A-01-02-A,Golden A,Forward Pick,12,no,no,no,yes
+BX-7781,Stainless water bottle,520,330,82,12,18,14,12,31,C-14-03-B,Reserve C,Reserve Rack,7,no,no,no,yes
+CX-2209,Replacement filter cartridge,94,48,210,6,24,18,20,42,A-02-01-C,Golden A,Forward Pick,1,no,no,no,yes
+DX-5500,Glass mixing bowl set,310,180,44,4,26,20,18,37,B-06-04-A,Pick B,Forward Pick,9,no,no,yes,no
+EX-0198,Industrial floor mat,62,26,120,1,44,18,12,52,D-18-01-A,Bulk D,Bulk Floor,1,no,no,no,no
+FX-4011,Vitamin gummies 90ct,1320,720,55,36,15,10,9,22,R-22-05-C,Reserve R,Reserve Rack,14,no,no,no,yes
+GX-3004,Lithium battery pack,410,260,18,12,11,9,7,16,H-03-02-A,Hazmat H,Secure Pick,6,yes,no,no,yes
+HX-8802,Insulated meal kit,140,76,8,6,30,22,18,28,A-03-04-B,Golden A,Forward Pick,11,no,yes,no,yes
+IX-7007,Sticker sheet bundle,980,640,12,100,9,7,3,5,A-04-01-A,Pick A,Forward Pick,4,no,no,no,yes
+JX-1120,Cast iron pan,260,220,24,6,16,16,10,46,A-01-05-C,Golden A,Forward Pick,8,no,no,no,yes
+KX-4418,Seasonal display stand,18,10,86,1,60,30,8,40,A-05-01-D,Golden A,Forward Pick,0,no,no,no,no
+PX-4040,Outlet cover plate almond,22,14,96,50,12,8,6,9,A-06-01-A,Golden A,Forward Pick,0,no,no,no,yes
+LX-9021,Poly mailer 10x13,2460,1200,65,500,18,14,10,12,B-02-01-A,Pick B,Forward Pick,16,no,no,no,yes
+MX-2190,Replacement pump,240,160,70,8,22,16,14,33,R-10-04-B,Reserve R,Reserve Rack,10,no,no,no,yes
+NX-0091,Imported novelty part,,85,40,10,12,10,,18,A-07-02-A,Pick A,Forward Pick,2,no,no,no,yes`;
+
+    const ALIASES = {
+      sku: ['sku', 'item', 'item_number', 'item number', 'item_id', 'part', 'part_number'],
+      description: ['description', 'desc', 'item_description', 'product_name', 'name'],
+      unitsPicked: ['units_picked_30d', 'picked_units', 'qty_picked', 'units picked', 'units', 'unit_picks_30d'],
+      orders: ['orders_30d', 'order_lines', 'pick_lines', 'lines_picked', 'orders', 'picks_30d'],
+      casesOnHand: ['cases_on_hand', 'case_on_hand', 'cases', 'case_qty', 'on_hand_cases'],
+      unitsOnHand: ['units_on_hand', 'eaches_on_hand', 'on_hand_units', 'qty_on_hand', 'on_hand'],
+      unitsPerCase: ['units_per_case', 'case_pack', 'pack', 'casepack', 'uom_qty'],
+      caseLength: ['case_length', 'length', 'case_l', 'l'],
+      caseWidth: ['case_width', 'width', 'case_w', 'w'],
+      caseHeight: ['case_height', 'height', 'case_h', 'h'],
+      caseWeight: ['case_weight', 'weight', 'case_wt', 'wt', 'gross_weight'],
+      location: ['current_location', 'location', 'loc', 'bin', 'slot'],
+      zone: ['zone', 'current_zone', 'area'],
+      locationType: ['location_type', 'loc_type', 'slot_type', 'storage_type'],
+      replenishments: ['replenishments_30d', 'replens_30d', 'replenishments', 'replen_count', 'replen'],
+      hazmat: ['hazmat', 'hazardous'],
+      tempControl: ['temp_control', 'temperature_control', 'temp', 'cold_chain'],
+      fragile: ['fragile', 'breakable'],
+      stackable: ['stackable']
+    };
+
+    const state = {
+      rows: [],
+      analyzed: [],
+      filter: 'all',
+      mapping: {}
+    };
+
+    const els = {
+      csvInput: document.getElementById('csvInput'),
+      fileInput: document.getElementById('fileInput'),
+      sampleBtn: document.getElementById('sampleBtn'),
+      analyzeBtn: document.getElementById('analyzeBtn'),
+      clearBtn: document.getElementById('clearBtn'),
+      detectedBox: document.getElementById('detectedBox'),
+      resultsBody: document.getElementById('resultsBody'),
+      tableWrap: document.getElementById('tableWrap'),
+      actionQueue: document.getElementById('actionQueue'),
+      copyBtn: document.getElementById('copyBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      heavyLimit: document.getElementById('heavyLimit'),
+      bulkyLimit: document.getElementById('bulkyLimit'),
+      replenLimit: document.getElementById('replenLimit'),
+      primeWords: document.getElementById('primeWords')
+    };
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[char]));
+    }
+
+    function normalizeHeader(value) {
+      return String(value || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = '';
+      let inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"' && inQuotes && next === '"') {
+          cell += '"';
+          i++;
+        } else if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          row.push(cell);
+          cell = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (char === '\r' && next === '\n') i++;
+          row.push(cell);
+          if (row.some(v => v.trim() !== '')) rows.push(row);
+          row = [];
+          cell = '';
+        } else {
+          cell += char;
+        }
+      }
+      row.push(cell);
+      if (row.some(v => v.trim() !== '')) rows.push(row);
+      if (rows.length < 2) return [];
+      const headers = rows[0].map(h => h.trim());
+      return rows.slice(1).map(values => {
+        const record = {};
+        headers.forEach((header, index) => {
+          record[header] = (values[index] || '').trim();
+        });
+        return record;
+      });
+    }
+
+    function detectColumns(rows) {
+      const headers = Object.keys(rows[0] || {});
+      const normalized = new Map(headers.map(header => [normalizeHeader(header), header]));
+      const mapping = {};
+      Object.entries(ALIASES).forEach(([key, aliases]) => {
+        const match = aliases.map(normalizeHeader).find(alias => normalized.has(alias));
+        if (match) mapping[key] = normalized.get(match);
+      });
+      state.mapping = mapping;
+      return mapping;
+    }
+
+    function num(value) {
+      const parsed = parseFloat(String(value ?? '').replace(/[$,%]/g, ''));
+      return Number.isFinite(parsed) ? parsed : 0;
+    }
+
+    function boolFlag(value) {
+      return ['y', 'yes', 'true', '1', 'x'].includes(String(value || '').trim().toLowerCase());
+    }
+
+    function get(row, key) {
+      return state.mapping[key] ? row[state.mapping[key]] : '';
+    }
+
+    function percentileRank(sortedValues, value) {
+      if (!sortedValues.length) return 0;
+      const index = sortedValues.findIndex(v => value <= v);
+      const position = index === -1 ? sortedValues.length : index + 1;
+      return Math.round((position / sortedValues.length) * 100);
+    }
+
+    function settings() {
+      return {
+        heavyLimit: num(els.heavyLimit.value) || 35,
+        bulkyLimit: num(els.bulkyLimit.value) || 1.5,
+        replenLimit: num(els.replenLimit.value) || 8,
+        primeWords: els.primeWords.value.toLowerCase().split(',').map(v => v.trim()).filter(Boolean)
+      };
+    }
+
+    function analyzeRows(rows) {
+      detectColumns(rows);
+      const cfg = settings();
+      const metrics = rows.map(row => {
+        const unitsPicked = num(get(row, 'unitsPicked'));
+        const orders = num(get(row, 'orders'));
+        return { row, unitsPicked, orders };
+      });
+      const unitRanks = metrics.map(m => m.unitsPicked).sort((a, b) => a - b);
+      const orderRanks = metrics.map(m => m.orders).sort((a, b) => a - b);
+
+      return metrics.map((metric, index) => {
+        const row = metric.row;
+        const sku = get(row, 'sku') || `ROW-${index + 1}`;
+        const description = get(row, 'description');
+        const casesOnHand = num(get(row, 'casesOnHand'));
+        const unitsPerCase = num(get(row, 'unitsPerCase')) || 1;
+        const unitsOnHand = num(get(row, 'unitsOnHand')) || (casesOnHand * unitsPerCase);
+        const length = num(get(row, 'caseLength'));
+        const width = num(get(row, 'caseWidth'));
+        const height = num(get(row, 'caseHeight'));
+        const weight = num(get(row, 'caseWeight'));
+        const cube = length && width && height ? (length * width * height) / 1728 : 0;
+        const replenishments = num(get(row, 'replenishments'));
+        const location = get(row, 'location') || '-';
+        const zone = get(row, 'zone') || '-';
+        const locationType = get(row, 'locationType') || '-';
+        const locationText = `${location} ${zone} ${locationType}`.toLowerCase();
+        const isPrime = cfg.primeWords.some(word => locationText.includes(word));
+        const isReserve = /reserve|bulk|rack|floor|overflow|back/.test(locationText);
+        const daysSupply = metric.unitsPicked > 0 ? unitsOnHand / (metric.unitsPicked / 30) : 999;
+        const unitRank = percentileRank(unitRanks, metric.unitsPicked);
+        const orderRank = percentileRank(orderRanks, metric.orders);
+        const velocity = Math.round((orderRank * 0.65) + (unitRank * 0.35));
+        const pickDensity = metric.orders && cube ? metric.orders / Math.max(cube, 0.05) : 0;
+        const flags = [];
+        if (weight >= cfg.heavyLimit) flags.push('heavy');
+        if (cube >= cfg.bulkyLimit) flags.push('bulky');
+        if (boolFlag(get(row, 'hazmat'))) flags.push('hazmat');
+        if (boolFlag(get(row, 'tempControl'))) flags.push('temp control');
+        if (boolFlag(get(row, 'fragile'))) flags.push('fragile');
+        if (String(get(row, 'stackable')).toLowerCase() === 'no') flags.push('non-stack');
+        if (replenishments >= cfg.replenLimit) flags.push('high replen');
+
+        const missing = [];
+        if (!get(row, 'sku')) missing.push('SKU');
+        if (!metric.unitsPicked && !metric.orders) missing.push('pick activity');
+        if (!cube) missing.push('case dimensions');
+
+        const result = {
+          sku, description, location, zone, locationType, unitsPicked: metric.unitsPicked,
+          orders: metric.orders, casesOnHand, unitsPerCase, unitsOnHand, cube, weight,
+          replenishments, daysSupply, velocity, pickDensity, flags, missing, isPrime, isReserve
+        };
+
+        return { ...result, ...recommend(result, cfg) };
+      }).sort((a, b) => b.priorityScore - a.priorityScore || b.velocity - a.velocity);
+    }
+
+    function priorityFromScore(score) {
+      if (score >= 82) return 'High';
+      if (score >= 58) return 'Medium';
+      return 'Low';
+    }
+
+    function clampScore(score) {
+      return Math.max(1, Math.min(99, Math.round(score)));
+    }
+
+    function handlingFlags(item) {
+      return item.flags.filter(flag => ['heavy', 'bulky', 'hazmat', 'temp control', 'fragile', 'non-stack'].includes(flag));
+    }
+
+    function decision(recommendation, action, score, reason) {
+      const priorityScore = clampScore(score);
+      return {
+        recommendation,
+        action,
+        priority: priorityFromScore(priorityScore),
+        priorityScore,
+        reason
+      };
+    }
+
+    function recommend(item, cfg) {
+      if (item.missing.length) {
+        const severe = item.missing.some(field => field === 'SKU' || field === 'pick activity');
+        const score = severe ? 94 : 84;
+        return {
+          recommendation: 'Review Needed',
+          action: 'issues',
+          priority: 'Review',
+          priorityScore: score,
+          reason: `Missing ${item.missing.join(', ')}. Fix the data before making a location move.`
+        };
+      }
+
+      const handling = handlingFlags(item);
+      const hasHandling = handling.length > 0;
+      const highReplen = item.replenishments >= cfg.replenLimit;
+      const veryHighReplen = item.replenishments >= cfg.replenLimit * 1.5;
+      const compact = item.cube < cfg.bulkyLimit && item.weight < cfg.heavyLimit;
+
+      if (item.velocity <= 30 && item.isPrime) {
+        return decision(
+          'Slow Mover / Backline',
+          'reserve',
+          88 + (item.daysSupply > 90 ? 4 : 0),
+          `Low velocity (${item.velocity}) is using pick-face space. Move it back and recover prime locations for faster movers.`
+        );
+      }
+
+      if (item.velocity <= 36 && item.daysSupply > 60) {
+        if (item.isPrime) {
+          return decision(
+            'Bulk / Reserve',
+            'reserve',
+            80,
+            `Slow velocity and ${item.daysSupply.toFixed(1)} days of supply point to reserve storage instead of pick-face space.`
+          );
+        }
+        return decision(
+          'Keep in Reserve / Backline',
+          'keep',
+          30,
+          `Low velocity and ${item.daysSupply.toFixed(1)} days of supply are already better suited to non-prime storage.`
+        );
+      }
+
+      if (highReplen && !hasHandling && item.velocity >= 82) {
+        if (item.isPrime) {
+          return decision(
+            'Larger Pick Face / Min-Max Review',
+            'pick-face',
+            84 + (veryHighReplen ? 6 : 0) + Math.min(5, Math.max(0, 21 - item.daysSupply) / 4),
+            `Fast mover with ${item.replenishments}/30d replenishments. Keep it prime, but review pick-face capacity and min/max settings.`
+          );
+        }
+        return decision(
+          'Golden Zone Pick Face',
+          'pick-face',
+          94,
+          `High velocity plus ${item.replenishments}/30d replenishments makes this expensive to keep outside the prime pick path.`
+        );
+      }
+
+      if (highReplen && !hasHandling && item.velocity >= 58) {
+        return decision(
+          item.isPrime ? 'Pick Face Capacity Review' : 'Standard Pick Face',
+          'pick-face',
+          item.isPrime ? 66 : 78,
+          `Replenishment pressure is real (${item.replenishments}/30d), but velocity is moderate. Review capacity before treating it like a top mover.`
+        );
+      }
+
+      if (hasHandling && highReplen) {
+        return decision(
+          item.isPrime ? 'Controlled Capacity Review' : 'Controlled Pick Face Review',
+          'handling',
+          item.velocity >= 72 ? (item.isPrime ? 76 : 86) : (item.isPrime ? 68 : 74),
+          `Replenishment pressure combines with handling flags (${handling.join(', ')}). Tune capacity inside the right controlled or ergonomic zone.`
+        );
+      }
+
+      if (!hasHandling && item.velocity >= 86 && compact) {
+        if (item.isPrime) {
+          return decision(
+            'Keep in Golden Pick Face',
+            'keep',
+            34,
+            'Fast, compact SKU is already in a pick-face location. Keep it there unless replenishments spike.'
+          );
+        }
+        return decision(
+          'Golden Zone Pick Face',
+          'pick-face',
+          95,
+          'High order-line velocity, compact cube, and manageable weight make this a prime pick-path candidate.'
+        );
+      }
+
+      if (!hasHandling && item.velocity >= 68) {
+        if (item.isPrime) {
+          return decision(
+            'Keep in Standard Pick Face',
+            'keep',
+            34,
+            'Moderate-to-high velocity SKU is already close enough to the pick path under the v1 rules.'
+          );
+        }
+        return decision(
+          'Standard Pick Face',
+          'pick-face',
+          74,
+          'Moderate-to-high velocity SKU should be closer to the pick path than a reserve location.'
+        );
+      }
+
+      if (hasHandling && item.velocity >= 78) {
+        return decision(
+          'Ergonomic / Controlled Pick Face',
+          'handling',
+          item.isPrime ? 74 : 86,
+          `Strong demand, but handling flags (${handling.join(', ')}) require an ergonomic, secure, or controlled slot instead of pure golden-zone placement.`
+        );
+      }
+
+      if (hasHandling && item.velocity >= 45) {
+        return decision(
+          item.isPrime ? 'Handling Zone Review' : 'Heavy / Oversize Pick Path Review',
+          'handling',
+          item.isPrime ? 64 : 72,
+          `Moderate demand plus handling flags (${handling.join(', ')}) deserves a zone review, but it is not automatically a prime slotting move.`
+        );
+      }
+
+      if (hasHandling) {
+        if (item.isPrime) {
+          return decision(
+            'Heavy / Oversize Zone',
+            'handling',
+            82,
+            `Low velocity and handling flags (${handling.join(', ')}) make this a poor use of prime pick-face space.`
+          );
+        }
+        return decision(
+          'Keep in Handling Zone',
+          'keep',
+          34,
+          `Handling flags (${handling.join(', ')}) matter more than velocity. Keep it out of ordinary prime pick slots.`
+        );
+      }
+
+      return decision(
+        'Keep As-Is',
+        'keep',
+        24,
+        'No obvious slotting mismatch in the v1 rules. Keep monitoring velocity, days of supply, and replenishment pressure.'
+      );
+    }
+
+    function renderAll() {
+      const rows = filteredRows();
+      renderKpis();
+      renderSummary();
+      renderDetected();
+      renderQueue(rows);
+      renderTable(rows);
+      els.copyBtn.disabled = !state.analyzed.length;
+      els.exportBtn.disabled = !state.analyzed.length;
+    }
+
+    function filteredRows() {
+      if (state.filter === 'all') return state.analyzed;
+      if (state.filter === 'high') return state.analyzed.filter(row => row.priority === 'High');
+      return state.analyzed.filter(row => row.action === state.filter);
+    }
+
+    function renderKpis() {
+      const data = state.analyzed;
+      document.getElementById('kpiSkus').textContent = data.length;
+      document.getElementById('kpiMoves').textContent = data.filter(row => row.action !== 'keep' && row.action !== 'issues').length;
+      document.getElementById('kpiPrime').textContent = data.filter(row => row.action === 'pick-face').length;
+      document.getElementById('kpiReplen').textContent = data.filter(row => row.flags.includes('high replen')).length;
+    }
+
+    function renderSummary() {
+      const data = state.analyzed;
+      document.getElementById('sumHigh').textContent = data.filter(row => row.priority === 'High').length;
+      document.getElementById('sumPickFace').textContent = data.filter(row => row.action === 'pick-face').length;
+      document.getElementById('sumDemote').textContent = data.filter(row => row.action === 'reserve').length;
+      document.getElementById('sumIssues').textContent = data.filter(row => row.action === 'issues').length;
+    }
+
+    function renderDetected() {
+      const entries = Object.entries(state.mapping);
+      if (!entries.length) {
+        els.detectedBox.innerHTML = '<strong>Detected columns will appear here.</strong><code>Load sample data or paste a CSV to begin.</code>';
+        return;
+      }
+      const importantMissing = ['sku', 'unitsPicked', 'orders', 'caseLength', 'caseWidth', 'caseHeight'].filter(key => !state.mapping[key]);
+      els.detectedBox.innerHTML = `
+        <strong>${entries.length} columns mapped${importantMissing.length ? `; missing ${escapeHtml(importantMissing.join(', '))}` : '; ready to analyze'}.</strong>
+        <code>${entries.map(([key, value]) => `${escapeHtml(key)} -> ${escapeHtml(value)}`).join(' | ')}</code>
+      `;
+    }
+
+    function renderQueue(rows) {
+      const top = rows.filter(row => row.action !== 'keep').slice(0, 6);
+      if (!state.analyzed.length) {
+        els.actionQueue.innerHTML = '<div class="empty">Run the sample data or paste a SKU activity CSV to generate the slotting action queue.</div>';
+        return;
+      }
+      if (!top.length) {
+        els.actionQueue.innerHTML = '<div class="empty">No action candidates in this filter. The visible SKUs look stable under the v1 rules.</div>';
+        return;
+      }
+      els.actionQueue.innerHTML = top.map(row => `
+        <article class="queue-card">
+          <div class="priority">${row.priorityScore}</div>
+          <div>
+            <h3>${escapeHtml(row.sku)} -> ${escapeHtml(row.recommendation)}</h3>
+            <p>${escapeHtml(row.reason)}</p>
+          </div>
+          <span class="badge ${priorityClass(row)}">${escapeHtml(row.priority)}</span>
+        </article>
+      `).join('');
+    }
+
+    function priorityClass(row) {
+      if (row.action === 'issues') return 'review';
+      return row.priority.toLowerCase();
+    }
+
+    function renderTable(rows) {
+      els.tableWrap.hidden = !state.analyzed.length;
+      els.resultsBody.innerHTML = rows.map(row => `
+        <tr>
+          <td><strong>${escapeHtml(row.sku)}</strong><br><span>${escapeHtml(row.description || '')}</span></td>
+          <td><code>${escapeHtml(row.location)}</code><br>${escapeHtml(row.zone)}<br>${escapeHtml(row.locationType)}</td>
+          <td><strong>${escapeHtml(row.recommendation)}</strong></td>
+          <td><span class="badge ${priorityClass(row)}">${escapeHtml(row.priority)}</span><br><code>${row.priorityScore}</code></td>
+          <td><code>${row.velocity}</code><br>${row.orders} lines<br>${row.unitsPicked} units<br>${row.pickDensity ? row.pickDensity.toFixed(1) + ' lines/ft3' : '-'}</td>
+          <td><code>${row.cube ? row.cube.toFixed(2) : '-'}</code> ft3<br>${row.weight || '-'} lb</td>
+          <td><code>${row.daysSupply === 999 ? 'n/a' : row.daysSupply.toFixed(1)}</code></td>
+          <td><code>${row.replenishments}</code></td>
+          <td><div class="flag-list">${row.flags.length ? row.flags.map(flag => `<span class="flag">${escapeHtml(flag)}</span>`).join('') : '<span class="flag">none</span>'}</div></td>
+          <td class="reason">${escapeHtml(row.reason)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function resetAnalysis() {
+      state.rows = [];
+      state.analyzed = [];
+      state.mapping = {};
+      state.filter = 'all';
+      document.querySelectorAll('.filter').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === 'all'));
+      renderAll();
+    }
+
+    function analyzeCurrent() {
+      const text = els.csvInput.value.trim();
+      if (!text) {
+        resetAnalysis();
+        showToast('Paste CSV data or load the sample first.');
+        return;
+      }
+      const rows = parseCSV(text);
+      if (!rows.length) {
+        resetAnalysis();
+        showToast('Could not parse at least one header row and one data row.');
+        return;
+      }
+      state.rows = rows;
+      state.analyzed = analyzeRows(rows);
+      state.filter = 'all';
+      document.querySelectorAll('.filter').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === 'all'));
+      renderAll();
+      showToast(`Analyzed ${state.analyzed.length} SKUs`);
+    }
+
+    function csvEscape(value) {
+      const text = String(value ?? '');
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    }
+
+    function exportCsv() {
+      const headers = ['sku', 'description', 'current_location', 'zone', 'location_type', 'recommended_slot', 'priority', 'priority_score', 'velocity_score', 'pick_density_lines_per_ft3', 'case_cube_ft', 'case_weight', 'replenishments_30d', 'flags', 'reason'];
+      const lines = [headers.join(',')];
+      state.analyzed.forEach(row => {
+        lines.push([
+          row.sku, row.description, row.location, row.zone, row.locationType, row.recommendation,
+          row.priority, row.priorityScore, row.velocity, row.pickDensity.toFixed(1), row.cube.toFixed(2), row.weight,
+          row.replenishments, row.flags.join('; '), row.reason
+        ].map(csvEscape).join(','));
+      });
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `slotting-action-list-${Date.now()}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copySummary() {
+      const high = state.analyzed.filter(row => row.priority === 'High').length;
+      const pickFace = state.analyzed.filter(row => row.action === 'pick-face').length;
+      const reserve = state.analyzed.filter(row => row.action === 'reserve').length;
+      const handling = state.analyzed.filter(row => row.action === 'handling').length;
+      const issues = state.analyzed.filter(row => row.action === 'issues').length;
+      const top = state.analyzed.filter(row => row.action !== 'keep').slice(0, 5);
+      const summary = [
+        `Pick Path Slotting Planner summary`,
+        `${state.analyzed.length} SKUs analyzed.`,
+        `${high} high-priority actions, ${pickFace} pick-face candidates, ${reserve} reserve/backline moves, ${handling} handling-zone reviews, ${issues} data issues.`,
+        '',
+        'Top actions:',
+        ...top.map(row => `- ${row.sku}: ${row.recommendation} (${row.priority}) - ${row.reason}`)
+      ].join('\n');
+      navigator.clipboard.writeText(summary).then(() => showToast('Summary copied'));
+    }
+
+    function showToast(message) {
+      document.querySelector('.toast')?.remove();
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 1900);
+    }
+
+    els.sampleBtn.addEventListener('click', () => {
+      els.csvInput.value = SAMPLE_CSV;
+      analyzeCurrent();
+    });
+
+    els.analyzeBtn.addEventListener('click', analyzeCurrent);
+    els.clearBtn.addEventListener('click', () => {
+      els.csvInput.value = '';
+      els.fileInput.value = '';
+      resetAnalysis();
+    });
+
+    els.fileInput.addEventListener('change', event => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        els.csvInput.value = String(reader.result || '');
+        analyzeCurrent();
+      };
+      reader.readAsText(file);
+    });
+
+    document.querySelectorAll('.filter').forEach(button => {
+      button.addEventListener('click', () => {
+        state.filter = button.dataset.filter;
+        document.querySelectorAll('.filter').forEach(btn => btn.classList.toggle('active', btn === button));
+        renderAll();
+      });
+    });
+
+    els.exportBtn.addEventListener('click', exportCsv);
+    els.copyBtn.addEventListener('click', copySummary);
+  </script>
+</body>
+</html>

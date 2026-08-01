@@ -46,7 +46,6 @@ function init() {
   $$("[data-app-name]").forEach(node => { node.textContent = APP_CONFIG.name; });
   $("#footerVersion").textContent = `v${APP_CONFIG.version}`;
   bindEvents();
-  restoreTheme();
   registerServiceWorker();
   if (new URLSearchParams(window.location.search).get("demo") === "1") {
     loadDemo();
@@ -67,7 +66,6 @@ function bindEvents() {
     setTab("report");
     requestAnimationFrame(() => window.print());
   });
-  $("#themeToggle").addEventListener("click", toggleTheme);
   $("#reloadApp").addEventListener("click", () => window.location.reload());
 
   fileInput.addEventListener("change", event => {
@@ -102,17 +100,6 @@ function bindEvents() {
   $$(".tab-button").forEach(button => {
     button.addEventListener("click", () => setTab(button.dataset.tab));
   });
-}
-
-function restoreTheme() {
-  const theme = localStorage.getItem("ats-lens-theme");
-  if (theme === "light") document.documentElement.dataset.theme = "light";
-}
-
-function toggleTheme() {
-  const next = document.documentElement.dataset.theme === "light" ? "dark" : "light";
-  document.documentElement.dataset.theme = next === "light" ? "light" : "";
-  localStorage.setItem("ats-lens-theme", next);
 }
 
 function registerServiceWorker() {

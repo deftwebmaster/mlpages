@@ -10,14 +10,17 @@
   <meta property="og:url" content="https://mattlivingston.com/tools/">
   <meta property="og:title" content="Free Browser Tools by Matt Livingston | Static Web Utilities">
   <meta property="og:description" content="Use free browser-based tools for web development, SEO metadata, privacy cleanup, data conversion, warehouse operations, writing, planning, and decisions.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
   <meta property="og:image:alt" content="Free Browser Tools by Matt Livingston | Static Web Utilities preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/">
   <meta name="twitter:title" content="Free Browser Tools by Matt Livingston | Static Web Utilities">
   <meta name="twitter:description" content="Use free browser-based tools for web development, SEO metadata, privacy cleanup, data conversion, warehouse operations, writing, planning, and decisions.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="Free Browser Tools by Matt Livingston | Static Web Utilities preview image">
 <meta name="robots" content="index,follow">
 
 <link rel="stylesheet" href="style.css">
@@ -44,22 +47,24 @@
           </div>
         </div>
 
-        <nav class="hero-panel" aria-label="Featured tool shortcuts">
+        <nav class="hero-panel" aria-label="Tool shortcuts">
           <div class="panel-bar" aria-hidden="true">
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <a class="panel-line hot" href="https://mattlivingston.com/projects/worldbuilder/"><span>create</span><strong>Sci-Fi Worldbuilder</strong></a>
-          <a class="panel-line" href="launch-kit/"><span>ship</span><strong>Website Launch Kit</strong></a>
+          <a class="panel-line hot" href="launch-kit/"><span>ship</span><strong>Website Launch Kit</strong></a>
           <a class="panel-line" href="launch-doctor/"><span>audit</span><strong>Launch Doctor</strong></a>
+          <a class="panel-line ops" href="ops-data-toolkit/"><span>reconcile</span><strong>Ops Data Toolkit</strong></a>
+          <a class="panel-line ops" href="pallet-calculator/"><span>pallets</span><strong>Pallet Load Calculator</strong></a>
           <a class="panel-line" href="ats-lens/"><span>resume</span><strong>ATS Lens</strong></a>
+          <a class="panel-line" href="systems-studio/"><span>systems</span><strong>Systems Studio</strong></a>
         </nav>
       </section>
 
       <dl class="trust-strip" aria-label="Tool collection details">
         <div>
-          <dt>28</dt>
+          <dt>29</dt>
           <dd>Tools</dd>
         </div>
         <div>
@@ -84,7 +89,6 @@
           <button class="filter-btn active" type="button" data-filter="all">Curated</button>
           <button class="filter-btn" type="button" data-filter="dev">Web dev</button>
           <button class="filter-btn" type="button" data-filter="utility">Utilities</button>
-          <button class="filter-btn" type="button" data-filter="archive">Archive</button>
         </div>
       </section>
 
@@ -97,21 +101,6 @@
         </div>
 
         <div class="tools-grid featured-grid">
-          <article class="tool-card spotlight" data-category="utility" data-title="Sci-Fi Worldbuilder" data-tags="sci-fi science fiction worldbuilder creative writing lore planets factions species timeline setting generator">
-            <div class="card-meta">
-              <span class="tag utility">Creative</span>
-              <span class="status-dot">Featured</span>
-            </div>
-            <h3>Sci-Fi Worldbuilder</h3>
-            <p>A larger creative workspace for shaping speculative settings, lore, factions, planets, timelines, and story-world systems.</p>
-            <div class="tech-badges">
-              <span>Worldbuilding</span>
-              <span>Creative lab</span>
-              <span>Lore systems</span>
-            </div>
-            <a href="https://mattlivingston.com/projects/worldbuilder/" class="card-link">Open project</a>
-          </article>
-
           <article class="tool-card spotlight" data-category="dev" data-title="Website Launch Kit" data-tags="meta robots sitemap htaccess security headers privacy legal launch checklist seo go-live web development">
             <div class="card-meta">
               <span class="tag dev">Web dev</span>
@@ -127,6 +116,30 @@
             <a href="launch-kit/" class="card-link">Open tool</a>
           </article>
 
+          <article class="tool-card spotlight" data-category="utility" data-title="Ops Data Toolkit" data-tags="csv reconciliation validation duplicates sumif countif lookup cleaning excel warehouse operations inventory cycle count">
+            <div class="card-meta">
+              <span class="tag utility">Ops</span>
+              <span class="status-dot private">Local</span>
+            </div>
+            <h3>Ops Data Toolkit</h3>
+            <p>Reconcile cycle counts, find duplicate SKUs, validate imports, clean messy CSVs, and produce warehouse-ready reports.</p>
+            <div class="tech-badges">
+              <span>CSV analysis</span>
+              <span>Cycle counts</span>
+              <span>Reports</span>
+            </div>
+            <a href="ops-data-toolkit/" class="card-link">Open tool</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="tool-section" aria-labelledby="dev-title" data-section="dev">
+        <div class="section-heading">
+          <p class="eyebrow">Build and debug</p>
+          <h2 id="dev-title">Web development tools</h2>
+        </div>
+
+        <div class="tools-grid">
           <article class="tool-card spotlight" data-category="dev" data-title="Launch Doctor" data-tags="launch audit preflight static site github pages seo accessibility broken links security headers sitemap robots metadata fix pack report web development">
             <div class="card-meta">
               <span class="tag dev">Web dev</span>
@@ -142,37 +155,28 @@
             <a href="launch-doctor/" class="card-link">Open tool</a>
           </article>
 
-          <article class="tool-card spotlight" data-category="utility" data-title="ATS Lens" data-tags="resume ats analyzer parsing pdf docx txt job description match keywords score diagnostics privacy local pwa">
-            <div class="card-meta">
-              <span class="tag utility">Utility</span>
-              <span class="status-dot private">Private</span>
-            </div>
-            <h3>ATS Lens</h3>
-            <p>Upload a resume locally, inspect extracted ATS-style text, find parsing risks, and compare it against a pasted job description.</p>
-            <div class="tech-badges">
-              <span>PDF/DOCX/TXT</span>
-              <span>ATS view</span>
-              <span>Offline-ready</span>
-            </div>
-            <a href="ats-lens/" class="card-link">Open tool</a>
+          <article class="tool-card" data-category="dev" data-title="CinderKit" data-tags="static website starter kit no build html css javascript landing page deploy github pages template web development">
+            <div class="card-meta"><span class="tag dev">Web dev</span></div>
+            <h3>CinderKit</h3>
+            <p>Download a no-build static website starter kit with polished sections, deploy presets, and plain HTML, CSS, and JavaScript.</p>
+            <div class="tech-badges"><span>Static starter</span><span>No build</span><span>Download</span></div>
+            <a href="cinderkit/" class="card-link">Open tool</a>
           </article>
 
-        </div>
-      </section>
-
-      <section class="tool-section" aria-labelledby="dev-title" data-section="dev">
-        <div class="section-heading">
-          <p class="eyebrow">Build and debug</p>
-          <h2 id="dev-title">Web development tools</h2>
-        </div>
-
-        <div class="tools-grid">
           <article class="tool-card" data-category="dev" data-title="Encode & Hash Lab" data-tags="base64 url encode decode hash md5 sha256 sha1 sha512 checksum crypto developer jwt hmac hex binary file">
             <div class="card-meta"><span class="tag dev">Web dev</span></div>
             <h3>Encode & Hash Lab</h3>
             <p>Encode Base64, inspect URLs and JWTs, convert hex/binary, generate hashes and HMACs, and verify file checksums.</p>
             <div class="tech-badges"><span>Web Crypto</span><span>JWT</span><span>Checksums</span></div>
             <a href="encode-hash/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="dev" data-title="JSON CSV Converter" data-tags="json csv converter data conversion delimiter flatten nested objects preview table download developer utility">
+            <div class="card-meta"><span class="tag dev">Web dev</span></div>
+            <h3>JSON CSV Converter</h3>
+            <p>Convert JSON to CSV and CSV to JSON locally with delimiter handling, nested object flattening, previews, copy, and download.</p>
+            <div class="tech-badges"><span>JSON</span><span>CSV</span><span>Local convert</span></div>
+            <a href="json-csv/" class="card-link">Open tool</a>
           </article>
 
           <article class="tool-card" data-category="dev" data-title="Favicon Generator" data-tags="favicon ico png apple touch icon pwa manifest icons website launch">
@@ -214,6 +218,14 @@
             <div class="tech-badges"><span>Privacy lab</span><span>Fingerprint scan</span><span>Export report</span></div>
             <a href="fingerprint/" class="card-link">Open tool</a>
           </article>
+
+          <article class="tool-card" data-category="dev" data-title="LogShare Sanitizer" data-tags="logs sanitizer redact secrets tokens api keys stack traces headers env json payload privacy developer security">
+            <div class="card-meta"><span class="tag dev">Web dev</span><span class="status-dot private">Private</span></div>
+            <h3>LogShare Sanitizer</h3>
+            <p>Sanitize logs, stack traces, headers, env dumps, and JSON payloads before sharing them in tickets, chats, or bug reports.</p>
+            <div class="tech-badges"><span>Redaction</span><span>Secrets</span><span>Local-only</span></div>
+            <a href="logshare-sanitizer/" class="card-link">Open tool</a>
+          </article>
         </div>
       </section>
 
@@ -224,11 +236,41 @@
         </div>
 
         <div class="tools-grid">
-          <article class="tool-card" data-category="utility" data-title="FADE Flow-State Writer" data-tags="writing focus draft editor localstorage export privacy flow state">
+          <article class="tool-card spotlight" data-category="utility" data-title="Systems Studio" data-tags="systems thinking decision matrix system mapping constraints strategy canvas risk register meeting brief executive dashboard weekly review workspace local private productivity">
+            <div class="card-meta">
+              <span class="tag utility">Systems</span>
+              <span class="status-dot">Flagship</span>
+            </div>
+            <h3>Systems Studio</h3>
+            <p>Map systems, find constraints, compare decisions, shape strategy, track risk, prep meetings, and review work in a private operating workspace.</p>
+            <div class="tech-badges">
+              <span>System maps</span>
+              <span>Decision matrix</span>
+              <span>Risk register</span>
+            </div>
+            <a href="systems-studio/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="ATS Lens" data-tags="resume ats analyzer parsing pdf docx txt job description match keywords score diagnostics privacy local pwa">
+            <div class="card-meta">
+              <span class="tag utility">Utility</span>
+              <span class="status-dot private">Private</span>
+            </div>
+            <h3>ATS Lens</h3>
+            <p>Upload a resume locally, inspect extracted ATS-style text, find parsing risks, and compare it against a pasted job description.</p>
+            <div class="tech-badges">
+              <span>PDF/DOCX/TXT</span>
+              <span>ATS view</span>
+              <span>Offline-ready</span>
+            </div>
+            <a href="ats-lens/" class="card-link">Open tool</a>
+          </article>
+
+          <article class="tool-card" data-category="utility" data-title="FADE Flow-State Writer" data-tags="writing focus draft editor localstorage export copy privacy flow state dark distraction free">
             <div class="card-meta"><span class="tag utility">Utility</span><span class="status-dot private">Private</span></div>
             <h3>FADE Flow-State Writer</h3>
-            <p>A minimal drafting space that fades completed paragraphs so you keep writing forward.</p>
-            <div class="tech-badges"><span>Writing</span><span>Local save</span></div>
+            <p>A private dark drafting room that fades completed paragraphs, tracks light session stats, and keeps you writing forward.</p>
+            <div class="tech-badges"><span>Focus writing</span><span>Local save</span><span>Export TXT</span></div>
             <a href="fade/" class="card-link">Open tool</a>
           </article>
 
@@ -282,78 +324,77 @@
         </div>
       </section>
 
-      <section class="tool-section archived-section" aria-labelledby="archived-title" id="archived-ops" data-section="archive">
-        <details>
-          <summary>
-            <span>
-              <span class="eyebrow">Still available</span>
-              <strong id="archived-title">Archived operations tools</strong>
-            </span>
-            <span class="summary-action">Open shelf</span>
-          </summary>
+      <section class="tool-section" aria-labelledby="ops-title" data-section="ops">
+        <div class="section-heading">
+          <p class="eyebrow">Warehouse operations</p>
+          <h2 id="ops-title">Labels, pallets, barcodes, and inventory data</h2>
+        </div>
 
-          <div class="archive-note">
-            These older warehouse and operations tools are preserved for anyone who still uses them. They are no longer the direction of this toolbox.
-          </div>
+        <div class="tools-grid">
+          <article class="tool-card spotlight" data-category="utility" data-title="ZPL Label Designer" data-tags="zpl zebra label barcode thermal printer shipping warehouse operations receiving location inventory">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>ZPL Label Designer</h3>
+            <p>Build Zebra printer labels visually, start from warehouse templates, import existing ZPL, and copy or download printer-ready code.</p>
+            <div class="tech-badges"><span>ZPL code</span><span>Barcode labels</span><span>Templates</span></div>
+            <a href="zpl-designer/" class="card-link">Open tool</a>
+          </article>
 
-          <div class="tools-grid compact-grid">
-            <article class="tool-card compact" data-category="archive" data-title="Ops Data Toolkit" data-tags="csv reconciliation validation duplicates sumif countif lookup cleaning excel warehouse operations archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>Ops Data Toolkit</h3>
-              <p>CSV reconciliation, validation, duplicate detection, lookups, and cleaning for operations data.</p>
-              <a href="ops-data-toolkit/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="Pallet Load Calculator" data-tags="pallet load calculator palletization cube weight stacking warehouse logistics operations freight">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>Pallet Load Calculator</h3>
+            <p>Plan carton patterns, stack height, gross weight, cube use, full pallets, and final partial pallets with visual previews.</p>
+            <div class="tech-badges"><span>Stack patterns</span><span>Cube use</span><span>3D preview</span></div>
+            <a href="pallet-calculator/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="CSV Schema Guard" data-tags="csv schema validation data quality drift nulls duplicates columns types report developer ops warehouse archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>CSV Schema Guard</h3>
-              <p>Compare trusted CSVs against new files and catch schema drift, null spikes, duplicate keys, and row-count swings.</p>
-              <a href="csv-schema-guard/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="Pick Path Slotting Planner" data-tags="warehouse slotting planner pick path optimizer sku velocity pick face location planning replenishment cube weight operations">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>Pick Path Slotting Planner</h3>
+            <p>Rank SKUs by velocity, cube, replenishment pressure, handling constraints, and location fit to find smarter slotting moves.</p>
+            <div class="tech-badges"><span>SKU slotting</span><span>Pick face</span><span>CSV export</span></div>
+            <a href="pick-path-slotting/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="ZPL Label Designer" data-tags="zpl zebra label barcode thermal printer shipping warehouse archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>ZPL Label Designer</h3>
-              <p>Visual label builder for Zebra printers with live ZPL output.</p>
-              <a href="zpl-designer/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="CSV Schema Guard" data-tags="csv schema validation data quality drift nulls duplicates columns types report developer ops warehouse imports vendor feed">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>CSV Schema Guard</h3>
+            <p>Compare trusted CSVs against new files and catch schema drift, null spikes, duplicate keys, row swings, and risky import changes.</p>
+            <div class="tech-badges"><span>Schema drift</span><span>Import QA</span><span>CSV report</span></div>
+            <a href="csv-schema-guard/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="Pallet Load Calculator" data-tags="pallet palletization cube weight stacking 3d warehouse logistics archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>Pallet Load Calculator</h3>
-              <p>Plan pallet stacking, cube use, orientation, and weight limits.</p>
-              <a href="pallet-calculator/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="WMS Cheat Sheet" data-tags="wms oracle manhattan active warehouse iht transaction codes glossary rf lpn replenishment cycle count movement request warehouse operations">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>WMS Cheat Sheet</h3>
+            <p>Decode Oracle WMS IHT codes, Manhattan Active WM terms, RF shorthand, LPN vocabulary, and warehouse operations acronyms.</p>
+            <div class="tech-badges"><span>Oracle IHT</span><span>Manhattan WM</span><span>RF terms</span></div>
+            <a href="wms-cheat-sheet/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="EDI Document Viewer" data-tags="edi x12 850 856 810 820 997 purchase order asn invoice parser archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>EDI Document Viewer</h3>
-              <p>Parse common X12 documents including 850, 856, 810, 820, and 997.</p>
-              <a href="edi-viewer/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="EDI Document Viewer" data-tags="edi x12 850 856 810 820 997 purchase order asn invoice remittance acknowledgment warehouse operations document parser">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>EDI Document Viewer</h3>
+            <p>Parse X12 purchase orders, ASNs, invoices, remittances, and acknowledgments into readable warehouse documents.</p>
+            <div class="tech-badges"><span>X12 parser</span><span>850 / 856 / 810</span><span>Local</span></div>
+            <a href="edi-viewer/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="WMS Cheat Sheet" data-tags="wms oracle manhattan iht transaction codes glossary reference terminology archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>WMS Cheat Sheet</h3>
-              <p>Searchable WMS code and terminology reference.</p>
-              <a href="wms-cheat-sheet/" class="card-link">Open tool</a>
-            </article>
+          <article class="tool-card" data-category="utility" data-title="Barcode Validator" data-tags="upc ean code 128 check digit scanning scanner wms barcode warehouse operations label validation duplicates">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>Barcode Validator</h3>
+            <p>Validate UPC, EAN, Code 128, duplicate risk, scanner fit, and WMS readiness before receiving or label-print problems spread.</p>
+            <div class="tech-badges"><span>Check digits</span><span>WMS readiness</span><span>Batch QA</span></div>
+            <a href="barcode-validator/" class="card-link">Open tool</a>
+          </article>
 
-            <article class="tool-card compact" data-category="archive" data-title="Barcode Validator" data-tags="upc ean check digit scanning wms barcode archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>Barcode Validator</h3>
-              <p>Validate UPC-A, UPC-E, EAN-13, and EAN-8 check digits.</p>
-              <a href="barcode-validator/" class="card-link">Open tool</a>
-            </article>
-
-            <article class="tool-card compact" data-category="archive" data-title="Labor Cost per Unit Calculator" data-tags="labor cost cpu productivity uph efficiency warehouse operations archive">
-              <div class="card-meta"><span class="tag archive">Archive</span></div>
-              <h3>Labor Cost per Unit Calculator</h3>
-              <p>Break down labor cost per unit by operation and compare periods.</p>
-              <a href="labor-cost/" class="card-link">Open tool</a>
-            </article>
-          </div>
-        </details>
+          <article class="tool-card" data-category="utility" data-title="Labor Cost per Unit Calculator" data-tags="labor cost cpu productivity units per hour uph burden overtime warehouse operations picking packing receiving shipping">
+            <div class="card-meta"><span class="tag utility">Ops</span><span class="status-dot private">Local</span></div>
+            <h3>Labor Cost per Unit</h3>
+            <p>Model warehouse labor CPU, burden, throughput, operation cost drivers, and period-over-period productivity.</p>
+            <div class="tech-badges"><span>Labor CPU</span><span>Throughput</span><span>Period compare</span></div>
+            <a href="labor-cost/" class="card-link">Open tool</a>
+          </article>
+        </div>
       </section>
 
       <div class="empty-state hidden" id="emptyState">
@@ -377,7 +418,6 @@
       const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
       const cards = Array.from(document.querySelectorAll('.tool-card'));
       const sections = Array.from(document.querySelectorAll('[data-section]'));
-      const archiveDetails = document.querySelector('.archived-section details');
       const resultCount = document.getElementById('resultCount');
       const emptyState = document.getElementById('emptyState');
       let activeFilter = 'all';
@@ -413,10 +453,6 @@
           const visibleCards = section.querySelectorAll('.tool-card:not(.is-hidden)').length;
           section.classList.toggle('is-hidden', visibleCards === 0);
         });
-
-        if (archiveDetails) {
-          archiveDetails.open = activeFilter === 'archive' || query.length > 0;
-        }
 
         emptyState.classList.toggle('hidden', visibleCount !== 0);
         const mode = activeFilter === 'all' ? 'curated shelf' : activeFilter;

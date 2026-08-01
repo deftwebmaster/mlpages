@@ -3,21 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FADE Flow-State Writer | Local Drafting Tool</title>
-  <meta name="description" content="Write privately in a local-first drafting tool that fades completed paragraphs, reduces rereading loops, and helps you keep moving through the draft.">
+  <title>FADE Flow-State Writer | Private Focus Writing Tool</title>
+  <meta name="description" content="Draft privately in a dark focus writer that fades completed paragraphs, tracks lightweight writing session stats, and exports or copies your text locally.">
   <link rel="canonical" href="https://mattlivingston.com/tools/fade/">
+  <meta name="robots" content="index,follow">
+  <meta name="theme-color" content="#080a0f">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/tools/fade/">
-  <meta property="og:title" content="FADE Flow-State Writer | Local Drafting Tool">
-  <meta property="og:description" content="Write privately in a local-first drafting tool that fades completed paragraphs, reduces rereading loops, and helps you keep moving through the draft.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="FADE Flow-State Writer | Local Drafting Tool preview image">
+  <meta property="og:title" content="FADE Flow-State Writer | Private Focus Writing Tool">
+  <meta property="og:description" content="Draft privately in a dark focus writer that fades completed paragraphs, tracks lightweight writing session stats, and exports or copies your text locally.">
+  <meta property="og:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta property="og:image:width" content="1731">
+  <meta property="og:image:height" content="909">
+  <meta property="og:image:alt" content="FADE Flow-State Writer | Private Focus Writing Tool preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/tools/fade/">
-  <meta name="twitter:title" content="FADE Flow-State Writer | Local Drafting Tool">
-  <meta name="twitter:description" content="Write privately in a local-first drafting tool that fades completed paragraphs, reduces rereading loops, and helps you keep moving through the draft.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="FADE Flow-State Writer | Private Focus Writing Tool">
+  <meta name="twitter:description" content="Draft privately in a dark focus writer that fades completed paragraphs, tracks lightweight writing session stats, and exports or copies your text locally.">
+  <meta name="twitter:image" content="https://mattlivingston.com/tools/assets/og/tools-og-card.jpg">
+  <meta name="twitter:image:alt" content="FADE Flow-State Writer | Private Focus Writing Tool preview image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "FADE Flow-State Writer",
+    "url": "https://mattlivingston.com/tools/fade/",
+    "applicationCategory": "WritingApplication",
+    "operatingSystem": "Any",
+    "description": "A private browser-based drafting tool that fades completed paragraphs and autosaves locally.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
 <!-- * lone wolf, quiet teeth | Matt Livingston -->
     <style>
         * {
@@ -251,16 +272,390 @@
                 bottom: 16px;
             }
         }
+
+        /* Premium dark focus refresh */
+        :root {
+            color-scheme: dark;
+            --fade-opacity: 0.22;
+            --active-opacity: 1;
+            --bg-color: #080a0f;
+            --text-color: #eef5f8;
+            --fade-color: #586473;
+            --cursor-color: #46e6d2;
+            --surface: rgba(15, 21, 30, 0.82);
+            --surface-strong: rgba(20, 29, 40, 0.92);
+            --line: rgba(170, 190, 205, 0.18);
+            --line-strong: rgba(70, 230, 210, 0.36);
+            --muted: #9aa9b7;
+            --quiet: #62707f;
+            --accent: #46e6d2;
+            --accent-2: #b89cff;
+            --danger: #ff7a8a;
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 128px 22px 148px;
+            color: var(--text-color);
+            background:
+                radial-gradient(circle at 16% -12%, rgba(70, 230, 210, 0.14), transparent 32rem),
+                radial-gradient(circle at 92% 0%, rgba(184, 156, 255, 0.13), transparent 34rem),
+                linear-gradient(180deg, #080a0f 0%, #0c1118 46%, #080a0f 100%);
+            font-size: clamp(20px, 1.6vw, 24px);
+            line-height: 1.82;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .topbar {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            z-index: 10;
+            width: min(1120px, calc(100% - 32px));
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            background: rgba(12, 17, 24, 0.78);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            font-family: system-ui, sans-serif;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            min-width: 0;
+        }
+
+        .brand-mark {
+            width: 38px;
+            height: 38px;
+            flex: 0 0 38px;
+            display: grid;
+            place-items: center;
+            border: 1px solid var(--line-strong);
+            border-radius: 8px;
+            color: var(--accent);
+            background: linear-gradient(135deg, rgba(70, 230, 210, 0.16), rgba(184, 156, 255, 0.14));
+            font-size: 0.75rem;
+            font-weight: 850;
+            letter-spacing: 0.04em;
+        }
+
+        .brand-kicker {
+            display: block;
+            margin-bottom: 1px;
+            color: var(--accent);
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 0.66rem;
+            font-weight: 850;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .brand-title {
+            display: block;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 850;
+            line-height: 1.1;
+        }
+
+        .brand-subtitle {
+            display: block;
+            color: var(--muted);
+            font-size: 0.78rem;
+            line-height: 1.3;
+        }
+
+        .top-actions,
+        .session-stats {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .home-link,
+        .clear-btn,
+        .export-btn,
+        .copy-btn,
+        .fade-control {
+            position: static;
+            inset: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 34px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.035);
+            font-family: system-ui, sans-serif;
+            font-size: 0.78rem;
+            font-weight: 750;
+            text-decoration: none;
+        }
+
+        .home-link,
+        .clear-btn,
+        .export-btn,
+        .copy-btn {
+            padding: 0 12px;
+        }
+
+        .home-link:hover,
+        .export-btn:hover,
+        .copy-btn:hover {
+            color: var(--accent);
+            border-color: var(--line-strong);
+            background: rgba(70, 230, 210, 0.08);
+            text-decoration: none;
+        }
+
+        .clear-btn:hover {
+            color: var(--danger);
+            border-color: rgba(255, 122, 138, 0.42);
+            background: rgba(255, 122, 138, 0.08);
+        }
+
+        .fade-control {
+            gap: 8px;
+            padding: 0 10px;
+            white-space: nowrap;
+        }
+
+        .fade-control input {
+            width: 72px;
+            accent-color: var(--accent);
+        }
+
+        .clear-btn:focus-visible,
+        .export-btn:focus-visible,
+        .copy-btn:focus-visible,
+        .home-link:focus-visible,
+        .fade-control input:focus-visible {
+            outline: 2px solid rgba(70, 230, 210, 0.7);
+            outline-offset: 3px;
+        }
+
+        .container {
+            width: min(760px, 100%);
+            margin: 0 auto;
+        }
+
+        .paragraph {
+            margin-bottom: 1.35em;
+            opacity: var(--fade-opacity);
+            color: var(--fade-color);
+            filter: saturate(0.82);
+            transition: opacity 0.45s ease, color 0.45s ease, filter 0.45s ease;
+        }
+
+        .paragraph.active {
+            color: var(--text-color);
+            filter: none;
+            text-shadow: 0 0 34px rgba(70, 230, 210, 0.04);
+        }
+
+        .paragraph:focus {
+            outline: none;
+        }
+
+        .editor {
+            min-height: 1.82em;
+            caret-color: var(--cursor-color);
+        }
+
+        .hint {
+            width: min(520px, calc(100% - 40px));
+            padding: 18px 20px;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            color: var(--muted);
+            background: rgba(12, 17, 24, 0.74);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+            font-size: 0.92rem;
+            line-height: 1.45;
+            text-align: center;
+        }
+
+        .save-indicator,
+        .word-count {
+            position: fixed;
+            z-index: 9;
+            font-family: system-ui, sans-serif;
+            color: var(--quiet);
+            font-size: 0.76rem;
+        }
+
+        .save-indicator {
+            right: 22px;
+            bottom: 24px;
+        }
+
+        .word-count {
+            left: 22px;
+            bottom: 24px;
+        }
+
+        .session-stats {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            z-index: 8;
+            transform: translateX(-50%);
+            justify-content: center;
+            padding: 8px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(12, 17, 24, 0.72);
+            backdrop-filter: blur(18px);
+            font-family: system-ui, sans-serif;
+        }
+
+        .stat-pill {
+            min-height: 26px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0 9px;
+            border-radius: 999px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.035);
+            font-size: 0.72rem;
+            font-weight: 750;
+        }
+
+        .stat-pill strong {
+            color: var(--accent);
+        }
+
+        .footer {
+            position: fixed;
+            right: 22px;
+            bottom: 54px;
+            left: auto;
+            transform: none;
+            color: var(--quiet);
+            font-size: 0.72rem;
+            text-align: right;
+        }
+
+        .footer a {
+            color: var(--muted);
+        }
+
+        .footer a:hover {
+            color: var(--accent);
+        }
+
+        .footer .separator {
+            color: rgba(154, 169, 183, 0.32);
+        }
+
+        ::selection {
+            color: #061014;
+            background: var(--accent);
+        }
+
+        @media (max-width: 760px) {
+            body {
+                padding: 184px 16px 168px;
+                font-size: 20px;
+            }
+
+            .topbar {
+                top: 10px;
+                width: calc(100% - 20px);
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .top-actions {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 7px;
+            }
+
+            .top-actions > * {
+                min-width: 0;
+                padding-left: 8px;
+                padding-right: 8px;
+                font-size: 0.72rem;
+            }
+
+            .fade-control {
+                grid-column: 1 / -1;
+                justify-content: space-between;
+            }
+
+            .fade-control input {
+                width: min(160px, 46vw);
+            }
+
+            .hint {
+                top: 56%;
+            }
+
+            .session-stats {
+                width: calc(100% - 32px);
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                justify-content: flex-start;
+                border-radius: 8px;
+            }
+
+            .word-count,
+            .save-indicator {
+                display: none;
+            }
+
+            .footer {
+                right: 16px;
+                bottom: 74px;
+                left: 16px;
+                text-align: center;
+            }
+        }
     </style>
-  <link rel="stylesheet" href="../tool-modern.css">
-  <script defer src="../tool-credit.js"></script>
 </head>
 <body>
-    <div class="hint" id="hint">Just write. Press Enter to move forward.</div>
-    
-    <a class="home-link" href="/tools/">Tools</a>
-    <button class="clear-btn" id="clearBtn">Clear</button>
-    <button class="export-btn" id="exportBtn">Export</button>
+    <header class="topbar" aria-label="FADE controls">
+        <div class="brand">
+            <span class="brand-mark" aria-hidden="true">FD</span>
+            <span>
+                <span class="brand-kicker">Flow-state drafting</span>
+                <span class="brand-title">FADE Writer</span>
+                <span class="brand-subtitle">Old paragraphs dim. The next sentence stays bright.</span>
+            </span>
+        </div>
+        <div class="top-actions">
+            <a class="home-link" href="/tools/">Tools</a>
+            <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+            <button class="export-btn" id="exportBtn" type="button">Export</button>
+            <button class="clear-btn" id="clearBtn" type="button">Clear</button>
+            <label class="fade-control" for="fadeRange">
+                <span>Fade</span>
+                <input id="fadeRange" type="range" min="10" max="55" value="22" aria-label="Completed paragraph visibility">
+            </label>
+        </div>
+    </header>
+
+    <div class="hint" id="hint">Just write. Press Enter to move forward. Previous paragraphs fade so you do not keep rereading them.</div>
     
     <div class="container" id="container">
         <!-- Paragraphs will be created here -->
@@ -268,11 +663,17 @@
     
     <div class="word-count" id="wordCount">0 words</div>
     <div class="save-indicator" id="saveIndicator">Saved</div>
+    <div class="session-stats" aria-label="Draft stats">
+        <span class="stat-pill"><strong id="statWords">0</strong> words</span>
+        <span class="stat-pill"><strong id="statParagraphs">1</strong> paragraphs</span>
+        <span class="stat-pill"><strong id="statMinutes">0</strong> min</span>
+        <span class="stat-pill"><strong id="statSaved">Local</strong> draft</span>
+    </div>
     
     <footer class="footer">
-        <span>Made by <a href="https://mattlivingston.com" target="_blank" rel="noopener">Matt Livingston</a></span>
+        <span>Built by <a href="https://mattlivingston.com" target="_blank" rel="noopener">Matt Livingston</a></span>
         <span class="separator">·</span>
-        <span>Your writing stays in your browser. Nothing is sent anywhere.</span>
+        <span>Local draft. No uploads.</span>
     </footer>
 
     <script>
@@ -280,11 +681,19 @@
         const hint = document.getElementById('hint');
         const saveIndicator = document.getElementById('saveIndicator');
         const wordCountEl = document.getElementById('wordCount');
+        const statWords = document.getElementById('statWords');
+        const statParagraphs = document.getElementById('statParagraphs');
+        const statMinutes = document.getElementById('statMinutes');
+        const statSaved = document.getElementById('statSaved');
         const exportBtn = document.getElementById('exportBtn');
+        const copyBtn = document.getElementById('copyBtn');
         const clearBtn = document.getElementById('clearBtn');
+        const fadeRange = document.getElementById('fadeRange');
         
         const STORAGE_KEY = 'fade_draft';
+        const FADE_KEY = 'fade_strength';
         let saveTimeout = null;
+        let sessionStartedAt = Date.now();
 
         // Create a new paragraph element
         function createParagraph(text = '', isActive = true) {
@@ -329,6 +738,7 @@
                     
                     // Save state
                     saveState();
+                    updateStats();
                     
                     // Scroll to new paragraph
                     newParagraph.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -341,6 +751,7 @@
             hideHint();
             debouncedSave();
             updateWordCount();
+            updateStats();
         }
 
         // Hide the initial hint
@@ -374,11 +785,13 @@
             
             localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
             showSaveIndicator();
+            updateSavedStatus('Saved');
         }
 
         // Show save indicator briefly
         function showSaveIndicator() {
             saveIndicator.classList.add('visible');
+            updateSavedStatus('Saved');
             setTimeout(() => {
                 saveIndicator.classList.remove('visible');
             }, 1500);
@@ -415,6 +828,7 @@
                         }
                         
                         updateWordCount();
+                        updateStats();
                         return;
                     }
                 } catch (e) {
@@ -431,6 +845,7 @@
             const firstParagraph = createParagraph('', true);
             container.appendChild(firstParagraph);
             firstParagraph.focus();
+            updateStats();
         }
 
         // Update word count
@@ -446,15 +861,36 @@
             });
             
             wordCountEl.textContent = totalWords + (totalWords === 1 ? ' word' : ' words');
+            statWords.textContent = totalWords;
+            return totalWords;
+        }
+
+        function getDraftText() {
+            const paragraphs = container.querySelectorAll('.paragraph');
+            return Array.from(paragraphs)
+                .map(p => p.textContent.trim())
+                .filter(t => t.length > 0)
+                .join('\n\n');
+        }
+
+        function updateStats() {
+            const paragraphs = Array.from(container.querySelectorAll('.paragraph'));
+            const filledParagraphs = paragraphs.filter(p => p.textContent.trim().length > 0).length;
+            const paragraphCount = Math.max(1, filledParagraphs || paragraphs.length);
+            const minutes = Math.max(0, Math.floor((Date.now() - sessionStartedAt) / 60000));
+
+            statParagraphs.textContent = paragraphCount;
+            statMinutes.textContent = minutes;
+            updateWordCount();
+        }
+
+        function updateSavedStatus(text) {
+            statSaved.textContent = text;
         }
 
         // Export as plain text
         function exportText() {
-            const paragraphs = container.querySelectorAll('.paragraph');
-            const text = Array.from(paragraphs)
-                .map(p => p.textContent.trim())
-                .filter(t => t.length > 0)
-                .join('\n\n');
+            const text = getDraftText();
             
             if (text.length === 0) {
                 alert('Nothing to export yet. Start writing!');
@@ -473,6 +909,28 @@
             URL.revokeObjectURL(url);
         }
 
+        async function copyText() {
+            const text = getDraftText();
+
+            if (text.length === 0) {
+                alert('Nothing to copy yet. Start writing!');
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(text);
+                saveIndicator.textContent = 'Copied';
+                showSaveIndicator();
+                updateSavedStatus('Copied');
+                setTimeout(() => {
+                    saveIndicator.textContent = 'Saved';
+                    updateSavedStatus('Local');
+                }, 1600);
+            } catch (error) {
+                alert('Copy failed. You can use Export instead.');
+            }
+        }
+
         // Clear all content
         function clearContent() {
             if (confirm('Clear everything? This cannot be undone.')) {
@@ -481,7 +939,23 @@
                 hint.classList.remove('hidden');
                 initializeEmpty();
                 updateWordCount();
+                updateStats();
+                updateSavedStatus('Local');
             }
+        }
+
+        function restoreFadeStrength() {
+            const savedFade = localStorage.getItem(FADE_KEY);
+            if (savedFade) {
+                fadeRange.value = savedFade;
+            }
+            applyFadeStrength(fadeRange.value);
+        }
+
+        function applyFadeStrength(value) {
+            const opacity = Math.max(0.1, Math.min(0.55, Number(value) / 100));
+            document.documentElement.style.setProperty('--fade-opacity', opacity);
+            localStorage.setItem(FADE_KEY, String(value));
         }
 
         // Click anywhere to focus active paragraph
@@ -496,10 +970,16 @@
 
         // Event listeners
         exportBtn.addEventListener('click', exportText);
+        copyBtn.addEventListener('click', copyText);
         clearBtn.addEventListener('click', clearContent);
+        fadeRange.addEventListener('input', (event) => {
+            applyFadeStrength(event.target.value);
+        });
         window.addEventListener('beforeunload', saveState);
+        window.setInterval(updateStats, 30000);
 
         // Initialize
+        restoreFadeStrength();
         loadState();
     </script>
 </body>
