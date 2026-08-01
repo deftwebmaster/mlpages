@@ -15,8 +15,13 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://mattlivingston.com/games/img/paper-pilot.png">
   <meta name="theme-color" content="#7bc8e8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Paper Pilot">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,7 +43,7 @@
     <main class="game-shell">
       <canvas id="gameCanvas" aria-label="Paper Pilot game canvas"></canvas>
 
-      <section class="toolbar" aria-label="Editor tools">
+      <section class="toolbar" id="toolbar" aria-label="Editor tools">
         <div class="tool-group">
           <button class="tool-btn active" data-tool="draw" aria-pressed="true">Draw</button>
           <button class="tool-btn" data-tool="erase" aria-pressed="false">Erase</button>
@@ -56,9 +61,13 @@
 
         <div class="tool-group actions">
           <button id="launchBtn" class="primary">Launch</button>
-          <button id="resetBtn">Reset</button>
           <button id="retryBtn">Retry</button>
           <button id="undoBtn">Undo</button>
+          <button id="moreBtn" aria-expanded="false" aria-controls="overflowActions">More</button>
+        </div>
+
+        <div class="tool-group actions overflow-group" id="overflowActions">
+          <button id="resetBtn">Reset</button>
           <button id="redoBtn">Redo</button>
           <button id="shareBtn">Share</button>
           <button id="saveBtn">Save</button>

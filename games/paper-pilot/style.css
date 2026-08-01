@@ -26,6 +26,7 @@ body {
   width: 100%;
   min-height: 100%;
   overflow: hidden;
+  overscroll-behavior: none;
   background: var(--sky-mid);
   color: var(--ink);
   touch-action: none;
@@ -44,6 +45,15 @@ button {
   font-weight: 800;
   cursor: pointer;
   box-shadow: 0 7px 18px rgba(55, 83, 113, 0.1);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+button:active {
+  transform: scale(0.96);
 }
 
 button:hover,
@@ -201,6 +211,10 @@ button.primary {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+#moreBtn {
+  display: none;
 }
 
 .swatch {
@@ -462,6 +476,24 @@ button.primary {
   padding: 20px;
   border-radius: 20px;
   text-align: center;
+  animation: pop-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.menu-card,
+.settings-card,
+.share-card {
+  animation: pop-in 260ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
 }
 
 .result-grade {
@@ -521,48 +553,123 @@ button.primary {
   line-height: 1.42;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 760px), (max-height: 500px) {
   .brand p,
   .hint-panel {
     display: none;
   }
 
   .brand {
-    max-width: calc(100vw - 108px);
+    max-width: calc(100vw - 100px);
+    padding: 8px 11px;
+    gap: 9px;
+  }
+
+  .brand-mark {
+    width: 30px;
+    height: 30px;
+  }
+
+  .brand h1 {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .status-pill {
+    min-width: 0;
+    padding: 8px 11px;
+    font-size: 0.72rem;
+  }
+
+  .topbar {
+    top: max(10px, env(safe-area-inset-top));
+    left: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  .top-actions {
+    gap: 6px;
   }
 
   .toolbar {
+    left: 8px;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
     grid-template-columns: 1fr;
-    max-height: 44vh;
+    gap: 6px;
+    padding: 8px;
+    max-height: 50vh;
     overflow-y: auto;
   }
 
   .tool-group,
   .actions {
     justify-content: center;
+    gap: 6px;
   }
 
   .tool-group button {
     flex: 1 1 auto;
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+  }
+
+  .overflow-group {
+    display: none;
+  }
+
+  #toolbar.overflow-open .overflow-group {
+    display: flex;
+  }
+
+  #moreBtn {
+    display: inline-flex;
   }
 
   .readout {
-    top: max(82px, calc(env(safe-area-inset-top) + 72px));
+    top: max(64px, calc(env(safe-area-inset-top) + 56px));
     width: auto;
-    left: 14px;
-    right: 14px;
+    left: 10px;
+    right: 10px;
     grid-template-columns: repeat(5, 1fr);
+    padding: 8px 6px;
+    gap: 4px;
+    border-radius: 14px;
   }
 
   .readout div {
     display: grid;
     text-align: center;
+    gap: 1px;
+  }
+
+  .readout span {
+    font-size: 0.6rem;
+  }
+
+  .readout strong {
+    font-size: 0.82rem;
   }
 
   .level-panel {
-    top: max(154px, calc(env(safe-area-inset-top) + 144px));
+    top: max(122px, calc(env(safe-area-inset-top) + 114px));
     bottom: auto;
-    padding: 10px 12px;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .level-panel label span {
+    font-size: 0.62rem;
+  }
+
+  .level-panel select {
+    padding: 8px 10px;
+    font-size: 0.86rem;
   }
 
   .level-panel p {
@@ -570,7 +677,11 @@ button.primary {
   }
 
   .level-meta {
-    margin-top: 8px;
+    margin-top: 6px;
+  }
+
+  .level-meta span {
+    font-size: 0.62rem;
   }
 
   .result-stats {
@@ -600,6 +711,90 @@ button.primary {
   .menu-stats,
   .share-actions {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand h1 {
+    font-size: 0.9rem;
+  }
+
+  .brand p {
+    display: none;
+  }
+
+  .status-pill {
+    font-size: 0.66rem;
+    padding: 7px 9px;
+  }
+
+  .readout {
+    padding: 7px 4px;
+  }
+
+  .readout span {
+    font-size: 0.56rem;
+  }
+
+  .readout strong {
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-height: 700px) and (max-width: 760px) {
+  .level-panel {
+    top: max(112px, calc(env(safe-area-inset-top) + 104px));
+  }
+}
+
+/* Short viewports (landscape phones) get the same compact chrome as narrow
+   ones above, but keep the toolbar as a horizontal row instead of stacking
+   it, since width is plentiful and height is the scarce dimension. */
+@media (max-height: 500px) {
+  .topbar {
+    top: max(8px, env(safe-area-inset-top));
+  }
+
+  .readout {
+    top: max(52px, calc(env(safe-area-inset-top) + 44px));
+  }
+
+  .level-panel {
+    top: max(96px, calc(env(safe-area-inset-top) + 88px));
+  }
+
+  .toolbar {
+    bottom: max(8px, env(safe-area-inset-bottom));
+    max-height: 42vh;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 761px) {
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .tool-group,
+  .actions {
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .tool-group button {
+    flex: 0 1 auto;
+  }
+
+  .overflow-group {
+    display: flex;
+  }
+
+  #moreBtn {
+    display: none;
   }
 }
 

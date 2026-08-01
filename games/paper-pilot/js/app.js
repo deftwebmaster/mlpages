@@ -4,7 +4,10 @@ const STORAGE_KEY = 'paper-pilot:v2';
 const PROGRESS_KEY = 'paper-pilot:progress';
 const SETTINGS_KEY = 'paper-pilot:settings';
 const TWO_PI = Math.PI * 2;
-const MOBILE_QUERY = window.matchMedia('(max-width: 760px)');
+const MOBILE_QUERY = window.matchMedia('(max-width: 760px), (max-height: 500px)');
+const REF_VIEW = { width: 1280, height: 800 };
+const ZOOM_MIN = 0.35;
+const ZOOM_MAX = 2.2;
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -18,6 +21,9 @@ const els = {
   stars: document.getElementById('starReadout'),
   time: document.getElementById('timeReadout'),
   score: document.getElementById('scoreReadout'),
+  toolbar: document.getElementById('toolbar'),
+  moreBtn: document.getElementById('moreBtn'),
+  overflowActions: document.getElementById('overflowActions'),
   levelSelect: document.getElementById('levelSelect'),
   objective: document.getElementById('objectiveText'),
   attempt: document.getElementById('attemptReadout'),
@@ -82,10 +88,10 @@ const state = {
   panning: false,
   aiming: false,
   gesture: null,
-  lastPointer: null,
   simRunning: false,
   savedAt: 0,
   camera: { x: 0, y: 0, zoom: 1 },
+  cameraCustomized: false,
   launch: {
     pos: { x: 140, y: 420 },
     angle: -0.32,
@@ -107,11 +113,13 @@ init();
 function init() {
   applySettings();
   populateLevels();
-  setupLevel(state.levelIndex);
   resize();
+  setupLevel(state.levelIndex);
   bindUi();
   bindCanvas();
   window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', resize);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', resize);
   requestAnimationFrame(frame);
   showToast('Collect every star, then land softly.');
   updateMenuStats();
@@ -130,16 +138,25 @@ function bindUi() {
   els.reset.addEventListener('click', () => {
     resetPlane();
     showToast('Plane reset.');
+    closeOverflowActions();
   });
   els.retry.addEventListener('click', retryChallenge);
   els.undo.addEventListener('click', undoStroke);
-  els.redo.addEventListener('click', redoStroke);
+  els.redo.addEventListener('click', () => {
+    redoStroke();
+    closeOverflowActions();
+  });
   els.share.addEventListener('click', openShareModal);
   els.save.addEventListener('click', () => {
     saveSketch();
     showToast('Sketch saved locally.');
+    closeOverflowActions();
   });
-  els.clear.addEventListener('click', clearSketch);
+  els.clear.addEventListener('click', () => {
+    clearSketch();
+    closeOverflowActions();
+  });
+  els.moreBtn.addEventListener('click', toggleOverflowActions);
   els.resultRetry.addEventListener('click', retryChallenge);
   els.resultNext.addEventListener('click', nextChallenge);
   els.menuButton.addEventListener('click', openMenu);
@@ -195,16 +212,30 @@ function bindCanvas() {
 
 function resize() {
   dpr = Math.max(1, Math.min(2.5, window.devicePixelRatio || 1));
-  view.width = Math.max(1, window.innerWidth);
-  view.height = Math.max(1, window.innerHeight);
+  view.width = Math.max(1, window.visualViewport?.width || window.innerWidth);
+  view.height = Math.max(1, window.visualViewport?.height || window.innerHeight);
   canvas.width = Math.round(view.width * dpr);
   canvas.height = Math.round(view.height * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  if (!state.camera.ready) {
-    state.camera.x = 36;
-    state.camera.y = Math.max(90, view.height * 0.16);
-    state.camera.ready = true;
+  if (state.level && !state.cameraCustomized && !state.simRunning) {
+    state.camera = computeDefaultCamera(state.level);
   }
+}
+
+// Levels are authored/framed against a REF_VIEW-sized canvas. On smaller
+// screens we zoom out proportionally (instead of just cropping) so the whole
+// opening view of a route stays readable, while keeping the launch point
+// anchored at the same relative screen position the level was designed at.
+function computeDefaultCamera(level) {
+  const scale = clamp(Math.min(view.width / REF_VIEW.width, view.height / REF_VIEW.height), 0.52, 1);
+  const zoom = level.camera.zoom * scale;
+  const anchorX = (level.launch.pos.x * level.camera.zoom + level.camera.x) / REF_VIEW.width;
+  const anchorY = (level.launch.pos.y * level.camera.zoom + level.camera.y) / REF_VIEW.height;
+  return {
+    zoom,
+    x: anchorX * view.width - level.launch.pos.x * zoom,
+    y: anchorY * view.height - level.launch.pos.y * zoom
+  };
 }
 
 function frame(now) {
@@ -238,7 +269,14 @@ function setupLevel(index) {
   state.level = level;
   state.strokes = saved?.strokes?.length ? saved.strokes : cloneStrokes(level.strokes);
   state.launch = saved?.launch?.pos ? cloneLaunch(saved.launch) : cloneLaunch(level.launch);
-  state.camera = saved?.camera ? { ...level.camera, ...saved.camera, ready: true } : { ...level.camera, ready: true };
+  const defaultCamera = computeDefaultCamera(level);
+  if (saved?.camera) {
+    state.camera = { ...defaultCamera, ...saved.camera };
+    state.cameraCustomized = true;
+  } else {
+    state.camera = defaultCamera;
+    state.cameraCustomized = false;
+  }
   state.redo = [];
   state.collected = new Set();
   state.attempts = 0;
@@ -296,6 +334,7 @@ function resetPlane() {
 function launchPlane() {
   resetPlane();
   playTone('launch');
+  vibrate(12);
   const angle = state.launch.angle;
   state.plane.vel.x = Math.cos(angle) * state.launch.power;
   state.plane.vel.y = Math.sin(angle) * state.launch.power;
@@ -399,7 +438,6 @@ function sampleWind(pos) {
 function onPointerDown(event) {
   canvas.setPointerCapture(event.pointerId);
   state.pointerMap.set(event.pointerId, { x: event.clientX, y: event.clientY });
-  state.lastPointer = { x: event.clientX, y: event.clientY };
   const world = screenToWorld({ x: event.clientX, y: event.clientY });
 
   if (state.pointerMap.size === 2) {
@@ -449,6 +487,7 @@ function onPointerMove(event) {
   } else if (state.panning && previous) {
     state.camera.x += event.clientX - previous.x;
     state.camera.y += event.clientY - previous.y;
+    state.cameraCustomized = true;
   }
 }
 
@@ -497,21 +536,35 @@ function updatePinchGesture() {
   if (points.length < 2) return;
   const center = midpoint(points[0], points[1]);
   const distance = Math.max(1, dist(points[0], points[1]));
-  const nextZoom = clamp(state.gesture.startZoom * (distance / state.gesture.startDistance), 0.45, 2.2);
+  const nextZoom = clamp(state.gesture.startZoom * (distance / state.gesture.startDistance), ZOOM_MIN, ZOOM_MAX);
   state.camera.zoom = nextZoom;
   const screenAfter = worldToScreen(state.gesture.centerWorld);
   state.camera.x += center.x - screenAfter.x;
   state.camera.y += center.y - screenAfter.y;
+  state.cameraCustomized = true;
 }
 
 function onWheel(event) {
   event.preventDefault();
   const before = screenToWorld({ x: event.clientX, y: event.clientY });
   const factor = event.deltaY > 0 ? 0.9 : 1.1;
-  state.camera.zoom = clamp(state.camera.zoom * factor, 0.45, 2.2);
+  state.camera.zoom = clamp(state.camera.zoom * factor, ZOOM_MIN, ZOOM_MAX);
   const after = worldToScreen(before);
   state.camera.x += event.clientX - after.x;
   state.camera.y += event.clientY - after.y;
+  state.cameraCustomized = true;
+}
+
+function toggleOverflowActions() {
+  const open = els.toolbar.classList.toggle('overflow-open');
+  els.moreBtn.setAttribute('aria-expanded', String(open));
+  els.moreBtn.textContent = open ? 'Less' : 'More';
+}
+
+function closeOverflowActions() {
+  els.toolbar.classList.remove('overflow-open');
+  els.moreBtn.setAttribute('aria-expanded', 'false');
+  els.moreBtn.textContent = 'More';
 }
 
 function setTool(tool) {
@@ -577,6 +630,7 @@ function collectStars() {
       state.collected.add(index);
       spawnBurst(star.x, star.y, '#f5b83b', 18, 150);
       playTone('star');
+      vibrate(14);
       showToast('Star collected.');
     }
   });
@@ -612,9 +666,11 @@ function endFlight(success, title, message) {
   if (success) {
     spawnBurst(state.plane.pos.x, state.plane.pos.y - 8, '#48aa68', 30, 210);
     playTone('success');
+    vibrate([16, 60, 16, 60, 30]);
   } else {
     spawnBurst(state.plane.pos.x, state.plane.pos.y - 8, '#d94d5c', 18, 120);
     playTone('fail');
+    vibrate(40);
   }
   if (success) recordBestScore();
   showResult(success, title, message);
@@ -851,6 +907,15 @@ function spawnBurst(x, y, color, count, force) {
   }
 }
 
+function vibrate(pattern) {
+  if (state.settings.reducedMotion) return;
+  try {
+    navigator.vibrate?.(pattern);
+  } catch {
+    // Vibration API is optional and can throw in restricted contexts.
+  }
+}
+
 function playTone(type) {
   if (!state.settings.soundEnabled) return;
   try {
@@ -953,12 +1018,13 @@ function loadProgress() {
 }
 
 function loadSettings() {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     const settings = raw ? JSON.parse(raw) : {};
-    return { soundEnabled: true, reducedMotion: false, focusMode: true, ...settings };
+    return { soundEnabled: true, reducedMotion: prefersReducedMotion, focusMode: true, ...settings };
   } catch {
-    return { soundEnabled: true, reducedMotion: false, focusMode: true };
+    return { soundEnabled: true, reducedMotion: prefersReducedMotion, focusMode: true };
   }
 }
 
@@ -1016,6 +1082,14 @@ function render() {
   drawToast();
 }
 
+const CLOUDS = [
+  { seedX: 0.08, y: 0.1, scale: 1.1, depth: 0.02, speed: 3 },
+  { seedX: 0.34, y: 0.2, scale: 0.75, depth: 0.035, speed: 4.4 },
+  { seedX: 0.62, y: 0.07, scale: 1.4, depth: 0.015, speed: 2.4 },
+  { seedX: 0.85, y: 0.24, scale: 0.9, depth: 0.03, speed: 3.8 },
+  { seedX: 0.18, y: 0.34, scale: 0.6, depth: 0.045, speed: 5.2 }
+];
+
 function drawBackground() {
   const gradient = ctx.createLinearGradient(0, 0, 0, view.height);
   gradient.addColorStop(0, '#7bc8e8');
@@ -1024,12 +1098,41 @@ function drawBackground() {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, view.width, view.height);
 
+  drawClouds();
+
   ctx.save();
   ctx.globalAlpha = 0.16;
   ctx.strokeStyle = '#3f6b9b';
   ctx.lineWidth = 1;
   for (let x = (state.camera.x % 36); x < view.width; x += 36) line(x, 0, x, view.height);
   for (let y = (state.camera.y % 36); y < view.height; y += 36) line(0, y, view.width, y);
+  ctx.restore();
+}
+
+function drawClouds() {
+  if (view.width < 1 || view.height < 1) return;
+  const drift = state.settings.reducedMotion ? 0 : performance.now() * 0.001;
+  const span = view.width + 460;
+  ctx.save();
+  for (const cloud of CLOUDS) {
+    const wrapX = ((cloud.seedX * span + drift * cloud.speed - state.camera.x * cloud.depth) % span + span) % span - 230;
+    const y = cloud.y * view.height;
+    const scale = cloud.scale * Math.min(1.3, view.width / 900);
+    drawCloudPuff(wrapX, y, scale);
+  }
+  ctx.restore();
+}
+
+function drawCloudPuff(x, y, scale) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.beginPath();
+  ctx.ellipse(0, 0, 60, 24, 0, 0, TWO_PI);
+  ctx.ellipse(40, -8, 40, 20, 0, 0, TWO_PI);
+  ctx.ellipse(-38, 6, 36, 18, 0, 0, TWO_PI);
+  ctx.fill();
   ctx.restore();
 }
 
@@ -1249,7 +1352,8 @@ function drawToast() {
   if (performance.now() > toastTimer) return;
   const width = Math.min(420, view.width - 32);
   const x = (view.width - width) / 2;
-  const y = Math.max(88, view.height - 182);
+  const toolbarTop = els.toolbar.getBoundingClientRect().top;
+  const y = Math.max(88, toolbarTop - 54);
   ctx.save();
   ctx.fillStyle = 'rgba(33, 48, 71, 0.9)';
   roundedRect(x, y, width, 42, 999, true);

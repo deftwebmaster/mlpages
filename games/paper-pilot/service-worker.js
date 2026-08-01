@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'paper-pilot-v5';
+const CACHE_VERSION = 'paper-pilot-v6';
 const SHELL = [
   './',
   './index.html',
