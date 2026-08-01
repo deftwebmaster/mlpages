@@ -8,6 +8,7 @@ import { formatMoney, formatPercent, capitalize } from '../utils/format.js';
 import { WEATHER_TYPES } from '../simulation/weather-model.js';
 import { advanceTutorial } from '../systems/tutorial-system.js';
 import { tutorialBannerHtml, wireTutorialBanner } from '../components/tutorial-banner.js';
+import { lemonadeStandSceneHtml } from '../components/brand-scenes.js';
 
 export function renderResultsScreen(container, { navigate }) {
   const state = getState();
@@ -47,6 +48,9 @@ function buildContent(report) {
   const { helped, hurt } = deriveFactors(report);
   const location = getLocation(report.locationId);
   const weatherInfo = WEATHER_TYPES[report.weather.type] || WEATHER_TYPES.sunny;
+  const sellThrough = report.cupsPrepared ? report.cupsSold / report.cupsPrepared : 0;
+  const grade = resultGrade(w.netProfit, sellThrough, report.avgSatisfaction);
+  const headline = resultHeadline(grade, w.netProfit);
 
   const badges = [];
   if (report.newAchievements.length) {
@@ -60,10 +64,21 @@ function buildContent(report) {
   }
 
   return `
-    <div class="results-hero">
-      <div class="card__subtitle" style="color:var(--color-navy);opacity:0.7;">Day ${report.day} at ${location.name} · ${weatherInfo.icon} ${report.weather.temperature}°F</div>
+    <div class="results-hero results-hero--grade-${grade.toLowerCase().replace('+', 'plus')}">
+      <div class="results-hero__scene">
+        ${lemonadeStandSceneHtml({ variant: 'results', weather: report.weather.type, cups: report.cupsSold, customers: Math.round(report.customersServed / 12) })}
+      </div>
+      <div class="results-grade">${grade}</div>
+      <div class="card__subtitle" style="color:var(--color-navy);opacity:0.76;">Day ${report.day} at ${location.name} · ${weatherInfo.icon} ${report.weather.temperature}°F</div>
+      <h1>${headline}</h1>
       <div class="results-hero__amount">${formatMoney(w.netProfit)}</div>
       <div>net profit today</div>
+    </div>
+
+    <div class="debrief-strip">
+      ${debriefTile('Sell-through', formatPercent(sellThrough))}
+      ${debriefTile('Satisfaction', formatPercent(report.avgSatisfaction))}
+      ${debriefTile('Waste', `${report.cupsWasted} cups`)}
     </div>
 
     ${badges.length ? `
@@ -111,6 +126,10 @@ function buildContent(report) {
   `;
 }
 
+function debriefTile(label, value) {
+  return `<div class="debrief-tile"><span>${label}</span><strong>${value}</strong></div>`;
+}
+
 function waterfallRow(label, amount) {
   const tone = amount < 0 ? 'negative' : amount > 0 ? 'positive' : '';
   return `<div class="waterfall-row"><span>${label}</span><span class="amount ${tone}">${formatMoney(amount)}</span></div>`;
@@ -118,6 +137,22 @@ function waterfallRow(label, amount) {
 
 function statTile(label, value) {
   return `<div class="stat-card"><div class="stat-card__label">${label}</div><div class="stat-card__value">${value}</div></div>`;
+}
+
+function resultGrade(netProfit, sellThrough, satisfaction) {
+  if (netProfit > 70 && sellThrough >= 0.85 && satisfaction >= 0.72) return 'S';
+  if (netProfit > 25 && sellThrough >= 0.65 && satisfaction >= 0.55) return 'A';
+  if (netProfit >= 0 && sellThrough >= 0.45) return 'B';
+  if (netProfit >= 0) return 'C';
+  return 'D';
+}
+
+function resultHeadline(grade, netProfit) {
+  if (grade === 'S') return 'Standout Day';
+  if (grade === 'A') return 'Strong Momentum';
+  if (grade === 'B') return 'Solid Sales';
+  if (grade === 'C') return 'Thin Margin';
+  return netProfit < 0 ? 'Tough Lessons' : 'Needs Tuning';
 }
 
 function deriveFactors(report) {

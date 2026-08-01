@@ -1,14 +1,13 @@
 import { getState, setState } from '../state/game-store.js';
-import { getLocation, LOCATIONS } from '../data/locations.js';
+import { getLocation } from '../data/locations.js';
 import { getMenuItem } from '../data/recipes.js';
 import { getRecipeDescriptor, getAvailableMenuItems, setActiveMenuItem } from '../systems/recipe-system.js';
 import { getPrepEstimate, prepareBatch, startDay } from '../systems/day-cycle-system.js';
 import { ensureDayBriefing } from '../systems/briefing-system.js';
 import { setCurrentLocation } from '../systems/location-system.js';
-import { getReputationTier, getNextReputationTier, isFeatureUnlocked } from '../systems/progression-system.js';
-import { getOwnedUpgradeByCategory } from '../systems/upgrade-system.js';
+import { getNextReputationTier } from '../systems/progression-system.js';
 import { WEATHER_TYPES } from '../simulation/weather-model.js';
-import { formatMoney, formatHour, capitalize } from '../utils/format.js';
+import { formatMoney } from '../utils/format.js';
 import { clamp } from '../utils/math.js';
 import { progressBarHtml } from '../components/progress-bar.js';
 import { openSheet } from '../components/bottom-sheet.js';
@@ -18,8 +17,7 @@ import { getAchievement } from '../data/achievements.js';
 import { advanceTutorial } from '../systems/tutorial-system.js';
 import { tutorialBannerHtml, wireTutorialBanner } from '../components/tutorial-banner.js';
 import { playSound } from '../systems/audio-system.js';
-
-const STAND_EMOJI_BY_TIER = ['🪑', '🛖', '🛒', '🚚', '🏪'];
+import { lemonadeStandSceneHtml } from '../components/brand-scenes.js';
 
 export function renderStandScreen(container, { navigate }) {
   const root = document.createElement('div');
@@ -34,8 +32,6 @@ export function renderStandScreen(container, { navigate }) {
   }
 
   function wireEvents(state) {
-    const location = getLocation(state.locations.currentId);
-
     wireTutorialBanner(root, rerender);
     root.querySelector('#loc-picker')?.addEventListener('click', () => openLocationPicker(state, rerender));
     root.querySelector('#menu-picker')?.addEventListener('click', () => openMenuPicker(state, rerender));
@@ -99,13 +95,10 @@ export function renderStandScreen(container, { navigate }) {
 function buildContent(state) {
   const location = getLocation(state.locations.currentId);
   const menuItem = getMenuItem(state.recipes.activeMenuItemId);
-  const weather = state.today.actualWeather;
   const forecast = state.today.forecast;
   const weatherInfo = WEATHER_TYPES[forecast.type] || WEATHER_TYPES.sunny;
   const estimate = getPrepEstimate(state);
   const descriptor = getRecipeDescriptor(state.recipes.current);
-  const standTier = getOwnedUpgradeByCategory(state, 'stand');
-  const standEmoji = STAND_EMOJI_BY_TIER[Math.min(standTier?.tier ?? 0, STAND_EMOJI_BY_TIER.length - 1)];
   const availableMenuItems = getAvailableMenuItems(state);
   const ownedLocations = state.locations.ownedIds.map((id) => getLocation(id));
 
@@ -115,30 +108,45 @@ function buildContent(state) {
     { label: `Ingredients for ${state.production.cupsPlanned} cups`, done: state.ui.currentDayPrepared || estimate.maxCupsAffordable >= state.production.cupsPlanned },
     { label: "Today's batch prepared", done: state.ui.currentDayPrepared },
   ];
-  const allReady = readiness.every((r) => r.done);
 
   const nextTier = getNextReputationTier(state.reputation.score);
   const objective = getPrimaryObjective(state);
   const optionalGoals = getOptionalGoals(state);
 
+  const prepRatio = estimate.batchCap ? clamp(state.production.cupsPlanned / estimate.batchCap, 0, 1) : 0;
+  const demandMidpoint = Math.round((estimate.demandRange.low + estimate.demandRange.high) / 2);
+  const planGap = state.production.cupsPlanned - demandMidpoint;
+  const planSignal = planGap < -8 ? 'Conservative batch'
+    : planGap > 12 ? 'Aggressive batch'
+      : 'Demand-matched batch';
+  const activeEmployees = state.employees.filter((e) => e.shift !== 'closed').length;
+
   return `
     ${tutorialBannerHtml(state, 'stand')}
-    <div class="stand-hero">
-      <div class="stand-hero__weather">${weatherInfo.icon}</div>
-      <div>
-        <div style="opacity:0.85;font-size:0.85rem;">${location.name}${ownedLocations.length > 1 ? ' <span style="text-decoration:underline;" id="loc-picker">(change)</span>' : ''}</div>
-        <div class="stand-hero__title">${forecast.confidence === 'uncertain' ? 'Forecast: ' : ''}${weatherInfo.label}, ${forecast.temperature}°F</div>
-        ${state.today.localActivity.label ? `<div style="font-size:0.85rem;opacity:0.9;margin-top:4px;">📍 ${state.today.localActivity.label}</div>` : ''}
+
+    <div class="stand-command">
+      <div class="stand-command__copy">
+        <span class="eyebrow">Morning Setup</span>
+        <h1>${location.name}</h1>
+        <p>${forecast.confidence === 'uncertain' ? 'Forecast says ' : ''}${weatherInfo.label}, ${forecast.temperature}°F${state.today.localActivity.label ? ` · ${state.today.localActivity.label}` : ''}</p>
+        ${ownedLocations.length > 1 ? '<button class="chip stand-command__change" id="loc-picker">Change location</button>' : ''}
       </div>
-      <div class="stand-hero__scene">${standEmoji} ${state.employees.filter((e) => e.shift !== 'closed').length ? '🧑' : ''}</div>
+      ${lemonadeStandSceneHtml({ variant: 'hero', weather: forecast.type, employeeCount: activeEmployees, cups: state.production.cupsPlanned, customers: Math.round(demandMidpoint / 12) })}
+      <div class="stand-command__weather">${weatherInfo.icon}</div>
     </div>
 
-    <div class="card stack--tight">
-      <div class="row row--between">
+    <div class="day-snapshot">
+      ${snapshotTile('Demand', `${estimate.demandRange.low}–${estimate.demandRange.high}`, 'cups')}
+      ${snapshotTile('Price Feel', estimate.reaction, 'customers')}
+      ${snapshotTile('Batch Signal', planSignal, planGap === 0 ? 'balanced' : planGap > 0 ? '+ supply' : 'lean')}
+    </div>
+
+    <div class="card plan-card stack--tight">
+      <div class="row row--between plan-card__header">
         <span class="section-title" style="margin:0;">Today's Plan</span>
         <button class="badge badge-tier" id="menu-picker" ${availableMenuItems.length <= 1 ? 'style="visibility:hidden;"' : ''}>${menuItem.name} ▾</button>
       </div>
-      <div class="row row--between">
+      <div class="plan-card__recipe">
         <div>
           <div style="font-weight:800;font-size:1.1rem;">${descriptor}</div>
           <div class="card__subtitle">${menuItem.name}</div>
@@ -171,6 +179,9 @@ function buildContent(state) {
         <button class="badge" id="cups-max">Use max (${estimate.maxCupsAffordable})</button>
       </div>
       <div class="card__subtitle">Equipment limit: ${estimate.batchCap} cups per batch</div>
+      <div class="batch-meter" aria-hidden="true">
+        <span style="width:${Math.round(prepRatio * 100)}%;"></span>
+      </div>
 
       <div class="grid-2" style="margin-top:8px;">
         ${statTile('Potential revenue', formatMoney(estimate.potentialRevenue))}
@@ -178,11 +189,14 @@ function buildContent(state) {
       </div>
     </div>
 
-    <div class="card readiness-list">
-      ${readiness.map((r) => `<div class="readiness-item ${r.done ? 'done' : ''}"><span class="dot"></span>${r.label}</div>`).join('')}
+    <div class="card readiness-card">
+      <div class="section-title">Launch Checklist</div>
+      <div class="readiness-list">
+        ${readiness.map((r) => `<div class="readiness-item ${r.done ? 'done' : ''}"><span class="dot"></span>${r.label}</div>`).join('')}
+      </div>
     </div>
 
-    <button class="btn btn--primary btn--lg btn--full cta-button" id="${state.ui.currentDayPrepared ? 'start-day-btn' : 'prep-btn'}" ${!allReady && state.ui.currentDayPrepared ? '' : ''}>
+    <button class="btn btn--primary btn--lg btn--full cta-button" id="${state.ui.currentDayPrepared ? 'start-day-btn' : 'prep-btn'}">
       ${state.ui.currentDayPrepared ? '☀️ Start Day' : '🧃 Prepare Today'}
     </button>
 
@@ -207,6 +221,14 @@ function buildContent(state) {
       ${nextTier ? `<div class="card__subtitle" style="margin-top:6px;">${nextTier.min - state.reputation.score} pts to ${nextTier.label}</div>` : `<div class="card__subtitle" style="margin-top:6px;">You've reached the top tier!</div>`}
     </div>
   `;
+}
+
+function snapshotTile(label, value, sublabel) {
+  return `<div class="snapshot-tile">
+    <div class="snapshot-tile__label">${label}</div>
+    <div class="snapshot-tile__value">${value}</div>
+    <div class="snapshot-tile__sub">${sublabel}</div>
+  </div>`;
 }
 
 function statTile(label, value) {

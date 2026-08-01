@@ -541,6 +541,31 @@ export class Renderer {
     }
   }
 
+  setRunTelemetry(stats, heat) {
+    if (!this.dom.runObjective) return;
+    const objective = nextObjective(stats, heat);
+    this.dom.runObjective.textContent = objective.text;
+    this.dom.runObjective.dataset.state = objective.state;
+
+    const cooled = Math.round(stats.totalCooled || 0);
+    this.dom.runEfficiency.textContent = `COOL ${formatNumber(cooled)}%`;
+    this.dom.runEfficiency.dataset.state = cooled >= 25 ? 'done' : heat.value >= 75 ? 'warn' : '';
+
+    const chain = stats.largestCascade > 1 ? `CHAIN x${stats.largestCascade}` : 'CHAIN x1';
+    this.dom.runChain.textContent = chain;
+    this.dom.runChain.dataset.state = stats.largestCascade >= 3 ? 'done' : '';
+
+    if (this.dom.stabilityGoal) {
+      this.dom.stabilityGoal.textContent = objective.long;
+    }
+    if (this.dom.stabilityControl) {
+      const control = stats.validMoves
+        ? Math.round((stats.totalCooled / Math.max(1, stats.validMoves * 4)) * 100)
+        : 0;
+      this.dom.stabilityControl.textContent = `Control ${Math.min(999, Math.max(0, control))}%`;
+    }
+  }
+
   announce(text) {
     this.dom.live.textContent = text;
   }
@@ -552,4 +577,47 @@ export class Renderer {
   static async idle(ms) {
     await wait(ms);
   }
+}
+
+function nextObjective(stats, heat) {
+  if (heat.value >= 88) {
+    return {
+      text: 'COOL NOW',
+      state: 'danger',
+      long: 'Goal: trigger a special or 4+ match before shutdown',
+    };
+  }
+  if (heat.value >= 72) {
+    return {
+      text: 'FIND COOLING',
+      state: 'warn',
+      long: 'Goal: chain a cascade before heat crosses 90%',
+    };
+  }
+  if (stats.specialsCreated < 1) {
+    return {
+      text: 'FORGE A SPECIAL',
+      state: heat.value < 50 ? '' : 'warn',
+      long: 'Goal: make a 4-node match before 50% heat',
+    };
+  }
+  if (stats.specialsActivated < 1) {
+    return {
+      text: 'FIRE SPECIAL',
+      state: '',
+      long: 'Goal: match a special to discharge a row, column or area',
+    };
+  }
+  if (stats.largestCascade < 3) {
+    return {
+      text: 'BUILD CHAIN x3',
+      state: '',
+      long: 'Goal: set up a drop that cascades after the first match',
+    };
+  }
+  return {
+    text: 'PUSH SCORE',
+    state: 'done',
+    long: 'Goal: keep one special ready for critical heat',
+  };
 }

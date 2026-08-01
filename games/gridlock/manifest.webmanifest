@@ -1,7 +1,7 @@
 {
   "name": "Gridlock",
   "short_name": "Gridlock",
-  "description": "Own the maze. Rewrite the pursuit. A real-time arcade maze game where you reconfigure the grid to outsmart autonomous security drones.",
+  "description": "Own the maze. Rewrite the pursuit. A polished V2 arcade maze game with live objectives, sector briefings, and touch-first feedback.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

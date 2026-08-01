@@ -62,9 +62,10 @@ export function applyLayout(game, blueprint) {
   game.history.past = [];
   game.history.future = [];
 
-  for (const data of blueprint.machines) game.applyPlaceMachine(new Machine(data));
-  for (const data of blueprint.conveyors) game.applyPlaceConveyor(new Conveyor(data));
-  for (const data of blueprint.placedObjects) game.applyPlace(new PlacedObject(data));
+  for (const data of blueprint.machines) game.applyPlaceMachine(Machine.fromJSON(data));
+  for (const data of blueprint.conveyors) game.applyPlaceConveyor(Conveyor.fromJSON(data));
+  for (const data of blueprint.placedObjects) game.applyPlace(PlacedObject.fromJSON(data));
 
+  game.clearSelection?.();
   game.refreshHistoryUI();
 }

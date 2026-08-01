@@ -370,6 +370,7 @@ export class Renderer {
     ctx.clip();
 
     this.drawLaneAnimation(level, game.worldTime);
+    this.drawMoveHints(game);
     this.drawShapes(level, game);
     this.drawCollectibles(level, game);
     this.drawUplinks(level, game);
@@ -413,6 +414,46 @@ export class Renderer {
     }
     ctx.setLineDash([]);
     ctx.restore();
+  }
+
+  drawMoveHints(game) {
+    if (!game.player || game.activeTutorial || this.reducedEffects) return;
+    const hints = game.getMoveHints?.() || [];
+    if (!hints.length) return;
+    const ctx = this.ctx;
+    const pulse = 0.65 + Math.sin(game.worldTime * 5) * 0.12;
+    ctx.save();
+    for (const hint of hints) {
+      if (hint.col < 0 || hint.col >= game.level.cols || hint.row < 0 || hint.row >= game.level.rows) continue;
+      const cx = this.cxOf(hint.col);
+      const cy = this.cyOf(hint.row);
+      const radius = this.cell * (hint.ok ? 0.18 : 0.13);
+      const colour = hint.uplink ? PALETTE.white : hint.risky ? PALETTE.warning : hint.ok ? polarityColor(game.player.polarity) : 'rgba(255, 90, 77, 0.75)';
+
+      ctx.globalAlpha = hint.ok ? pulse : 0.38;
+      ctx.strokeStyle = colour;
+      ctx.lineWidth = Math.max(1.5, this.cell * 0.04);
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      if (!hint.ok) {
+        ctx.beginPath();
+        ctx.moveTo(cx - radius * 0.55, cy - radius * 0.55);
+        ctx.lineTo(cx + radius * 0.55, cy + radius * 0.55);
+        ctx.moveTo(cx + radius * 0.55, cy - radius * 0.55);
+        ctx.lineTo(cx - radius * 0.55, cy + radius * 0.55);
+        ctx.stroke();
+      } else if (hint.uplink) {
+        ctx.globalAlpha = 0.26 + pulse * 0.22;
+        ctx.fillStyle = colour;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius * 1.55, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+    ctx.globalAlpha = 1;
   }
 
   drawShapes(level, game) {

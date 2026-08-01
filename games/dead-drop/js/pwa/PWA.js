@@ -14,6 +14,7 @@ export class PWA {
 
   register() {
     if (!('serviceWorker' in navigator)) return;
+    if (new URLSearchParams(location.search).has('nosw')) return;
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {
         // offline/PWA support degrades gracefully if registration fails

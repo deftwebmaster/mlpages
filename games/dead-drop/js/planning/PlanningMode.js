@@ -111,6 +111,8 @@ export class PlanningMode {
     return {
       active: this.active,
       pathTiles,
+      steps: Math.max(0, pathTiles.length - 1),
+      executableSteps: this.executableChain.length,
       ghostGuards,
       ghostCones,
       dangerTile,

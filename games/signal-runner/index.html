@@ -10,14 +10,14 @@
   <meta property="og:url" content="https://mattlivingston.com/games/signal-runner/">
   <meta property="og:title" content="Signal Runner | Mobile Lane-Crossing Arcade Puzzle">
   <meta property="og:description" content="Play Signal Runner, a mobile-first lane-crossing arcade puzzle about carrying the signal across a dangerous network and making it home.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/signal-runner.png">
   <meta property="og:image:alt" content="Signal Runner | Mobile Lane-Crossing Arcade Puzzle preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/signal-runner/">
   <meta name="twitter:title" content="Signal Runner | Mobile Lane-Crossing Arcade Puzzle">
   <meta name="twitter:description" content="Play Signal Runner, a mobile-first lane-crossing arcade puzzle about carrying the signal across a dangerous network and making it home.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/signal-runner.png">
 <meta name="theme-color" content="#05070d">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
@@ -48,6 +48,7 @@
       <div><dt>SCORE</dt><dd id="hudScore">0</dd></div>
       <div><dt>UPLINK</dt><dd id="hudUplinks">0/1</dd></div>
       <div><dt>FRAG</dt><dd id="hudFragments">0/0</dd></div>
+      <div><dt>RUN</dt><dd id="hudRun">0X</dd></div>
     </dl>
   </header>
 
@@ -69,7 +70,13 @@
       <button id="restartBtn" class="icon-btn" aria-label="Restart level" title="Restart (R)">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg>
       </button>
-      <p class="control-hint">SWIPE OR ARROWS<br>TO MOVE ONE CELL</p>
+      <p class="control-hint" id="controlHint">NEXT: REACH THE UPLINK</p>
+    </div>
+    <div class="move-pad" aria-label="Movement controls">
+      <button class="move-btn move-up" data-move="0,-1" aria-label="Move up">↑</button>
+      <button class="move-btn move-left" data-move="-1,0" aria-label="Move left">←</button>
+      <button class="move-btn move-right" data-move="1,0" aria-label="Move right">→</button>
+      <button class="move-btn move-down" data-move="0,1" aria-label="Move down">↓</button>
     </div>
     <button id="polarityBtn" class="polarity-btn is-cyan" aria-label="Switch frequency to violet">
       <span class="polarity-ring" aria-hidden="true"></span>
@@ -88,8 +95,13 @@
         <h1>SIGNAL<span>RUNNER</span></h1>
         <p class="tagline">Cross the network. Carry the signal home.</p>
       </div>
+      <div class="signal-intel">
+        <span>12 handcrafted routes</span>
+        <span>Polarity gates</span>
+        <span>One-cell decisions</span>
+      </div>
       <div class="menu-actions">
-        <button id="btnStart" class="btn btn-primary">START</button>
+        <button id="btnStart" class="btn btn-primary">RUN SIGNAL</button>
         <button id="btnLevels" class="btn">LEVEL SELECT</button>
         <div class="btn-row">
           <button id="btnSettings" class="btn btn-ghost">SETTINGS</button>
@@ -142,6 +154,7 @@
         <div><dt>TIME</dt><dd id="resultTime">0:00.0</dd></div>
         <div><dt>BEST</dt><dd id="resultBest">--</dd></div>
         <div><dt>DEATHS</dt><dd id="resultDeaths">0</dd></div>
+        <div><dt>BEST RUN</dt><dd id="resultChain">0X</dd></div>
         <div><dt>FRAGMENTS</dt><dd id="resultFragments">0/0</dd></div>
         <div class="wide"><dt>SCORE</dt><dd id="resultScore">0</dd></div>
       </dl>

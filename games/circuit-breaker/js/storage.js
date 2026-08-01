@@ -16,6 +16,8 @@ const KEY = {
   helpSeen: 'helpSeen',
   tutorialDone: 'tutorialDone',
   bestCascade: 'bestCascade',
+  bestCooling: 'bestCooling',
+  bestSpecials: 'bestSpecials',
 };
 
 let available = true;
@@ -70,6 +72,8 @@ export const storage = {
   get gamesPlayed() { return Math.floor(readNumber(KEY.gamesPlayed, 0)); },
   get lifetimeScore() { return Math.floor(readNumber(KEY.lifetimeScore, 0)); },
   get bestCascade() { return Math.floor(readNumber(KEY.bestCascade, 0)); },
+  get bestCooling() { return Math.floor(readNumber(KEY.bestCooling, 0)); },
+  get bestSpecials() { return Math.floor(readNumber(KEY.bestSpecials, 0)); },
 
   get soundEnabled() { return readBool(KEY.soundEnabled, true); },
   set soundEnabled(v) { writeRaw(KEY.soundEnabled, String(!!v)); },
@@ -95,6 +99,12 @@ export const storage = {
     writeRaw(KEY.lifetimeScore, String(this.lifetimeScore + score));
     if ((stats.largestCascade || 0) > this.bestCascade) {
       writeRaw(KEY.bestCascade, String(Math.floor(stats.largestCascade)));
+    }
+    if ((stats.totalCooled || 0) > this.bestCooling) {
+      writeRaw(KEY.bestCooling, String(Math.floor(stats.totalCooled)));
+    }
+    if ((stats.specialsActivated || 0) > this.bestSpecials) {
+      writeRaw(KEY.bestSpecials, String(Math.floor(stats.specialsActivated)));
     }
     return isBest;
   },

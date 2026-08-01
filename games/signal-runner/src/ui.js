@@ -38,6 +38,8 @@ export class UI {
       score: $('hudScore'),
       uplinks: $('hudUplinks'),
       fragments: $('hudFragments'),
+      run: $('hudRun'),
+      controlHint: $('controlHint'),
       toast: $('toast'),
       tutorial: $('tutorial'),
       tutorialText: $('tutorialText'),
@@ -282,6 +284,15 @@ export class UI {
 
     const frags = `${g.runFragments}/${g.level.collectibles.length}`;
     if (frags !== last.frags) { this.el.fragments.textContent = frags; last.frags = frags; }
+
+    const run = `${g.nearMissChain || 0}X`;
+    if (run !== last.run) { this.el.run.textContent = run; last.run = run; }
+
+    const hint = g.objectiveText;
+    if (hint !== last.hint && this.el.controlHint) {
+      this.el.controlHint.textContent = hint;
+      last.hint = hint;
+    }
   }
 
   updatePolarityButton() {
@@ -398,6 +409,7 @@ export class UI {
       ? `${formatTime(result.time)} NEW`
       : formatTime(result.previousBestTime);
     $('resultDeaths').textContent = String(result.deaths);
+    $('resultChain').textContent = `${result.nearMissChain || 0}X`;
     $('resultFragments').textContent = `${result.fragments}/${result.totalFragments}`;
     $('resultScore').textContent = `${formatScore(result.score)}${result.newBestScore ? ' · BEST' : ''}`;
 

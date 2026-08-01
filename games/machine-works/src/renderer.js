@@ -38,7 +38,7 @@ export class Renderer {
     return { minX, maxX, minY, maxY };
   }
 
-  drawDiamond(sx, sy, halfW, halfH, fill, stroke) {
+  drawDiamond(sx, sy, halfW, halfH, fill, stroke, lineWidth = 1) {
     const ctx = this.ctx;
     ctx.beginPath();
     ctx.moveTo(sx, sy - halfH);
@@ -47,10 +47,10 @@ export class Renderer {
     ctx.lineTo(sx - halfW, sy);
     ctx.closePath();
     if (fill) { ctx.fillStyle = fill; ctx.fill(); }
-    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+    if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lineWidth; ctx.stroke(); }
   }
 
-  render({ grid, camera, placedObjects, conveyors, machines, machineDefs, recipes, items, preview, analysisMode }) {
+  render({ grid, camera, placedObjects, conveyors, machines, machineDefs, recipes, items, preview, selected, analysisMode }) {
     const ctx = this.ctx;
     ctx.clearRect(0, 0, this.viewW, this.viewH);
     ctx.fillStyle = COLORS.charcoal;
@@ -132,6 +132,10 @@ export class Renderer {
       ctx.globalAlpha = 1;
     }
 
+    if (selected) {
+      this.drawSelection(selected, placedObjects, conveyors, machines, machineDefs, camera, halfW, halfH);
+    }
+
     // --- Lighting: ambient darkening for the "abandoned" look, deepened
     // further in Analysis Mode so the factory reads as "engineering
     // dashboard" per spec ("factory darkens slightly" when activated).
@@ -144,6 +148,45 @@ export class Renderer {
     gradient.addColorStop(1, `rgba(0,0,0,${darkness})`);
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, this.viewW, this.viewH);
+  }
+
+  drawSelection(selected, placedObjects, conveyors, machines, machineDefs, camera, halfW, halfH) {
+    let x = selected.x;
+    let y = selected.y;
+    let footprint = [1, 1];
+
+    if (selected.kind === 'object') {
+      const obj = placedObjects.find((entry) => entry.id === selected.id);
+      if (!obj) return;
+      x = obj.x;
+      y = obj.y;
+      footprint = obj.rotatedFootprint;
+    } else if (selected.kind === 'machine') {
+      const machine = machines?.get(selected.id);
+      const def = machine && machineDefs?.[machine.type];
+      if (!machine) return;
+      x = machine.x;
+      y = machine.y;
+      footprint = def?.footprint || [1, 1];
+    } else if (selected.kind === 'conveyor') {
+      const conveyor = conveyors?.get(selected.id);
+      if (!conveyor) return;
+      x = conveyor.x;
+      y = conveyor.y;
+    }
+
+    const [fw, fh] = footprint;
+    const centerX = x + fw / 2 - 0.5;
+    const centerY = y + fh / 2 - 0.5;
+    const { x: sx, y: sy } = camera.tileToScreen(centerX, centerY, this.viewW, this.viewH);
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.shadowColor = 'rgba(61, 219, 217, 0.55)';
+    ctx.shadowBlur = 14;
+    this.drawDiamond(sx, sy, halfW * fw * 0.98, halfH * fh * 0.98, null, COLORS.cyan, Math.max(2, 2.5 * camera.zoom));
+    ctx.shadowBlur = 0;
+    this.drawDiamond(sx, sy, halfW * fw * 1.14, halfH * fh * 1.14, null, 'rgba(61,219,217,0.35)');
+    ctx.restore();
   }
 
   drawConveyor(sx, sy, halfW, halfH, rotation, animOffset, utilization) {

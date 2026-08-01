@@ -246,6 +246,126 @@ body.high-contrast .objective-text { background: rgba(0,0,0,0.85); }
   .mobile-controls { display: none; }
 }
 @media (max-width: 819px) {
-  .hud-top-left { width: 140px; }
-  .radar { width: 100px; height: 100px; }
+  .hud-top-left {
+    width: 140px;
+  }
+  .hud-top-center {
+    top: 54px;
+    width: min(360px, calc(100vw - 24px));
+  }
+  .objective-text {
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.25;
+    white-space: normal;
+  }
+  .combo-readout {
+    top: 104px;
+  }
+  .extraction-banner {
+    top: 110px;
+    width: min(360px, calc(100vw - 24px));
+    text-align: center;
+    line-height: 1.25;
+  }
+  .radar {
+    width: 100px;
+    height: 100px;
+    right: 16px;
+    bottom: max(214px, calc(190px + env(safe-area-inset-bottom) + 24px));
+  }
+}
+
+@media (max-width: 430px) {
+  .hud-top-left {
+    width: 124px;
+  }
+  .bar-group {
+    gap: 6px;
+  }
+  .bar-label {
+    width: 28px;
+  }
+  .joy-zone {
+    left: 18px;
+    bottom: 18px;
+    width: 112px;
+    height: 112px;
+  }
+  .joy-knob {
+    width: 50px;
+    height: 50px;
+    margin: -25px 0 0 -25px;
+  }
+  .action-buttons {
+    right: 10px;
+    bottom: 10px;
+    width: 184px;
+    height: 178px;
+  }
+  .fire-btn {
+    width: 78px;
+    height: 78px;
+    bottom: 44px;
+  }
+  .thrust-btn {
+    width: 78px;
+    height: 78px;
+    right: 82px;
+  }
+  .tractor-btn {
+    width: 58px;
+    height: 58px;
+    bottom: 132px;
+  }
+  .brake-btn {
+    width: 54px;
+    height: 54px;
+    right: 136px;
+    bottom: 62px;
+  }
+}
+
+@media (max-width: 360px) {
+  .ctrl-btn {
+    font-size: 0.6rem;
+    letter-spacing: 0.02em;
+  }
+  .joy-zone {
+    left: 10px;
+    width: 100px;
+    height: 100px;
+  }
+  .joy-knob {
+    width: 46px;
+    height: 46px;
+    margin: -23px 0 0 -23px;
+  }
+  .action-buttons {
+    right: 6px;
+    width: 168px;
+    height: 166px;
+  }
+  .fire-btn,
+  .thrust-btn {
+    width: 70px;
+    height: 70px;
+  }
+  .fire-btn {
+    bottom: 42px;
+  }
+  .thrust-btn {
+    right: 74px;
+  }
+  .tractor-btn {
+    width: 54px;
+    height: 54px;
+    bottom: 124px;
+  }
+  .brake-btn {
+    width: 50px;
+    height: 50px;
+    right: 124px;
+    bottom: 58px;
+  }
 }

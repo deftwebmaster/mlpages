@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-  <title>Circuit Breaker — Match nodes. Build combos. Keep the grid alive.</title>
-  <meta name="description" content="Circuit Breaker is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, and stop the grid from overheating.">
+  <title>Circuit Breaker V2 — Match nodes. Build combos. Keep the grid alive.</title>
+  <meta name="description" content="Circuit Breaker V2 is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, forge specials, and stop the grid from overheating.">
   <link rel="canonical" href="https://mattlivingston.com/games/circuit-breaker/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/games/circuit-breaker/">
-  <meta property="og:title" content="Circuit Breaker — Match nodes. Build combos. Keep the grid alive.">
-  <meta property="og:description" content="Circuit Breaker is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, and stop the grid from overheating.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="Circuit Breaker — Match nodes. Build combos. Keep the grid alive. preview image">
+  <meta property="og:title" content="Circuit Breaker V2 — Match nodes. Build combos. Keep the grid alive.">
+  <meta property="og:description" content="Circuit Breaker V2 is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, forge specials, and stop the grid from overheating.">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/circuit-breaker.png">
+  <meta property="og:image:alt" content="Circuit Breaker V2 preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/circuit-breaker/">
-  <meta name="twitter:title" content="Circuit Breaker — Match nodes. Build combos. Keep the grid alive.">
-  <meta name="twitter:description" content="Circuit Breaker is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, and stop the grid from overheating.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="Circuit Breaker V2 — Match nodes. Build combos. Keep the grid alive.">
+  <meta name="twitter:description" content="Circuit Breaker V2 is an offline-ready match-three puzzle game. Swap circuit nodes, build cascades, forge specials, and stop the grid from overheating.">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/circuit-breaker.png">
 <meta name="theme-color" content="#070b14">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -81,6 +81,17 @@
         <span class="menu-best-sub" id="menu-games">No runs logged</span>
       </div>
 
+      <section class="operator-brief" aria-label="Operator brief">
+        <span class="brief-kicker">Operator Brief</span>
+        <b id="brief-title">Stabilise the grid</b>
+        <p id="brief-copy">Four-node matches forge breakers. Cascades cool heat. Specials are your escape route after 70%.</p>
+        <div class="brief-metrics">
+          <span><small>Best Chain</small><strong id="brief-chain">--</strong></span>
+          <span><small>Next Cost</small><strong id="brief-heat">+4</strong></span>
+          <span><small>Best Control</small><strong id="brief-control">--</strong></span>
+        </div>
+      </section>
+
       <button class="btn btn-primary btn-lg" id="btn-start" type="button">START SYSTEM</button>
 
       <div class="menu-row">
@@ -122,6 +133,11 @@
 
     <div class="board-outer" id="board-outer">
       <div class="combo" id="combo" aria-hidden="true"></div>
+      <div class="run-strip" id="run-strip" aria-hidden="true">
+        <span id="run-objective">FORGE A SPECIAL</span>
+        <span id="run-efficiency">COOL 0%</span>
+        <span id="run-chain">CHAIN x1</span>
+      </div>
       <div class="board" id="board">
         <div class="board-grid" id="board-grid" aria-hidden="true"></div>
         <div class="board-nodes" id="board-nodes" role="application"
@@ -144,6 +160,10 @@
         <div class="heat-ticks" aria-hidden="true"><i style="left:50%"></i><i style="left:75%"></i><i style="left:90%"></i></div>
       </div>
       <p class="heat-status" id="heat-status">SYSTEM STABLE</p>
+      <div class="stability-row" aria-hidden="true">
+        <span id="stability-goal">Goal: forge a special before 50% heat</span>
+        <span id="stability-control">Control --</span>
+      </div>
     </div>
 
     <p class="sr-only" id="live-region" role="status" aria-live="polite"></p>
@@ -228,6 +248,8 @@
         <div class="stat"><dt>LONGEST MATCH</dt><dd id="stat-match">0</dd></div>
         <div class="stat"><dt>NODES CLEARED</dt><dd id="stat-cleared">0</dd></div>
       </dl>
+      <div class="diagnostic-grid" id="diagnostic-grid"></div>
+      <p class="coach-note" id="coach-note"></p>
       <div class="panel-actions">
         <button class="btn btn-primary" id="btn-reboot" type="button">REBOOT</button>
         <button class="btn btn-ghost" id="btn-over-menu" type="button">MAIN MENU</button>

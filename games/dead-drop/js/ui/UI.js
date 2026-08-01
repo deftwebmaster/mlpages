@@ -3,6 +3,19 @@ import { loadManifest, loadLevelById } from '../level/Level.js';
 
 const $ = (id) => document.getElementById(id);
 
+const MISSION_BRIEFS = {
+  '01-first-steps': 'Learn the route: package first, extraction second.',
+  '02-patrol': 'Slip past the patrol lane when the guard turns away.',
+  '03-eyes-in-the-walls': 'Watch the camera rhythm before committing.',
+  '04-behind-closed-doors': 'Use the switch, then time the guard.',
+  '05-remote-access': 'Open the remote door before entering the vault.',
+  '06-two-sets-of-eyes': 'Two patrols, one clean timing window.',
+  '07-clearance-required': 'Grab clearance, unlock the east wing, extract.',
+  '08-moving-eyes': 'Moving cameras reward short planned bursts.',
+  '09-mixed-signals': 'Switches and keycards change the route mid-run.',
+  '10-dead-drop': 'Final job. Read every cone before the handoff.',
+};
+
 export class UI {
   constructor(game, pwa) {
     this.game = game;
@@ -30,6 +43,7 @@ export class UI {
       onMissionFailed: (reason) => this.showFailed(reason),
       onHudUpdate: (hud) => this.updateHud(hud),
       onPlanningChange: (overlay) => this.updatePlanningUi(overlay),
+      onMessage: (message) => this.showToast(message.text, message.tone),
     });
 
     this._wireButtons();
@@ -47,6 +61,7 @@ export class UI {
       Storage.unlockMission(this.manifest[0].id);
     }
     this._applySettingsToInputs();
+    this._refreshPrimaryAction();
     this.showScreen('menu');
   }
 
@@ -92,11 +107,15 @@ export class UI {
     $('btn-restart').addEventListener('click', () => this.game.restart());
     $('btn-plan-execute').addEventListener('click', () => this.game.executePlanning());
     $('btn-plan-cancel').addEventListener('click', () => this.game.cancelPlanning());
+    document.querySelectorAll('.control-move').forEach((btn) => {
+      btn.addEventListener('click', () => this.game.attemptMove(btn.dataset.dir));
+    });
 
     $('btn-next-mission').addEventListener('click', () => this.playNextMission());
     $('btn-complete-restart').addEventListener('click', () => { this.hideOverlays(); this.game.restart(); });
     $('btn-complete-menu').addEventListener('click', () => { this.hideOverlays(); this._recordPlayTime(); this.showScreen('menu'); });
 
+    $('btn-failed-undo').addEventListener('click', () => { this.hideOverlays(); this.game.undoMove(); });
     $('btn-failed-restart').addEventListener('click', () => { this.hideOverlays(); this.game.restart(); });
     $('btn-failed-menu').addEventListener('click', () => { this.hideOverlays(); this._recordPlayTime(); this.showScreen('menu'); });
   }
@@ -112,6 +131,11 @@ export class UI {
     $('setting-music').checked = s.music;
     $('setting-haptics').checked = s.haptics;
     $('setting-reduced-motion').checked = s.reducedMotion;
+  }
+
+  _refreshPrimaryAction() {
+    const save = Storage.getSave();
+    $('btn-play').textContent = save.currentMissionId ? 'Continue Mission' : 'Start Mission';
   }
 
   async playCurrentOrFirst() {
@@ -137,11 +161,16 @@ export class UI {
     const level = await loadLevelById(id);
     this.currentMissionId = id;
     Storage.setCurrentMission(id);
+    this._refreshPrimaryAction();
     this.game.loadLevel(level);
     $('hud-mission-name').textContent = level.name;
+    $('hud-mission-brief').textContent = MISSION_BRIEFS[level.id] || 'Retrieve the package and reach extraction.';
+    $('hud-target').textContent = level.targetMoves ? `Target ${level.targetMoves}` : 'No target';
+    $('hud-objective').textContent = 'Retrieve the package.';
     this.playStartedAt = performance.now();
     this.showScreen('playing');
     this.game.handleResize();
+    this.showToast(MISSION_BRIEFS[level.id] || 'Retrieve the package and reach extraction.');
   }
 
   _recordPlayTime() {
@@ -154,9 +183,14 @@ export class UI {
   updateHud(hud) {
     if (!hud) return;
     $('hud-mission-name').textContent = hud.missionName || '';
+    $('hud-mission-brief').textContent = this.currentMissionId ? (MISSION_BRIEFS[this.currentMissionId] || '') : '';
     $('hud-move-count').textContent = `${hud.moveCount} moves`;
+    $('hud-target').textContent = hud.targetMoves ? `Target ${hud.targetMoves}` : 'No target';
+    $('hud-objective').textContent = hud.packageCollected
+      ? (hud.exitActive ? 'Package secured. Reach extraction.' : 'Package secured.')
+      : 'Retrieve the package.';
     const pkg = $('hud-package-status');
-    pkg.textContent = hud.packageCollected ? 'Package Retrieved' : 'Package';
+    pkg.textContent = hud.packageCollected ? 'Secured' : 'Package';
     pkg.classList.toggle('collected', hud.packageCollected);
     $('btn-undo').disabled = !hud.canUndo;
   }
@@ -178,7 +212,8 @@ export class UI {
       banner.textContent = describeDanger(overlay.dangerReason);
       banner.classList.add('danger');
     } else {
-      banner.textContent = 'Planning route — release or press Execute';
+      const steps = overlay.steps || 0;
+      banner.textContent = steps ? `Plan ready: ${steps} move${steps === 1 ? '' : 's'}` : 'Drag from the agent to plan';
       banner.classList.remove('danger');
     }
   }
@@ -200,6 +235,7 @@ export class UI {
 
   showFailed(reason) {
     $('failed-reason').textContent = `Detected By: ${describeDanger(reason)}`;
+    $('btn-failed-undo').hidden = !this.game.canUndo();
     this.overlays.failed.hidden = false;
   }
 
@@ -214,7 +250,9 @@ export class UI {
       btn.type = 'button';
       btn.disabled = !unlocked;
       const stars = save.bestStars[m.id] || 0;
-      btn.innerHTML = `<span class="mission-name">${i + 1}. ${m.name}</span><span class="mission-stars">${unlocked ? starsHtml(stars) : 'Locked'}</span>`;
+      const best = save.bestMoves[m.id];
+      const sub = unlocked ? (best != null ? `Best ${best} moves` : (MISSION_BRIEFS[m.id] || 'Ready')) : 'Complete prior missions to unlock';
+      btn.innerHTML = `<span class="mission-name">${i + 1}. ${m.name}</span><span class="mission-card-sub">${sub}</span><span class="mission-stars">${unlocked ? starsHtml(stars) : 'Locked'}</span>`;
       if (unlocked) btn.addEventListener('click', () => this.startMission(m.id));
       grid.appendChild(btn);
     });
@@ -242,6 +280,16 @@ export class UI {
     list.innerHTML = rows.map(([label, value]) =>
       `<div class="stat-row"><dt>${label}</dt><dd>${value}</dd></div>`).join('');
     this.showScreen('statistics');
+  }
+
+  showToast(text, tone = 'info') {
+    const stack = $('toast-stack');
+    if (!stack || !text) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${tone}`;
+    toast.textContent = text;
+    stack.appendChild(toast);
+    window.setTimeout(() => toast.remove(), 2650);
   }
 }
 

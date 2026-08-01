@@ -7,7 +7,7 @@
  */
 
 import { formatScore, formatDistance, formatTime } from './utils.js';
-import { STABILITY, GRADES } from './config.js';
+import { STABILITY, GRADES, CONTRACTS } from './config.js';
 import * as store from './storage.js';
 
 const $ = (id) => document.getElementById(id);
@@ -35,6 +35,10 @@ export class UI {
       phaseFill: $('phase-fill'),
       phaseValue: $('phase-value'),
       status: $('hud-status'),
+      hudContract: $('hud-contract'),
+      hudContractLabel: $('hud-contract-label'),
+      hudContractProgress: $('hud-contract-progress'),
+      steerIndicator: $('steer-indicator'),
       phaseBtn: $('btn-phase'),
       pauseBtn: $('btn-pause'),
       toast: $('toast'),
@@ -43,7 +47,10 @@ export class UI {
 
       menuBest: $('menu-best'),
       menuBestDistance: $('menu-best-distance'),
-      menuRuns: $('menu-runs'),
+      menuBestStreak: $('menu-best-streak'),
+      menuContracts: $('menu-contracts'),
+      menuContractTitle: $('menu-contract-title'),
+      menuContractReward: $('menu-contract-reward'),
       installBtn: $('btn-install'),
 
       resGrade: $('res-grade'),
@@ -51,6 +58,8 @@ export class UI {
       resBest: $('res-best'),
       resNewBest: $('res-newbest'),
       resStats: $('res-stats'),
+      resContract: $('res-contract'),
+      resHighlights: $('res-highlights'),
 
       statsList: $('stats-list'),
     };
@@ -153,6 +162,7 @@ export class UI {
   setHudVisible(v) {
     this.el.hud.classList.toggle('is-visible', v);
     this.el.hud.setAttribute('aria-hidden', v ? 'false' : 'true');
+    document.body.classList.toggle('is-hud-visible', v);
   }
 
   confirm(message, onYes) {
@@ -236,9 +246,18 @@ export class UI {
       this.el.mult.textContent = run.multiplier.toFixed(2) + '×';
       this.el.distance.textContent = formatDistance(run.distance);
       this.el.mult.dataset.hot = run.multiplier >= 2.5 ? 'true' : 'false';
+      if (run.contract) {
+        this.el.hudContractLabel.textContent = run.contract.short;
+        this.el.hudContractProgress.textContent = run.contractProgress || '';
+        this.el.hudContract.classList.toggle('is-complete', !!run.contractComplete);
+      }
     }
 
     this.el.phaseBtn.classList.toggle('is-active', run.player.phased);
+    if (this.el.steerIndicator) {
+      const x = Math.max(-1, Math.min(1, run.player.x));
+      this.el.steerIndicator.style.left = `${50 + x * 42}%`;
+    }
   }
 
   setStatus(text, tone) {
@@ -255,7 +274,11 @@ export class UI {
   refreshMenuStats() {
     this.el.menuBest.textContent = formatScore(store.get('bestScore'));
     this.el.menuBestDistance.textContent = formatDistance(store.get('bestDistance'));
-    this.el.menuRuns.textContent = formatScore(store.get('totalRuns'));
+    this.el.menuBestStreak.textContent = formatScore(store.get('bestStreak'));
+    this.el.menuContracts.textContent = formatScore(store.get('totalContracts'));
+    const contract = this.currentContract();
+    this.el.menuContractTitle.textContent = contract.label;
+    this.el.menuContractReward.textContent = `REWARD ${formatScore(contract.reward)}`;
   }
 
   renderStats() {
@@ -263,6 +286,9 @@ export class UI {
       ['Best score', formatScore(store.get('bestScore'))],
       ['Best distance', formatDistance(store.get('bestDistance'))],
       ['Furthest checkpoint', formatScore(store.get('bestCheckpoint'))],
+      ['Best fragment chain', formatScore(store.get('bestStreak'))],
+      ['Best multiplier', Number(store.get('bestMultiplier')).toFixed(2) + '×'],
+      ['Contracts completed', formatScore(store.get('totalContracts'))],
       ['Total runs', formatScore(store.get('totalRuns'))],
       ['Total distance', formatDistance(store.get('totalDistance'))],
       ['Fragments collected', formatScore(store.get('totalFragments'))],
@@ -287,7 +313,9 @@ export class UI {
       ['Distance', formatDistance(summary.distance)],
       ['Time', formatTime(summary.time)],
       ['Fragments', formatScore(summary.fragments)],
+      ['Best chain', formatScore(summary.bestFragStreak)],
       ['Near misses', formatScore(summary.nearMisses)],
+      ['Phase passes', formatScore(summary.phasePasses)],
       ['Clean sections', formatScore(summary.cleanSections)],
       ['Checkpoints', formatScore(summary.checkpoints)],
       ['Peak multiplier', summary.maxMultiplier.toFixed(2) + '×'],
@@ -296,6 +324,23 @@ export class UI {
     ];
     this.el.resStats.innerHTML = rows
       .map(([k, v]) => `<div class="stat-row"><span>${k}</span><b>${v}</b></div>`)
+      .join('');
+
+    if (summary.contractLabel) {
+      this.el.resContract.dataset.complete = summary.contractComplete ? 'true' : 'false';
+      this.el.resContract.classList.add('is-visible');
+      this.el.resContract.innerHTML = `
+        <span>${summary.contractComplete ? 'CONTRACT COMPLETE' : 'CONTRACT PROGRESS'}</span>
+        <b>${summary.contractLabel}</b>
+        <small>${summary.contractProgress}${summary.contractComplete ? ` / +${formatScore(summary.contractReward)}` : ''}</small>
+      `;
+    } else {
+      this.el.resContract.classList.remove('is-visible');
+      this.el.resContract.innerHTML = '';
+    }
+
+    this.el.resHighlights.innerHTML = summary.highlights
+      .map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`)
       .join('');
     this.show('results');
   }
@@ -310,5 +355,10 @@ export class UI {
 
   setInstallAvailable(v) {
     this.el.installBtn.hidden = !v;
+  }
+
+  currentContract() {
+    const idx = Math.floor(store.get('activeContract')) % CONTRACTS.length;
+    return CONTRACTS[idx] || CONTRACTS[0];
   }
 }

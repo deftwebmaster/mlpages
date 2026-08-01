@@ -117,6 +117,7 @@ export class Game {
     this.renderer.setScore(0, { immediate: true });
     this.renderer.setBest(storage.bestScore);
     this.renderer.setHeat(this.heat, { moveNumber: 0 });
+    this.renderer.setRunTelemetry(this.stats, this.heat);
     this.renderer.announce('New run started. System stable.');
 
     this.input.cursor = null;
@@ -194,6 +195,7 @@ export class Game {
       this.stats.validMoves++;
       this.heat.add(heatForMove(this.stats.validMoves));
       this.renderer.setHeat(this.heat, { moveNumber: this.stats.validMoves });
+      this.renderer.setRunTelemetry(this.stats, this.heat);
       this.noteHeatStage();
 
       const turn = await this.resolve(run, [a, b], wildcard);
@@ -302,6 +304,7 @@ export class Game {
       this.stats.totalCooled = this.heat.totalCooled;
       this.stats.peakHeat = this.heat.peak;
       this.renderer.setHeat(this.heat, { cooled: cooled > 0 });
+      this.renderer.setRunTelemetry(this.stats, this.heat);
       if (cooled > 0) {
         this.renderer.flash('is-cool');
         audio.play('cool');
@@ -380,6 +383,7 @@ export class Game {
     this.tutorial.hide();
     this.renderer.clearHint();
     this.renderer.setHeat(this.heat);
+    this.renderer.setRunTelemetry(this.stats, this.heat);
     audio.play('gameOver');
     audio.buzz(HAPTIC.gameOver);
 

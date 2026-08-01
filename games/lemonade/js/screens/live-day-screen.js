@@ -1,13 +1,12 @@
 import { getState, setState } from '../state/game-store.js';
 import { simulateTick, applyEventEffectsToSession, getSessionProgress } from '../simulation/day-simulator.js';
 import { finalizeDay, prepareAdditionalBatch } from '../systems/day-cycle-system.js';
-import { rollDailyEvent, applyEventChoice } from '../simulation/event-model.js';
+import { rollDailyEvent } from '../simulation/event-model.js';
 import { getOwnedUpgradeByCategory, getUpgradeEffects } from '../systems/upgrade-system.js';
 import { maxCupsFromInventory } from '../systems/inventory-system.js';
 import { perCupIngredients } from '../systems/recipe-system.js';
 import { createRng } from '../utils/random.js';
 import { formatHour, formatMoney } from '../utils/format.js';
-import { clamp } from '../utils/math.js';
 import { progressBarHtml } from '../components/progress-bar.js';
 import { openSheet } from '../components/bottom-sheet.js';
 import { openModal } from '../components/modal.js';
@@ -15,6 +14,7 @@ import { showToast } from '../components/toast.js';
 import { WEATHER_TYPES } from '../simulation/weather-model.js';
 import { MS_PER_TICK_BASE } from '../utils/constants.js';
 import { playSound } from '../systems/audio-system.js';
+import { lemonadeStandSceneHtml } from '../components/brand-scenes.js';
 
 const SPEEDS = [0, 1, 2, 4];
 
@@ -29,7 +29,6 @@ export function renderLiveDayScreen(container, { navigate }) {
 
   let speed = state.settings.defaultSimSpeed || 1;
   let intervalId = null;
-  let eventResolvedForRun = false;
   let stopped = false;
 
   const eventRng = createRng((state.meta.rngSeed + session.day * 104729 + 55) >>> 0);
@@ -57,9 +56,16 @@ export function renderLiveDayScreen(container, { navigate }) {
     return `
       <div class="live-scene" id="scene">
         <div class="live-scene__clock" id="clock">${formatHour(session.hours[0])}</div>
-        <div style="position:absolute;top:12px;right:12px;font-size:1.6rem;">${weatherInfo.icon} ${session.weather.temperature}°F</div>
+        <div class="live-scene__weather">${weatherInfo.icon} ${session.weather.temperature}°F</div>
+        <div class="live-scene__headline">
+          <span class="eyebrow">Now Selling</span>
+          <strong>${session.menuItem.name}</strong>
+        </div>
         <div class="live-scene__customers" id="customer-layer"></div>
-        <div class="live-scene__stand" id="stand-emoji">🍋🪑</div>
+        <div class="live-scene__stand" id="stand-visual">
+          ${lemonadeStandSceneHtml({ variant: 'live', weather: session.weather.type, cups: session.cupsAvailable, customers: 2 })}
+        </div>
+        <div class="live-scene__rush" id="rush-indicator"></div>
       </div>
 
       <div id="progress-holder">${progressBarHtml(0)}</div>
@@ -72,7 +78,10 @@ export function renderLiveDayScreen(container, { navigate }) {
       </div>
 
       <div class="card">
-        <div class="section-title">Live Feed</div>
+        <div class="row row--between">
+          <div class="section-title" style="margin:0;">Live Feed</div>
+          <span class="badge" id="sell-through">0% sold</span>
+        </div>
         <div class="live-feed" id="live-feed" aria-live="polite"></div>
       </div>
     `;
@@ -154,11 +163,17 @@ export function renderLiveDayScreen(container, { navigate }) {
       statTile('Cups Left', String(session.cupsAvailable)),
       statTile('Served', String(session.totals.customersServed)),
     ].join('');
+    const sold = Math.max(0, (session.cupsPreparedTotal || 0) - session.cupsAvailable);
+    const sellThrough = session.cupsPreparedTotal ? sold / session.cupsPreparedTotal : 0;
+    const rush = result?.arrivals ? Math.min(1, result.arrivals / 8) : 0;
+    root.querySelector('#sell-through').textContent = `${Math.round(sellThrough * 100)}% sold`;
+    root.querySelector('#rush-indicator').style.transform = `scaleX(${0.1 + rush * 0.9})`;
 
     const feed = root.querySelector('#live-feed');
     feed.innerHTML = session.feed.slice(-12).map((f) => `<div class="live-feed__item">${f.text}</div>`).join('') || '<div class="live-feed__item">Waiting for customers…</div>';
 
     if (result?.arrivals) spawnCustomerAvatar(result);
+    if (result?.tickEvents?.some((e) => e.type.startsWith('purchased'))) spawnCashPop();
   }
 
   function spawnCustomerAvatar(result) {
@@ -170,6 +185,18 @@ export function renderLiveDayScreen(container, { navigate }) {
     avatar.style.left = `${10 + Math.random() * 70}%`;
     layer.appendChild(avatar);
     setTimeout(() => avatar.remove(), 1800);
+  }
+
+  function spawnCashPop() {
+    const scene = root.querySelector('#scene');
+    if (!scene) return;
+    const pop = document.createElement('div');
+    pop.className = 'cash-pop';
+    pop.textContent = formatMoney(session.price);
+    pop.style.left = `${42 + Math.random() * 16}%`;
+    pop.style.top = `${42 + Math.random() * 12}%`;
+    scene.appendChild(pop);
+    setTimeout(() => pop.remove(), 750);
   }
 
   function statTile(label, value) {

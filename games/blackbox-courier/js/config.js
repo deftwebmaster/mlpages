@@ -42,13 +42,13 @@ export const PLAYER = {
   /** Depth half-extent of the craft's collision capsule, in z units. */
   halfDepth: 1.15,
   /** Peak lateral speed, world x units per second. */
-  maxSpeed: 2.55,
+  maxSpeed: 2.72,
   /** Lateral acceleration toward the input target. */
   accel: 20.0,
   /** Deceleration applied when there is no steering input. */
   drag: 14.0,
   /** Drag-steering gain: how hard the craft chases the pointer's x. */
-  followGain: 9.5,
+  followGain: 10.4,
   /** Pointer offsets smaller than this are treated as "on target". */
   followDeadzone: 0.006,
   /** Visual bank angle at full lateral speed, radians. */
@@ -62,9 +62,9 @@ export const PHASE = {
   /** Energy consumed per second while phased. */
   drain: 35,
   /** Energy recovered per second while not phased. */
-  recharge: 18,
+  recharge: 20,
   /** Phase cannot be engaged below this energy level. */
-  minActivation: 10,
+  minActivation: 8,
   /** Grace window after depletion before recharge resumes, seconds. */
   rechargeDelay: 0.35,
   /** Extra stability lost per second while phased, in stability points. */
@@ -79,7 +79,7 @@ export const STABILITY = {
   max: 100,
   start: 100,
   /** Passive loss per second. */
-  baseDrain: 0.8,
+  baseDrain: 0.72,
   /** Additional loss per second while inside a corruption field. */
   corruptionDrain: 4.0,
   /** Additional loss per second while scraping a tunnel wall. */
@@ -192,8 +192,8 @@ export const COLLECTIBLE = {
   /** Depth half-extent for pickup, z units. */
   halfDepth: 2.2,
   /** Magnet range: fragments drift toward the craft within this lateral range. */
-  magnet: 0.16,
-  magnetStrength: 2.4,
+  magnet: 0.21,
+  magnetStrength: 2.8,
 };
 
 export const PARTICLES = {
@@ -246,6 +246,66 @@ export const GRADES = [
   { min: 22000, label: 'PARTIAL TRANSFER', tone: 'grade-b' },
   { min: 7000, label: 'SIGNAL RECOVERED', tone: 'grade-c' },
   { min: -1, label: 'DELIVERY FAILED', tone: 'grade-d' },
+];
+
+export const CONTRACTS = [
+  {
+    id: 'first-checkpoint',
+    label: 'Hit the first checkpoint',
+    short: 'CHECKPOINT 1',
+    reward: 1800,
+    kind: 'checkpoints',
+    target: 1,
+  },
+  {
+    id: 'fragment-chain',
+    label: 'Collect a 10-fragment chain',
+    short: '10 FRAG CHAIN',
+    reward: 2400,
+    kind: 'bestFragStreak',
+    target: 10,
+  },
+  {
+    id: 'clean-transit',
+    label: 'Complete 2 clean sections',
+    short: '2 CLEAN SECTIONS',
+    reward: 3200,
+    kind: 'cleanSections',
+    target: 2,
+  },
+  {
+    id: 'close-call',
+    label: 'Score 4 near misses',
+    short: '4 NEAR MISSES',
+    reward: 3600,
+    kind: 'nearMisses',
+    target: 4,
+  },
+  {
+    id: 'phase-runner',
+    label: 'Phase through 3 barriers',
+    short: '3 PHASE PASSES',
+    reward: 3000,
+    kind: 'phasePasses',
+    target: 3,
+  },
+  {
+    id: 'hot-signal',
+    label: 'Reach a 2.50x multiplier',
+    short: '2.50x MULT',
+    reward: 4200,
+    kind: 'maxMultiplier',
+    target: 2.5,
+  },
+  {
+    id: 'stable-minute',
+    label: 'Survive 60s above 55% payload',
+    short: '60s / 55% PAYLOAD',
+    reward: 5000,
+    kind: 'stableTime',
+    target: 60,
+    stability: 55,
+  },
 ];
 
 export const STORAGE_PREFIX = 'blackboxCourier_';

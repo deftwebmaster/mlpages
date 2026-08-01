@@ -16,6 +16,7 @@ import {
   queryHazards,
   makeHazardResult,
   isOffBoard,
+  blockReason,
 } from './collisions.js';
 import { ParticleSystem } from './particles.js';
 import { AudioEngine, vibrate } from './audio.js';
@@ -88,6 +89,8 @@ export class Game {
     this.uplinkPulse = [];
     this.collected = new Set();
     this.nearMissAwarded = new Set();
+    this.nearMissChain = 0;
+    this.bestNearMissChain = 0;
 
     this.score = 0;
     this.deaths = 0;
@@ -156,6 +159,8 @@ export class Game {
     this.uplinkPulse = this.level.uplinks.map(() => 0);
     this.collected = new Set();
     this.nearMissAwarded = new Set();
+    this.nearMissChain = 0;
+    this.bestNearMissChain = 0;
 
     this.worldTime = 0;
     this.levelTime = 0;
@@ -253,6 +258,7 @@ export class Game {
         this.audio.polarity(this.player.polarity);
         vibrate(CONFIG.haptics.switch, this.settings);
         this.emit('hudDirty');
+        this.emit('toast', `${this.player.polarity.toUpperCase()} FREQUENCY`);
       }
     }
 
@@ -271,6 +277,8 @@ export class Game {
     } else if (result !== MOVE_BUSY) {
       this.audio.blocked_();
       if (result === 'gate') this.emit('toast', 'FREQUENCY MISMATCH');
+      else if (result === 'uplinkDone') this.emit('toast', 'UPLINK ALREADY ONLINE');
+      else this.emit('toast', 'ROUTE BLOCKED');
     }
     if (before !== this.player.highestRow) this.emit('hudDirty');
   }
@@ -446,15 +454,23 @@ export class Game {
   }
 
   resolveNearMisses() {
+    let scored = 0;
     for (let i = 0; i < this.hazards.nearCount; i++) {
       const key = this.hazards.near[i];
       if (this.nearMissAwarded.has(key)) continue;
       this.nearMissAwarded.add(key);
       this.addScore(CONFIG.score.nearMiss);
+      scored++;
       this.audio.nearMiss();
       vibrate(CONFIG.haptics.nearMiss, this.settings);
       this.particles.burst(this.player.centerX, this.player.centerY, 4, PALETTE.warning, 1.4);
     }
+    if (!scored) return;
+    this.nearMissChain += scored;
+    this.bestNearMissChain = Math.max(this.bestNearMissChain, this.nearMissChain);
+    if (this.nearMissChain === 1) this.emit('toast', `NEAR MISS +${CONFIG.score.nearMiss}`);
+    else this.emit('toast', `NEAR MISS CHAIN ${this.nearMissChain}X`);
+    this.emit('hudDirty');
   }
 
   addScore(amount) {
@@ -467,6 +483,7 @@ export class Game {
     this.setState(GameState.PLAYER_DYING);
     this.deaths++;
     this.lastDeathCause = cause;
+    this.nearMissChain = 0;
     this.stats.deaths++;
     this.stats.deathsByCause[cause] = (this.stats.deathsByCause[cause] ?? 0) + 1;
 
@@ -492,6 +509,7 @@ export class Game {
     this.pendingPolarity = false;
     this.player.reset(this.level, polarity);
     this.nearMissAwarded.clear();
+    this.nearMissChain = 0;
     this.audio.respawn();
     this.particles.ring(this.player.centerX, this.player.centerY, polarityColor(polarity), 1.2, 0.3);
     // A short countdown after every respawn keeps restarts fast without ever
@@ -519,6 +537,7 @@ export class Game {
       deaths: this.deaths,
       fragments: this.runFragments,
       totalFragments: this.level.collectibles.length,
+      nearMissChain: this.bestNearMissChain,
       badges: { connected: true, clean, lowLatency: fast },
       previousBestTime: record.bestTime,
       previousBestScore: record.bestScore,
@@ -654,6 +673,43 @@ export class Game {
   get switchCooldownRatio() {
     if (!this.player) return 0;
     return clamp(this.player.switchCooldown / CONFIG.polarity.cooldown, 0, 1);
+  }
+
+  get objectiveText() {
+    if (!this.level || !this.player) return 'READY';
+    if (this.state === GameState.STARTING) return 'READ THE LANES';
+    if (this.state === GameState.PLAYER_DYING) return 'REBOOTING SIGNAL';
+    if (this.state === GameState.UPLOADING) return 'UPLINKING';
+    if (this.uplinkStates.every(Boolean)) return 'NETWORK CLEAR';
+    return `REACH UPLINK ${this.uplinksActive + 1}/${this.uplinkStates.length}`;
+  }
+
+  getMoveHints() {
+    if (!this.level || !this.player || !this.isSimulating) return [];
+    if (this.state === GameState.PLAYER_DYING || this.state === GameState.UPLOADING) return [];
+    const baseCol = Math.round(this.player.x);
+    const baseRow = this.player.row;
+    return [
+      { dx: 0, dy: -1 },
+      { dx: 1, dy: 0 },
+      { dx: 0, dy: 1 },
+      { dx: -1, dy: 0 },
+    ].map(({ dx, dy }) => {
+      const col = baseCol + dx;
+      const row = baseRow + dy;
+      const reason = blockReason(this.level, row, col, this.player.polarity, this.uplinkStates);
+      const lane = this.level.laneByRow[row];
+      return {
+        col,
+        row,
+        dx,
+        dy,
+        ok: !reason,
+        reason,
+        risky: !reason && !!lane?.isVoid,
+        uplink: !reason && lane?.type === 'terminal',
+      };
+    });
   }
 }
 

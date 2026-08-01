@@ -10,14 +10,14 @@
   <meta property="og:url" content="https://mattlivingston.com/games/dead-drop/">
   <meta property="og:title" content="Dead Drop | Turn-Based Stealth Puzzle Game">
   <meta property="og:description" content="Play Dead Drop, a turn-based stealth puzzle game about getting in, grabbing the package, and escaping unseen through guarded tactical missions.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/dead-drop.png">
   <meta property="og:image:alt" content="Dead Drop | Turn-Based Stealth Puzzle Game preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/dead-drop/">
   <meta name="twitter:title" content="Dead Drop | Turn-Based Stealth Puzzle Game">
   <meta name="twitter:description" content="Play Dead Drop, a turn-based stealth puzzle game about getting in, grabbing the package, and escaping unseen through guarded tactical missions.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/dead-drop.png">
 <meta name="theme-color" content="#0b0f14">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon-192.png">
@@ -36,12 +36,18 @@
 
   <!-- MAIN MENU -->
   <section id="screen-menu" class="screen screen-menu" hidden>
+    <div class="menu-bg-grid" aria-hidden="true"></div>
     <div class="menu-logo">
       <h1>DEAD DROP</h1>
       <p class="tagline">Get in. Get the package. Get out unseen.</p>
     </div>
+    <div class="menu-intel">
+      <span>Turn-based stealth</span>
+      <span>10 compact missions</span>
+      <span>Plan routes before you move</span>
+    </div>
     <nav class="menu-actions">
-      <button class="btn btn-primary" id="btn-play" type="button">Play</button>
+      <button class="btn btn-primary" id="btn-play" type="button">Continue</button>
       <button class="btn" id="btn-mission-select" type="button">Mission Select</button>
       <button class="btn" id="btn-settings" type="button">Settings</button>
       <button class="btn" id="btn-statistics" type="button">Statistics</button>
@@ -88,6 +94,7 @@
       <button class="btn-icon" id="btn-pause" type="button" aria-label="Pause">&#9646;&#9646;</button>
       <div class="hud-mission">
         <span id="hud-mission-name">Mission</span>
+        <span id="hud-mission-brief">Retrieve the package.</span>
       </div>
       <div class="hud-stats">
         <span id="hud-move-count" class="hud-chip">0 moves</span>
@@ -95,16 +102,30 @@
       </div>
     </header>
 
+    <div class="hud-intel" aria-live="polite">
+      <span id="hud-objective">Package first. Exit second.</span>
+      <span id="hud-target">Target 0</span>
+    </div>
+
     <div class="board-wrap" id="board-wrap">
       <canvas id="board-canvas" aria-label="Game board" role="img"></canvas>
       <div id="planning-banner" class="planning-banner" hidden></div>
+      <div id="toast-stack" class="toast-stack" aria-live="polite"></div>
     </div>
 
     <footer class="hud-bottom">
-      <button class="btn-icon" id="btn-undo" type="button" aria-label="Undo">&#8630;</button>
-      <button class="btn-icon" id="btn-restart" type="button" aria-label="Restart">&#8635;</button>
-      <button class="btn-icon" id="btn-plan-execute" type="button" aria-label="Execute plan" hidden>&#9654;</button>
-      <button class="btn-icon" id="btn-plan-cancel" type="button" aria-label="Cancel plan" hidden>&#10005;</button>
+      <div class="dpad" aria-label="Movement controls">
+        <button class="btn-icon control-move dpad-up" data-dir="N" type="button" aria-label="Move up">&#8593;</button>
+        <button class="btn-icon control-move dpad-left" data-dir="W" type="button" aria-label="Move left">&#8592;</button>
+        <button class="btn-icon control-move dpad-right" data-dir="E" type="button" aria-label="Move right">&#8594;</button>
+        <button class="btn-icon control-move dpad-down" data-dir="S" type="button" aria-label="Move down">&#8595;</button>
+      </div>
+      <div class="action-stack">
+        <button class="btn-icon" id="btn-undo" type="button" aria-label="Undo">&#8630;</button>
+        <button class="btn-icon" id="btn-restart" type="button" aria-label="Restart">&#8635;</button>
+        <button class="btn-icon btn-execute" id="btn-plan-execute" type="button" aria-label="Execute plan" hidden>&#9654;</button>
+        <button class="btn-icon btn-danger-icon" id="btn-plan-cancel" type="button" aria-label="Cancel plan" hidden>&#10005;</button>
+      </div>
     </footer>
   </section>
 
@@ -136,6 +157,7 @@
     <div class="overlay-card">
       <h2>Mission Failed</h2>
       <p id="failed-reason"></p>
+      <button class="btn" id="btn-failed-undo" type="button">Rewind Last Move</button>
       <button class="btn btn-primary" id="btn-failed-restart" type="button">Restart</button>
       <button class="btn" id="btn-failed-menu" type="button">Menu</button>
     </div>

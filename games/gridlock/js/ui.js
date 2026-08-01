@@ -9,6 +9,7 @@
 import { LEVELS, TOTAL_LEVELS } from './levels.js';
 import { storage, ACHIEVEMENTS, rankValue } from './storage.js';
 import { formatScore, formatTime } from './utils.js';
+import { CFG, DIR } from './config.js';
 
 const SCREENS = ['loading', 'menu', 'levels', 'settings', 'stats', 'help', 'game'];
 
@@ -40,6 +41,11 @@ export class UI {
       continueBtn: document.getElementById('btn-continue'),
       continueSub: document.getElementById('continue-sub'),
       menuProgress: document.getElementById('menu-progress'),
+      briefingTitle: document.getElementById('briefing-title'),
+      briefingCopy: document.getElementById('briefing-copy'),
+      briefingTarget: document.getElementById('briefing-target'),
+      briefingRecord: document.getElementById('briefing-record'),
+      briefingRank: document.getElementById('briefing-rank'),
       installBtn: document.getElementById('btn-install'),
       levelGrid: document.getElementById('level-grid'),
       levelsMeta: document.getElementById('levels-meta'),
@@ -57,6 +63,13 @@ export class UI {
       combo: document.getElementById('combo-badge'),
       powerBar: document.getElementById('power-bar'),
       powerFill: document.querySelector('#power-bar i'),
+      missionTarget: document.getElementById('mission-target'),
+      missionDeaths: document.getElementById('mission-deaths'),
+      missionSecrets: document.getElementById('mission-secrets'),
+      swipeCue: document.getElementById('swipe-cue'),
+      threatChip: document.getElementById('threat-chip'),
+      phase: document.getElementById('hud-phase'),
+      phaseTime: document.getElementById('hud-phase-time'),
       dpad: document.getElementById('dpad'),
 
       pause: document.getElementById('overlay-pause'),
@@ -67,6 +80,7 @@ export class UI {
 
     /** Last written values, so we can skip no-op DOM writes. */
     this._cache = {};
+    this._swipeTimer = 0;
 
     this._bindActions();
     this._bindSettings();
@@ -194,9 +208,16 @@ export class UI {
   refreshMenu() {
     const cleared = LEVELS.filter((l) => storage.getLevelRecord(l.id).rank).length;
     const next = Math.min(storage.unlocked, TOTAL_LEVELS);
+    const level = LEVELS[next - 1];
+    const rec = storage.getLevelRecord(level.id);
     this.el.continueSub.textContent = `Sector ${String(next).padStart(2, '0')} · ${LEVELS[next - 1].name}`;
     this.el.screens.menu.querySelector('.btn-label').textContent = cleared > 0 ? 'Continue' : 'Start';
     this.el.menuProgress.textContent = `${cleared} / ${TOTAL_LEVELS} sectors cleared`;
+    this.el.briefingTitle.textContent = `Sector ${String(next).padStart(2, '0')} · ${level.name}`;
+    this.el.briefingCopy.textContent = level.hint || level.subtitle || 'Drain every node and keep the drones guessing.';
+    this.el.briefingTarget.textContent = formatTime(level.targetTime);
+    this.el.briefingRecord.textContent = isFinite(rec.bestTime) ? formatTime(rec.bestTime) : '--';
+    this.el.briefingRank.textContent = rec.rank || '--';
   }
 
   showInstallButton(show) {
@@ -290,6 +311,10 @@ export class UI {
     this._set('nodes', this.el.nodes, String(d.nodes));
     this._set('deaths', this.el.deaths, String(d.deaths));
     this._set('secrets', this.el.secrets, `${d.secrets}/${d.secretsTotal}`);
+    this._set('missionSecrets', this.el.missionSecrets, `SECRETS ${d.secrets}/${d.secretsTotal}`);
+    this.el.missionSecrets.dataset.state = d.secretsTotal === 0 || d.secrets === d.secretsTotal ? 'done' : '';
+    this.el.missionDeaths.dataset.state = d.deaths === 0 ? 'done' : 'fail';
+    this.el.missionDeaths.textContent = d.deaths === 0 ? 'NO DEATHS' : `${d.deaths} DEATH${d.deaths === 1 ? '' : 'S'}`;
 
     if (this._cache.combo !== d.combo) {
       this._cache.combo = d.combo;
@@ -328,12 +353,24 @@ export class UI {
       this.el.powerBar.hidden = !powered;
     }
     if (powered) {
-      this.el.powerFill.style.transform = `scaleX(${Math.max(0, d.power / 8)})`;
+      this.el.powerFill.style.transform = `scaleX(${Math.max(0, d.power / CFG.POWER_DURATION)})`;
     }
+
+    if (d.targetTime) {
+      this._set('missionTarget', this.el.missionTarget, `TARGET ${formatTime(d.targetTime)}`);
+      const targetState = d.time <= d.targetTime ? 'done' : d.time <= d.targetTime * 1.15 ? 'warn' : 'fail';
+      this.el.missionTarget.dataset.state = targetState;
+    }
+
+    const phase = d.phase === 'chase' ? 'CHASE' : 'PATROL';
+    this._set('phase', this.el.phase, phase);
+    this._set('phaseTime', this.el.phaseTime, `${Math.ceil(Math.max(0, d.phaseTimer || 0))}s`);
+    this.el.threatChip.dataset.phase = d.phase || 'patrol';
   }
 
   setSector(level) {
     this._set('sector', this.el.sector, String(level.number).padStart(2, '0'));
+    this._set('missionTarget', this.el.missionTarget, `TARGET ${formatTime(level.targetTime)}`);
     this._cache.time = null;
     this._cache.combo = null;
     this.el.combo.hidden = true;
@@ -395,6 +432,14 @@ export class UI {
       })
     );
 
+    const timeDelta = Math.round(r.time - r.level.targetTime);
+    document.getElementById('rating-panel').replaceChildren(
+      statChip('Pace', timeDelta <= 0 ? `${Math.abs(timeDelta)}s under` : `${timeDelta}s over`),
+      statChip('Rating', `${Math.round(r.rating)} / 100`),
+      statChip('Shifts', String(r.shiftsUsed))
+    );
+    document.getElementById('result-coach').textContent = coachLine(r);
+
     const nextBtn = $('btn-next');
     nextBtn.hidden = r.isLastLevel;
     if (r.isLastLevel) {
@@ -421,6 +466,21 @@ export class UI {
     const a = ACHIEVEMENTS.find((x) => x.id === id);
     if (a) this.toast(`Achievement — ${a.name}`, a.desc);
   }
+
+  pulseDirection(dir) {
+    const map = { [DIR.UP]: 'u', [DIR.RIGHT]: 'r', [DIR.DOWN]: 'd', [DIR.LEFT]: 'l' };
+    const value = map[dir];
+    if (!value || !this.el.swipeCue) return;
+    clearTimeout(this._swipeTimer);
+    this.el.swipeCue.hidden = false;
+    this.el.swipeCue.dataset.dir = value;
+    this.el.swipeCue.style.animation = 'none';
+    void this.el.swipeCue.offsetWidth;
+    this.el.swipeCue.style.animation = '';
+    this._swipeTimer = setTimeout(() => {
+      this.el.swipeCue.hidden = true;
+    }, 430);
+  }
 }
 
 // ── helpers ─────────────────────────────────────────────────────────────────
@@ -440,4 +500,18 @@ function formatClock(seconds) {
   const m = Math.floor((s % 3600) / 60);
   if (h) return `${h}h ${m}m`;
   return `${m}m ${s % 60}s`;
+}
+
+function statChip(label, value) {
+  const el = document.createElement('div');
+  el.innerHTML = `<span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b>`;
+  return el;
+}
+
+function coachLine(r) {
+  if (r.perfect) return 'Clean route, every secret, target pace. That sector is owned.';
+  if (r.deaths > 0) return 'Biggest rank gain: route around drone pressure before grabbing the final nodes.';
+  if (r.secrets < r.secretsTotal) return 'Strong clear. Hunt the amber seams to push this sector toward Perfect.';
+  if (r.time > r.level.targetTime) return 'No survival problem here. The next upgrade is a tighter opening route.';
+  return 'Solid clear. A cleaner combo route can still push the score higher.';
 }

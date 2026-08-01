@@ -14,6 +14,12 @@ backend, no dependencies. Runs offline as an installable PWA.
 
 ## Features
 
+- **V2 contract loop** — rotating run objectives give each delivery a clear short-term goal and
+  award score bonuses when completed.
+- **Mobile-first steering polish** — gentler touch tuning, a live steering indicator, and optional
+  left/right lane guides for the alternate touch scheme.
+- **Richer results** — end-of-run summaries now call out contract progress, best chain, phase
+  passes and the run's strongest highlights.
 - **Real-time canvas engine** — custom loop, delta-time movement, perspective-projected 2D tunnel.
 - **Procedural route assembly** — 14 handcrafted chunk templates combined under compatibility,
   pacing and difficulty rules.

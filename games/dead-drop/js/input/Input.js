@@ -3,7 +3,7 @@
 // swipe, and press-and-hold-or-drag-from-player-tile to enter Planning Mode.
 
 const HOLD_MS = 260;
-const TAP_MAX_DIST = 10; // px of pointer movement still considered a "tap"
+const TAP_MAX_DIST = 14; // px of pointer movement still considered a "tap"
 const SWIPE_MIN_DIST = 18;
 
 const KEY_TO_DIR = {
@@ -55,6 +55,8 @@ export class Input {
 
   onPointerDown(e) {
     if (e.button !== undefined && e.button !== 0) return;
+    e.preventDefault();
+    try { this.canvas.setPointerCapture(e.pointerId); } catch { /* pointer capture is best-effort */ }
     this.pointerActive = true;
     this.startPx = { x: e.clientX, y: e.clientY };
     this.startTile = this.pixelToTile(e.clientX, e.clientY);
@@ -75,6 +77,7 @@ export class Input {
 
   onPointerMove(e) {
     if (!this.pointerActive) return;
+    e.preventDefault();
     const tile = this.pixelToTile(e.clientX, e.clientY);
     const dist = Math.hypot(e.clientX - this.startPx.x, e.clientY - this.startPx.y);
 
@@ -94,6 +97,7 @@ export class Input {
 
   onPointerUp(e) {
     if (!this.pointerActive) return;
+    e.preventDefault();
     this.pointerActive = false;
     clearTimeout(this.holdTimer);
 

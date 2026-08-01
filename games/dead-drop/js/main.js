@@ -16,6 +16,7 @@ async function boot() {
   const canvas = document.getElementById('board-canvas');
   const boardWrap = document.getElementById('board-wrap');
   const game = new Game(canvas, boardWrap);
+  window.__DD_GAME__ = game;
 
   const pwa = new PWA();
   pwa.register();

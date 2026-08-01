@@ -20,6 +20,7 @@ const stage = document.getElementById('stage');
 const game = new Game();
 const renderer = new Renderer(canvas);
 const ui = new UI(game);
+window.__SIGNAL_GAME__ = game;
 
 // Respect the OS-level motion preference on first run, but never override a
 // choice the player has already made in Settings.
@@ -54,6 +55,13 @@ const input = new InputManager(stage, {
   },
 });
 input.attach();
+
+for (const btn of document.querySelectorAll('[data-move]')) {
+  btn.addEventListener('click', () => {
+    const [dx, dy] = btn.dataset.move.split(',').map(Number);
+    game.requestMove(dx, dy);
+  });
+}
 
 game.on('stateChange', (state) => {
   const active = state === GameState.PLAYING

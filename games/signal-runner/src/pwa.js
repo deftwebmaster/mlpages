@@ -9,6 +9,7 @@
 
 export function registerServiceWorker(onUpdateReady) {
   if (!('serviceWorker' in navigator)) return;
+  if (new URLSearchParams(location.search).has('nosw')) return;
   // file:// has no service worker support and throws noisily if you try.
   if (location.protocol === 'file:') return;
 
@@ -78,4 +79,3 @@ export function setupInstallPrompt(ui) {
     ui.hideInstallButton();
   });
 }
-

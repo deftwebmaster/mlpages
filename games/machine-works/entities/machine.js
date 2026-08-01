@@ -5,6 +5,11 @@
 // load, matching the M2 decision not to persist live item state.
 let nextId = 1;
 
+function syncNextId(id) {
+  const match = /^machine_(\d+)$/.exec(id || '');
+  if (match) nextId = Math.max(nextId, Number(match[1]) + 1);
+}
+
 export const MACHINE_STATES = {
   IDLE: 'idle',
   WAITING_FOR_INPUT: 'waiting_for_input',
@@ -44,6 +49,7 @@ export class Machine {
   static fromJSON(data) {
     const machine = new Machine(data);
     machine.id = data.id;
+    syncNextId(machine.id);
     return machine;
   }
 }

@@ -4,6 +4,7 @@
  */
 
 import { Game, STATE } from './game.js';
+import { heatForMove } from './config.js';
 import { audio } from './audio.js';
 import { storage } from './storage.js';
 import { initPWA, promptInstall } from './pwa.js';
@@ -22,6 +23,9 @@ const dom = {
   fx: $('board-fx'),
   flash: $('board-flash'),
   combo: $('combo'),
+  runObjective: $('run-objective'),
+  runEfficiency: $('run-efficiency'),
+  runChain: $('run-chain'),
   banner: $('board-banner'),
   score: $('hud-score'),
   best: $('hud-best'),
@@ -31,6 +35,8 @@ const dom = {
   heatRate: $('heat-rate'),
   heatStatus: $('heat-status'),
   heatTrack: $('heat-track'),
+  stabilityGoal: $('stability-goal'),
+  stabilityControl: $('stability-control'),
   live: $('live-region'),
   tutorial: $('tutorial'),
   tutorialText: $('tutorial-text'),
@@ -118,6 +124,12 @@ function showGameOver(result) {
   $('stat-cascade').textContent = result.largestCascade > 1 ? `x${result.largestCascade}` : '—';
   $('stat-match').textContent = result.longestMatch ? formatNumber(result.longestMatch) : '—';
   $('stat-cleared').textContent = formatNumber(result.nodesCleared);
+  $('diagnostic-grid').replaceChildren(
+    statChip('Cooling', `${formatNumber(result.totalCooled)}%`),
+    statChip('Specials', `${formatNumber(result.specialsActivated)} fired`),
+    statChip('Peak Heat', `${Math.round(result.peakHeat)}%`),
+  );
+  $('coach-note').textContent = coachLine(result);
   $('new-best').classList.toggle('hidden', !result.isBest);
   refreshMenuStats();
   openOverlay(overlays.over, $('btn-reboot'));
@@ -130,6 +142,9 @@ function refreshMenuStats() {
   $('menu-games').textContent = games
     ? `${formatNumber(games)} run${games === 1 ? '' : 's'} · ${formatNumber(storage.lifetimeScore)} lifetime`
     : 'No runs logged';
+  $('brief-chain').textContent = storage.bestCascade > 1 ? `x${storage.bestCascade}` : '--';
+  $('brief-heat').textContent = `+${heatForMove(1)}`;
+  $('brief-control').textContent = storage.bestCooling ? `${formatNumber(storage.bestCooling)}%` : '--';
 }
 
 function goToMenu() {
@@ -318,4 +333,23 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', boot, { once: true });
 } else {
   boot();
+}
+
+function statChip(label, value) {
+  const el = document.createElement('div');
+  el.innerHTML = `<span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b>`;
+  return el;
+}
+
+function coachLine(result) {
+  if (result.score >= result.best && result.isBest) return 'Best run yet. Next target: keep one special banked for the first critical heat spike.';
+  if (result.specialsActivated < 2) return 'Forge and fire more specials. Four-node matches are the easiest way to stay alive after the ramp starts.';
+  if (result.largestCascade < 3) return 'Your next score jump is cascades. Set up vertical drops before taking the obvious match.';
+  if (result.totalCooled < 20) return 'Cooling was light this run. Longer matches and second-step cascades are the safest heat control.';
+  if (result.invalidSwaps > result.validMoves * 0.2) return 'Too many rejected swaps. Slow down for one scan before heat gets expensive.';
+  return 'Good system control. Push the score by saving Wildcard Cores for crowded colours.';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }

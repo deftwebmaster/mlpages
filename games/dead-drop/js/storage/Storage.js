@@ -86,7 +86,7 @@ export const Storage = {
     const s = load();
     return isFirst || s.unlockedMissionIds.includes(missionId);
   },
-  recordMissionResult(missionId, { stars, moves, usedUndo, restarts, detections }) {
+  recordMissionResult(missionId, { stars, moves, usedUndo }) {
     const s = load();
     const prevStars = s.bestStars[missionId] || 0;
     if (stars > prevStars) s.bestStars[missionId] = stars;
@@ -95,8 +95,6 @@ export const Storage = {
 
     s.statistics.missionsCompleted += 1;
     s.statistics.totalMoves += moves;
-    s.statistics.totalRestarts += restarts || 0;
-    s.statistics.detectionCount += detections || 0;
     if (!usedUndo && (prevMoves == null || moves <= prevMoves)) s.statistics.bestRuns += 1;
     if (stars >= 3) s.statistics.perfectMissions += 1;
     persist();

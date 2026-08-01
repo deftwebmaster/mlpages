@@ -5,6 +5,18 @@ import { formatTime } from './utils.js';
 const $ = (sel) => document.querySelector(sel);
 const $all = (sel) => Array.from(document.querySelectorAll(sel));
 
+const CHANNEL_LABELS = {
+  deflector: 'Deflector',
+  orb: 'Orb',
+  reactorControl: 'Reactor Control'
+};
+
+const ABILITY_LABELS = {
+  deflector: ['Expansion', 'Magnetic Field', 'Containment Shield', 'Precision Control'],
+  orb: ['Acceleration', 'Piercing', 'Multi-Orb', 'Overcharge'],
+  reactorControl: ['Diagnostic Scan', 'System Suppression', 'Time Dilation', 'Core Override']
+};
+
 export class UIManager {
   constructor(callbacks) {
     this.cb = callbacks;
@@ -14,6 +26,8 @@ export class UIManager {
     this.routingPanel = $('#routingPanel');
     this.mobileControls = $('#mobileControls');
     this.tutorialEl = $('#tutorialPrompt');
+    this.reactorFeed = $('#reactorFeed');
+    this.feedTimer = null;
     this._bindGlobalActions();
     this._bindSettings();
     this._bindRouting();
@@ -194,11 +208,32 @@ export class UIManager {
       const meter = document.querySelector(`.channel-meter[data-channel="${ch}"]`);
       meter.classList.toggle('selected', routing.selected === ch);
       meter.classList.toggle('ready', routing.tierReached[ch] > 0);
+      meter.style.setProperty('--channel-progress', `${Math.min(100, (routing.energy[ch] / routing.capacity) * 100)}%`);
       const fill = document.querySelector(`[data-fill="${ch}"]`);
       fill.style.width = `${Math.min(100, (routing.energy[ch] / routing.capacity) * 100)}%`;
       const tierEl = document.querySelector(`[data-tier="${ch}"]`);
-      tierEl.textContent = routing.tierReached[ch] > 0 ? `T${routing.tierReached[ch]} READY` : '';
+      const tier = routing.tierReached[ch];
+      tierEl.textContent = tier > 0 ? `${ABILITY_LABELS[ch][tier - 1]} ready` : `${Math.floor(routing.energy[ch])}/${routing.capacity}`;
     }
+  }
+
+  showReactorFeed(message, tone = 'info') {
+    if (!this.reactorFeed) return;
+    window.clearTimeout(this.feedTimer);
+    this.reactorFeed.textContent = message;
+    this.reactorFeed.dataset.tone = tone;
+    this.reactorFeed.classList.remove('hidden');
+    this.feedTimer = window.setTimeout(() => {
+      this.reactorFeed.classList.add('hidden');
+    }, 2400);
+  }
+
+  channelLabel(channel) {
+    return CHANNEL_LABELS[channel] || channel;
+  }
+
+  abilityLabel(channel, tier) {
+    return ABILITY_LABELS[channel]?.[tier - 1] || `Tier ${tier}`;
   }
 
   showTutorial(text) {

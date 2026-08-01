@@ -80,8 +80,15 @@ export class InputController {
       const dist = distance(pts[0], pts[1]);
       const center = midpoint(pts[0], pts[1]);
       const scaleDelta = dist / this.pinch.startDist;
-      this.handlers.onPinch?.({ scaleDelta, cx: center.x, cy: center.y });
+      this.handlers.onPinch?.({
+        scaleDelta,
+        cx: center.x,
+        cy: center.y,
+        dx: center.x - this.pinch.center.x,
+        dy: center.y - this.pinch.center.y,
+      });
       this.pinch.startDist = dist;
+      this.pinch.center = center;
       return;
     }
 

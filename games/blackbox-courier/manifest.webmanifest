@@ -1,7 +1,7 @@
 {
   "name": "Blackbox Courier",
   "short_name": "Blackbox",
-  "description": "Deliver the payload before the route collapses. A high-speed arcade run through a collapsing data tunnel.",
+  "description": "Deliver the payload before the route collapses. A polished V2 arcade run through a collapsing data tunnel.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

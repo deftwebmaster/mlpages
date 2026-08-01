@@ -221,6 +221,11 @@ export class Game {
     this.ui.showPause(false);
   }
 
+  _addShake(amount) {
+    if (!this.save.settings.screenShake || this.save.settings.reducedMotion) return;
+    this.camera.addShake(amount);
+  }
+
   // ---------------- Main loop ----------------
   _loop(t) {
     requestAnimationFrame((nt) => this._loop(nt));
@@ -404,7 +409,7 @@ export class Game {
           this.mission.hullDamageTaken += base;
           emitImpact(this.particles, ship.x, ship.y, 8, '#ff4d4d');
           this.audio.playDamage();
-          this.camera.addShake(6);
+          this._addShake(6);
         }
       }
     }
@@ -448,10 +453,10 @@ export class Game {
         case 'fuelExplosion':
           emitExplosion(this.particles, ev.x, ev.y, ev.radius, '#ff9540');
           this.audio.playExplosion(false);
-          this.camera.addShake(9);
+          this._addShake(9);
           if (wrappedDistance(ship, ev, m.worldW, m.worldH) < ev.radius && ship.invuln <= 0) {
             damageShip(ship, 24);
-            this.camera.addShake(10);
+            this._addShake(10);
           }
           break;
         case 'reactorArmed':
@@ -460,7 +465,7 @@ export class Game {
         case 'reactorExplosion':
           emitExplosion(this.particles, ev.x, ev.y, ev.radius, '#ff4d4d');
           this.audio.playExplosion(true);
-          this.camera.addShake(16);
+          this._addShake(16);
           m.reactorExplosions++;
           this.save.stats.reactorExplosions++;
           if (wrappedDistance(ship, ev, m.worldW, m.worldH) < ev.radius && ship.invuln <= 0) {
@@ -484,13 +489,19 @@ export class Game {
     this.audio.setHeatAlarm(false);
     this.audio.playVictory();
 
-    const optionalDone = def.optional.filter(o => this._checkOptional(o, m, ship)).length;
+    const completedOptional = def.optional.filter(o => this._checkOptional(o, m, ship));
+    const optionalDone = completedOptional.length;
     const score = computeScore(m, ship) + optionalDone * 300;
     const rank = computeRank(score, def.rank);
 
     this.save.stats.contractsCompleted++;
     this.save.stats.distanceFlown += ship.distanceFlown;
+    this.save.stats.largestCombo = Math.max(this.save.stats.largestCombo || 0, m.largestCombo);
     this.save.completed[def.id] = true;
+    this.save.optionalCompleted[def.id] = this.save.optionalCompleted[def.id] || {};
+    for (const optional of completedOptional) {
+      this.save.optionalCompleted[def.id][optional.id] = true;
+    }
     this.save.unlockedMissions = Math.max(this.save.unlockedMissions, Math.min(12, def.id + 1));
     this.save.credits += m.cargoValue;
     const prevScore = this.save.bestScores[def.id] || 0;

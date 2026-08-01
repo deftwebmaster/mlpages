@@ -68,6 +68,7 @@ export class Game {
     this.pendingTutorials = [];
     this.activeTutorialTimer = 0;
     this.hudAccumulator = 0;
+    this.energyFeedCooldown = 0;
     this.wasPlayingBeforeHidden = false;
     this.runStats = null;
 
@@ -229,6 +230,7 @@ export class Game {
     this.activeTutorialTimer = 0;
     audio.setMusicIntensity(stage.isBoss ? 0.8 : 0.3);
     this.ui.setRoutingVisible(!!stage.powerRoutingRules?.enabled !== false && this.loaded.routing.enabled);
+    this.ui.showReactorFeed(`${stage.isBoss ? 'Boss protocol' : 'Breach protocol'} loaded: ${stage.name}`, stage.isBoss ? 'danger' : 'info');
     this._setState(STATES.READY);
     this.readyTimer = 0.15;
   }
@@ -309,6 +311,7 @@ export class Game {
       if (heldOrbs.length > 0) {
         for (const o of heldOrbs) loaded.orbManager.launch(o, loaded.deflector, 0);
         audio.play('launch');
+        this.ui.showReactorFeed('Orb launched. Maintain containment.', 'info');
       } else {
         const tier = loaded.abilities.activate(loaded.routing.selected, loaded.routing, this._world());
         if (tier) updateStats({ abilitiesActivated: 1 });
@@ -344,6 +347,10 @@ export class Game {
       loaded.routing.addEnergy(packetResult.collected);
       this.runStats.energyCollected += packetResult.collected;
       updateStats({ energyCollected: packetResult.collected });
+      if (this.energyFeedCooldown <= 0 || packetResult.collected >= 5) {
+        this.ui.showReactorFeed(`+${packetResult.collected} energy routed to ${this.ui.channelLabel(loaded.routing.selected)}`, 'success');
+        this.energyFeedCooldown = 0.9;
+      }
     }
     if (packetResult.missed > 0) {
       this.runStats.energyMissed += packetResult.missed;
@@ -359,6 +366,7 @@ export class Game {
     if (loaded.boss) loaded.boss.update(dt, world);
 
     this.runStats.elapsedTime += dt;
+    this.energyFeedCooldown = Math.max(0, this.energyFeedCooldown - dt);
     this.runStats.maxCombo = Math.max(this.runStats.maxCombo, this.scoreTracker.maxCombo);
     this.renderer.updateShake(dt);
 
@@ -392,11 +400,13 @@ export class Game {
         updateStats({ volatileChains: 1 });
       },
       onMagneticCatch: () => updateStats({ magneticCatches: 1 }),
+      onAbilityActivated: (channel, tier) => {
+        this.ui.showReactorFeed(`${this.ui.abilityLabel(channel, tier)} online`, 'success');
+      },
       onDeflectorHit: () => {},
       onHazardImpact: (chargeLost) => {
         if (chargeLost) this._loseCharge();
       },
-      onAbilityActivated: () => {},
       onScore: (n) => this._addScore(n),
       onBossPhaseComplete: () => {},
       onBossDefeated: () => this._handleBossDefeated(),
@@ -422,6 +432,10 @@ export class Game {
     this.scoreTracker.registerHit();
     this.loaded.energyPackets.spawnFromComponent(comp);
     this.loaded.powerUps.maybeDrop(comp);
+    if (comp.typeDef.isCore) this.ui.showReactorFeed('Core segment fractured', 'danger');
+    else if (comp.typeDef.isShieldNode) this.ui.showReactorFeed('Shield node collapsed', 'success');
+    else if (comp.typeDef.isConduit) this.ui.showReactorFeed('Conduit severed. Barrier routing disrupted.', 'success');
+    else if (comp.typeDef.isVolatile) this.ui.showReactorFeed('Volatile chain armed', 'warning');
     updateStats({ componentsDestroyed: 1 });
     if (comp.type === 'structural') updateStats({ structuralDestroyed: 1 });
     if (comp.typeDef.isShieldNode) updateStats({ shieldNodesDestroyed: 1 });
@@ -465,6 +479,7 @@ export class Game {
       this._handleStageFailed();
       return;
     }
+    this.ui.showReactorFeed(`Containment charge lost. ${this.charges} remaining.`, 'warning');
     this._setState(STATES.ORB_LOST, false);
     this.loaded.orbManager.spawnHeldOrb(this.loaded.deflector);
     this._setState(STATES.READY, false);
@@ -536,6 +551,7 @@ export class Game {
     if (rank === 'S+') updateStats({ sPlusRanks: 1 });
     audio.play('stageComplete');
     this.renderer.triggerShake(4, 0.4, loadSave().settings);
+    this.ui.showReactorFeed(`Chamber breached. Rank ${rank}.`, 'success');
     this.ui.showStageComplete(result, stage);
     this._setState(STATES.STAGE_COMPLETE, false);
   }
@@ -546,6 +562,7 @@ export class Game {
     const record = loadSave().stageRecords[stage.id];
     const result = { score: this.scoreTracker.score, time: this.runStats.elapsedTime, bestScore: record?.bestScore || 0 };
     audio.play('warning');
+    this.ui.showReactorFeed('Containment failed. Reset recommended.', 'danger');
     this.ui.showStageFailed(result);
     this._setState(STATES.STAGE_FAILED, false);
   }
@@ -574,7 +591,15 @@ export class Game {
     this.renderer.render(this.loaded, {
       reducedMotion: settings.reducedMotion,
       scanActive: this.loaded.abilities.isScanActive(),
-      coreExposed: this.loaded.boss ? this.loaded.boss.phaseIndex === this.loaded.boss.def.phases.length - 1 : false
+      coreExposed: this.loaded.boss ? this.loaded.boss.phaseIndex === this.loaded.boss.def.phases.length - 1 : false,
+      selectedChannel: this.loaded.routing.selected,
+      routingFlashChannel: this.loaded.routing.flashTimer > 0 ? this.loaded.routing.flashChannel : null,
+      abilityState: {
+        scan: this.loaded.abilities.scanTimer,
+        suppression: this.loaded.abilities.suppressionTimer,
+        dilation: this.loaded.abilities.dilationTimer,
+        override: this.loaded.abilities.overrideTimer
+      }
     });
   }
 }

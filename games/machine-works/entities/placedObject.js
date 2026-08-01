@@ -5,6 +5,11 @@
 
 let nextId = 1;
 
+function syncNextId(id) {
+  const match = /^obj_(\d+)$/.exec(id || '');
+  if (match) nextId = Math.max(nextId, Number(match[1]) + 1);
+}
+
 export const ROTATIONS = [0, 90, 180, 270];
 
 export class PlacedObject {
@@ -23,12 +28,16 @@ export class PlacedObject {
   }
 
   toJSON() {
-    return { id: this.id, type: this.type, x: this.x, y: this.y, rotation: this.rotation, footprint: this.footprint };
+    const data = { id: this.id, type: this.type, x: this.x, y: this.y, rotation: this.rotation, footprint: this.footprint };
+    if (this.exportedCounts) data.exportedCounts = { ...this.exportedCounts };
+    return data;
   }
 
   static fromJSON(data) {
     const obj = new PlacedObject(data);
     obj.id = data.id;
+    if (data.exportedCounts) obj.exportedCounts = { ...data.exportedCounts };
+    syncNextId(obj.id);
     return obj;
   }
 }

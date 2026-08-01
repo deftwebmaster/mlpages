@@ -1,6 +1,6 @@
 // Bump this on every deploy that changes cached assets so clients pick up the
 // new cache and are offered the update prompt instead of silently swapping.
-const CACHE_VERSION = 'lemonade-empire-v1';
+const CACHE_VERSION = 'lemonade-empire-v2';
 const SHELL_CACHE = `${CACHE_VERSION}-shell`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 
@@ -15,6 +15,7 @@ const SHELL_URLS = [
   './css/screens.css',
   './css/animations.css',
   './js/app.js',
+  './js/components/brand-scenes.js',
   './assets/icons/icon-192.png',
   './assets/icons/icon-512.png',
 ];

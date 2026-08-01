@@ -1,8 +1,8 @@
 {
   "name": "circuit-breaker",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "Circuit Breaker — an offline-ready match-three puzzle game. No build step; the source is the deployable site.",
+  "description": "Circuit Breaker V2 — an offline-ready match-three puzzle game with live objectives, run diagnostics, and special-node coaching.",
   "type": "module",
   "scripts": {
     "start": "node tools/serve.mjs 5173",

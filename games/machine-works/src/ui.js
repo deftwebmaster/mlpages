@@ -5,6 +5,7 @@ export class UI {
   constructor({
     onSelectTool, onRotate, onUndo, onRedo, onTogglePause,
     onToggleAnalysis, onSaveBlueprint, onLoadBlueprint, onDeleteBlueprint,
+    onCycleSpeed, onZoomIn, onZoomOut, onCenter, onRotateSelection, onDeleteSelection,
   }) {
     this.onSelectTool = onSelectTool;
     this.onRotate = onRotate;
@@ -15,17 +16,33 @@ export class UI {
     this.onSaveBlueprint = onSaveBlueprint;
     this.onLoadBlueprint = onLoadBlueprint;
     this.onDeleteBlueprint = onDeleteBlueprint;
+    this.onCycleSpeed = onCycleSpeed;
+    this.onZoomIn = onZoomIn;
+    this.onZoomOut = onZoomOut;
+    this.onCenter = onCenter;
+    this.onRotateSelection = onRotateSelection;
+    this.onDeleteSelection = onDeleteSelection;
 
     this.toolButtons = Array.from(document.querySelectorAll('[data-tool]'));
     this.rotateBtn = document.getElementById('btn-rotate');
     this.undoBtn = document.getElementById('btn-undo');
     this.redoBtn = document.getElementById('btn-redo');
     this.pauseBtn = document.getElementById('btn-pause');
+    this.speedBtn = document.getElementById('btn-speed');
+    this.zoomInBtn = document.getElementById('btn-zoom-in');
+    this.zoomOutBtn = document.getElementById('btn-zoom-out');
+    this.centerBtn = document.getElementById('btn-center');
     this.analysisBtn = document.getElementById('btn-analysis');
     this.factoryNameEl = document.getElementById('factory-name');
     this.powerReadoutEl = document.getElementById('power-readout');
     this.objectiveReadoutEl = document.getElementById('objective-readout');
     this.sessionStatsEl = document.getElementById('session-stats');
+    this.inspectorPanel = document.getElementById('inspector-panel');
+    this.inspectorTitleEl = document.getElementById('inspector-title');
+    this.inspectorDetailEl = document.getElementById('inspector-detail');
+    this.inspectorRotateBtn = document.getElementById('btn-inspector-rotate');
+    this.inspectorDeleteBtn = document.getElementById('btn-inspector-delete');
+    this.toastStack = document.getElementById('toast-stack');
 
     this.blueprintsBtn = document.getElementById('btn-blueprints');
     this.blueprintPanel = document.getElementById('blueprint-panel');
@@ -41,7 +58,13 @@ export class UI {
     this.undoBtn.addEventListener('click', () => this.onUndo());
     this.redoBtn.addEventListener('click', () => this.onRedo());
     this.pauseBtn.addEventListener('click', () => this.onTogglePause());
+    this.speedBtn.addEventListener('click', () => this.onCycleSpeed());
+    this.zoomInBtn.addEventListener('click', () => this.onZoomIn());
+    this.zoomOutBtn.addEventListener('click', () => this.onZoomOut());
+    this.centerBtn.addEventListener('click', () => this.onCenter());
     this.analysisBtn.addEventListener('click', () => this.onToggleAnalysis());
+    this.inspectorRotateBtn.addEventListener('click', () => this.onRotateSelection());
+    this.inspectorDeleteBtn.addEventListener('click', () => this.onDeleteSelection());
 
     this.blueprintsBtn.addEventListener('click', () => this.setBlueprintPanelOpen(true));
     this.blueprintCloseBtn.addEventListener('click', () => this.setBlueprintPanelOpen(false));
@@ -73,6 +96,12 @@ export class UI {
     this.pauseBtn.classList.toggle('active', paused);
   }
 
+  setSpeed(speed) {
+    if (!this.speedBtn) return;
+    this.speedBtn.textContent = `${speed}x`;
+    this.speedBtn.classList.toggle('active', speed > 1);
+  }
+
   setPowerStats({ supply, demand }) {
     if (!this.powerReadoutEl) return;
     this.powerReadoutEl.textContent = `⚡ ${Math.round(demand)}/${Math.round(supply)} kW`;
@@ -83,6 +112,8 @@ export class UI {
     if (!this.objectiveReadoutEl) return;
     const prefix = complete ? '✓ ' : '';
     this.objectiveReadoutEl.textContent = `${prefix}${label}: ${current}/${target}`;
+    const progress = target > 0 ? Math.min(100, Math.round((current / target) * 100)) : 0;
+    this.objectiveReadoutEl.style.setProperty('--objective-progress', `${progress}%`);
     this.objectiveReadoutEl.classList.toggle('complete', complete);
   }
 
@@ -102,6 +133,25 @@ export class UI {
 
   setBlueprintPanelOpen(open) {
     this.blueprintPanel.classList.toggle('hidden', !open);
+  }
+
+  setInspector(details) {
+    if (!this.inspectorPanel) return;
+    this.inspectorPanel.classList.toggle('hidden', !details);
+    if (!details) return;
+    this.inspectorTitleEl.textContent = details.title;
+    this.inspectorDetailEl.textContent = details.detail;
+    this.inspectorRotateBtn.disabled = !details.canRotate;
+    this.inspectorDeleteBtn.disabled = !details.canDelete;
+  }
+
+  showToast(message, tone = 'info') {
+    if (!this.toastStack) return;
+    const toast = document.createElement('div');
+    toast.className = `toast ${tone}`;
+    toast.textContent = message;
+    this.toastStack.appendChild(toast);
+    window.setTimeout(() => toast.remove(), 2700);
   }
 
   setBlueprintList(blueprints) {

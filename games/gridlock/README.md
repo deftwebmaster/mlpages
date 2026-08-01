@@ -20,6 +20,11 @@ node tools/serve.mjs      # → http://localhost:4173
 
 | | |
 |---|---|
+| **V2 sector briefings** | The menu now previews the next sector's target, record, rank and tactical hint |
+| **Live objectives** | In-run mission chips track target pace, deathless status and secret completion |
+| **Threat readout** | The HUD exposes patrol/chase state and countdown so drone pressure is readable |
+| **Touch feedback** | Swipe and D-pad input now produces immediate directional feedback on the board |
+| **Coached results** | The clear screen explains pace, rating, shifts used and the next improvement lever |
 | **15 handcrafted sectors** | Designed as readable topology diagrams, compiled to literal ASCII tile maps |
 | **5 drone personalities** | Hunter, Interceptor, Sentinel, Tracker and Wanderer — one FSM, five goal functions |
 | **Grid Shift** | Six reusable maze mutations, every one validated before the player sees it |

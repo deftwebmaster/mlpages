@@ -5,6 +5,11 @@ import { CONVEYOR_TIERS, DIRECTION_VECTORS } from '../src/constants.js';
 // `conveyor` field (see entities/tile.js).
 let nextId = 1;
 
+function syncNextId(id) {
+  const match = /^belt_(\d+)$/.exec(id || '');
+  if (match) nextId = Math.max(nextId, Number(match[1]) + 1);
+}
+
 export class Conveyor {
   constructor({ x, y, rotation = 0, tier = 'basic' }) {
     this.id = `belt_${String(nextId++).padStart(6, '0')}`;
@@ -45,6 +50,7 @@ export class Conveyor {
   static fromJSON(data) {
     const conveyor = new Conveyor(data);
     conveyor.id = data.id;
+    syncNextId(conveyor.id);
     return conveyor;
   }
 }

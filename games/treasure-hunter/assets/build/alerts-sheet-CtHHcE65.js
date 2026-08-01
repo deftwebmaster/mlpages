@@ -1,4 +1,4 @@
-import{s as i,e as l,o as n}from"./index-C-bI509e.js";function o(s){return{info:"ℹ",success:"✓",warning:"⚠",expedition:"➤",milestone:"★",achievement:"★"}[s]||"•"}function c(){const s=i.getState(),a=`
+import{s as i,e as l,o as n}from"./index-BJwu9a6s.js";function o(s){return{info:"ℹ",success:"✓",warning:"⚠",expedition:"➤",milestone:"★",achievement:"★"}[s]||"•"}function c(){const s=i.getState(),a=`
     <h2 id="alerts-title">Alerts</h2>
     <div class="stack" style="margin-top: var(--space-3);">
       ${s.alerts.length?s.alerts.map(t=>`

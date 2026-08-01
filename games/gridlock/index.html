@@ -6,21 +6,21 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, maximum-scale=1"
     />
-  <title>Gridlock — Own the maze. Rewrite the pursuit.</title>
-  <meta name="description" content="A real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
+  <title>Gridlock V2 — Own the maze. Rewrite the pursuit.</title>
+  <meta name="description" content="Gridlock V2 is a polished real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
   <link rel="canonical" href="https://mattlivingston.com/games/gridlock/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/games/gridlock/">
-  <meta property="og:title" content="Gridlock — Own the maze. Rewrite the pursuit.">
-  <meta property="og:description" content="A real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
-  <meta property="og:image:alt" content="Gridlock — Own the maze. Rewrite the pursuit. preview image">
+  <meta property="og:title" content="Gridlock V2 — Own the maze. Rewrite the pursuit.">
+  <meta property="og:description" content="Gridlock V2 is a polished real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/gridlock.png">
+  <meta property="og:image:alt" content="Gridlock V2 preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/gridlock/">
-  <meta name="twitter:title" content="Gridlock — Own the maze. Rewrite the pursuit.">
-  <meta name="twitter:description" content="A real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:title" content="Gridlock V2 — Own the maze. Rewrite the pursuit.">
+  <meta name="twitter:description" content="Gridlock V2 is a polished real-time arcade maze game where you rewrite the maze to outsmart autonomous security drones. Plays offline, installs as an app.">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/gridlock.png">
 <meta name="theme-color" content="#05070b" />
     <meta name="color-scheme" content="dark" />
 
@@ -53,6 +53,17 @@
             </h1>
             <p class="tagline">Own the maze. Rewrite the pursuit.</p>
           </header>
+
+          <section class="briefing-card" aria-label="Next sector briefing">
+            <span class="eyebrow">Next Briefing</span>
+            <b id="briefing-title">Sector 01 · Cold Boot</b>
+            <p id="briefing-copy">Drain the grid. Stay alive. Learn the board.</p>
+            <div class="briefing-metrics">
+              <span><small>Target</small><strong id="briefing-target">1:08.00</strong></span>
+              <span><small>Record</small><strong id="briefing-record">--</strong></span>
+              <span><small>Rank</small><strong id="briefing-rank">--</strong></span>
+            </div>
+          </section>
 
           <nav class="menu-actions">
             <button class="btn btn-primary" data-action="continue" id="btn-continue">
@@ -204,6 +215,12 @@
           <div class="board-wrap">
             <canvas id="board"></canvas>
             <div class="board-overlay">
+              <div class="mission-strip" id="mission-strip" aria-hidden="true">
+                <span id="mission-target">TARGET 0:00</span>
+                <span id="mission-deaths">NO DEATHS</span>
+                <span id="mission-secrets">SECRETS 0/0</span>
+              </div>
+              <div class="swipe-cue" id="swipe-cue" hidden></div>
               <div class="combo-badge" id="combo-badge" hidden></div>
               <div class="power-bar" id="power-bar" hidden><i></i></div>
             </div>
@@ -220,6 +237,9 @@
             </div>
             <div class="readout small"><span>Secrets</span><b id="hud-secrets">0/0</b></div>
             <div class="readout small"><span>Sector</span><b id="hud-sector">01</b></div>
+            <div class="threat-chip" id="threat-chip" data-phase="patrol">
+              <span>Mode</span><b id="hud-phase">PATROL</b><small id="hud-phase-time">0s</small>
+            </div>
           </aside>
         </div>
 
@@ -261,6 +281,8 @@
           </dl>
 
           <div class="result-flags" id="result-flags"></div>
+          <div class="rating-panel" id="rating-panel"></div>
+          <p class="coach-line" id="result-coach"></p>
 
           <div class="card-actions">
             <button class="btn btn-primary" data-action="next" id="btn-next">Next sector</button>

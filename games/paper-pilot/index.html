@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Paper Pilot | Draw Wind Rails, Fly Paper Planes</title>
+  <meta name="description" content="Draw wind rails across five breezy challenge routes, collect stars, and land a paper plane safely in this static browser game.">
+  <link rel="canonical" href="https://mattlivingston.com/games/paper-pilot/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://mattlivingston.com/games/paper-pilot/">
+  <meta property="og:title" content="Paper Pilot | Draw Wind Rails, Fly Paper Planes">
+  <meta property="og:description" content="Draw wind rails across five breezy challenge routes, collect stars, and land a paper plane safely in this static browser game.">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/paper-pilot.png">
+  <meta property="og:image:alt" content="Paper Pilot cinematic key art with a paper airplane riding glowing wind rails.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/paper-pilot.png">
+  <meta name="theme-color" content="#7bc8e8">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1>Paper Pilot</h1>
+          <p>Draw wind. Launch light. Tune the glide.</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button id="menuBtn" class="status-pill">Menu</button>
+        <div class="status-pill" id="statusPill">Editor</div>
+      </div>
+    </header>
+
+    <main class="game-shell">
+      <canvas id="gameCanvas" aria-label="Paper Pilot game canvas"></canvas>
+
+      <section class="toolbar" aria-label="Editor tools">
+        <div class="tool-group">
+          <button class="tool-btn active" data-tool="draw" aria-pressed="true">Draw</button>
+          <button class="tool-btn" data-tool="erase" aria-pressed="false">Erase</button>
+          <button class="tool-btn" data-tool="pan" aria-pressed="false">Pan</button>
+        </div>
+
+        <div class="tool-group rail-group">
+          <button class="rail-btn active" data-rail="lift" aria-pressed="true">
+            <span class="swatch lift"></span> Lift
+          </button>
+          <button class="rail-btn" data-rail="gust" aria-pressed="false">
+            <span class="swatch gust"></span> Gust
+          </button>
+        </div>
+
+        <div class="tool-group actions">
+          <button id="launchBtn" class="primary">Launch</button>
+          <button id="resetBtn">Reset</button>
+          <button id="retryBtn">Retry</button>
+          <button id="undoBtn">Undo</button>
+          <button id="redoBtn">Redo</button>
+          <button id="shareBtn">Share</button>
+          <button id="saveBtn">Save</button>
+          <button id="clearBtn">Clear</button>
+        </div>
+      </section>
+
+      <aside class="readout" aria-live="polite">
+        <div>
+          <span>Altitude</span>
+          <strong id="altitudeReadout">0 ft</strong>
+        </div>
+        <div>
+          <span>Speed</span>
+          <strong id="speedReadout">0 kt</strong>
+        </div>
+        <div>
+          <span>Stars</span>
+          <strong id="starReadout">0 / 0</strong>
+        </div>
+        <div>
+          <span>Time</span>
+          <strong id="timeReadout">0.0s</strong>
+        </div>
+        <div>
+          <span>Score</span>
+          <strong id="scoreReadout">0</strong>
+        </div>
+      </aside>
+
+      <section class="level-panel" aria-label="Challenge">
+        <label>
+          <span>Challenge</span>
+          <select id="levelSelect"></select>
+        </label>
+        <p id="objectiveText">Collect the stars and land safely.</p>
+        <div class="level-meta">
+          <span id="attemptReadout">Attempt 1</span>
+          <span id="bestReadout">Best --</span>
+        </div>
+      </section>
+
+      <div class="hint-panel" id="hintPanel">
+        <strong id="hintTitle">Welcome</strong>
+        <span id="hintText">Collect every star, then land softly on the target. Edit the wind rails between attempts until the flight path clicks.</span>
+      </div>
+
+      <section class="result-modal" id="resultModal" hidden aria-live="polite">
+        <div class="result-card">
+          <div class="result-grade" id="resultGrade">A</div>
+          <h2 id="resultTitle">Clean Landing</h2>
+          <p id="resultText">The route is complete.</p>
+          <div class="result-stats">
+            <span id="resultScore">Score 0</span>
+            <span id="resultTime">0.0s</span>
+            <span id="resultStars">0 / 0 stars</span>
+          </div>
+          <div class="result-actions">
+            <button id="resultRetry">Retry</button>
+            <button id="resultNext" class="primary">Next Challenge</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="menu-modal" id="menuModal" aria-label="Main menu">
+        <div class="menu-card">
+          <div class="menu-plane" aria-hidden="true"></div>
+          <h2>Paper Pilot</h2>
+          <p>Sketch wind rails, collect stars, and land a paper plane safely.</p>
+          <div class="menu-stats">
+            <span id="menuCompleted">0 / 5 complete</span>
+            <span id="menuBest">Best score --</span>
+          </div>
+          <div class="menu-actions">
+            <button id="menuPlay" class="primary">Continue</button>
+            <button id="menuSettings">Settings</button>
+            <button id="menuShare">Import / Export</button>
+            <button id="menuReset">Reset Progress</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-modal" id="settingsModal" hidden aria-label="Settings">
+        <div class="settings-card">
+          <h2>Settings</h2>
+          <label class="setting-row">
+            <span>Sound effects</span>
+            <input id="soundToggle" type="checkbox">
+          </label>
+          <label class="setting-row">
+            <span>Reduced motion</span>
+            <input id="motionToggle" type="checkbox">
+          </label>
+          <label class="setting-row">
+            <span>Mobile focus mode</span>
+            <input id="focusToggle" type="checkbox">
+          </label>
+          <div class="result-actions">
+            <button id="settingsClose" class="primary">Done</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="share-modal" id="shareModal" hidden aria-label="Import or export route">
+        <div class="share-card">
+          <h2>Import / Export</h2>
+          <p>Share the current challenge's wind rails and launch setup.</p>
+          <textarea id="shareText" spellcheck="false" aria-label="Route share code"></textarea>
+          <div class="share-actions">
+            <button id="copyShare" class="primary">Copy Code</button>
+            <button id="importShare">Import Code</button>
+            <button id="shareClose">Close</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="file-warning" id="fileWarning" hidden>
+        <div>
+          <strong>Static server required</strong>
+          <span>Paper Pilot uses ES modules, so Firefox will not run it from a direct file open. Serve this folder locally or from GitHub Pages.</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    if (window.location.protocol === 'file:') {
+      document.getElementById('fileWarning')?.removeAttribute('hidden');
+    }
+  </script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "Circuit Breaker",
   "short_name": "Circuit",
-  "description": "Match nodes. Build combos. Keep the grid alive. An offline-ready match-three puzzle game.",
+  "description": "Match nodes. Build combos. Keep the grid alive. Circuit Breaker V2 adds live objectives, run diagnostics, and special-node coaching.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

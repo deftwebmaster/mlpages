@@ -28,7 +28,7 @@ export class Renderer {
   }
 
   render(frame) {
-    const { level, state, displayPositions, cones, particles, planning, timeMs, doorAnim } = frame;
+    const { level, state, displayPositions, cones, particles, planning, moveHints, timeMs, doorAnim } = frame;
     const ctx = this.ctx;
     const t = this.tileSize;
     ctx.clearRect(0, 0, level.width * t, level.height * t);
@@ -38,6 +38,7 @@ export class Renderer {
     this.drawVisionCones(cones.cameraCones, COLORS.orange);
     this.drawObjectives(level, state, timeMs);
     this.drawKeycards(level, state);
+    this.drawMoveHints(moveHints, timeMs);
     this.drawCameraMounts(level, state);
     this.drawGuards(level, state, displayPositions);
     this.drawPlayer(state, displayPositions);
@@ -62,6 +63,11 @@ export class Renderer {
         }
         ctx.fillStyle = (x + y) % 2 === 0 ? COLORS.floor : COLORS.floorAlt;
         ctx.fillRect(px, py, t, t);
+        ctx.strokeStyle = COLORS.gridLine;
+        ctx.globalAlpha = 0.55;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(px + 0.5, py + 0.5, t - 1, t - 1);
+        ctx.globalAlpha = 1;
 
         if (tile === TILE.DOOR || tile === TILE.LOCKED_DOOR) {
           this.drawDoor(level, state, x, y, tile === TILE.LOCKED_DOOR, doorAnim);
@@ -180,7 +186,47 @@ export class Renderer {
         ctx.fillStyle = COLORS.cyanDim;
         ctx.fillRect(cx - size / 2 + 2, cy - size / 2 + 2, size - 4, size - 4);
       }
+      ctx.fillStyle = active ? COLORS.cyan : COLORS.textDim;
+      ctx.font = `700 ${Math.max(10, t * 0.24)}px system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('EXIT', cx, cy);
     }
+  }
+
+  drawMoveHints(hints, timeMs) {
+    if (!hints || !hints.length) return;
+    const ctx = this.ctx;
+    const t = this.tileSize;
+    const pulse = 0.72 + 0.18 * Math.sin(timeMs / 180);
+    ctx.save();
+    for (const hint of hints) {
+      const [cx, cy] = this.toPx(hint.x, hint.y);
+      const color = hint.complete ? COLORS.cyan : hint.collect ? COLORS.violet : hint.danger ? COLORS.red : '#63f08f';
+      ctx.globalAlpha = hint.danger ? 0.72 : pulse;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.max(2, t * 0.055);
+      ctx.beginPath();
+      ctx.arc(cx, cy, t * 0.25, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = hint.danger ? 0.42 : 0.22;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(cx, cy, t * 0.18, 0, Math.PI * 2);
+      ctx.fill();
+      if (hint.danger) {
+        ctx.globalAlpha = 0.95;
+        ctx.strokeStyle = COLORS.red;
+        ctx.lineWidth = Math.max(2, t * 0.05);
+        ctx.beginPath();
+        ctx.moveTo(cx - t * 0.12, cy - t * 0.12);
+        ctx.lineTo(cx + t * 0.12, cy + t * 0.12);
+        ctx.moveTo(cx + t * 0.12, cy - t * 0.12);
+        ctx.lineTo(cx - t * 0.12, cy + t * 0.12);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
   }
 
   drawKeycards(level, state) {
@@ -347,6 +393,20 @@ export class Renderer {
       ctx.lineTo(bx, by);
       ctx.stroke();
       drawArrowHead(ctx, ax, ay, bx, by, t * 0.14);
+    }
+
+    for (let i = 1; i < pathTiles.length; i++) {
+      const [cx, cy] = this.toPx(pathTiles[i].x, pathTiles[i].y);
+      ctx.globalAlpha = 0.95;
+      ctx.fillStyle = COLORS.cyan;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(4, t * 0.12), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#062028';
+      ctx.font = `800 ${Math.max(9, t * 0.2)}px system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(i), cx, cy);
     }
 
     for (const g of planning.ghostGuards || []) {

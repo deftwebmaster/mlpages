@@ -54,6 +54,7 @@ input.attachDpad(document.getElementById('dpad'));
 input.onAnyInput = () => audio.unlock();
 input.onDirection = (dir) => {
   if (state !== STATE.PLAYING) return;
+  ui.pulseDirection(dir);
   game.handleDirection(dir);
   haptic(6);
 };

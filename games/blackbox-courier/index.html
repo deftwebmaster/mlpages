@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <title>Blackbox Courier | Arcade Data Tunnel Runner</title>
-  <meta name="description" content="Play Blackbox Courier, a high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
+  <title>Blackbox Courier V2 | Arcade Data Tunnel Runner</title>
+  <meta name="description" content="Play Blackbox Courier V2, a polished high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
   <link rel="canonical" href="https://mattlivingston.com/games/blackbox-courier/">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://mattlivingston.com/games/blackbox-courier/">
-  <meta property="og:title" content="Blackbox Courier | Arcade Data Tunnel Runner">
-  <meta property="og:description" content="Play Blackbox Courier, a high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
-  <meta property="og:image" content="https://mattlivingston.com/games/blackbox-courier/icons/social.png">
-  <meta property="og:image:alt" content="Blackbox Courier | Arcade Data Tunnel Runner preview image">
+  <meta property="og:title" content="Blackbox Courier V2 | Arcade Data Tunnel Runner">
+  <meta property="og:description" content="Play Blackbox Courier V2, a polished high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/blackbox-courier.png">
+  <meta property="og:image:alt" content="Blackbox Courier V2 preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/blackbox-courier/">
-  <meta name="twitter:title" content="Blackbox Courier | Arcade Data Tunnel Runner">
-  <meta name="twitter:description" content="Play Blackbox Courier, a high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
-  <meta name="twitter:image" content="https://mattlivingston.com/games/blackbox-courier/icons/social.png">
+  <meta name="twitter:title" content="Blackbox Courier V2 | Arcade Data Tunnel Runner">
+  <meta name="twitter:description" content="Play Blackbox Courier V2, a polished high-speed arcade browser game about delivering the payload before a collapsing data tunnel tears the route apart.">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/blackbox-courier.png">
 <meta name="theme-color" content="#04060e">
 <meta name="color-scheme" content="dark">
 <meta name="mobile-web-app-capable" content="yes">
@@ -36,6 +36,10 @@
   <!-- ============================= STAGE ============================= -->
   <div id="stage">
     <canvas id="game-canvas" aria-label="Blackbox Courier play area" role="img"></canvas>
+    <div id="touch-guides" class="touch-guides" aria-hidden="true">
+      <span>LEFT</span>
+      <span>RIGHT</span>
+    </div>
 
     <div id="hud" aria-hidden="true">
       <div class="hud-top">
@@ -79,6 +83,13 @@
       </div>
 
       <div id="hud-status" class="hud-status" role="status" aria-live="polite"></div>
+      <div id="hud-contract" class="hud-contract" aria-hidden="true">
+        <span id="hud-contract-label">CONTRACT</span>
+        <b id="hud-contract-progress">0/0</b>
+      </div>
+      <div id="steer-hint" class="steer-hint" aria-hidden="true">
+        <i id="steer-indicator"></i>
+      </div>
       <div id="toast" class="toast" role="status" aria-live="polite"></div>
       <div id="tutorial" class="tutorial" role="status" aria-live="polite"></div>
       <div id="countdown" class="countdown" aria-hidden="true"></div>
@@ -108,7 +119,14 @@
       <div class="menu-stats">
         <div><span>BEST SCORE</span><b id="menu-best">0</b></div>
         <div><span>BEST DISTANCE</span><b id="menu-best-distance">0 m</b></div>
-        <div><span>RUNS</span><b id="menu-runs">0</b></div>
+        <div><span>BEST CHAIN</span><b id="menu-best-streak">0</b></div>
+        <div><span>CONTRACTS</span><b id="menu-contracts">0</b></div>
+      </div>
+
+      <div class="contract-card" aria-label="Active contract">
+        <span>ACTIVE CONTRACT</span>
+        <b id="menu-contract-title">Hit the first checkpoint</b>
+        <small id="menu-contract-reward">REWARD 1,800</small>
       </div>
 
       <button id="btn-start" class="btn btn-primary" type="button">START DELIVERY</button>
@@ -201,6 +219,8 @@
         <div class="muted">BEST <b id="res-best">0</b></div>
       </div>
       <div id="res-stats" class="stats-list"></div>
+      <div id="res-contract" class="contract-card contract-card-result"></div>
+      <div id="res-highlights" class="run-highlights"></div>
       <button id="btn-retry" class="btn btn-primary" type="button">RETRY DELIVERY</button>
       <button id="btn-menu" class="btn btn-ghost" type="button">MAIN MENU</button>
     </div>

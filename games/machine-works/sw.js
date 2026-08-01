@@ -1,6 +1,6 @@
 // Minimal cache-first service worker for the static app shell.
 // Real asset precaching (sprites/audio) will expand this list in later milestones.
-const CACHE_NAME = 'machineworks-shell-v5';
+const CACHE_NAME = 'machineworks-shell-v6';
 const SHELL_ASSETS = [
   './',
   './index.html',

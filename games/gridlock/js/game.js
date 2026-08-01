@@ -398,6 +398,7 @@ export class Game {
       secretsTotal,
       shiftsUsed: this.shiftsUsed,
       dronesEaten: this.dronesEaten,
+      targetTime: level.targetTime,
       rank,
       rating,
       perfect,
@@ -487,6 +488,7 @@ export class Game {
       shiftFraction: this.shift.cooldownFraction,
       secrets: this.secretsFound,
       secretsTotal: this.maze.secrets.length,
+      targetTime: this.level.targetTime,
     });
   }
 
@@ -498,6 +500,9 @@ export class Game {
       shiftReady: this.shift ? this.shift.ready : false,
       power: this.player ? this.player.powerRemaining : 0,
       bridge: this.shift ? this.shift.bridgeTimeRemaining : 0,
+      targetTime: this.level ? this.level.targetTime : 0,
+      phase: this.phase,
+      phaseTimer: this.phaseTimer,
     };
   }
 

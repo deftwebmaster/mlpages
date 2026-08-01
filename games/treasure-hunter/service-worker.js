@@ -6,15 +6,7 @@ const SHELL_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './assets/build/index-C-bI509e.js',
-  './assets/build/alerts-sheet-CzQQMov1.js',
-  './assets/build/index-DTgF-BPH.css',
-  './assets/icons/icon.svg',
-  './assets/icons/icon-192.png',
-  './assets/icons/icon-512.png',
-  './assets/icons/icon-maskable-192.png',
-  './assets/icons/icon-maskable-512.png',
-  './assets/icons/apple-touch-icon.png'
+  './assets/icons/icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
@@ -37,9 +29,10 @@ self.addEventListener('message', (event) => {
   if (event.data?.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// Network-first for same-origin navigations/module requests (so a rebuilt
-// app is picked up promptly when online), falling back to the cache when
-// offline; cache-first for everything else already in the shell list.
+// Network-first for same-origin navigations (so rebuilt HTML is picked up
+// promptly when online). Vite's hashed JS/CSS files are cached after their
+// first successful request, so the shell stays deploy-safe without hardcoding
+// build-specific asset names here.
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;

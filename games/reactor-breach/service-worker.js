@@ -1,6 +1,6 @@
 // Reactor Breach service worker.
 // Bump CACHE_VERSION on every deploy so stale assets are replaced cleanly.
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v1.1.0';
 const CACHE_NAME = `reactor-breach-${CACHE_VERSION}`;
 
 const SCOPE_URL = new URL(self.registration.scope);

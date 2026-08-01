@@ -6,7 +6,7 @@
  * only ever reads it.
  */
 
-import { STABILITY, PHASE, SCORE, CHECKPOINT, FX, COLORS, PLAYER, HAPTICS } from './config.js';
+import { STABILITY, PHASE, SCORE, CHECKPOINT, FX, COLORS, PLAYER, HAPTICS, CONTRACTS } from './config.js';
 import { World } from './world.js';
 import { Player } from './player.js';
 import { Particles } from './particles.js';
@@ -34,6 +34,8 @@ const TUTORIAL_STEPS = [
   { id: 'phase', text: 'HOLD PHASE TO CROSS ENERGY BARRIERS' },
   { id: 'stability', text: 'KEEP THE PAYLOAD STABLE' },
 ];
+
+const formatPlain = (n) => Math.floor(n).toLocaleString('en-US');
 
 export class Game {
   constructor({ renderer, input, ui }) {
@@ -81,12 +83,19 @@ export class Game {
       time: 0,
       fragments: 0,
       nearMisses: 0,
+      phasePasses: 0,
       cleanSections: 0,
       checkpoints: 0,
       damageEvents: 0,
       invuln: 0,
       nextCheckpointAt: CHECKPOINT.intervalSeconds,
       fragStreak: 0,
+      bestFragStreak: 0,
+      contract: this._currentContract(),
+      contractProgress: '',
+      contractComplete: false,
+      contractRewarded: false,
+      committed: false,
       cause: '—',
       player: this.player,
     };
@@ -102,6 +111,7 @@ export class Game {
     this.particles.setReduced(this.reducedEffects);
     document.body.classList.toggle('reduced-effects', this.reducedEffects);
     this.input.setMode(store.get('controlMode'));
+    document.body.dataset.controlMode = store.get('controlMode');
     audio.setSound(!!store.get('sound'));
     audio.setMusic(!!store.get('music'));
   }
@@ -144,6 +154,8 @@ export class Game {
     this.particles.clear();
     this.world.reset(0);
     this.run = this._blankRun();
+    this._updateContractProgress();
+    this._summary = null;
     this.renderer.shake = 0;
     this.renderer.flash = 0;
 
@@ -324,6 +336,7 @@ export class Game {
       vibrate(store.get('haptics') ? HAPTICS.nearMiss : 0);
       this.particles.burst(this.player.x, 1, 5, [255, 154, 60], { speed: 0.6, life: 0.35, size: 2.6 });
     }
+    if (res.phasePasses > 0) run.phasePasses += res.phasePasses;
 
     // 8. Chunk completion
     for (const chunk of this.world.newlyTraversed()) this._resolveChunk(chunk);
@@ -336,6 +349,7 @@ export class Game {
 
     // 10. Multiplier
     this._updateMultiplier(dt);
+    this._checkContract();
 
     // 11. Distance score
     run.score += (dz / 10) * SCORE.perDistanceUnit * run.multiplier;
@@ -395,6 +409,7 @@ export class Game {
     if (p.type === 'fragment') {
       run.fragments++;
       run.fragStreak++;
+      run.bestFragStreak = Math.max(run.bestFragStreak, run.fragStreak);
       run.multBase = Math.min(SCORE.multiplierMax, run.multBase + SCORE.multPerFragment);
       const bonus = SCORE.fragment;
       run.score += bonus * run.multiplier;
@@ -480,6 +495,61 @@ export class Game {
     run.maxMultiplier = Math.max(run.maxMultiplier, run.multiplier);
   }
 
+  _currentContract() {
+    const idx = Math.floor(store.get('activeContract')) % CONTRACTS.length;
+    return CONTRACTS[idx] || CONTRACTS[0];
+  }
+
+  _contractValue(contract) {
+    const run = this.run;
+    switch (contract.kind) {
+      case 'checkpoints': return run.checkpoints;
+      case 'bestFragStreak': return run.bestFragStreak;
+      case 'cleanSections': return run.cleanSections;
+      case 'nearMisses': return run.nearMisses;
+      case 'phasePasses': return run.phasePasses;
+      case 'maxMultiplier': return run.maxMultiplier;
+      case 'stableTime': return run.stability >= contract.stability ? run.time : 0;
+      default: return 0;
+    }
+  }
+
+  _formatContractProgress(contract, value) {
+    if (contract.kind === 'maxMultiplier') {
+      return `${Math.min(value, contract.target).toFixed(2)}x/${contract.target.toFixed(2)}x`;
+    }
+    if (contract.kind === 'stableTime') {
+      return `${Math.min(Math.floor(value), contract.target)}s/${contract.target}s`;
+    }
+    return `${Math.min(Math.floor(value), contract.target)}/${contract.target}`;
+  }
+
+  _updateContractProgress() {
+    const run = this.run;
+    if (!run.contract) return;
+    const value = this._contractValue(run.contract);
+    run.contractProgress = this._formatContractProgress(run.contract, value);
+  }
+
+  _checkContract() {
+    const run = this.run;
+    if (!run.contract || run.contractComplete) {
+      this._updateContractProgress();
+      return;
+    }
+    const value = this._contractValue(run.contract);
+    run.contractProgress = this._formatContractProgress(run.contract, value);
+    if (value < run.contract.target) return;
+
+    run.contractComplete = true;
+    run.contractProgress = this._formatContractProgress(run.contract, run.contract.target);
+    run.score += run.contract.reward * run.multiplier;
+    audio.sfx.checkpoint();
+    this.renderer.addFlash('rgba(77,255,176,0.25)', 0.32);
+    this.particles.ring(this.player.x, 0, [77, 255, 176], this.reducedEffects ? 16 : 34, 0.72);
+    this.ui.toast('CONTRACT COMPLETE', 'green');
+  }
+
   _updateStatus() {
     const run = this.run;
     if (run.stability < 25) this.ui.setStatus('PAYLOAD CRITICAL', 'bad');
@@ -523,31 +593,64 @@ export class Game {
 
   _commitRunStats(finished) {
     const run = this.run;
+    if (run.committed) return this._summary || this._buildSummary(false);
+    run.committed = true;
     const newBest = store.bumpMax('bestScore', Math.floor(run.score));
     store.bumpMax('bestDistance', Math.floor(run.distance));
     store.bumpMax('bestCheckpoint', run.checkpoints);
+    store.bumpMax('bestStreak', run.bestFragStreak);
+    store.bumpMax('bestMultiplier', Number(run.maxMultiplier.toFixed(2)));
     if (finished) store.add('totalRuns', 1);
     store.add('totalDistance', Math.floor(run.distance));
     store.add('totalFragments', run.fragments);
     store.add('totalNearMisses', run.nearMisses);
     store.add('totalCleanSections', run.cleanSections);
     store.add('totalPlayTime', Math.floor(run.time));
+    if (run.contractComplete && !run.contractRewarded) {
+      run.contractRewarded = true;
+      store.add('totalContracts', 1);
+      store.set('activeContract', (Math.floor(store.get('activeContract')) + 1) % CONTRACTS.length);
+    }
 
     if (this.tutorialActive && run.time > 12) store.set('tutorialDone', true);
 
+    return this._buildSummary(newBest);
+  }
+
+  _buildSummary(newBest) {
+    const run = this.run;
     return {
       score: Math.floor(run.score),
       newBest,
       distance: run.distance,
       time: run.time,
       fragments: run.fragments,
+      bestFragStreak: run.bestFragStreak,
       nearMisses: run.nearMisses,
+      phasePasses: run.phasePasses,
       cleanSections: run.cleanSections,
       checkpoints: run.checkpoints,
       maxMultiplier: run.maxMultiplier,
       stability: run.stability,
       cause: run.cause,
+      contractLabel: run.contract?.label || '',
+      contractReward: run.contract?.reward || 0,
+      contractProgress: run.contractProgress || '',
+      contractComplete: run.contractComplete,
+      highlights: this._summaryHighlights(run),
     };
+  }
+
+  _summaryHighlights(run) {
+    const highlights = [
+      ['CHAIN', formatPlain(run.bestFragStreak)],
+      ['PEAK MULT', run.maxMultiplier.toFixed(2) + 'x'],
+      ['PAYLOAD', Math.max(0, Math.round(run.stability)) + '%'],
+    ];
+    if (run.checkpoints > 0) highlights[0] = ['CHECKPOINTS', formatPlain(run.checkpoints)];
+    if (run.nearMisses >= 3) highlights[1] = ['NEAR MISSES', formatPlain(run.nearMisses)];
+    if (run.damageEvents === 0 && run.time > 10) highlights[2] = ['DAMAGE', 'NONE'];
+    return highlights;
   }
 
   /* ------------------------------------------------------------------ *

@@ -10,7 +10,7 @@ import { PlanningMode } from '../planning/PlanningMode.js';
 import { bfsShortestPath } from '../planning/Path.js';
 import { AudioEngine } from '../audio/Audio.js';
 import { Storage } from '../storage/Storage.js';
-import { GAME_STATUS, ANIM_MS, COLORS } from '../utils/constants.js';
+import { GAME_STATUS, ANIM_MS, COLORS, DIRECTIONS } from '../utils/constants.js';
 import { easeOutQuad } from '../utils/helpers.js';
 
 export class Game {
@@ -42,6 +42,7 @@ export class Game {
       onMissionFailed: null,
       onHudUpdate: null,
       onPlanningChange: null,
+      onMessage: null,
     };
 
     const settings = Storage.getSave().settings;
@@ -148,15 +149,18 @@ export class Game {
   }
 
   undoMove() {
-    if (this.status !== 'playing' || this.inputLocked) return;
+    if ((this.status !== 'playing' && this.status !== 'failed') || this.inputLocked) return;
     const prev = this.undo.pop();
     if (!prev) return;
+    this.status = 'playing';
     this.state = prev;
     this.moveQueue = [];
     this.animation.clear();
+    this.particles.clear();
     this._syncDisplayPositions();
     this._recomputeCones();
     this._emitHud();
+    this._message('Rewound one turn.');
   }
 
   // ---- movement ----
@@ -178,9 +182,32 @@ export class Game {
     }
     const path = bfsShortestPath(this.level, this.state.doors, player, { x, y });
     if (path && path.length) {
-      this.moveQueue = path;
+      const safePath = this._safePrefixForPath(path);
+      if (!safePath.length) {
+        this._message('That route is exposed on the next turn.', 'danger');
+        return;
+      }
+      this.moveQueue = safePath;
+      if (safePath.length < path.length) {
+        this._message('Route trimmed before a detection tile.', 'warning');
+      } else {
+        this._message(`Route queued: ${safePath.length} moves.`);
+      }
       this._advanceQueue();
     }
+  }
+
+  _safePrefixForPath(path) {
+    const safe = [];
+    let probe = this.state;
+    for (const dir of path) {
+      const result = simulateTurn(probe, this.level, dir);
+      if (!result.valid || result.state.status === GAME_STATUS.FAILED) break;
+      safe.push(dir);
+      probe = result.state;
+      if (probe.status === GAME_STATUS.COMPLETE) break;
+    }
+    return safe;
   }
 
   _advanceQueue() {
@@ -194,8 +221,10 @@ export class Game {
     const result = simulateTurn(previous, this.level, dir);
     if (!result.valid) {
       this.moveQueue = [];
+      this._message('Blocked.', 'warning');
       return;
     }
+    this.undo.push(previous);
     this.state = result.state;
     this._commitAnimatedTurn(previous, result, fromQueue);
   }
@@ -408,6 +437,30 @@ export class Game {
     this.hooks.onPlanningChange?.({ active: false });
   }
 
+  getMoveHints() {
+    if (!this.state || this.status !== 'playing' || this.inputLocked || this.planning?.active) return [];
+    const hints = [];
+    for (const [dir, delta] of Object.entries(DIRECTIONS)) {
+      const x = this.state.player.x + delta.x;
+      const y = this.state.player.y + delta.y;
+      const result = simulateTurn(this.state, this.level, dir);
+      if (!result.valid) continue;
+      hints.push({
+        x,
+        y,
+        dir,
+        danger: result.state.status === GAME_STATUS.FAILED,
+        complete: result.state.status === GAME_STATUS.COMPLETE,
+        collect: result.events.some((event) => event.type === 'collected'),
+      });
+    }
+    return hints;
+  }
+
+  _message(text, tone = 'info') {
+    this.hooks.onMessage?.({ text, tone });
+  }
+
   // ---- hud/loop ----
 
   _emitHud() {
@@ -417,6 +470,8 @@ export class Game {
       packageCollected: this.state?.packageCollected ?? false,
       exitActive: this.state?.exitActive ?? false,
       canUndo: this.undo.canUndo(),
+      targetMoves: this.level?.targetMoves,
+      status: this.status,
     });
   }
 
@@ -438,6 +493,7 @@ export class Game {
         cones: this.cones,
         particles: this.particles,
         planning: this.planning?.active ? this.planning.getOverlay() : null,
+        moveHints: this.getMoveHints(),
         timeMs: now,
         doorAnim: this.doorAnimValues,
       });

@@ -16,6 +16,9 @@ No backend, no accounts, no dependencies — the source *is* the deployable site
 
 ## Features
 
+- **V2 operator brief** previews the core strategy, current best chain, opening heat cost, and best cooling run.
+- **Live objectives** adapt during play: forge a special, fire it, build a chain, or cool before shutdown.
+- **Run diagnostics** explain cooling, specials fired, peak heat, and the next improvement target after overload.
 - 7×7 board, five node types, each with its own colour **and** shape
 - Tap-to-swap, swipe-to-swap, mouse, and full keyboard play
 - Cascade chains with rising score multipliers (`CHAIN x2` → `SYSTEM SURGE xN`)

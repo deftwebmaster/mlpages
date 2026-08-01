@@ -236,6 +236,69 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .menu-best-sub { font-size: 11px; color: var(--txt-mute); letter-spacing: 0.06em; }
+.operator-brief {
+  width: 100%;
+  border: 1px solid rgba(34, 224, 255, 0.18);
+  border-radius: 14px;
+  padding: 13px 14px;
+  background:
+    linear-gradient(135deg, rgba(34, 224, 255, 0.08), rgba(155, 108, 255, 0.07)),
+    rgba(8, 14, 26, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  text-align: left;
+}
+.brief-kicker {
+  display: block;
+  color: var(--cyan);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.operator-brief b {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: var(--txt);
+}
+.operator-brief p {
+  margin: 5px 0 11px;
+  color: var(--txt-dim);
+  font-size: 12.5px;
+  line-height: 1.38;
+}
+.brief-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+}
+.brief-metrics span {
+  min-width: 0;
+  border: 1px solid var(--panel-line);
+  border-radius: 8px;
+  background: rgba(5, 8, 15, 0.48);
+  padding: 7px 8px;
+}
+.brief-metrics small,
+.stability-row span {
+  display: block;
+  color: var(--txt-mute);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.brief-metrics strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--txt);
+  font-family: var(--font-num);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .menu-row { display: flex; gap: 10px; }
 .menu-foot { margin: 4px 0 0; font-size: 10.5px; letter-spacing: 0.14em; color: var(--txt-mute); }
 
@@ -370,6 +433,48 @@ body {
   display: grid;
   place-items: center;
   container-type: size;
+}
+
+.run-strip {
+  position: absolute;
+  left: 50%;
+  bottom: 6px;
+  z-index: 10;
+  width: min(96%, 440px);
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  pointer-events: none;
+}
+.run-strip span {
+  min-width: 0;
+  border: 1px solid rgba(34, 224, 255, 0.15);
+  border-radius: 999px;
+  background: rgba(5, 8, 15, 0.64);
+  color: rgba(233, 241, 255, 0.78);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 5px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  backdrop-filter: blur(4px);
+}
+.run-strip span[data-state="done"] {
+  color: var(--n-lime);
+  border-color: rgba(124, 240, 90, 0.32);
+}
+.run-strip span[data-state="warn"] {
+  color: var(--amber);
+  border-color: rgba(255, 159, 28, 0.34);
+}
+.run-strip span[data-state="danger"] {
+  color: var(--red);
+  border-color: rgba(255, 45, 74, 0.34);
 }
 
 .board {
@@ -913,6 +1018,17 @@ body {
   transition: color 300ms;
 }
 
+.stability-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 9px;
+}
+.stability-row span:last-child {
+  text-align: right;
+  color: var(--txt-dim);
+}
+
 /* Status colours deliberately avoid the node palette: amber-orange and red-orange
    sit clear of the gold node, so a warning never reads as a playable piece. */
 .screen-game[data-heat="stable"]   { --heat-col: var(--cyan); }
@@ -1059,6 +1175,45 @@ body {
   font-size: 19px;
   font-weight: 700;
   color: var(--txt);
+}
+
+.diagnostic-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+.diagnostic-grid:empty { display: none; }
+.diagnostic-grid div {
+  border: 1px solid var(--panel-line);
+  border-radius: 10px;
+  background: rgba(9, 14, 25, 0.76);
+  padding: 9px 7px;
+  text-align: center;
+}
+.diagnostic-grid span {
+  display: block;
+  color: var(--txt-mute);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.diagnostic-grid b {
+  display: block;
+  margin-top: 3px;
+  color: var(--cyan);
+  font-family: var(--font-num);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.coach-note {
+  min-height: 18px;
+  margin: 12px 0 0;
+  color: var(--txt-dim);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: center;
 }
 
 /* Help */
@@ -1243,10 +1398,15 @@ body {
   .heat-status { margin-top: 6px; }
   .menu-inner { gap: 13px; }
   .menu-best { padding: 10px 26px; }
+  .run-strip { display: none; }
+  .stability-row { margin-top: 6px; }
 }
 @media (max-width: 340px) {
   :root { --gap: 3px; }
   .screen { padding-left: calc(env(safe-area-inset-left, 0px) + 9px); padding-right: calc(env(safe-area-inset-right, 0px) + 9px); }
+  .brief-metrics,
+  .diagnostic-grid { grid-template-columns: 1fr; }
+  .run-strip { grid-template-columns: 1fr; left: 7px; right: 7px; width: auto; transform: none; }
 }
 
 /* ---------- Reduced motion / reduced effects ---------- */

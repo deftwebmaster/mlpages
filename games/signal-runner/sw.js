@@ -13,7 +13,7 @@
  * a stale build cannot outlive its replacement.
  */
 
-const CACHE_VERSION = 'v1.0.0';
+const CACHE_VERSION = 'v2.0.0';
 const CACHE_NAME = `signal-runner-${CACHE_VERSION}`;
 
 // Relative to the worker's own location, which is what makes this work from a

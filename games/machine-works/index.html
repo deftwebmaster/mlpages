@@ -10,14 +10,14 @@
   <meta property="og:url" content="https://mattlivingston.com/games/machine-works/">
   <meta property="og:title" content="Machine Works | Factory Automation Browser Game">
   <meta property="og:description" content="Play Machine Works, a static browser factory game about restoring abandoned production lines, routing resources, and rebuilding machines efficiently.">
-  <meta property="og:image" content="https://mattlivingston.com/assets/card.png">
+  <meta property="og:image" content="https://mattlivingston.com/games/img/machine-works.png">
   <meta property="og:image:alt" content="Machine Works | Factory Automation Browser Game preview image">
 
 <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://mattlivingston.com/games/machine-works/">
   <meta name="twitter:title" content="Machine Works | Factory Automation Browser Game">
   <meta name="twitter:description" content="Play Machine Works, a static browser factory game about restoring abandoned production lines, routing resources, and rebuilding machines efficiently.">
-  <meta name="twitter:image" content="https://mattlivingston.com/assets/card.png">
+  <meta name="twitter:image" content="https://mattlivingston.com/games/img/machine-works.png">
 <meta name="theme-color" content="#15171a" />
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
@@ -30,20 +30,36 @@
 
     <header id="top-bar">
       <span id="factory-name">Loading…</span>
-      <span id="milestone-badge">Milestone 5 — Analysis &amp; Blueprints</span>
+      <span id="milestone-badge">Factory Sandbox</span>
       <div class="top-bar-actions">
-        <button id="btn-pause" title="Pause simulation">&#10074;&#10074;</button>
-        <button id="btn-analysis" title="Enter Analysis Mode">&#128202;</button>
-        <button id="btn-blueprints" title="Blueprints">&#128190;</button>
-        <button id="btn-settings" disabled title="Coming soon">&#9881;</button>
+        <button id="btn-pause" class="icon-button" title="Pause simulation">&#10074;&#10074;</button>
+        <button id="btn-speed" class="icon-button text-button" title="Simulation speed">1x</button>
+        <button id="btn-zoom-out" class="icon-button" title="Zoom out">-</button>
+        <button id="btn-zoom-in" class="icon-button" title="Zoom in">+</button>
+        <button id="btn-center" class="icon-button" title="Center factory">&#9673;</button>
+        <button id="btn-analysis" class="icon-button" title="Enter Analysis Mode">&#128202;</button>
+        <button id="btn-blueprints" class="icon-button" title="Blueprints">&#128190;</button>
       </div>
     </header>
 
     <div id="hud-bar">
       <span id="power-readout" class="hud-pill">⚡ 0/0 kW</span>
-      <span id="objective-readout" class="hud-pill">Loading…</span>
+      <span id="objective-readout" class="hud-pill objective-pill">Loading…</span>
       <span id="session-stats" class="hud-pill hidden"></span>
     </div>
+
+    <aside id="inspector-panel" class="hidden" aria-live="polite">
+      <div>
+        <span id="inspector-title">Tile</span>
+        <span id="inspector-detail">Empty</span>
+      </div>
+      <div class="inspector-actions">
+        <button id="btn-inspector-rotate" title="Rotate selected">&#8635;</button>
+        <button id="btn-inspector-delete" title="Remove selected">&times;</button>
+      </div>
+    </aside>
+
+    <div id="toast-stack" aria-live="polite"></div>
 
     <div id="blueprint-panel" class="hidden">
       <div class="panel-header">
@@ -58,13 +74,13 @@
     </div>
 
     <footer id="bottom-toolbar">
-      <button data-tool="none" class="active">Select</button>
-      <button data-tool="conveyor">Conveyor</button>
-      <button data-tool="mining_drill">Mining Drill</button>
-      <button data-tool="smelter">Smelter</button>
-      <button data-tool="coal_generator">Coal Generator</button>
-      <button data-tool="storage_bin">Storage Bin</button>
-      <button data-tool="sink">Sink</button>
+      <button data-tool="none" class="active"><span class="tool-icon">&#9673;</span><span>Select</span></button>
+      <button data-tool="conveyor"><span class="tool-icon">&#8594;</span><span>Conveyor</span></button>
+      <button data-tool="mining_drill"><span class="tool-icon">D</span><span>Drill</span></button>
+      <button data-tool="smelter"><span class="tool-icon">F</span><span>Smelter</span></button>
+      <button data-tool="coal_generator"><span class="tool-icon">P</span><span>Power</span></button>
+      <button data-tool="storage_bin"><span class="tool-icon">B</span><span>Bin</span></button>
+      <button data-tool="sink"><span class="tool-icon">S</span><span>Sink</span></button>
       <div class="toolbar-divider"></div>
       <button id="btn-rotate">Rotate &#8635;</button>
       <div class="toolbar-divider"></div>

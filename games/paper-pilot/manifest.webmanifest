@@ -1,0 +1,17 @@
+{
+  "name": "Paper Pilot",
+  "short_name": "Paper Pilot",
+  "description": "Draw wind rails, collect stars, and land a paper plane safely.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#d7f1fb",
+  "theme_color": "#7bc8e8",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
